@@ -1,0 +1,11 @@
+<?eml login::root() ?><html>
+<head>
+<LINK rel="stylesheet" TYPE="text/css" HREF="style.css">
+<SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
+</head>
+<body class="left_body" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
+
+<?eml admin::modules() ?>
+
+</body>
+</html>

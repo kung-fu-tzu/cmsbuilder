@@ -118,10 +118,12 @@ sub register
 
 sub root
 {
-	if($eml::gid != 0){ eml::err403('gid != 0'); }
+	if(!$eml::do_users){ return; }
+	
+	if($eml::gid < 1){ eml::err403('gid < 1'); }
 	if($eml::uid < 1){ eml::err403('uid < 1'); }
-
-
+	
+	if($eml::g_group->{'adminka'} != 1){ eml::err403('user->adminka != 1'); }
 }
 
 
@@ -165,64 +167,59 @@ Ps:
 </table>
 
 ENDD
-
+	
 	}
-
+	
 }
 
 sub act
 {
 	my ($act,$login,$pas);
-
+	
 	$act = eml::param('action');
 	$login = eml::param('login');
 	$pas = eml::param('pas');
-
+	
 	srand();
-
+	
 	my $jl = JLogin::new($eml::dbh);
-
+	
 	if($act eq 'in'){
-
+		
 		eml::unflush();
 		$jl->login($login,$pas);
-
+		
 		print "Content-type: text/html\n\n";
 		if($jl->{'error'}){
-
+			
 			print '<center><font color=red>Ошибка:</font> ',$jl->{'error'},'';
-
+			
 		}else{
 			print '<script>location.href = "/?'.rand().'"</script>';
 			exit();
 		}
-
-		
-
+	
 	}
-
+	
 	if($act eq 'out'){
-
+		
 		$jl->logout();
-
-
+		
+		
 		if($jl->{'error'}){
-
-			print "Content-type: text/html\n\n";
+			
 			print '<center><font color=red>Ошибка:</font> ',$jl->{'error'},'';
-
+			
 		}else{
+			eml::unflush();
 			print "Content-type: text/html\n\n";
 			print '<script>location.href = "/?'.rand().'"</script>';
+			exit();
 		}
-
-		exit();
-
+		
+		
 	}
-
-
-
-
+	
 }
 
 sub form

@@ -14,7 +14,10 @@
 		<TR>
 			<TD class="tdlr" align=left><font class="site_name">anyname.ru</font></TD>
 			<TD class="tdlr" align=right>
-				<A href="#"><IMG height=27 alt="Добавить раздел" hspace=10 src="img/1.gif" width=44 border=0></A><A href="#"><IMG height=27 alt="Бобавить страницу" src="img/2.gif" width=44 border=0></A><A href="#"><IMG height=27 alt="Удалить раздел" hspace=10 src="img/3.gif" width=44 border=0></A><A href="#"><IMG height=27 alt=Выход src="img/4.gif" width=44 border=0></A>
+				<A href="#"><IMG height=27 alt="Добавить раздел" hspace=10 src="img/1.gif" width=44 border=0></A>
+                                <A href="#"><IMG height=27 alt="Добавить страницу" src="img/2.gif" width=44 border=0></A>
+                                <A href="#"><IMG height=27 alt="Удалить раздел" hspace=10 src="img/3.gif" width=44 border=0></A>
+                                <A href="/login.ehtml?action=out"><IMG height=27 alt="Выход" src="img/4.gif" width=44 border=0></A>
 			</TD>
 		</TR>
 	</TABLE>
@@ -35,28 +38,24 @@
 				<TABLE cellSpacing=0 cellPadding=0 width=100% height=100% border=0 bgcolor=F0F4F0>
 					<tr height=40><td>
 						<TABLE cellSpacing=0 cellPadding=0 width=100%  border=0 bgcolor=F0F4F0>
-							<tr><td height=34 width=14></td><td valign=middle align=left><b>Содержимое модуля:</b></td></tr>
+							<tr><td height=34 width=14></td><td valign=middle align=left><b><div id="module_div_it">Модуль не выбран:</div></b></td></tr>
 							<tr><td colspan=2 class=red_hr></td></tr>
 						</table>
 					</td></tr>
 					<tr><td>
 				
-						<IFRAME name=admin_left src="left.ehtml" frameBorder=0 width="100%" height="100%"></IFRAME>
+						<IFRAME name=admin_left frameBorder=0 width="100%" height="100%"></IFRAME>
 			
 					</td></tr>
 					<tr height=150><td bgcolor="#F7F7F7" valign=top>
 			
-						<TABLE height=34 cellSpacing=0 cellPadding=0 width=100%  border=0 bgcolor=F0F4F0>
+						<TABLE cellSpacing=0 cellPadding=0 width=100% height=100% border=0 bgcolor=F0F4F0>
 							<tr><td colspan=2 class=red_hr></td></tr>
 							<tr><td width=15 height=34></td><td valign=middle align=left><b>Персональные модули:</b></td></tr>
 							<tr><td colspan=2 class=red_hr></td></tr>
-						</table>
-						<br>
-						<TABLE height=34 cellSpacing=0 cellPadding=0 width=100%  border=0>
-							<tr><td width=15 height=34></td><td valign=middle align=left>
-								<img src=bullet.gif align=absmiddle> <a target=admin_left href="left.ehtml?url=Dir1">Сайт</a><br>
-								<img src=bullet.gif align=absmiddle> <a target=admin_left href="left.ehtml?url=UserGroupDir1">Пользователи</a>
-							</td></tr>
+                                                        <tr><td colspan=2>
+                                                            <IFRAME name=admin_modules src="modules.ehtml" frameBorder=0 width="100%" height="100%"></IFRAME>
+                                                        </td></tr>
 						</table>
 					</td></tr>
 				</TABLE>
@@ -65,12 +64,18 @@
 			<td width=3 bgcolor="#9AABB5"></td>
 			<td width=518 align=left>
 			
-			<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0 bgcolor="#F0F4F0">
-				<tr><td height=34 width=1><img src="null.gif" width=10 height=1></td><td valign=middle align=left><b>Редактирование элемента:</b><br><div id="tree_div_it">...</div></td></tr>
-				<tr><td class=red_hr></td><td class=red_hr></td></tr>
+			<TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0">
+				<tr><td height=34 valign=middle align=left>
+                                    <TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0"><tr><td width=16>&nbsp;</td><td>
+                                    <b>Редактирование элемента:</b><br><div id="tree_div_it">Элемен не выбран</div>
+                                    </td></TABLE>
+                                
+                                </td></tr>
+				<tr><td class=red_hr></td></tr>
+                                <tr><td>
+                                    <IFRAME name=admin_right frameBorder=0 width="100%" height="100%"></IFRAME>
+                                </td></tr>
 			</TABLE>
-			
-				<IFRAME name=admin_right src="right.ehtml?class=Dir&amp;ID=1" frameBorder=0 width="100%" height="100%"></IFRAME>
 			
 			</td>
 			<td width=3 bgcolor="#9AABB5"></td>

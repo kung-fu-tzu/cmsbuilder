@@ -8,7 +8,7 @@ my %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'son'	  => { 'type' => 'object', 'class' => 'Elem', 'name' => 'Сын' },
-	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' }
+	'etext'	  => { 'type' => 'miniword', 'name' => 'Содержимое' }
 );
 
 sub props { return %props; }

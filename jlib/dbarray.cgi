@@ -17,6 +17,8 @@ sub admin_left
 {
 	my $o = shift;
 	
+	if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
+	
 	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
 	my $disp = $node{'s'} ? 'block' : 'none';
 	my $pic  = $node{'s'} ? 'minus' : 'plus';
@@ -66,7 +68,7 @@ sub admin_view
 			if($e->{'_ENUM'} != 1){ print '<a href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=eup&page='.$page.'"><img border=0 src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
 		}
 		
-		#print "<a onclick='MoveMe(".$e->{'_ENUM'}."); return false;' href='#'><img border=0 src=move2.gif></a>";
+		print '<a href="move2.ehtml?from='.ref($o).$o->{'ID'}.'&enum='.$e->{'_ENUM'}.'"><img border=0 src=move2.gif></a>';
 		print "\n",'&nbsp;&nbsp;',"\n";
 		print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
 		print "\n";
@@ -291,12 +293,27 @@ sub elem_movedown
 	$o->elem_moveto($num,$num+1);
 }
 
+sub elem_paste
+{
+	my $o = shift;
+	my $po = shift;
+	
+	if($o->{ID} < 0){ return; }
+	
+	$o->elem_paste_ref($po);
+	
+	$po->{PAPA_ID} = $o->{ID};
+	$po->{PAPA_CLASS} = ref($o);
+	
+	$po->save();
+}
+
 
 ###################################################################################################
 # ћетоды дл€ непосредственной работы с массивом
 ###################################################################################################
 
-sub elem_paste
+sub elem_paste_ref
 {
 	my $o = shift;
 	my $po = shift;
@@ -307,13 +324,8 @@ sub elem_paste
 	my $cname = ref($po);
 	if( index( ${ref($o).'::add'}, ' '.$cname.' ') < 0 ){ eml::err505('Trying to add element with classname "'.$cname.'", to array "'.ref($o).'"'); }
 	
-	$po->{PAPA_ID} = $o->{ID};
-	$po->{PAPA_CLASS} = ref($o);
-	
 	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{ID}.'` (ID,CLASS) VALUES (?,?)');
 	$str->execute($po->{ID},ref($po));
-	
-	$po->save();
 	
 	$o->sortT();
 }
@@ -425,6 +437,7 @@ sub is_array_table
 	for $t ($eml::dbh->tables()){
 		
 		if( lc('`arr_'.ref($o).'_'.$o->{'ID'}.'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
+		if( lc('arr_'.ref($o).'_'.$o->{'ID'}) eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
 	}
 	
 	$o->{'_isatable'} = 'no';

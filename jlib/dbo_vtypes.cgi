@@ -2,50 +2,88 @@
 # Микроворд #####################################################
 
 $vtypes{'microword'}{table_cre} = sub {
-
-	my %elem = %{$_[0]};
-
-	return ' TEXT ';
-
+    
+    return ' TEXT ';
+    
 };
 
 $vtypes{'microword'}{'aview'} = sub {
 
-	my $name = shift;
-	my $val = shift;
-
-	$val =~ s/\"/\&quot;/g;
-	$val =~ s/\</\&lt;/g;
-	$val =~ s/\>/\&gt;/g;
-
+    my $name = shift;
+    my $val = shift;
+    
+    $val =~ s/\"/\&quot;/g;
+    $val =~ s/\</\&lt;/g;
+    $val =~ s/\>/\&gt;/g;
+    
     my $ret = <<MICRO;
+    
+    <TEXTAREA class=admin_input name="${name}" style="DISPLAY: none; HEIGHT: 148px;  WIDTH: 300px">$val</TEXTAREA>
+    <script>${name}_mw_loaded = 0;</script>
+    <iframe frameborder=1 class=admin_input src="/admin/microword.html" id="${name}_mw" style="HEIGHT: 150px; WIDTH: 300px"
+    
+        onload="${name}_mw.document.body.innerHTML = ${name}.value; ${name}_mw.document.designMode = 'On'; ${name}_mw_loaded = 1;"
+        onmouseout = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
+        onmouseover = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
+        onkeyup = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
         
-        
-        <TEXTAREA class=admin_input name="${name}" style="DISPLAY: none; HEIGHT: 148px">$val</TEXTAREA>
-        <script>${name}_mw_loaded = 0;</script>
-        <iframe src="/microword.html" id="${name}_mw" style="WIDTH: 100%; HEIGHT: 100%"
-        
-            onload="${name}_mw.document.body.innerHTML = ${name}.value; ${name}_mw.document.designMode = 'On'; ${name}_mw_loaded = 1;"
-            onmouseout = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
-            onmouseover = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
-            onkeyup = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
-            
-        ></iframe>
-        <INPUT type="button" value="HTML"   onclick=' ${name}.style.display = "block"; document.all.${name}_mw.style.display = "none";  ${name}_to_norm.style.display = "block"; ${name}_to_html.style.display = "none";'  id="${name}_to_html">
-        <INPUT type="button" value="Normal" onclick=' ${name}.style.display = "none";  document.all.${name}_mw.style.display = "block"; ${name}_to_norm.style.display = "none";  ${name}_to_html.style.display = "block"; ${name}_mw.document.body.innerHTML = ${name}.value;' id="${name}_to_norm" style="DISPLAY: none">
+    ></iframe><br>
+    <INPUT type="button" value="HTML"   onclick=' ${name}.style.display = "block"; document.all.${name}_mw.style.display = "none";  ${name}_to_norm.style.display = "block"; ${name}_to_html.style.display = "none";'  id="${name}_to_html">
+    <INPUT type="button" value="Normal" onclick=' ${name}.style.display = "none";  document.all.${name}_mw.style.display = "block"; ${name}_to_norm.style.display = "none";  ${name}_to_html.style.display = "block"; ${name}_mw.document.body.innerHTML = ${name}.value;' id="${name}_to_norm" style="DISPLAY: none">
 
 MICRO
+    
+    return $ret;
+};
 
-        return $ret;
+# Миниворд #####################################################
+
+$vtypes{'miniword'}{table_cre} = sub {
+    
+    return ' TEXT ';
+    
+};
+
+$vtypes{'miniword'}{'aview'} = sub {
+
+    my $name = shift;
+    my $val = shift;
+    
+    $val =~ s/\"/\&quot;/g;
+    $val =~ s/\</\&lt;/g;
+    $val =~ s/\>/\&gt;/g;
+    $val =~ s/\n/\\n/g;
+    $val =~ s/\r//g;
+    
+    my $ret = <<MINI;
+    
+    
+   <script language="javascript">
+   <!--
+   var oFCKeditor ;
+   oFCKeditor = new FCKeditor('$name');
+   oFCKeditor.ToolbarSet = 'CMS1.0' ;
+   oFCKeditor.Width  = '100%' ;
+   oFCKeditor.Height = 350 ;
+   oFCKeditor.imagesFolder = "structure" ;
+   oFCKeditor.attachFolder = "structure" ;
+   oFCKeditor.Value  = "$val";
+   oFCKeditor.Create() ;
+   //-->
+   </script>
+
+MINI
+    
+    return $ret;
 };
 
 
 # Временная метка ####################################################
 
 $vtypes{timestamp}{table_cre} = sub {
-
-	return ' TIMESTAMP ';
-
+    
+    return ' TIMESTAMP ';
+    
 };
 
 $vtypes{timestamp}{aview} = sub {};
@@ -236,6 +274,30 @@ $vtypes{string}{aview} = sub {
 	return $ret;
 
 };
+
+# Пароль ####################################################
+
+$vtypes{password}{table_cre} = sub {
+
+	my %elem = %{$_[0]};
+
+	return ' VARCHAR( '.$elem{length}.' ) ';
+
+};
+
+$vtypes{password}{aview} = sub {
+
+	my $name = shift;
+	my $val = shift;
+
+	$val =~ s/./*/g;
+
+	my $ret = '<input class="winput" type=password name="'.$name.'" value="'.$val.'">';
+
+	return $ret;
+
+};
+
 
 # Безразмерная строка ####################################################
 

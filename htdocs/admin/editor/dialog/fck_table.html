@@ -1,0 +1,218 @@
+<!--
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003 Frederico Caldeira Knabben
+ *
+ * Licensed under the terms of the GNU Lesser General Public License
+ * (http://www.opensource.org/licenses/lgpl-license.php)
+ *
+ * For further information go to http://www.fredck.com/FCKeditor/ 
+ * or contact fckeditor@fredck.com.
+ *
+ * fck_table.html: Table dialog box.
+ *
+ * Authors:
+ *   Frederico Caldeira Knabben (fckeditor@fredck.com)
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<TITLE>Вставка таблицы</TITLE>
+		<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+		<LINK href="../css/fck_dialog.css" type="text/css" rel="stylesheet">
+		<!-- Constants -->
+		<script language="javascript" src="../js/dhtmled.js"></script>
+		<script language="javascript">
+<!--
+// Gets the document DOM
+var oDOM = dialogArguments.objContent.DOM ;
+
+// Gets the table if there is one selected.
+var table ;
+var sel = oDOM.selection.createRange();
+if (oDOM.selection.type != 'Text') 
+{
+	if (sel.length == 1) 
+	{
+		if (sel.item(0).tagName == "TABLE") 
+			table = sel.item(0);
+	}
+}
+
+// Fired when the window loading process is finished. It sets the fields with the
+// actual values if a table is selected in the editor.
+function setDefaults()
+{
+	if (table)
+	{
+		txtRows.value    = table.rows.length ;
+		txtColumns.value = table.rows[0].cells.length ;
+		
+		var iWidth = table.width ;
+		
+		if (iWidth.indexOf('%') >= 0)
+		{
+			iWidth = iWidth.substr(0,iWidth.length - 1) ;
+			selWidthType.value = "percent" ;
+		}
+		
+		txtWidth.value			= iWidth ;
+		txtHeight.value			= table.height ;
+		txtBorder.value			= table.border ;
+		selAlignment.value		= table.align ;
+		txtCellPadding.value	= table.cellPadding	;
+		txtCellSpacing.value	= table.cellSpacing	;
+		if (table.caption) txtCaption.value	= table.caption.innerText ;		
+		
+		txtRows.disabled    = true ;
+		txtColumns.disabled = true ;
+	}	
+}
+
+// Fired when the user press the OK button
+function ok()
+{
+	if (! table)
+	{
+		var sTableAtt = "" ;
+
+		if (txtWidth.value != '')		sTableAtt += 'width="' + txtWidth.value + (selWidthType.value == "percent" ? "%" : "") + '"' ;
+		if (txtHeight.value != '')		sTableAtt += 'height="' + txtHeight.value + '"' ;
+		if (txtBorder.value != '')		sTableAtt += 'border="' + txtBorder.value + '"' ;
+		if (selAlignment.value != '')	sTableAtt += 'align="' + selAlignment.value + '"' ;
+		if (txtCellSpacing.value != '')	sTableAtt += 'cellspacing="' + txtCellSpacing.value + '"' ;
+		if (txtCellPadding.value != '')	sTableAtt += 'cellpadding="' + txtCellPadding.value + '"' ;
+
+		var oTableParms = new ActiveXObject("DEInsertTableParam.DEInsertTableParam") ;
+		
+		if (txtRows.value != '')	oTableParms.NumRows    = txtRows.value ;
+		if (txtColumns.value != '')	oTableParms.NumCols    = txtColumns.value ;
+		if (sTableAtt != '')		oTableParms.TableAttrs = sTableAtt ;
+		if (txtCaption.value != '')	oTableParms.Caption    = txtCaption.value ;
+		
+		dialogArguments.objContent.DOM.selection.clear() ;
+		dialogArguments.objContent.ExecCommand(DECMD_INSERTTABLE,OLECMDEXECOPT_DODEFAULT, oTableParms);
+	}
+	else
+	{
+		table.width			= txtWidth.value + (selWidthType.value == "percent" ? "%" : "") ;
+		table.height		= txtHeight.value ;
+		table.border		= txtBorder.value ;
+		table.align			= selAlignment.value ;
+		table.cellPadding	= txtCellPadding.value ;
+		table.cellSpacing	= txtCellSpacing.value ;
+		
+		if (txtCaption.value != '')
+		{
+			if (! table.caption) table.createCaption() ;
+			table.caption.innerText = txtCaption.value ;
+		}
+//		else
+//			table.deleteCaption() ;		// TODO: It causes an IE error.
+	}
+	
+	window.close();
+}
+
+// Fired when the user press the CANCEL button.
+function cancel() 
+{
+	window.close() ;
+}
+
+function IsDigit()
+{
+	return ((event.keyCode >= 48) && (event.keyCode <= 57))
+}
+//-->
+		</script>
+	</HEAD>
+	<BODY bottommargin="5" leftmargin="5" topmargin="5" rightmargin="5" onload="setDefaults()">
+		<TABLE cellSpacing="0" cellPadding="0" width="100%" border="0" height="100%">
+			<TR>
+				<TD>
+					<TABLE cellSpacing="1" cellPadding="1" width="100%" border="0">
+						<TR>
+							<TD>
+								<TABLE cellSpacing="0" cellPadding="0" border="0">
+									<TR>
+										<TD>Кол-во рядов:</TD>
+										<TD>&nbsp;<INPUT id="txtRows" type="text" maxLength="3" size="2" value="3" name="txtRows" onkeypress="event.returnValue=IsDigit();"></TD>
+									</TR>
+									<TR>
+										<TD>Кол-во колонок:</TD>
+										<TD>&nbsp;<INPUT id="txtColumns" type="text" maxLength="2" size="2" value="2" name="txtColumns" onkeypress="event.returnValue=IsDigit();"></TD>
+									</TR>
+									<TR>
+										<TD>&nbsp;</TD>
+										<TD>&nbsp;</TD>
+									</TR>
+									<TR>
+										<TD>Граница:</TD>
+										<TD>&nbsp;<INPUT id="txtBorder" type="text" maxLength="2" size="2" value="1" name="txtBorder" onkeypress="event.returnValue=IsDigit();"> пкс</TD>
+									</TR>
+									<TR>
+										<TD>Выравнивание:</TD>
+										<TD>&nbsp;<SELECT id="selAlignment" name="selAlignment">
+												<OPTION value="" selected>&lt;По умолчанию&gt;</OPTION>
+												<OPTION value="left">По левому краю</OPTION>
+												<OPTION value="center">По центру</OPTION>
+												<OPTION value="right">По правому краю</OPTION>
+											</SELECT></TD>
+									</TR>
+								</TABLE>
+							</TD>
+							<TD>&nbsp;&nbsp;&nbsp;</TD>
+							<TD align="right">
+								<TABLE cellSpacing="0" cellPadding="0" border="0">
+									<TR>
+										<TD>Ширина:</TD>
+										<TD>&nbsp;<INPUT id="txtWidth" type="text" maxLength="4" size="3" value="200" name="txtWidth" onkeypress="event.returnValue=IsDigit();"></TD>
+										<TD>&nbsp;<SELECT id="selWidthType" name="selWidthType">
+												<OPTION value="pixels" selected>pixels</OPTION>
+												<OPTION value="percent">percent</OPTION>
+											</SELECT></TD>
+									</TR>
+									<TR>
+										<TD>Высота:</TD>
+										<TD>&nbsp;<INPUT id="txtHeight" type="text" maxLength="4" size="3" name="txtHeight" onkeypress="event.returnValue=IsDigit();"></TD>
+										<TD>&nbsp; пкс</TD>
+									</TR>
+									<TR>
+										<TD>&nbsp;</TD>
+										<TD>&nbsp;</TD>
+										<TD>&nbsp;</TD>
+									</TR>
+									<TR>
+										<TD>Отступ между ячейками:</TD>
+										<TD>&nbsp;<INPUT id="txtCellSpacing" type="text" maxLength="2" size="2" value="1" name="txtCellSpacing" onkeypress="event.returnValue=IsDigit();"></TD>
+										<TD>&nbsp;</TD>
+									</TR>
+									<TR>
+										<TD>Отступ внтури ячеек:</TD>
+										<TD>&nbsp;<INPUT id="txtCellPadding" type="text" maxLength="2" size="2" value="1" name="txtCellPadding" onkeypress="event.returnValue=IsDigit();"></TD>
+										<TD>&nbsp;</TD>
+									</TR>
+								</TABLE>
+							</TD>
+						</TR>
+					</TABLE>
+					<br>
+					<TABLE cellSpacing="0" cellPadding="0" width="100%" border="0">
+						<TR>
+							<TD>Название:</TD>
+							<TD>&nbsp;</TD>
+							<TD width="100%">
+								<INPUT id="txtCaption" type="text" style="WIDTH: 100%"></TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
+			<TR>
+				<TD align="middle"">
+					<br>
+					<INPUT style="WIDTH: 100px" type="button" value="Ok" onclick="ok();">&nbsp; <INPUT type="button" value="Cancel" onclick="cancel();">
+				</TD>
+			</TR>
+		</TABLE>
+	</BODY>
+</HTML>

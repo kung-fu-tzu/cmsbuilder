@@ -9,7 +9,7 @@ my %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Ник' },
 	'login'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
-	'pas'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Пароль' },
+	'pas'	  => { 'type' => 'password', 'length' => 50, 'name' => 'Пароль' },
 	'sid'	  => { 'type' => 'string', 'length' => 20, 'name' => 'Ключ' },
 	'icq'	  => { 'type' => 'int', 'length' => 15, 'name' => 'Номер Аска' },
 	'email'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Мыло' },

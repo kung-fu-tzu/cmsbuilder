@@ -8,7 +8,8 @@ use strict qw(subs vars);
 
 my %props = (
 
-	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя группы' }
+	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя группы' },
+	'adminka' => { 'type' => 'checkbox', 'name' => 'Доступ к админке' }
 );
 
 sub props { return %props; }

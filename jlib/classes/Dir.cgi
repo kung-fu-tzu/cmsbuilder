@@ -5,6 +5,7 @@ $pages_direction = 0;
 #@aview = qw/name onpage/;
 $add  = ' Elem Dir Papa ';
 @ISA = 'DBArray';
+$dont_list_me = 0;
 use strict qw(subs vars);
 
 my %props = (

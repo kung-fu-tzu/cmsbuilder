@@ -12,6 +12,24 @@ sub url
 {
 	my $url = shift;
 	
+	my ($class,$id) = url2classid($url);
+
+	my $to = &{$class.'::new'}($id);
+	
+	return $to;
+}
+
+sub myurl
+{
+	my $o = shift;
+	
+	return ref($o).$o->{'ID'};
+}
+
+sub url2classid
+{
+	my $url = shift;
+	
 	my ($class,$id) = ('','');
 
 	if( $url !~ m/^(\w+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
@@ -20,10 +38,8 @@ sub url
 	$id = $2;
 
 	if( ! eml::classOK($class) ){ eml::err505('Invalid class name requested: '.$class); }
-
-	my $to = &{$class.'::new'}($id);
 	
-	return $to;
+	return ($class,$id);
 }
 
 sub des_tree
@@ -116,7 +132,7 @@ sub sel_one
 	
 	($id) = $str->fetchrow_array();
 	
-	if(! $id){ return; }
+	if(! $id){ $o->clear(); return; }
 	
 	$o->{ID} = $id;
 	$o->reload();
@@ -181,7 +197,7 @@ sub admin_name
 	if($o->{name}){
 		$ret = $o->{name};
 	}else{
-		$ret = 'Без имени ( '.${ref($o).'::name'}.' '.$o->{ID}.' )';
+		$ret = ${ref($o).'::name'}.' '.$o->{ID};
 	}
 	
 	#$ret =~ s/\s/\&nbsp;/g;
@@ -270,7 +286,7 @@ sub admin_edit
 	my $o = shift;
 	my ($key,$val);
 	my %p = $o->props();
-	if($eml::gid != 0){ eml::err403("DBO: EDIT with gid != 0,".ref($o).", ".$o->{ID}); }
+	#if($eml::gid != 0){ eml::err403("DBO: EDIT with gid != 0,".ref($o).", ".$o->{ID}); }
 	
 	if($o->{ID} < 1){ $o->{'_print'} = "<font color=red>Ошибка: ID < 1.</font><br>\n"; return; }
 	
@@ -294,7 +310,7 @@ sub admin_view
 	my $key;
 	my @keys;
 	my %p = $o->props();
-	if($eml::gid != 0){ eml::err403("DBO: VIEW with gid != 0,".ref($o).", ".$o->{ID}); }
+	#if($eml::gid != 0){ eml::err403("DBO: VIEW with gid != 0,".ref($o).", ".$o->{ID}); }
 	
 	print "\n\n";
 	print '<table width="100%" border=0><tr><td align=center>';
@@ -477,7 +493,8 @@ sub reload
 	
 	my $res = $str->fetchrow_hashref('NAME_lc');
 	
-	if($res->{id} != $o->{ID}){ eml::err505('DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}); }
+	#if($res->{id} != $o->{ID}){ eml::err505('DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}); }
+	if($res->{id} != $o->{ID}){ print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}."\n"; $o->clear(); return; }
 	
 	my $id = 0;
 	my $have_o = 0;
@@ -605,6 +622,7 @@ sub creTABLE
 sub DESTROY
 {
 	my $o = shift;
+	if($o->{'_temp_object'}){ return; }
 	$o->save();
 }
 
