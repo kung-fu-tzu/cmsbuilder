@@ -223,6 +223,8 @@ sub install
 		my $agroup = UserGroup::new('cre');
 		$agroup->{'name'} = 'Администраторы';
 		$agroup->{'cms'} = 1;
+		$agroup->{'html'} = 1;
+		$agroup->{'root'} = 1;
 		
 		my $admin = User::new('cre');
 		$admin->{'login'} = 'admin';
@@ -237,16 +239,6 @@ sub install
 		print 'Логин и пароль Администратора: "<b>',$admin->{'login'},'</b>"<br>';
 		print 'Имя группы Администратора: "<b>',$agroup->{'name'},'</b>"<br>';
 		
-		my $agroup2 = UserGroupRoot::new('cre');
-		$agroup2->{'name'} = 'root_group';
-		$agroup2->{'cms'} = 1;
-		
-		my $admin2 = User::new('cre');
-		$admin2->{'login'} = 'root';
-		$admin2->{'pas'} = 'gogogosuperuser';
-		$admin2->{'name'} = 'root';
-		
-		$agroup2->elem_paste($admin2);
 	}else{
 		print 'Структура уже была создана.';
 	}
@@ -264,7 +256,8 @@ sub modules
 	
 	for $m (keys(%mods)){
 		
-		print '<img src=bullet.gif align=absmiddle> <a onclick="" href="?mod=',$m,'">',$m,'</a><br>';
+		if($m eq $sel_mod){ print '<img src=bullet.gif align=absmiddle> <b>',$m,'</b><br>' }
+		else{ print '<img src=bullet.gif align=absmiddle> <a onclick="" href="?mod=',$m,'">',$m,'</a><br>' }
 	}
 	
 	print '
@@ -287,6 +280,7 @@ sub list
 	if(!$do_list){ return; }
 	
 	my $w = DBObject::url($url);
+	$w->reload();
 	$w->admin_view($page);
 }
 

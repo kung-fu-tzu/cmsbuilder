@@ -1,4 +1,9 @@
 
 <br>
 <?o login.me() ?>
+
+<hr>
+<a href="/login.ehtml">Login...</a><br><br>
+<a href="/admin/">CMS</a><br>
+
 <br><br><br>

@@ -45,7 +45,7 @@ sub url2classid
 # Методы реализации разделения доступа
 ###################################################################################################
 
-sub do_access
+sub access_do
 {
 	
 	
@@ -58,18 +58,14 @@ sub access
 	my $o = shift;
 	my $type = shift;
 	
-	if(length($type) != 1){ return 0; }
+	if($eml::g_group->{'root'}){ return 1 }
+	if(length($type) != 1){ return 0 }
+	
+	if($eml::g_user->{'ID'} == $o->{'OID'} and $type eq 'r'){ return 1; }
 	
 	#if( $eml::gid == 0 ){ return 1; }
 	
-	my $papa = $o->papa();
-	
-	if($papa->{'ID'} != -1){
-		if( !$papa->acces($type) == 0 ){ return 0; }
-	}
-	
 	return 0;
-	
 }
 
 
@@ -538,6 +534,20 @@ sub reload
 	$o->{'CTS'} = $res->{'cts'};
 	$o->{'ATS'} = $res->{'ats'};
 	
+	$o->access_do();
+	
+	if(!$o->access('r')){
+		
+		my $t_id = $o->{'ID'};
+		my $t_oid = $o->{'OID'};
+		my $t_name = $o->name();
+		$o->clear();
+		$o->{'ID'} = $t_id;
+		$o->{'OID'} = $t_oid;
+		$o->{'name'} = $t_name;
+		
+	}
+	
 	if($have_o == 1){ $o->save() }
 }
 
@@ -552,6 +562,7 @@ sub save
 	
 	if($o->{'ID'} eq 'cre'){ $o->{'ID'} = $o->insert(); }
 	if($o->{'ID'} < 0){ return; }
+	if(!$o->access('w')){ return; }
 	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
 	
 	my $sql = 'UPDATE `dbo_'.ref($o).'` SET ';
@@ -589,7 +600,7 @@ sub insert
 	my $str;
 	
 	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
-	$str->execute($eml::uid);
+	$str->execute($eml::g_user->{'ID'});
 	
 	$str = $eml::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
 	$str->execute();
@@ -666,8 +677,6 @@ sub _construct
 	
 	$o->{'ID'} = $n;
 	$o->reload();
-	
-	$o->do_access();
 	
 	if($o->{'ID'} > -1){ $eml::dbo_cache{ref($o).$o->{'ID'}} = $o; }
 	

@@ -122,10 +122,12 @@ BODY
 {
     PADDING-RIGHT: 0px;
     PADDING-LEFT: 0px;
+    FONT-SIZE: 11px;
     PADDING-BOTTOM: 0px;
     MARGIN: 0px;
     COLOR: #606260;
-    PADDING-TOP: 0px
+    PADDING-TOP: 0px;
+    FONT-FAMILY: Arial, Helvetica
 }
 .pages_table
 {

@@ -14,8 +14,8 @@ use strict qw(subs vars);
 
 my $out = '';
 my $dir = '';
-my $ruid = '';
-my $rgid = '';
+my %su = ();
+my $su = 0;
 
 use vars '$print_error';
 use vars '$buff';
@@ -33,8 +33,6 @@ use vars '$do_users';
 use vars '$files_dir';
 use vars '%opts';
 
-use vars '$uid';
-use vars '$gid';
 use vars '$g_user';
 use vars '$g_group';
 use vars '%dbo_cache';
@@ -58,7 +56,7 @@ sub mymain
 	# Обнуление #
 
 	%dbo_cache = ();
-	$do_users = 0;
+	$do_users = 1;
 	$print_error = 1;
 	$buff = 1;
 	
@@ -67,10 +65,8 @@ sub mymain
 	@dbos = ();
 	$dbh = '';
 	
-	$uid = -1;
-	$gid = -1;
-	$ruid = -1;
-	$rgid = -1;
+	%su = ();
+	$su = 0;
 	
 	$out = '';
 	$dir = '';
@@ -167,8 +163,6 @@ sub mymain
 		$g_user->{'_temp_object'} = 1;
 		$g_group->{'_temp_object'} = 1;
 		
-		$uid = $g_user->{'ID'};
-		$gid = $g_group->{'ID'};
 	}else{
 		$g_user = User::new();
 		$g_group = UserGroup::new();
@@ -177,13 +171,12 @@ sub mymain
 		$g_group = $g_group->no_cache();
 		
 		$g_user->{'name'} = 'Монопольный режим';
-		$g_group->{'cms'} = 1;
-		$g_group->{'html'} = 1;
-		$g_group->{'root'} = 1;
 		$g_user->{'_temp_object'} = 1;
+		$g_user->{'ID'} = 1;
 		$g_group->{'_temp_object'} = 1;
+		$g_group->{'ID'} = 1;
 		
-		$uid = 1; $gid = 1;
+		su_start();
 	}
 	
 	
@@ -208,6 +201,30 @@ sub mymain
 	undef $dbh;
 	
 	dbmclose(%opts);
+}
+
+sub su_start
+{
+	if($su){ return }
+	$su = 1;
+	
+	$su{'cms'}  = $g_group->{'cms'};
+	$su{'html'} = $g_group->{'html'};
+	$su{'root'} = $g_group->{'root'};
+	
+	$g_group->{'cms'}  = 1;
+	$g_group->{'html'} = 1;
+	$g_group->{'root'} = 1;
+}
+
+sub su_stop
+{
+	if(!$su){ return }
+	$su = 0;
+	
+	$g_group->{'cms'}  = $su{'cms'};
+	$g_group->{'html'} = $su{'html'};
+	$g_group->{'root'} = $su{'root'};
 }
 
 sub f2var

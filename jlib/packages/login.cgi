@@ -5,9 +5,6 @@ sub cms
 {
 	if(!$eml::do_users){ return; }
 	
-	if($eml::gid < 1){ eml::err403('gid < 1'); }
-	if($eml::uid < 1){ eml::err403('uid < 1'); }
-	
 	if($eml::g_group->{'cms'} != 1){ eml::err403('$g_group->{"cms"} != 1'); }
 }
 

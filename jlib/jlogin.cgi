@@ -14,7 +14,9 @@ sub login
 	
 	my $tu = User::new();
 	
+	eml::su_start();
 	$tu->sel_one(' login = ? ',$l);
+	eml::su_stop();
 	
 	if($tu->{'ID'} < 0){return err("Неверное имя пользователя.");}
 	if($tu->{'pas'} ne $p){return err("Неверный пароль.");}
@@ -29,6 +31,10 @@ sub login
 	
 	$tu->{'sid'} = $rnd;
 	
+	eml::su_start();
+	$tu->save();
+	eml::su_stop();
+	
 	$eml::sess{'JLogin_sid'} = $rnd;
 	
 	return 1;
@@ -36,13 +42,9 @@ sub login
 
 sub logout
 {
-	my(%cook,$cook,%user,$l,$p,$sid);
+	my(%cook,$cook,$l,$p,$sid);
 	
-	my $co = new CGI;
-	%cook = $co->cookie( "JLogin" );
-	
-	$sid = $cook{"sid"};
-	$sid =~ s/\D//;
+	$sid = $eml::sess{'JLogin_sid'};
 	
 	if($sid eq '' or $sid == 0){ return( err("Вы не вошли в систему.") ); }
 	
@@ -52,9 +54,6 @@ sub logout
 	if($tu->{'ID'} < 0){ return( err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 	
 	$tu->{'sid'} = 0;
-	
-	$user{"sid"} = 0;
-	
 	
 	delete( $eml::sess{'JLogin_sid'} );
 	
@@ -67,13 +66,17 @@ sub verif
 	
 	$sid = $eml::sess{'JLogin_sid'};
 	
-	#print '<b> JLogin_sid = ',$eml::sess{'JLogin_sid'},'</b>';	
+	#print '<b> JLogin_sid = ',$eml::sess{'JLogin_sid'},'</b>';
 	
 	if($sid eq '' or $sid == 0){ return (undef,undef); }
 	
 	
 	my $tu = User::new();
+	eml::su_start();
 	$tu->sel_one(' sid = ? ',"$sid");
+	eml::su_stop();
+	
+	#print STDERR $tu->{'ID'};
 	
 	if($tu->{'ID'} < 0){ return (undef,undef); }
 	if($tu->papa() eq undef){ return (undef,undef); }
@@ -84,7 +87,7 @@ sub verif
 sub err
 {
 	$errstr = shift;
-	return 0;
+	return (undef,undef);
 }
 
 return 1;
