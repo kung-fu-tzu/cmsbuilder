@@ -66,6 +66,7 @@ sub move2
 		for $d (@dirs){
 			
 			if($from->myurl() eq $d->myurl()){ next; }
+			if($elem->myurl() eq $d->myurl()){ next; }
 			
 			print '<img src=dot.gif align=absmiddle> <a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'">',$d->name(),'</a><br>';
 			$count++;
@@ -258,7 +259,7 @@ sub install
 	print 'Имя группы Администратора: "<b>',$agroup->{'name'},'</b>"<br>';
 	
 	my $agroup2 = UserGroupRoot::new('cre');
-	$agroup2->{'name'} = 'root';
+	$agroup2->{'name'} = 'root_group';
 	$agroup2->{'adminka'} = 1;
 	
 	my $admin2 = User::new('cre');

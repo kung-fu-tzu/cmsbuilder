@@ -70,7 +70,8 @@ sub admin_view
 		
 		print '<a href="move2.ehtml?from='.ref($o).$o->{'ID'}.'&enum='.$e->{'_ENUM'}.'"><img border=0 src=move2.gif></a>';
 		print "\n",'&nbsp;&nbsp;',"\n";
-		print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
+		#print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
+		print $e->admin_name();
 		print "\n";
 	}
 	

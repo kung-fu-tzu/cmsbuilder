@@ -5,6 +5,7 @@
 </head>
 <body class="left_body">
 <?eml admin::left_tree() ?>
+<?eml #DBObject::dump_cache() ?>
 <br>
 </body>
 </html>

@@ -36,7 +36,7 @@ use vars '$uid';
 use vars '$gid';
 use vars '$g_user';
 use vars '$g_group';
-
+use vars '%dbo_cache';
 
 sub mymain
 {
@@ -51,7 +51,8 @@ sub mymain
 	
 	# Обнуление #
 
-	$do_users = 1;
+	%dbo_cache = ();
+	$do_users = 0;
 	$print_error = 1;
 	$buff = 1;
 	
@@ -181,15 +182,16 @@ sub mymain
 	undef $str;
 	
 	for($i=0;$i<=$#parts;$i++){
-	
+		
 		if($i % 2){ eval($parts[$i]); if($@){ err505('eval("'.$parts[$i].'")') } }
 		else{ print $parts[$i]; }
-	
+		
 	}
 	
-	undef $dbh;
 	flush();
-
+	%dbo_cache = ();
+	undef $dbh;
+	
 }
 
 

@@ -2,7 +2,6 @@ package DBObject;
 use strict qw(subs vars);
 my %vtypes;
 my $page = '/page.ehtml';
-my %cache = ();
 
 
 
@@ -91,7 +90,7 @@ sub name
 	
 	if($o->{name}){ return $o->{name} }
 	
-	return 'Без имени ( '.${ref($o).'::name'}.' '.$o->{ID}.' )';
+	return ${ref($o).'::name'}.' '.$o->{ID};
 }
 
 sub file_href
@@ -199,7 +198,7 @@ sub admin_name
 	if($o->{name}){
 		$ret = $o->{name};
 	}else{
-		$ret = ${ref($o).'::name'}.' '.$o->{ID};
+		$ret = $o->name(); #${ref($o).'::name'}.' '.$o->{ID};
 	}
 	
 	#$ret =~ s/\s/\&nbsp;/g;
@@ -218,7 +217,7 @@ sub admin_tree
 	
 	do{
 		$count++;
-		unshift(@all, '<a target="admin_right" href=right.ehtml?class='.ref($o).'&ID='.$o->{ID}.'>'.$o->name().'</a>');
+		unshift(@all, $o->admin_name());
 		
 		print 'ShowMe(parent.frames.admin_left.document.all.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.all.dbdot_'.ref($o).$o->{'ID'}.'); ';
 		
@@ -519,6 +518,8 @@ sub reload
 	$o->{'PAPA_ID'} = $res->{'papa_id'};
 	$o->{'PAPA_CLASS'} = $res->{'papa_class'};
 	$o->{'OID'} = $res->{'oid'};
+	$o->{'CTS'} = $res->{'cts'};
+	$o->{'ATS'} = $res->{'ats'};
 	
 	if($have_o == 1){ $o->save() }
 }
@@ -570,7 +571,7 @@ sub insert
 	my $o = shift;
 	my $str;
 	
-	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID) VALUES (?)');
+	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
 	$str->execute($eml::uid);
 	
 	$str = $eml::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
@@ -597,6 +598,8 @@ sub creTABLE
 	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.ref($o).'` ( '."\n";
 	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
 	$sql .= '`OID` INT DEFAULT \'-1\' NOT NULL, '."\n";
+	$sql .= '`ATS` TIMESTAMP NOT NULL, '."\n";
+	$sql .= '`CTS` TIMESTAMP NOT NULL, '."\n";
 	$sql .= '`PAPA_ID` INT DEFAULT \'-1\' NOT NULL, '."\n";
 	$sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, '."\n";
 	
@@ -635,12 +638,12 @@ sub _construct
 	
 	if($n eq ''){ $n = -1; }
 	
-	if($cache{ref($o).$n}){ return $cache{ref($o).$n} };
+	if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
 	
 	$o->{ID} = $n;
 	$o->reload();
 	
-	$cache{ref($o).$o->{ID}} = $o;
+	if($o->{ID} > -1){ $eml::dbo_cache{ref($o).$o->{ID}} = $o; }
 	return $o;
 }
 
@@ -687,6 +690,21 @@ sub access
 	
 	return 0;
 	
+}
+
+sub purge_cache
+{
+	%eml::dbo_cache = ();
+}
+
+sub dump_cache
+{
+	my $obj;
+	
+	for $obj (keys(%eml::dbo_cache)){
+		
+		print $eml::dbo_cache{$obj}->name(),'<br>';
+	}
 }
 
 sub papa

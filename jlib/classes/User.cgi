@@ -23,6 +23,9 @@ sub new
 	my $o = {};
 	bless($o);
 
+	#my $obj = $o->_construct(@_);
+	#print $obj;
+	#return $obj;
 	return $o->_construct(@_);
 }
 
