@@ -170,12 +170,17 @@ sub cpanel
 	
 	if($act eq 'object_stat'){
 		
+		print '<br><table>
+			<tr><td align="center"><b>Класс</b></td><td width="25">&nbsp;</td><td><b>Кол-во</b></td></tr>';
+		
 		for $mod (@JDBI::modules,'',@JDBI::classes){
 			
-			unless($mod){ print '<br>'; next; }
+			unless($mod){ print '<tr><td>&nbsp;</td><td></td><td></td></tr>'; next; }
 			
-			print 
+			print '<tr><td>',$mod->admin_cname(),'</td><td></td><td align="center">',(${$mod.'::simple'}?'-':$mod->count()),'</td></tr>';
 		}
+		
+		print '</table>';
 	}
 	
 	if($act eq 'install_mods'){

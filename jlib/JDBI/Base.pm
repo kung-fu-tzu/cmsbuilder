@@ -21,17 +21,6 @@ our %sys_cols = (
 # Следующие методы находятся в разработке
 ###################################################################################################
 
-#sub shcut_cre
-#{
-#	my $o = shift;
-#	
-#	my $tsh = ref($o)->cre();
-#	$tsh->{'SHCUT'} = $o->{'ID'};
-#	$tsh->save();
-#	
-#	return $tsh;
-#}
-
 sub shcut_cre
 {
 	my $o = shift;
@@ -109,9 +98,9 @@ sub sel_sql
 
 sub count
 {
-	my $o = shift;
+	my $c = shift;
 	
-	my $str = $JDBI::dbh->prepare('SELECT COUNT(ID) FROM `dbo_'.ref($o).'`');
+	my $str = $JDBI::dbh->prepare('SELECT COUNT(ID) FROM `dbo_'.$c.'`');
 	$str->execute();
 	
 	my ($res) = $str->fetchrow_array();

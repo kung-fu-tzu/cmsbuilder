@@ -33,8 +33,8 @@
 <preference-set id="">
   <string id="import_type">makeFlat</string>
   <string id="import_dirname">E:\home\engine\jlib\JDBI\vtypes</string>
-  <boolean id="import_recursive">0</boolean>
   <string id="import_include_matches">*.pm</string>
+  <boolean id="import_recursive">0</boolean>
 </preference-set>
 <file url="jlib/JDBI/vtypes/file.pm" id="9EBD8BF9-55D7-48C7-BF95-E41A9152163F" name="file.pm">
 </file>
@@ -139,6 +139,8 @@
 <file url="jlib/Modules/ModHttp.pm" id="E1208F88-65C9-4604-9F34-E3D4628B6CA3" name="ModHttp.pm">
 </file>
 <file url="jlib/Modules/ModSysInfo.pm" id="3731B353-20B8-47B8-8801-4EE9C8C37875" name="ModSysInfo.pm">
+</file>
+<file url="jlib/Modules/ModSysUtils.pm" id="098B6806-B79B-4F92-8F96-FE1FED4CF9E9" name="ModSysUtils.pm">
 </file>
 </folder>
 <file url="jlib/ModRoot.pm" id="0D3813A4-466E-43B6-AA8B-9381B1EC1FF4" name="ModRoot.pm">
