@@ -1,5 +1,5 @@
-
 package JLogin;
+use strict qw(subs vars);
 
 sub new
 {
@@ -20,13 +20,15 @@ sub login
 	$l = shift;
 	$p = shift;
 
-	$str = $self->{"dbh"}->prepare( "SELECT login, pas FROM jl_users WHERE login = ?" );
+	if($l eq '' or $p eq ''){ return $self->err('Пустое имя пользователя.'); }
+
+	$str = $self->{"dbh"}->prepare( "SELECT login, pas FROM dbo_user WHERE login = ?" );
 	$str->execute("$l");
 
 	@row = $str->fetchrow_array();
 
-	if($#row < 0){return $self->err("Bad login");}
-	if($row[0] ne $l or $row[1] ne $p){return $self->err("Bad password");}
+	if($#row < 0){return $self->err("Неверное имя пользователя.");}
+	if($row[0] ne $l or $row[1] ne $p){return $self->err("Неверный пароль.");}
 
 	# login and password OK
 
@@ -36,13 +38,13 @@ sub login
 	$rnd = substr($rnd,0,20);
 
 
-	$str = $self->{"dbh"}->prepare( "UPDATE jl_users SET sid = ? where login = ?" );
+	$str = $self->{"dbh"}->prepare( "UPDATE dbo_user SET sid = ? where login = ?" );
 	$str->execute($rnd,$l);
 
 	$user{"sid"} = $rnd;
 	$user{"test"} = 'one';
 
-	$co = new CGI;
+	my $co = new CGI;
 
 	$cook = $co->cookie(
 		-name=>"JLogin",
@@ -60,33 +62,32 @@ sub login
 
 sub logout
 {
-	my($cook,%user,$l,$p,$str,@row,$sid);
+	my(%cook,$cook,%user,$l,$p,$str,@row,$sid);
 	my $self = shift;
 
 
-	$co = new CGI;
+	my $co = new CGI;
 	%cook = $co->cookie( "JLogin" );
 
 	$sid = $cook{"sid"};
 	$sid =~ s/\D//;
 
-	if($sid eq "" or $sid == 0){ return( $self->err("You are not logged in!") ); }
+	if($sid eq "" or $sid == 0){ return( $self->err("Вы не вошли в систему.") ); }
 
-	$str = $self->{"dbh"}->prepare( "SELECT uid FROM jl_users WHERE sid = ?" );
+	$str = $self->{"dbh"}->prepare( "SELECT ID FROM dbo_user WHERE sid = ?" );
 	$str->execute("$sid");
 
 	@row = $str->fetchrow_array();
 
-	if($#row < 0){ return( $self->err("Your sid is not valid!") ); }
+	if($#row < 0){ return( $self->err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 
 
-	$str = $self->{"dbh"}->prepare( "UPDATE jl_users SET sid = 0 where sid = ?" );
+	$str = $self->{"dbh"}->prepare( "UPDATE dbo_user SET sid = 0 where sid = ?" );
 	$str->execute($sid);
 
 
 	$user{"sid"} = 0;
 
-	#$co = new CGI;
 
 	$cook = $co->cookie(
 		-name=>"JLogin",
@@ -109,22 +110,22 @@ sub verif
 	my($self,$co,%cook,$sid,@row,$str);
 	$self = shift;
 
-	$co = new CGI;
+	my $co = new CGI;
 	%cook = $co->cookie( "JLogin" );
 
 	$sid = $cook{"sid"};
 	$sid =~ s/\D//;
 
-	if($sid eq "" or $sid == 0){return 0; }
+	if($sid eq "" or $sid == 0){return (-1,-1); }
 
-	$str = $self->{"dbh"}->prepare( "SELECT uid FROM jl_users WHERE sid = ?" );
-	$str->execute("$sid");
+	$str = $self->{"dbh"}->prepare( "SELECT ID, GID FROM dbo_user WHERE sid = ?" );
+	$str->execute($sid);
 
 	@row = $str->fetchrow_array();
 
 	if($#row < 0){ return 0; }
 
-	return $row[0];
+	return @row;
 
 }
 
@@ -134,12 +135,12 @@ sub cre
 	my $self = shift;
 
 	$table =<<'	END';
-	jl_users (
-		uid INT NOT NULL AUTO_INCREMENT,
+	dbo_user (
+		ID INT NOT NULL AUTO_INCREMENT,
 		login VARCHAR(20) NOT NULL,
 		pas VARCHAR(20) NOT NULL,
 		sid VARCHAR(20) NOT NULL,
-		PRIMARY KEY (uid),
+		PRIMARY KEY (ID),
 		UNIQUE KEY sid (sid),
 		INDEX(sid),
 		INDEX(login)
@@ -149,7 +150,7 @@ sub cre
 	$str = $self->{"dbh"}->prepare("create table $table;");
 	$str->execute() or return( $self->err(DBI::errstr) );
 
-	$str = $self->{"dbh"}->prepare( "INSERT INTO jl_users (uid,login,pas,sid) VALUES (?,?,?,?)" );
+	$str = $self->{"dbh"}->prepare( "INSERT INTO dbo_user (ID,login,pas,sid) VALUES (?,?,?,?)" );
 	$str->execute(1,"root","asdZ",0) or return( $self->err(DBI::errstr) );
 	$str->execute(2,"root1","asdZ1",0) or return( $self->err(DBI::errstr) );
 
@@ -162,7 +163,7 @@ sub drop
 	my($table,$str);
 	my $self = shift;
 
-	$str = $self->{"dbh"}->prepare("drop table jl_users;");
+	$str = $self->{"dbh"}->prepare("drop table dbo_user;");
 	$str->execute() or return( $self->err(DBI::errstr) );
 
 	return 1;

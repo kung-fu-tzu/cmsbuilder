@@ -12,7 +12,7 @@ package main;
 
 $eml::print_error = 1;
 $eml::DBI = 1;
-$eml::USR = 0;
+$eml::USR = 1;
 $eml::buff = 1;
 $eml::jlib = '../jlib';
 $eml::env_dir = $eml::jlib.'/envs';
@@ -92,9 +92,12 @@ if($eml::USR){
 	require $eml::jlib.'/jlogin.cgi';
 	$jlogin = JLogin::new($dbh);
 	$uid = 0;
-	$uid = $jlogin->verif();
+	$gid = 0;
+	($uid,$gid) = $jlogin->verif();
 }
-else{ $uid = 1; }
+else{ $uid = 1; $gid = 0; }
+
+if($uid > 0 and $gid == 0){ $eml::print_error = 1 }else{ $eml::print_error = 0 };
 
 # Создаём кукис объект
 $co = new CGI;
@@ -258,7 +261,7 @@ sub err403
 {
 	select(STDOUT);
 
-	my $verr = "<br><h4><font color=red>$_[0]</font></h4><br>";
+	my $verr = "<br><h4><font color=red>$_[0]</font></h4><br><a href='/login.ehtml'>Login...</a>";
 	if(!$eml::print_error){$verr = ''}
 
 	print <<"	END";
@@ -270,7 +273,7 @@ sub err403
 <HTML><HEAD>
 <TITLE>404 Access Denined</TITLE>
 </HEAD><BODY>
-<H1>Not Found</H1>
+<H1>Access Denined</H1>
 The requested URL $ENV{REQUEST_URI} require authorisation! Login please.<P>
 <HR>
 $ENV{SERVER_SIGNATURE}$verr

@@ -176,19 +176,5 @@ sub list
 
 }
 
-sub in
-{
-	my $val = shift;
-	my @arr = @_;
-
-	my $i;
-
-	for $i (@arr){
-
-		if($i eq $val){ return 1; }
-	}
-
-	return 0;
-}
 
 return 1;

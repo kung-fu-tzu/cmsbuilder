@@ -1,0 +1,13 @@
+<HTML>
+<HEAD>
+<title>¬ход</title>
+</HEAD>
+<BODY>
+<BR><BR><BR>
+
+<?o login.act(action,login,pas) ?>
+
+<?o login.form() ?>
+
+
+</BODY></HTML>

@@ -68,7 +68,7 @@ sub aedit
 	my $o = shift;
 	my ($key,$val);
 	my %p = $o->props();
-	if($main::uid < 1){ main::err403("DBO: EDIT with uid < 1,".ref($o).", ".$o->{ID}); }
+	if($main::gid != 0){ main::err403("DBO: EDIT with gid != 0,".ref($o).", ".$o->{ID}); }
 
 	if($o->{ID} < 1){ $o->{'_print'} = "<font color=red>Ошибка: ID < 1.</font><br>\n"; return; }
 
@@ -102,7 +102,7 @@ sub aview
 	my $o = shift;
 	my $key;
 	my %p = $o->props();
-	if($main::uid < 1){ main::err403("DBO: VIEW with uid < 1,".ref($o).", ".$o->{ID}); }
+	if($main::gid != 0){ main::err403("DBO: VIEW with gid != 0,".ref($o).", ".$o->{ID}); }
 
 	print "\n\n";
 	print "<table border=0><tr><td align=center>";
@@ -136,7 +136,7 @@ sub del
 	my $o = shift;
 	my $key;
 	my %p = $o->props();
-	if($main::uid < 1){ main::err403("DBO: DELETE with uid < 1,".ref($o).", ".$o->{ID}); }
+	if($main::gid != 0){ main::err403("DBO: DELETE with gid != 0,".ref($o).", ".$o->{ID}); }
 
 	for $key (keys( %p )){
 		
@@ -151,9 +151,43 @@ sub del
 	my $str = $main::dbh->prepare('DELETE FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{ID});
 
-	for $key (keys( %p )){ $o->{$key} = ''; }
-	$o->{ID} = -1;
+	$o->clear();
 
+}
+
+sub select
+{
+	my $o = shift;
+	my $wh = shift;
+
+	my $id;
+
+	$o->save();
+	$o->clear();
+
+	my $str = $main::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	$str->execute(@_);
+
+	($id) = $str->fetchrow_array();
+
+	if(! $id){ return; }
+
+	$o->{ID} = $id;
+	$o->reload();
+}
+
+sub clear
+{
+	my $o = shift;
+
+	my $key;
+
+	for $key (keys( %$o )){
+
+		$o->{$key} = '';
+	}
+	
+	$o->{ID} = -1;
 }
 
 sub reload
@@ -161,6 +195,7 @@ sub reload
 	my $o = shift;
 	my $key;
 	my %p = $o->props();
+
 
 	if($o->{ID} < 0){ return; }
 	if($o->{ID} =~ m/\D/){ main::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{ID}"); }
@@ -257,6 +292,8 @@ sub loadr
 	my $o = shift;
 	my $n = shift;
 
+	$o->clear();
+
 	if($n eq 'cre'){ $n = $o->insert(); }
 
 	$o->{ID} = $n;
@@ -270,6 +307,7 @@ sub load
 	my $n = shift;
 
 	$o->save();
+	$o->clear();
 
 	if($n eq 'cre'){ $n = $o->insert(); }
 

@@ -6,6 +6,7 @@
 </HEAD>
 
 <BODY>
+<?o login.root() ?>
 <?o dbo.cre(cre) ?>
 <?o dbo.init() ?>
 <TABLE style="HEIGHT: 100%" height="100%" cellSpacing=0 cellPadding=0 
