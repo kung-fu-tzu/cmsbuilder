@@ -60,8 +60,25 @@ sub addelem
 	my $str = 'INSERT INTO `arr_'.ref($o).'_'.$o->{ID}.'` (ID,CLASS) VALUES (?,?)';
 	$str = $main::dbh->prepare($str);
 	$str->execute($nob->{ID},$class);
+	
+	$o->sortT();
+}
 
-	#return $id;
+sub delelem
+{
+	my $o = shift;
+	my $eid = shift;
+	
+	my $ob = $o->elem($eid);
+	$ob->{PAPA_ID} = -1;
+	$ob->{PAPA_CLASS} = '';
+	$ob->delete();
+	
+	my $str = 'DELETE FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ?';
+	$str = $main::dbh->prepare($str);
+	$str->execute($eid);
+
+	$o->sortT();
 }
 
 sub aview
@@ -76,7 +93,8 @@ sub aview
 	for($i=1;$i<=$o->length();$i++){
 		
 		$e = $o->elem($i);
-		print '<br>','<a '.$EML::dbo::emlh.' href=?class='.ref($e).'&ID='.$e->{ID}.'>',$e->name(),'</a>';
+		print '<br>',"<a onclick='return doDel()' href=?ID=".$o->{ID}."&enum=$i&act=dele><img border=0 src=x.gif></a> \&nbsp;";
+		print '<a '.$EML::dbo::emlh.' href=?class='.ref($e).'&ID='.$e->{ID}.'>',$e->name(),'</a>';
 	}
 	
 	print '<br><br>';
@@ -102,11 +120,28 @@ sub DESTROY
 	$o->SUPER::DESTROY();
 }
 
+sub sortT
+{
+	my $o = shift;
+	my($i,$str,$str2,$num,$table);
+	
+	$table = 'arr_'.ref($o).'_'.$o->{ID};
+	
+	$str = $main::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
+	if( not $str->execute() ){ print DBI::errstr; exit(); }
+	
+	$str = $main::dbh->prepare( "SELECT num FROM `$table`" );
+	if( not $str->execute() ){ print DBI::errstr; exit(); }
+	
+	$str2 = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
+	
+	$i = 1;
+	while(($num) = $str->fetchrow_array()){
+	
+	    if( not $str2->execute($i,$num) ){ print DBI::errstr; exit(); }
+	    $i++;
+	}
 
-
-
-
-
-
+}
 
 return 1;

@@ -15,6 +15,10 @@ $vtypes{date}{aview} = sub {
         
         my @a = split(/\-/,$val);
         
+        if($a[0] < 1){$a[0] = ''}
+        if($a[1] < 1){$a[1] = ''}
+        if($a[2] < 1){$a[2] = ''}
+        
 	$ret = "<input cols=4 type=text name='${name}_d' value=\"$a[2]\">";
         $ret .= "<input cols=4 type=text name='${name}_m' value=\"$a[1]\">";
         $ret .= "<input cols=6 type=text name='${name}_y' value=\"$a[0]\">";
@@ -69,6 +73,15 @@ $vtypes{object}{aedit} = sub {
 
 	return $obj->{$name};
 
+};
+
+$vtypes{object}{del} = sub {
+
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+        
+        $obj->{$name}->delete();
 };
 
 # Число ####################################################
@@ -216,6 +229,20 @@ $vtypes{file}{aedit} = sub {
 
 	return $obj->{$name};
 
+};
+
+$vtypes{file}{del} = sub {
+
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+        
+	my %props = $obj->props();
+	my $id = $obj->{ID};
+        
+        my $fdir = '../www/files/';
+        
+        unlink( $fdir.ref($obj)."_${name}_$id".$props{$name}{ext} );
 };
 
 # Галочка ###################################################

@@ -77,10 +77,21 @@ sub action
 	my $act = shift;
 	my $id = shift;
 	my $cn = shift;
+	my $eid = shift;
 
 	if($act eq 'edit'){
 		$w->load( $id );
 		$w->aedit();
+	}
+
+	if($act eq 'del'){
+		$w->load( $id );
+		$w->delete();
+
+		EML::unflush();
+		EML::send_cookie();
+		print "Location: /admin/\n";
+		print "\n";
 	}
 
 	if($act eq 'adde'){
@@ -89,6 +100,17 @@ sub action
 
 		$w->load( $id );
 		$w->addelem($cn);
+	}
+
+	if($act eq 'dele'){
+
+		$w->load( $id );
+		$w->delelem($eid);
+
+		EML::unflush();
+		EML::send_cookie();
+		print 'Location: /admin/?ID='.$w->{ID}."\n";
+		print "\n";
 	}
 
 }

@@ -1,4 +1,8 @@
 
+function doDel(){
+
+	return window.confirm('Удалить?');
+}
 
 function EML_href(nspace){
 

@@ -14,7 +14,7 @@ width="100%" border=0>
 <TR>
     <TD vAlign=top 
 align=center style="HEIGHT: 30px" height=30 
-   ><?o dbo.action(act,ID,cname) ?></TD></TR>
+   ><?o dbo.action(act,ID,cname,enum) ?></TD></TR>
 
 <TR>
     <TD vAlign=top 

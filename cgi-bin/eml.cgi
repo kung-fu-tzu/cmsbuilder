@@ -352,6 +352,17 @@ sub EML::flush
 	print $eml::out;
 }
 
+sub EML::unflush
+{
+	if(!$eml::buff){return;}
+
+	$eml::buff = 0;
+	select(STDOUT);
+	close MEM;
+
+	$eml::out = '';
+}
+
 # Если скрипт выполнился нормально - мы здесь.
 # Выводим буфер.
 

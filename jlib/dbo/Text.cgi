@@ -1,6 +1,6 @@
 package Text;
 
-$name = 'Текстовый документ';
+$name = 'Текстовый&nbsp;документ';
 @ISA = 'DBObject';
 
 sub props

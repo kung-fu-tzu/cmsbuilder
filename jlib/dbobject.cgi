@@ -46,6 +46,10 @@ sub list
 	for $i ( $o->IDs($col) ){
 
 		$o->loadr($i);
+		
+		if($o->{PAPA_ID} < 0){ print "<a onclick='return doDel()' href=?ID=$i&act=del><img border=0 src=x.gif></a> \&nbsp;"; }
+		else{ print "<img border=0 src=nx.gif> \&nbsp;" }
+		
 		print "<a href=?ID=$i>".$o->name()."</a><br>";
 	}
 
@@ -132,6 +136,17 @@ sub delete
 	my $o = shift;
 	my $key;
 	my %p = $o->props();
+	if($main::uid < 1){ main::err403("DBO: DELETE with uid < 1,".ref($o).", ".$o->{ID}); }
+
+	for $key (keys( %p )){
+		
+		if( $DBObject::vtypes{ $p{$key}{type} }{del} ){
+			
+			$DBObject::vtypes{ $p{$key}{type} }{del}->( $key, $o->{$key}, $o );
+			
+		}
+		
+	}
 
 	my $str = $main::dbh->prepare('DELETE FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{ID});
