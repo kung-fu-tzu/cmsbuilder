@@ -29,6 +29,7 @@ use vars '$dbh';
 use vars '$uid';
 use vars '$gid';
 use vars '$path';
+use vars '$cgi';
 use vars '@dbos';
 use vars '@envs';
 use vars '$g_user';
@@ -64,6 +65,8 @@ sub mymain
 	$out = '';
 	$dir = '';
 	
+	$cgi = new CGI;
+
 	#############
 	
 	my(@parts,$i,$co,$str,$str_time,$jlogin,$rdir,$file);

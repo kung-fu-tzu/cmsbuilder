@@ -57,11 +57,15 @@ sub action
 	my $prev = $ENV{'HTTP_REFERER'};
 	$prev =~ s/\?.*//g;
 	
+	if($act){ $eml::sess{'admin_refresh_left'} = 1; }
+	srand();
+	my $rnd = rand();
+	$rnd =~ s/\D//g;
+	
 	if($act eq 'edit'){
 		$w->load( $id );
 		$w->admin_edit();
 		
-		print 'Изменения успешно внесены.';
 	}
 	
 	if($act eq 'del'){
@@ -69,7 +73,7 @@ sub action
 		$w->del();
 		
 		eml::unflush();
-		print "Location: ".$prev."?class=$class&page=$page\n";
+		print "Location: ".$prev."?class=$class&page=$page&ac=$rnd\n";
 		print "\n";
 		exit();
 	}
@@ -86,7 +90,7 @@ sub action
 		if( ${ref($w).'::pages_direction'} ){ $page = $w->pages()-1; }else{ $page = 0; }
 		
 		eml::unflush();
-		print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page;
+		print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page.'&ac='.$rnd;
 		print "\n\n";
 		exit();
 	}
@@ -109,7 +113,7 @@ sub action
 		$w->elem_del($eid);
 		
 		eml::unflush();
-		print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page;
+		print 'Location: ',$prev,'?class=',$class,'&ID=',$w->{ID},'&page=',$page,'&ac=',$rnd;
 		print "\n\n";
 		exit();
 	}
@@ -120,8 +124,8 @@ sub action
 		$w->elem_moveup($eid);
 		
 		eml::unflush();
-		print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}."&page=$page\n";
-		print "\n";
+		print 'Location: ',$prev,'?class=',$class,'&ID=',$w->{ID},'&page=',$page,'&ac=',$rnd;
+		print "\n\n";
 		exit();
 	}
 	
@@ -131,35 +135,11 @@ sub action
 		$w->elem_movedown($eid);
 		
 		eml::unflush();
-		print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}."&page=$page\n";
-		print "\n";
+		print 'Location: ',$prev,'?class=',$class,'&ID=',$w->{ID},'&page=',$page,'&ac=',$rnd;
+		print "\n\n";
 		exit();
 	}
 	
-	
-}
-
-sub left_obj_view
-{
-	my $obj = shift;
-	
-	if($obj->type() eq 'DBObject'){ print '<img hspace="5" vspace="2" align="absmiddle" src="dot.gif">',$obj->admin_name(),'<br>'; return; }
-	#if($obj->len() == 0){ print '<img hspace="5" vspace="2" align="absmiddle" src="dot.gif">',$obj->admin_name(),'<br>'; return; }
-	
-	
-	my %node = $co->cookie( 'dbi_'.ref($obj).$obj->{'ID'} );
-	my $disp = $node{'s'} ? 'block' : 'none';
-	my $pic  = $node{'s'} ? 'minus' : 'plus';
-	
-	print '<div>','<img hspace="5" vspace="2" align="absmiddle" id="dbdot_'.ref($obj).$obj->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($obj).$obj->{'ID'}.',dbdot_'.ref($obj).$obj->{'ID'}.')">',$obj->admin_name(),'</div>';
-	print '<div id="dbi_'.ref($obj).$obj->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">';
-	my $to;
-	for $to ($obj->get_all()){
-		
-		left_obj_view($to);
-		
-	}
-	print '</div>';
 	
 }
 
@@ -167,11 +147,7 @@ sub left_tree
 {
 	my $obj = Dir::new(1);
 	
-	$co = new CGI;
-	
-	print '<div class="left_all">';
-	left_obj_view($obj);
-	print '</div>';
+	$obj->admin_left();
 }
 
 sub tree
@@ -185,6 +161,31 @@ sub tree
 	$w->load($id);
 	$w->admin_tree();
 	print '<br>';
+}
+
+sub cre
+{
+	my ($i,$j,$is);
+	
+	for $i (@eml::dbos){
+		
+		$is = 0;
+		
+		for $j ($eml::dbh->tables()){
+			
+			if( lc('`dbo_'.$i.'`') eq lc($j) ){ $is = 1 }
+		}
+		
+		if(! $is){
+			
+			my $to = &{ $i.'::new' };
+			$to->creTABLE();
+			undef $to;
+			
+		}
+		
+	}
+	
 }
 
 sub list

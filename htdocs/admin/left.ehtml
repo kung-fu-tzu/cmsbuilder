@@ -1,10 +1,9 @@
 <?eml login::root() ?><html>
 <head>
-<LINK rel="stylesheet" TYPE="text/css" HREF="/format.css">
 <LINK rel="stylesheet" TYPE="text/css" HREF="admin.css">
+<SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
 </head>
 <body>
-
 <SCRIPT LANGUAGE=javascript>
 <!--
 function ShowHide(obj,dot){
@@ -23,8 +22,10 @@ function ShowHide(obj,dot){
 }
 //-->
 </SCRIPT>
+<p style="BACKGROUND-COLOR: silver" align=center>Структура сайта:</p>
 
+<div class="left_body">
 <?eml admin::left_tree() ?>
-
+</div>
 </body>
 </html>

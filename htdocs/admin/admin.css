@@ -12,9 +12,9 @@
 }
 TABLE
 {
-    FONT-SIZE: 12px;
-    COLOR: white;
-    FONT-FAMILY: Verdana
+    FONT-SIZE: 11px;
+    COLOR: black;
+    FONT-FAMILY: 'Arial CYR', 'Arial Cyr', Arial
 }
 .mtypes_s
 {
@@ -36,11 +36,49 @@ TABLE
     BORDER-LEFT: #d2d9df 1px solid;
     BORDER-BOTTOM: #d2d9df 1px solid
 }
-.left_all
-{
-}
 .left_dir
 {
-    PADDING-LEFT: 11px;
-    LINE-HEIGHT: 10px
+    PADDING-LEFT: 16px
+}
+BODY
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    FONT-SIZE: 11px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    COLOR: black;
+    PADDING-TOP: 0px;
+    FONT-FAMILY: 'Arial CYR', 'Arial Cyr', Arial
+}
+A
+{
+    COLOR: black;
+    TEXT-DECORATION: none
+}
+A:hover
+{
+    COLOR: black;
+    TEXT-DECORATION: underline
+}
+A:visited
+{
+    COLOR: black;
+    TEXT-DECORATION: none
+}
+.left_body
+{
+    MARGIN-TOP: 10px;
+    MARGIN-LEFT: 10px
+}
+.icon
+{
+    MARGIN-TOP: 1px;
+    MARGIN-BOTTOM: 1px;
+    MARGIN-RIGHT: 3px
+}
+A:active
+{
+    COLOR: black;
+    TEXT-DECORATION: none
 }

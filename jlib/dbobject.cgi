@@ -60,22 +60,6 @@ sub name
 	return 'Без имени ( '.${ref($o).'::name'}.' '.$o->{ID}.' )';
 }
 
-sub admin_name
-{
-	my $o = shift;
-	my $ret;
-	
-	if($o->{name}){
-		$ret = $o->{name};
-	}else{
-		$ret = 'Без имени ( '.${ref($o).'::name'}.' '.$o->{ID}.' )';
-	}
-	
-	$ret =~ s/\s/\&nbsp;/g;
-	return '<a target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
-
-}
-
 sub file_href
 {
 	my $o = shift;
@@ -165,6 +149,43 @@ sub o_sql
 ###################################################################################################
 # Методы автоматизации администрирования
 ###################################################################################################
+
+sub admin_left
+{
+	my $o = shift;
+	
+	if($o->type() eq 'DBObject'){ print '<img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'<br>',"\n"; return; }
+	
+	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
+	my $disp = $node{'s'} ? 'block' : 'none';
+	my $pic  = $node{'s'} ? 'minus' : 'plus';
+	
+	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"<br>\n";
+	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
+	my $to;
+	for $to ($o->get_all()){
+		
+		$to->admin_left();
+		
+	}
+	print '</div>',"\n";
+}
+
+sub admin_name
+{
+	my $o = shift;
+	my $ret;
+	
+	if($o->{name}){
+		$ret = $o->{name};
+	}else{
+		$ret = 'Без имени ( '.${ref($o).'::name'}.' '.$o->{ID}.' )';
+	}
+	
+	$ret =~ s/\s/\&nbsp;/g;
+	return '<a target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
+
+}
 
 sub admin_tree
 {
@@ -497,8 +518,12 @@ sub save {
 		
 		if( $p{$key}{type} eq 'object' ){
 			
-			$o->{$key}->save();
-			$val = $o->{$key}->{ID};
+			if($o->{$key}){
+				$o->{$key}->save();
+				$val = $o->{$key}->{ID};
+			}else{
+				$val = -1;
+			}
 		}
 		else{ $val = $o->{$key}; }
 		
@@ -540,7 +565,7 @@ sub creTABLE
 	my $key;
 	my %p = $o->props();
 	
-	my $sql = 'CREATE TABLE `dbo_'.ref($o).'` ( '."\n";
+	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.ref($o).'` ( '."\n";
 	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
 	$sql .= '`OID` INT DEFAULT \'-1\' NOT NULL, '."\n";
 	$sql .= '`PAPA_ID` INT DEFAULT \'-1\' NOT NULL, '."\n";

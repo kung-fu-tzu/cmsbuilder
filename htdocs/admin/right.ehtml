@@ -1,6 +1,5 @@
 <?eml login::root() ?><html>
 <head>
-<LINK rel="stylesheet" TYPE="text/css" HREF="/format.css">
 <LINK rel="stylesheet" TYPE="text/css" HREF="admin.css">
 <SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
 </head>
@@ -12,8 +11,14 @@ width="100%" border=0>
 
 <TR>
     <TD vAlign=top 
-align=center style="HEIGHT: 30px" height=30 
-   ><?eml admin::action() ?></TD></TR>
+align=center style="HEIGHT: 30px" height=30>
+<?eml admin::action() ?>
+
+<?eml
+	if($eml::sess{'admin_refresh_left'}){ print 'Изменения успешно внесены.'; }
+?>
+
+</TD></TR>
 
 
   <TR>
@@ -37,7 +42,14 @@ align=left style="HEIGHT: 50px" height=50
 
 </TABLE>
 
-<script language="JavaScript">parent.frames.admin_left.document.location.reload();</script>
+<?eml
+
+if($eml::sess{'admin_refresh_left'}){
+	print '<script language="JavaScript">parent.frames.admin_left.document.location.reload();</script>';
+	delete( $eml::sess{'admin_refresh_left'} );
+}
+
+?>
 
 </body>
 </html>
