@@ -13,7 +13,8 @@ $page = '/page.ehtml';
 %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' }
+	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' },
+	'tf'	  => { 'type' => 'file', 'msize' => 100, ext => ' bmp jpg ', 'name' => 'File' }
 );
 
 sub new

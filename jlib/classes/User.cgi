@@ -23,17 +23,15 @@ $page = '/page.ehtml';
 	'city'	  => { 'type' => 'string', 'length' => 30, 'name' => 'Город' },
 );
 
-sub creTABLE
+sub install
 {
-	my $o = shift;
+	my $class = shift;
 	my $str;
 	
-	$o->SUPER::creTABLE();
-	
-	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.ref($o).'` ADD INDEX ( `sid` )');
+	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `sid` )');
 	$str->execute();
 	
-	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.ref($o).'` ADD INDEX ( `login` )');
+	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
 	$str->execute();
 }
 

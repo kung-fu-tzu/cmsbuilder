@@ -20,7 +20,7 @@ $dont_list_me = 0;
 
 %props = (
 	
-	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
+	'name'    => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
 );
 

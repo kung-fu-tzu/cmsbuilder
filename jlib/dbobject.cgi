@@ -38,6 +38,45 @@ sub url2classid
 	return ($class,$id);
 }
 
+
+
+
+###################################################################################################
+# Методы реализации разделения доступа
+###################################################################################################
+
+sub do_access
+{
+	
+	
+	
+	
+}
+
+sub access
+{
+	my $o = shift;
+	my $type = shift;
+	
+	if(length($type) != 1){ return 0; }
+	
+	#if( $eml::gid == 0 ){ return 1; }
+	
+	my $papa = $o->papa();
+	
+	if($papa->{'ID'} != -1){
+		if( !$papa->acces($type) == 0 ){ return 0; }
+	}
+	
+	return 0;
+	
+}
+
+
+###################################################################################################
+# Методы вывода данных в дизайн
+###################################################################################################
+
 sub des_tree
 {
 	my $o = shift;
@@ -54,11 +93,6 @@ sub des_tree
 	
 	print join(' :: ',@all);
 }
-
-
-###################################################################################################
-# Методы вывода данных в дизайн
-###################################################################################################
 
 sub des_page
 {
@@ -107,19 +141,10 @@ sub file_href
 {
 	my $o = shift;
 	my $name = shift;
-	my %props = $o->props();
-	
-	return '/files/'.ref($o).'_'.$name.'_'.$o->{'ID'}.$props{$name}{'ext'};
-}
-
-sub anyfile_href
-{
-	my $o = shift;
-	my $name = shift;
 	my $id = $o->{'ID'};
 	my %props = $o->props();
 	
-	return '/files/'.ref($o).'_'.$name.'_'.$id.$o->{$name};
+	return '/files/'.$o->myurl().'_'.$name.'.'.$o->{$name};
 }
 
 
@@ -188,6 +213,7 @@ sub o_sql
 	return @oar;
 }
 
+
 ###################################################################################################
 # Методы автоматизации администрирования
 ###################################################################################################
@@ -209,6 +235,8 @@ sub admin_name
 	
 	$ret =~ s/\<(?:.|\n)+?\>//g;
 	if(length($ret) > $admin_left_max_name_len){ $ret = substr($ret,0,$admin_left_max_name_len-1).'...' }
+	
+	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
 	
 	return '<span class="ahref" id="id_'.$o->myurl().'"> <a target="admin_right" href="right.ehtml?url='.$o->myurl().'">'.$ret.'</a> </span>';
 }
@@ -244,13 +272,15 @@ sub admin_edit
 	my ($key,$val,@keys);
 	my %p = $o->props();
 	
-	if($o->{'ID'} < 1){ $o->{'_print'} = "<font color=red>Ошибка: ID < 1.</font><br>\n"; return; }
+	if($o->{'ID'} < 1){ $o->err_add('Объект не существует.'); return; }
 	
 	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
 	
 	for $key (@keys){
 		
 		$val = eml::param($key);
+		
+		if(!$eml::g_group->{'html'}){ $val = eml::HTMLfilter($val); }
 		
 		if( $DBObject::vtypes{ $p{$key}{'type'} }{'aedit'} ){
 			$val = $DBObject::vtypes{ $p{$key}{'type'} }{'aedit'}->($key,$val,$o);
@@ -259,7 +289,8 @@ sub admin_edit
 		$o->{$key} = $val;
 	}
 	
-	$o->{'_print'} = "Изменения успешно внесены.<br>\n";
+	if($o->err_is()){ $o->{'_print'} = "Изменения частично внесены.<br>\n"; }
+	else{ $o->{'_print'} = "Изменения успешно внесены.<br>\n"; }
 }
 
 sub admin_cre
@@ -280,6 +311,13 @@ sub admin_view
 	my %p = $o->props();
 	
 	if(!$act){ $act = 'edit' }
+	
+	if($o->err_is()){
+		
+		print '<table align="center"><tr><td class="mes_table"><font color="red">Возникла ошибка!</font><br><br>';
+		$o->err_print();
+		print '</td></tr></table><br>';
+	}
 	
 	if($o->{'_print'}){
 		
@@ -303,9 +341,16 @@ sub admin_view
 	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
 	for $key (@keys){
 		
-		print "<tr><td valign=top><b>".$p{$key}{'name'}.":</b></td><td>\n";
+		print '<tr><td valign=top width="100">'.$p{$key}{'name'}.':</td><td>';
 		print $DBObject::vtypes{ $p{$key}{'type'} }{'aview'}->( $key, $o->{$key}, $o );
-		print "\n</td>\n</tr>\n";
+		print '</td></tr>';
+	}
+	
+	if($act ne 'cre'){
+		print '<tr><td valign=top>Создан:</td><td>',$o->fromTIMESTAMP($o->{'CTS'}),'</td></tr>';
+		print '<tr><td valign=top>Изменён:</td><td>',$o->fromTIMESTAMP($o->{'ATS'}),'</td></tr>';
+		my $tu = User::new($o->{'OID'});
+		print '<tr><td valign=top>Владелец:</td><td>',$tu->name(),'</td></tr>';
 	}
 	
 	print "<tr>\n  <td>\n  </td>\n  <td align=right>\n";
@@ -558,16 +603,15 @@ sub insert
 
 sub creTABLE
 {
-	my $o = shift;
+	my $class = shift;
 	my $key;
 	my %p;
 	
-	if(ref($o)){ %p = $o->props(); }
-	else{ %p = &{$o.'::props'} }
+	%p = %{$class.'::props'};
 	
-	print '<br><a onclick="sql_',ref($o),'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',ref($o)?ref($o):$o,'":</b><br>';
+	print '<br><a onclick="sql_',$class,'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',$class,'":</b><br>';
 	
-	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.ref($o).'` ( '."\n";
+	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.$class.'` ( '."\n";
 	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
 	$sql .= '`OID` INT DEFAULT \'-1\' NOT NULL, '."\n";
 	$sql .= '`ATS` TIMESTAMP NOT NULL, '."\n";
@@ -588,7 +632,7 @@ sub creTABLE
 	
 	$sql =~ s/\n/<br>\n/g;
 	
-	print '<div style="DISPLAY: none" id="sql_',ref($o),'">',$sql,'</div>';
+	print '<div style="DISPLAY: none" id="sql_',$class,'">',$sql,'</div>';
 }
 
 
@@ -632,10 +676,101 @@ sub _construct
 
 
 ###################################################################################################
+# Методы контроля ошибок
+###################################################################################################
+
+sub err_add
+{
+	my $o = shift;
+	my $errstr = shift;
+	
+	if(!$o->{'_errors'}){ $o->{'_errors'} = (); }
+	
+	push(@{ $o->{'_errors'} }, $errstr);
+}
+
+sub err_print
+{
+	my $o = shift;
+	my $errstr;
+	
+	for $errstr ( @{ $o->{'_errors'} } ){
+		
+		print $errstr,'<br>';
+		
+	}
+	
+}
+
+sub err_is
+{
+	my $o = shift;
+	
+	return ($#{ $o->{'_errors'} } < 0) ? 0 : 1;
+}
+
+
+###################################################################################################
 # Дополнительные методы
 ###################################################################################################
 
 sub type { return 'DBObject'; }
+
+sub fromTIMESTAMP
+{
+	my $o = shift;
+	my $ts = shift;
+	
+	my $str = $eml::dbh->prepare('SELECT DATE_FORMAT(?,\'%d %M %Y г., %H:%i:%s\')');
+	$str->execute($ts);
+
+	my $date;
+	($date) = $str->fetchrow_array();
+	
+	$date =~ s/^0//;
+	
+	$date =~ s/January/Января/i;
+	$date =~ s/February/Февраля/i;
+	$date =~ s/March/Марта/i;
+	$date =~ s/April/Апреля/i;
+	$date =~ s/May/Мая/i;
+	$date =~ s/June/Июня/i;
+	$date =~ s/July/Июля/i;
+	$date =~ s/August/Августа/i;
+	$date =~ s/September/Сентября/i;
+	$date =~ s/October/Октября/i;
+	$date =~ s/November/Ноября/i;
+	$date =~ s/December/Декабря/i;
+	
+	return $date;
+}
+
+sub url
+{
+	my $url = shift;
+	
+	my ($class,$id) = url2classid($url);
+	
+	my $to = &{$class.'::new'}($id);
+	
+	return $to;
+}
+
+sub url2classid
+{
+	my $url = shift;
+	
+	my ($class,$id) = ('','');
+	
+	if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
+	
+	$class = $1;
+	$id = $2;
+	
+	if( ! eml::classOK($class) ){ eml::err505('Invalid class name requested: '.$class); }
+	
+	return ($class,$id);
+}
 
 sub no_cache
 {
@@ -673,46 +808,12 @@ sub print_props
 	return '';
 }
 
-sub do_access
-{
-	
-	
-	
-	
-}
-
-sub access
-{
-	my $o = shift;
-	my $type = shift;
-	
-	if(length($type) != 1){ return 0; }
-	
-	#if( $eml::gid == 0 ){ return 1; }
-	
-	my $papa = $o->papa();
-	
-	if($papa->{'ID'} != -1){
-		if( !$papa->acces($type) == 0 ){ return 0; }
-	}
-	
-	return 0;
-	
-}
-
-sub purge_cache
-{
-	%eml::dbo_cache = ();
-}
+sub purge_cache { %eml::dbo_cache = (); }
 
 sub dump_cache
 {
 	my $obj;
-	
-	for $obj (keys(%eml::dbo_cache)){
-		
-		print $eml::dbo_cache{$obj}->name(),'<br>';
-	}
+	for $obj (keys(%eml::dbo_cache)){ print $eml::dbo_cache{$obj}->name(),'<br>'; }
 }
 
 sub papa

@@ -182,7 +182,7 @@ TD
 }
 .winput
 {
-    WIDTH: 300px;
+    WIDTH: 100%;
     FONT-FAMILY: Arial, Helvetica
 }
 .ahref
@@ -190,4 +190,17 @@ TD
     FONT-SIZE: 11px;
     FONT-FAMILY: Arial, Helvetica;
     TEXT-DECORATION: none
+}
+.mes_table
+{
+    BORDER-RIGHT: #ff7300 2px solid;
+    PADDING-RIGHT: 12px;
+    BORDER-TOP: #ff7300 2px solid;
+    PADDING-LEFT: 12px;
+    FONT-SIZE: 12px;
+    PADDING-BOTTOM: 12px;
+    BORDER-LEFT: #ff7300 2px solid;
+    PADDING-TOP: 12px;
+    BORDER-BOTTOM: #ff7300 2px solid;
+    TEXT-ALIGN: center
 }

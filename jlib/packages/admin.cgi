@@ -161,10 +161,11 @@ sub tree
 
 sub install
 {
-	my ($i,$j,$is,$count);
+	my ($i,$j,$is,$count,@created);
 	
 	print '<center><h4>Создание таблиц.</h4></center><br>';
 	
+	$count = 0;
 	for $i (@eml::dbos){
 		
 		$is = 0;
@@ -172,15 +173,14 @@ sub install
 		for $j ($eml::dbh->tables()){
 			
 			if( lc('`dbo_'.$i.'`') eq lc($j) ){ $is = 1 }
+			if( lc('dbo_'.$i) eq lc($j) ){ $is = 1 }
 		}
 		
 		if(! $is){
 			
-			my $to = &{ $i.'::new' };
-			$to->creTABLE();
+			DBObject::creTABLE($i);
+			push @created, $i;
 			$count++;
-			undef $to;
-			
 		}
 		
 	}
@@ -189,42 +189,68 @@ sub install
 	print $count?( 'Создано таблиц: <b>'.$count.'</b>' ):( 'Ниодной таблицы не было создано.' );
 	print '<br>';
 	
+	print '<hr><br><center><h4>Услановка классов.</h4></center><br>';
+	
+	$count = 0;
+	for $i (@created){
+		
+		if( defined &{$i.'::install'} ){
+			
+			print 'Установка объекта "<b>',$i,'</b>"<br>';
+			&{$i.'::install'}($i);
+			print '<br>';
+			$count++;
+		}
+	}
+	
+	print '<br>';
+	print $count?( 'Установлено объектов: <b>'.$count.'</b>' ):( 'Ниодного объекта не было установлено.' );
+	print '<br>';
+	
 	print '<hr><br><center><h4>Создание структуры.</h4></center><br>';
 	
-	my $root = Dir::new('cre');
-	$root->{'name'} = 'Главная страница';
+	my $test = Dir::new(1);
 	
-	my $groot = UserGroupDir::new('cre');
-	$groot->{'name'} = 'Группы пользователей';
-
+	if($test->{'ID'} != 1){
 	
-	my $agroup = UserGroup::new('cre');
-	$agroup->{'name'} = 'Администраторы';
-	$agroup->{'adminka'} = 1;
+		my $root = Dir::new('cre');
+		$root->{'name'} = 'Главная страница';
+		
+		my $groot = UserGroupDir::new('cre');
+		$groot->{'name'} = 'Группы пользователей';
+		
+		
+		my $agroup = UserGroup::new('cre');
+		$agroup->{'name'} = 'Администраторы';
+		$agroup->{'cms'} = 1;
+		
+		my $admin = User::new('cre');
+		$admin->{'login'} = 'admin';
+		$admin->{'pas'} = $admin->{'login'};
+		$admin->{'name'} = 'Администратор';
+		
+		$agroup->elem_paste($admin);
+		$groot->elem_paste($agroup);
+		
+		print 'Имя http корня: "<b>',$root->{'name'},'</b>"<br>';
+		print 'Имя user корня: "<b>',$groot->{'name'},'</b>"<br>';
+		print 'Логин и пароль Администратора: "<b>',$admin->{'login'},'</b>"<br>';
+		print 'Имя группы Администратора: "<b>',$agroup->{'name'},'</b>"<br>';
+		
+		my $agroup2 = UserGroupRoot::new('cre');
+		$agroup2->{'name'} = 'root_group';
+		$agroup2->{'cms'} = 1;
+		
+		my $admin2 = User::new('cre');
+		$admin2->{'login'} = 'root';
+		$admin2->{'pas'} = 'gogogosuperuser';
+		$admin2->{'name'} = 'root';
+		
+		$agroup2->elem_paste($admin2);
+	}else{
+		print 'Структура уже была создана.';
+	}
 	
-	my $admin = User::new('cre');
-	$admin->{'login'} = 'admin';
-	$admin->{'pas'} = $admin->{'login'};
-	$admin->{'name'} = 'Администратор';
-	
-	$agroup->elem_paste($admin);
-	$groot->elem_paste($agroup);
-	
-	print 'Имя http корня: "<b>',$root->{'name'},'</b>"<br>';
-	print 'Имя user корня: "<b>',$groot->{'name'},'</b>"<br>';
-	print 'Логин и пароль Администратора: "<b>',$admin->{'login'},'</b>"<br>';
-	print 'Имя группы Администратора: "<b>',$agroup->{'name'},'</b>"<br>';
-	
-	my $agroup2 = UserGroupRoot::new('cre');
-	$agroup2->{'name'} = 'root_group';
-	$agroup2->{'adminka'} = 1;
-	
-	my $admin2 = User::new('cre');
-	$admin2->{'login'} = 'root';
-	$admin2->{'pas'} = 'gogogosuperuser';
-	$admin2->{'name'} = 'root';
-	
-	$agroup2->elem_paste($admin2);
 	
 	print '<br>';
 }

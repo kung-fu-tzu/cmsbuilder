@@ -10,6 +10,7 @@ $vtypes{'miniword'}{'aview'} = sub {
     my $name = shift;
     my $val = shift;
     
+    $val =~ s/\&/\&amp;/g;
     $val =~ s/\"/\&quot;/g;
     $val =~ s/\</\&lt;/g;
     $val =~ s/\>/\&gt;/g;

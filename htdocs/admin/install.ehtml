@@ -1,4 +1,4 @@
-<?eml login::root() ?>
+<?eml login::cms() ?>
 <center><h3>Установка...</h3></center>
 <hr>
 <br>

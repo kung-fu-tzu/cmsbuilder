@@ -94,6 +94,7 @@ sub mymain
 	require $jlib.'/jsession.cgi';
 	require $jlib.'/dbobject.cgi';
 	require $jlib.'/dbarray.cgi';
+	require $jlib.'/htmlfilter.cgi';
 	
 	%sess = ();
 	JSession::start();
@@ -139,10 +140,8 @@ sub mymain
 	while($f = readdir(CLS)){
 		if(! -f "$env_dir/$f"){next;}
 		require "$env_dir/$f";
-		#print "$env_dir/$f";
 		
 		$f =~ s/\.[^\.]*//;
-		
 		push @envs, $f;
 	}
 	closedir(CLS);
@@ -152,9 +151,8 @@ sub mymain
 	while($file = readdir(DBO)){
 		if(! -f "$dbo_dir/$file"){next;}
 		require "$dbo_dir/$file";
-		#print "$dbo_dir/$file";
 		
-		$file =~ s/\.[^\.]*//;	
+		$file =~ s/\.[^\.]*//;
 		push @dbos, $file;
 	}
 	closedir(DBO);
@@ -163,8 +161,8 @@ sub mymain
 	
 	if($do_users){
 		($g_user,$g_group) = JLogin::verif();
-		$g_user = $g_user->no_cache();
-		$g_group = $g_group->no_cache();
+		$g_user  = $g_user?$g_user->no_cache():undef;
+		$g_group = $g_group?$g_group->no_cache():undef;
 		
 		$g_user->{'_temp_object'} = 1;
 		$g_group->{'_temp_object'} = 1;
@@ -179,7 +177,9 @@ sub mymain
 		$g_group = $g_group->no_cache();
 		
 		$g_user->{'name'} = 'Монопольный режим';
-		$g_group->{'adminka'} = 1;
+		$g_group->{'cms'} = 1;
+		$g_group->{'html'} = 1;
+		$g_group->{'root'} = 1;
 		$g_user->{'_temp_object'} = 1;
 		$g_group->{'_temp_object'} = 1;
 		

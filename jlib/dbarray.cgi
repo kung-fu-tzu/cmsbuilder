@@ -122,7 +122,7 @@ sub admin_view
 	print '<select name="cname"><OPTION selected></OPTION>';
 	for $c (@eml::dbos){
 		
-		if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 ){ next; }
+		if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 and ${ref($o).'::add'} ne '*' ){ next; }
 		print "<OPTION value='$c'>${$c.'::name'}</OPTION>";
 	}
 	print '</select>&nbsp;&nbsp;<input type=submit value="Добавить"></form>';
