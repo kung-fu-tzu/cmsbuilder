@@ -1,0 +1,40 @@
+[Version]
+Signature=$CHICAGO$ 
+AdvancedINF=2.5 
+
+[SourceDisksNames]
+2="dhedcab","dhtmled.cab",2
+
+[SourceDisksFiles]
+DHTMLEd.OCX=2
+triedit.dll=2
+
+[DestinationDirs]
+Bin=49000,Microsoft Shared\Triedit
+
+[DefaultInstall]
+RequiredEngine=Setupapi,%BadSetupVer%
+CopyFiles=Bin
+RegisterOCXs=RegisterOCXSection 
+CustomDestination=CustomDestinationSection
+
+[Uninstall] 
+CustomDestination=CustomDestinationSection
+Cleanup=1
+
+[RegisterOCXSection]
+%49000%\Microsoft Shared\Triedit\triedit.dll
+%49000%\Microsoft Shared\Triedit\DHTMLEd.OCX
+
+[Bin]
+DHTMLEd.OCX
+triedit.dll
+
+[CustomDestinationSection]
+49000=CustomLDIDSection,5
+
+[CustomLDIDSection]
+HKLM,"SOFTWARE\Microsoft\Windows\CurrentVersion","CommonFilesDir","No message","%30%\Program Files\Common Files\Microsoft Shared\Triedit"
+
+[Strings]
+BadSetupVer = "Your system is missing the required Setup engine."

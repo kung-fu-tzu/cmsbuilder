@@ -86,6 +86,20 @@ INPUT
     FONT-FAMILY: Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #e2e9e2
 }
+
+.ainput
+{
+    BORDER-RIGHT: #303130 1px solid;
+    PADDING-RIGHT: 5px;
+    BORDER-TOP: #303130 1px solid;
+    PADDING-LEFT: 5px;
+    FONT-SIZE: 11px;
+    BORDER-LEFT: #303130 1px solid;
+    BORDER-BOTTOM: #303130 1px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #e2e9e2
+}
+
 SELECT
 {
     BORDER-RIGHT: #303130 1px solid;

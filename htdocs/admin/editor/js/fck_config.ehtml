@@ -54,15 +54,18 @@ config.ToolbarImagesPath = config.BasePath + "images/toolbar/" ;
 //## Toolbar Buttons Sets
 //##
 config.ToolbarSets = new Object() ;
-
-config.ToolbarSets["CMS1.0"] = [
-	['EditSource','-','Cut','Copy','Paste','PasteWord', '-', 'Find', 'Undo','Redo', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull', '-', 'InsertOrderedList','InsertUnorderedList','Outdent','Indent','Link','RemoveLink'] ,
-	['Subscript','Superscript','-', 'Bold','Italic', 'Underline', 'BreakLine', '-', 'TextColor', '-','RemoveFormat', '-','Image','Table', 'Rule', 'SpecialChar', 'PagesList']
+config.ToolbarSets["JLite"] = [
+	['EditSource','-','Cut','Copy','Paste','PasteWord', '-', 'Undo','Redo', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull', '-', 'InsertOrderedList','InsertUnorderedList'],
+        ['Outdent','Indent','Link','Subscript','Superscript','-', 'Bold','Italic', 'Underline', '-', 'TextColor', '-','Image','Table', 'Rule', 'SpecialChar', 'PagesList']
+] ;
+config.ToolbarSets["CMS1.0"] = [
+	['EditSource','-','Cut','Copy','Paste','PasteWord', '-', 'Find', 'Undo','Redo', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull', '-', 'InsertOrderedList','InsertUnorderedList','Outdent','Indent','Link','RemoveLink'] ,
+	['Subscript','Superscript','-', 'Bold','Italic', 'Underline', 'BreakLine', '-', 'TextColor', '-','RemoveFormat', '-','Image','Table', 'Rule', 'SpecialChar', 'PagesList']
 ] ;
 
-config.ToolbarSets["CMS1.1"] = [
-	['EditSource','-','Cut','Copy','Paste','PasteText','Find','Undo','Redo','-','SelectAll','RemoveFormat','-','InsertOrderedList','InsertUnorderedList','-','Outdent','Indent','-','Link','RemoveLink','-','Image','Rule','SpecialChar','ShowTableBorders'] ,
-	['Bold','Italic','-','Subscript','Superscript','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-','FontStyle','-','PagesList',]
+config.ToolbarSets["CMS1.1"] = [
+	['EditSource','-','Cut','Copy','Paste','PasteText','Find','Undo','Redo','-','SelectAll','RemoveFormat','-','InsertOrderedList','InsertUnorderedList','-','Outdent','Indent','-','Link','RemoveLink','-','Image','Rule','SpecialChar','ShowTableBorders'] ,
+	['Bold','Italic','-','Subscript','Superscript','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-','FontStyle','-','PagesList',]
 ] ;
 
 config.ToolbarSets["Default"] = [

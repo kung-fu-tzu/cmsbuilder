@@ -65,7 +65,7 @@ FCKeditor.prototype.Create = function()
 		if (this.CanBrowse != null) sLink += '&Browse=' + (this.CanBrowse ? "true" : "false") ;
 		if (this.imagesFolder) sLink += '&imagesFolder=' + this.imagesFolder ;
 		if (this.attachFolder) sLink += '&attachFolder=' + this.attachFolder ;
-		document.write('<TABLE width="100%" bgcolor=#efefde cellspacing="0" cellpadding="10" border="0" unselectable="on"><TR><TD>');
+		document.write('<TABLE width="100%" class="ainput" cellspacing="0" cellpadding="10" border="0" unselectable="on"><TR><TD>');
 		document.write('<IFRAME src="' + sLink + '" width="' + this.Width + '" height="' + this.Height + '" frameborder="no" scrolling="no"></IFRAME></TD></TR>');
 		document.write('<INPUT type="hidden" name="' + this.InstanceName + '" value="' +  HTMLEncode( this.Value ) + '">') ;
 		document.write('</TD></TR></TABLE>');

@@ -55,6 +55,8 @@ config.ToolbarImagesPath = config.BasePath + "images/toolbar/" ;
 //##
 config.ToolbarSets = new Object() ;
 
+
+
 config.ToolbarSets["CMS1.0"] = [
 	['EditSource','-','Cut','Copy','Paste','PasteText','Find','Undo','Redo','-','SelectAll','RemoveFormat','-','InsertOrderedList','InsertUnorderedList','-','Outdent','Indent','-','Link','RemoveLink','-','Image','Rule','SpecialChar','ShowTableBorders'] ,
 	['Bold','Italic','-','Subscript','Superscript','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-'] ,

@@ -62,7 +62,7 @@ $vtypes{'miniword'}{'aview'} = sub {
    <!--
    var oFCKeditor ;
    oFCKeditor = new FCKeditor('$name');
-   oFCKeditor.ToolbarSet = 'CMS1.0' ;
+   oFCKeditor.ToolbarSet = 'JLite' ;
    oFCKeditor.Width  = '100%' ;
    oFCKeditor.Height = 350 ;
    oFCKeditor.imagesFolder = "structure" ;
