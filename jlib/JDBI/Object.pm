@@ -1,4 +1,4 @@
-package DBObject;
+package JDBI::Object;
 use strict qw(subs vars);
 my %vtypes;
 my $page = '/page.ehtml';
@@ -11,32 +11,6 @@ my $admin_left_max_name_len = 20;
 # Следующие методы находятся в разработке
 ###################################################################################################
 
-sub url
-{
-	my $url = shift;
-	
-	my ($class,$id) = url2classid($url);
-	
-	my $to = &{$class.'::new'}($id);
-	
-	return $to;
-}
-
-sub url2classid
-{
-	my $url = shift;
-	
-	my ($class,$id) = ('','');
-	
-	if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
-	
-	$class = $1;
-	$id = $2;
-	
-	if( ! eml::classOK($class) ){ eml::err505('Invalid class name requested: '.$class); }
-	
-	return ($class,$id);
-}
 
 
 ###################################################################################################
@@ -65,6 +39,12 @@ sub des_page
 	my $o = shift;
 	
 	print '<b>',$o->{'name'},'</b> Страничный вывод для класса "',ref($o),'" не определён!';
+}
+
+sub des_title
+{
+	my $o = shift;
+	return $o->name();
 }
 
 sub des_preview
@@ -141,6 +121,8 @@ sub admin_name
 	
 	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
 	
+	if(!$o->access('r')){ return '<span style="CURSOR: default" class="ahref" id="id_'.$o->myurl().'"> '.$ret.' </span>'; }
+	
 	if($o->{'_is_shcut'}){
 		return '<span class="ahref"> <a target="admin_right" href="right.ehtml?url='.$o->myurl().'">'.$ret.'</a> </span>';
 	}else{
@@ -173,6 +155,15 @@ sub admin_tree
 	print join(' :: ',@all);
 }
 
+sub admin_cre
+{
+	my $o = shift;
+	my $w = shift;
+	
+	$o->{'_print'} = 'Создание элемента...';
+	return $o->admin_view('cre',$w);
+}
+
 sub admin_edit
 {
 	my $o = shift;
@@ -185,9 +176,9 @@ sub admin_edit
 	
 	for $key (@keys){
 		
-		$val = eml::param($key);
+		$val = CGI::param($key);
 		
-		if(!$eml::g_group->{'html'}){ $val = eml::HTMLfilter($val); }
+		if(!$JDBI::g_group->{'html'}){ $val = JDBI::HTMLfilter($val); }
 		
 		if( $DBObject::vtypes{ $p{$key}{'type'} }{'aedit'} ){
 			$val = $DBObject::vtypes{ $p{$key}{'type'} }{'aedit'}->($key,$val,$o);
@@ -200,15 +191,6 @@ sub admin_edit
 	else{ $o->{'_print'} = "Изменения успешно внесены.<br>\n"; }
 }
 
-sub admin_cre
-{
-	my $o = shift;
-	my $w = shift;
-	
-	$o->{'_print'} = 'Создание элемента...';
-	return $o->admin_view('cre',$w);
-}
-
 sub admin_view
 {
 	my $o = shift;
@@ -219,8 +201,6 @@ sub admin_view
 	
 	if(!$act){ $act = 'edit' }
 	
-	if($o->access('r')){print 'r'}
-	if($o->access('w')){print 'w'}
 	
 	if($o->err_is()){
 		
@@ -236,7 +216,7 @@ sub admin_view
 	}
 
 	print '<table width="100%" border=0><tr><td align=center>';
-	print '<form action="?" method="POST" enctype="multipart/form-data">',"\n";
+	print '<form action="?" ',(($o->access('w') or $act eq 'cre')?'':'disabled'),' method="POST" enctype="multipart/form-data">',"\n";
 	print '<input type="hidden" name="act" value="',$act,'">',"\n";
 	
 	if($act eq 'edit'){ print '<input type="hidden" name="url" value="',$o->myurl(),'">',"\n"; }
@@ -252,20 +232,23 @@ sub admin_view
 	for $key (@keys){
 		
 		print '<tr><td valign=top width="100">'.$p{$key}{'name'}.':</td><td>';
-		print $DBObject::vtypes{ $p{$key}{'type'} }{'aview'}->( $key, $o->{$key}, $o );
+		print $JDBI::vtypes{ $p{$key}{'type'} }{'aview'}->( $key, $o->{$key}, $o );
 		print '</td></tr>';
 	}
 	
 	if($act ne 'cre'){
-		print '<tr><td valign=top>Создан:</td><td>',$o->fromTIMESTAMP($o->{'CTS'}),'</td></tr>';
-		print '<tr><td valign=top>Изменён:</td><td>',$o->fromTIMESTAMP($o->{'ATS'}),'</td></tr>';
+		print '<tr id="hide1"><td></td><td><a onclick="ShowDetails()" href="#">Дополнительно &gt;&gt;</a></td></tr>';
+		print '<tr style="DISPLAY: none" id="show1"><td valign=top>Создан:</td><td>',JDBI::fromTIMESTAMP($o->{'CTS'}),'</td></tr>';
+		print '<tr style="DISPLAY: none" id="show2"><td valign=top>Изменён:</td><td>',JDBI::fromTIMESTAMP($o->{'ATS'}),'</td></tr>';
 		
-		my $chown = $eml::g_group->{'root'}?'&nbsp;&nbsp;&nbsp;<a href="?act=chown&url='.$o->myurl().'">Изменить...</a>':'';
-		
-		my $tu = User::new();
+		my $chown = $JDBI::g_group->{'root'}?'<a href="?act=chown&url='.$o->myurl().'"><u>':'';
+		my $tu = User->new();
 		$tu->load($o->{'OID'});
-		print '<tr><td valign=top>Владелец:</td><td>',$tu->name(),$chown,'</td></tr>';
+		print '<tr style="DISPLAY: none" id="show3"><td valign=top>',$chown,'Владелец</u></a>:</td><td>',$tu->name(),'</td></tr>';
 		$tu->clear();
+		
+		my $chmod = $o->access('c')?'<a href="?act=chmod&url='.$o->myurl().'"><u>':'';
+		print '<tr style="DISPLAY: none" id="show4"><td valign=top>',$chmod,'Разрешения:</u></a></td><td>',$o->access_print(),'.</td></tr>';
 	}
 	
 	print "<tr>\n  <td>\n  </td>\n  <td align=right>\n";
@@ -274,7 +257,7 @@ sub admin_view
 	
 	print "</table>\n";
 	
-	print '<center><br><input type=submit value=Сохранить></center>';
+	if($o->access('w') or $act eq 'cre'){ print '<center><br><input type=submit value=Сохранить></center>'; }
 	
 	print "</form>\n\n";
 	print "  </td>\n</tr>\n</table>";
@@ -338,12 +321,21 @@ sub clear
 	my $o = shift;
 	my $key;
 	
-	for $key (keys( %$o )){
+	for $key (keys( %$o )){ $o->{$key} = ''; }
+	
+	$o->{'ID'} = 0;
+}
+
+sub clear_data
+{
+	my $o = shift;
+	my $key;
+	my %p = $o->props();
+	
+	for $key (keys( %p )){
 		
 		$o->{$key} = '';
 	}
-	
-	$o->{'ID'} = -1;
 }
 
 
@@ -362,7 +354,7 @@ sub IDs
 	if(!$col){ $col = 'ID' }
 	if($lim){ $lim = ' LIMIT '.$lim }
 	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` ORDER BY '.$col.$lim);
+	my $str = $JDBI::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` ORDER BY '.$col.$lim);
 	$str->execute();
 	
 	while( ($id) = $str->fetchrow_array() ){
@@ -376,7 +368,7 @@ sub count
 {
 	my $o = shift;
 	
-	my $str = $eml::dbh->prepare('SELECT COUNT(ID) FROM `dbo_'.ref($o).'`');
+	my $str = $JDBI::dbh->prepare('SELECT COUNT(ID) FROM `dbo_'.ref($o).'`');
 	$str->execute();
 	
 	my ($res) = $str->fetchrow_array();
@@ -391,10 +383,15 @@ sub del
 	my %p = $o->props();
 	
 	if($o->{'_temp_object'}){ $o->clear(); return; }
-	if($o->{'ID'} eq 'cre'){ $o->clear(); return; }
 	if($o->{'ID'} < 1){ $o->clear(); return; }
-	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{'ID'}); }
+	if($o->{'ID'} =~ m/\D/){ JDBI::err505('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{'ID'}); }
 	
+	my $papa = $o->papa();
+	if(!$papa){
+		if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	}else{
+		if(!$papa->access('x')){ $o->err_add('У Вас нет разрешения изменять родителя этого элемента.'); return; }
+	}
 	
 	for $key (keys( %p )){
 		
@@ -406,7 +403,7 @@ sub del
 		
 	}
 	
-	my $str = $eml::dbh->prepare('DELETE FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
+	my $str = $JDBI::dbh->prepare('DELETE FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{'ID'});
 	
 	$o->clear();
@@ -418,11 +415,10 @@ sub reload
 	my $key;
 	my %p = $o->props();
 	
-	if($o->{'ID'} eq 'cre'){ $o->{'ID'} = $o->insert(); }
 	if($o->{'ID'} < 1){ return; }
-	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
+	if($o->{'ID'} =~ m/\D/){ JDBI::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
 	
-	my $str = $eml::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
+	my $str = $JDBI::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{'ID'});
 	
 	my $res = $str->fetchrow_hashref('NAME_lc');
@@ -440,8 +436,8 @@ sub reload
 			$have_o = 1;
 			
 			$id = $o->{$key};
-			if($id < 1){ $id = 'cre' }
-			$o->{$key} = &{ $p{$key}{'class'}.'::new' }($id);
+			if($id < 1){ $o->{$key} = $p{$key}{'class'}->cre(); }
+			else{ $o->{$key} = $p{$key}{'class'}->new($id); }
 			$o->{$key}->{'PAPA_ID'} = $o->{'ID'};
 			$o->{$key}->{'PAPA_CLASS'} = ref($o);
 		}
@@ -453,17 +449,20 @@ sub reload
 	$o->{'CTS'} = $res->{'cts'};
 	$o->{'ATS'} = $res->{'ats'};
 	
-	$o->access_do();
 	
 	if(!$o->access('r')){
 		
-		my $t_id = $o->{'ID'};
-		my $t_oid = $o->{'OID'};
+		#my $t_papaid = $o->{'PAPA_ID'};
+		#my $t_papac = $o->{'PAPA_CLASS'};
+		#my $t_id = $o->{'ID'};
+		#my $t_oid = $o->{'OID'};
 		my $t_name = $o->name();
-		$o->clear();
-		$o->{'ID'} = $t_id;
-		$o->{'OID'} = $t_oid;
-		$o->{'name'} = $t_name;
+		$o->clear_data();
+		#$o->{'ID'} = $t_id;
+		#$o->{'OID'} = $t_oid;
+		$o->{'name'} = $t_name; #'Чтение не разрешено';
+		#$o->{'PAPA_ID'} = $t_papaid;
+		#$o->{'PAPA_CLASS'} = $t_papac;
 		
 	}
 	
@@ -480,10 +479,9 @@ sub save
 	my $val;
 	
 	if($o->{'_temp_object'}){ return; }
-	if($o->{'ID'} eq 'cre'){ $o->{'ID'} = $o->insert(); $o->reload(); }
 	if($o->{'ID'} < 1){ return; }
 	if(!$o->access('w')){ return; }
-	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
+	if($o->{'ID'} =~ m/\D/){ JDBI::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
 	
 	#print 'Saving: ',$o->myurl(),'<br>';
 	
@@ -512,7 +510,7 @@ sub save
 	
 	$sql .=  "\n".' WHERE ID = ? LIMIT 1';
 	
-	my $str = $eml::dbh->prepare($sql);
+	my $str = $JDBI::dbh->prepare($sql);
 	$str->execute($o->{'OID'},$o->{'PAPA_ID'},$o->{'PAPA_CLASS'},@vals,$o->{'ID'});
 }
 
@@ -521,53 +519,16 @@ sub insert
 	my $o = shift;
 	my $str;
 	
-	if($eml::g_user->{'ID'} < 1){ return -1; }
+	$str = $JDBI::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
+	$str->execute(JDBI::user()->{'ID'});
 	
-	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
-	$str->execute($eml::g_user->{'ID'});
-	
-	$str = $eml::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
+	$str = $JDBI::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
 	$str->execute();
 	my $id;
 	
 	($id) = $str->fetchrow_array();
 	
 	return $id;
-}
-
-
-sub creTABLE
-{
-	my $class = shift;
-	my $key;
-	my %p;
-	
-	%p = %{$class.'::props'};
-	
-	print '<br><a onclick="sql_',$class,'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',$class,'":</b><br>';
-	
-	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.$class.'` ( '."\n";
-	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
-	$sql .= '`OID` INT DEFAULT \'-1\' NOT NULL, '."\n";
-	$sql .= '`ATS` TIMESTAMP NOT NULL, '."\n";
-	$sql .= '`CTS` TIMESTAMP NOT NULL, '."\n";
-	$sql .= '`PAPA_ID` INT DEFAULT \'-1\' NOT NULL, '."\n";
-	$sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, '."\n";
-	
-	for $key (keys( %p )){
-		if($DBObject::vtypes{ $p{$key}{'type'} }{'table_cre'}){
-			$sql .= " `$key` ".$DBObject::vtypes{ $p{$key}{'type'} }{'table_cre'}->($p{$key}).' NOT NULL , '."\n";
-		}
-	}
-	$sql =~ s/,\s*$//;
-	$sql .= "\n )";
-	
-	my $str = $eml::dbh->prepare($sql);
-	$str->execute();
-	
-	$sql =~ s/\n/<br>\n/g;
-	
-	print '<div style="DISPLAY: none" id="sql_',$class,'">',$sql,'</div>';
 }
 
 
@@ -585,7 +546,7 @@ sub sel_one
 	$o->save();
 	$o->clear();
 	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	my $str = $JDBI::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
 	$str->execute(@_);
 	
 	($id) = $str->fetchrow_array();
@@ -604,7 +565,7 @@ sub sel_where
 	my $id;
 	my @oar;
 	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	my $str = $JDBI::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
 	$str->execute(@_);
 	
 	while( ($id) = $str->fetchrow_array() ){
@@ -616,7 +577,7 @@ sub sel_where
 	return @oar;
 }
 
-sub o_sql
+sub sel_sql
 {
 	my $o = shift;
 	my $wh = shift;
@@ -624,7 +585,7 @@ sub o_sql
 	my $id;
 	my @oar;
 	
-	my $str = $eml::dbh->prepare($wh);
+	my $str = $JDBI::dbh->prepare($wh);
 	$str->execute(@_);
 	
 	while( ($id) = $str->fetchrow_hashref('NAME_lc') ){
@@ -654,20 +615,45 @@ sub props
 	return %{ref($o).'::props'};
 }
 
-sub _construct
+sub new
+{
+	my $class = shift;
+	
+	my $o = {};
+	bless($o,$class);
+	
+	return $o->_init(@_);
+}
+
+sub cre
+{
+	my $class = shift;
+	
+	my $o = {};
+	bless($o,$class);
+	
+	$o->{'ID'} = $o->insert();
+	$o->access_set('rw');
+	$o->reload();
+	
+	return $o;
+}
+
+sub _init
 {
 	my $o = shift;
 	my $n = shift;
 	my $no_cache = shift;
 	
-	if($n eq ''){ $n = -1; }
+	if(!$n){ return $o; }
 	
-	if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
+	if($JDBI::dbo_cache{ref($o).$n}){ $o->{'ID'} = 0; return $JDBI::dbo_cache{ref($o).$n} };
+	if($n > 0){ $JDBI::dbo_cache{ref($o).$n} = $o; }
 	
 	$o->{'ID'} = $n;
 	$o->reload();
 	
-	if($o->{'ID'} > -1){ $eml::dbo_cache{ref($o).$o->{'ID'}} = $o; }
+	if($o->{'ID'} > 0){ $JDBI::dbo_cache{ref($o).$o->{'ID'}} = $o; }
 	
 	return $o;
 }
@@ -714,68 +700,13 @@ sub err_is
 
 sub type { return 'DBObject'; }
 
-sub fromTIMESTAMP
-{
-	my $o = shift;
-	my $ts = shift;
-	
-	my $str = $eml::dbh->prepare('SELECT DATE_FORMAT(?,\'%d %M %Y г., %H:%i:%s\')');
-	$str->execute($ts);
-
-	my $date;
-	($date) = $str->fetchrow_array();
-	
-	$date =~ s/^0//;
-	
-	$date =~ s/January/Января/i;
-	$date =~ s/February/Февраля/i;
-	$date =~ s/March/Марта/i;
-	$date =~ s/April/Апреля/i;
-	$date =~ s/May/Мая/i;
-	$date =~ s/June/Июня/i;
-	$date =~ s/July/Июля/i;
-	$date =~ s/August/Августа/i;
-	$date =~ s/September/Сентября/i;
-	$date =~ s/October/Октября/i;
-	$date =~ s/November/Ноября/i;
-	$date =~ s/December/Декабря/i;
-	
-	return $date;
-}
-
-sub url
-{
-	my $url = shift;
-	
-	my ($class,$id) = url2classid($url);
-	
-	my $to = &{$class.'::new'}($id);
-	
-	return $to;
-}
-
-sub url2classid
-{
-	my $url = shift;
-	
-	my ($class,$id) = ('','');
-	
-	if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
-	
-	$class = $1;
-	$id = $2;
-	
-	if( ! eml::classOK($class) ){ eml::err505('Invalid class name requested: '.$class); }
-	
-	return ($class,$id);
-}
-
 sub no_cache
 {
 	my $o = shift;
 	
-	my $no = &{ref($o).'::new'}();
+	my $no = ref($o)->new();
 	$no->load($o->{'ID'});
+	$no->{'_temp_object'} = 1;
 	
 	return $no;
 }
@@ -787,31 +718,12 @@ sub myurl
 	return ref($o).$o->{'ID'};
 }
 
-sub print_props
-{
-	my $o = shift;
-	my $key;
-	my %p = $o->props();
-	
-	print '<table border=1>';
-	
-	print '<tr><td align=center colSpan=2><b>'.ref($o).'</b></td></tr>';
-	
-	for $key (keys( %p )){
-		print '<tr><td>',$p{$key}{'name'},' (',$key,'):</td><td><b>',$p{$key}{'type'},'</b></td></tr>';
-	}
-	
-	print '</table>';
-	
-	return '';
-}
-
-sub purge_cache { %eml::dbo_cache = (); }
+sub purge_cache { %JDBI::dbo_cache = (); }
 
 sub dump_cache
 {
 	my $obj;
-	for $obj (keys(%eml::dbo_cache)){ print $eml::dbo_cache{$obj}->name(),'<br>'; }
+	for $obj (keys(%JDBI::dbo_cache)){ print $JDBI::dbo_cache{$obj}->name(),'<br>'; }
 }
 
 sub papa
@@ -828,20 +740,7 @@ sub papa
 # Методы реализации разделения доступа
 ###################################################################################################
 
-require $eml::jlib.'/access.cgi';
-
-
-###################################################################################################
-# Включение виртуальных типов
-###################################################################################################
-
-my $f;
-if(!opendir(DBOVTYPES,$eml::jlib.'/vtypes')){err505('Can`t open vtypes directory: '.$eml::jlib.'/vtypes');}
-while($f = readdir(DBOVTYPES)){
-	if(! -f "$eml::jlib/vtypes/$f"){next;}
-	require "$eml::jlib/vtypes/$f";
-}
-closedir(DBOVTYPES);
+require 'JDBI/access.cgi';
 
 return 1;
 

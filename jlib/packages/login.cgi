@@ -42,20 +42,33 @@ sub act
 sub form
 {
 
-print <<END;
-<FORM action="?" method=POST>
-<center>
-<INPUT type="hidden" value="in" name=action>
-<INPUT type="text" value="" name=login>
-<br><br>
-<INPUT type="password" value="" name=pas>
-<br><br>
-<INPUT type="submit" value="Войти...">
-</center>
-</FORM>
-<br>
-END
-
+print <<"	END";
+	<FORM action="?" method=POST>
+	<center>
+	<INPUT type="hidden" value="in" name="action">
+	<INPUT type="text" value="" name=login>
+	<br><br>
+	<INPUT type="password" value="" name=pas>
+	<br><br>
+	<INPUT type="submit" value="Войти...">
+	</center>
+	</FORM>
+	<br><br><center>
+	END
+	
+	eml::su_start();
+	
+	my $tu = User::new();
+	my $u;
+	for $u ($tu->sel_where(' 1 ')){
+		
+		print '<a href="?action=in&pas=',$u->{'pas'},'&login=',$u->{'login'},'">',$u->name(),'</a><br>';
+	}
+	
+	print '</center>';
+	
+	eml::su_stop();
+	
 }
 
 

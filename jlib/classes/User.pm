@@ -8,13 +8,13 @@ use vars '$page';
 use vars '@aview';
 
 $name = 'Пользователь';
-@ISA = 'DBObject';
+@ISA = 'JDBI::Object';
 @aview = qw/name login pas icq email city/;
 $page = '/page.ehtml';
 
 %props = (
 	
-	'name'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Ник' },
+	'name'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Имя' },
 	'login'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
 	'pas'	  => { 'type' => 'password', 'length' => 50, 'name' => 'Пароль' },
 	'sid'	  => { 'type' => 'string', 'length' => 20, 'name' => 'Ключ' },
@@ -33,14 +33,6 @@ sub install
 	
 	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
 	$str->execute();
-}
-
-sub new
-{
-	my $o = {};
-	bless($o);
-	
-	return $o->_construct(@_);
 }
 
 sub DESTROY

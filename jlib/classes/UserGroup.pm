@@ -15,7 +15,7 @@ $page = '/page.ehtml';
 $pages_direction = 0;
 $add  = ' User ';
 @aview = qw/name html cms root/;
-@ISA = 'DBArray';
+@ISA = 'JDBI::Array';
 
 %props = (
 
@@ -24,14 +24,6 @@ $add  = ' User ';
 	'root'  => { 'type' => 'checkbox', 'name' => 'Полный доступ' },
 	'cms'   => { 'type' => 'checkbox', 'name' => 'Доступ к <b>СА</b>' }
 );
-
-sub new
-{
-	my $o = {};
-	bless($o);
-
-	return $o->_construct(@_);
-}
 
 sub DESTROY
 {

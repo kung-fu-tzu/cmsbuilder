@@ -70,32 +70,33 @@ sub verif
 {
 	my($co,%cook,$sid,$group);
 	
+	eml::su_start();
+	
+	my $gu = User::new();
+	my $gg = UserGroup::new();
+	$gu->load(2); $gg->load(2);
+	$gg->{'_guest'} = 1;
+	
 	$sid = $eml::sess{'JLogin_sid'};
 	
-	#print '<b> JLogin_sid = ',$eml::sess{'JLogin_sid'},'</b>';
-	
-	if($sid eq '' or $sid == 0){ return (undef,undef); }
-	
+	if($sid eq '' or $sid == 0){ return ($gu,$gg); }
 	
 	my $tu = User::new();
 	
-	eml::su_start();
 	$tu->sel_one(' sid = ? ',"$sid");
 	$tu = $tu->no_cache();
-	eml::su_stop();
 	
 	#print STDERR $tu->{'ID'};
 	
-	if($tu->{'ID'} < 1){ return (undef,undef); }
+	if($tu->{'ID'} < 1){ return ($gu,$gg); }
 	
-	eml::su_start();
 	$group = $tu->papa();
 	$group = $group->no_cache();
-	eml::su_stop();
 	
-	if($group eq undef){ return (undef,undef); }
-	$group->clear();
-	return ($tu,$tu->papa());
+	if($group eq undef){ return ($gu,$gg); }
+	
+	
+	return ($tu,$group);
 }
 
 sub err

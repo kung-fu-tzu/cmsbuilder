@@ -15,7 +15,7 @@ $page = '/page.ehtml';
 $pages_direction = 0;
 #@aview = qw/name onpage/;
 $add  = ' Elem Dir Papa ';
-@ISA = 'DBArray';
+@ISA = 'JDBI::Array';
 $dont_list_me = 0;
 
 %props = (
@@ -23,22 +23,6 @@ $dont_list_me = 0;
 	'name'    => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
 );
-
-sub go
-{
-	my $o = shift;
-	
-	print '<nobr><b>go(',$o,')</b></nobr>';
-	
-}
-
-sub new
-{
-	my $o = {};
-	bless($o);
-
-	return $o->_construct(@_);
-}
 
 sub DESTROY
 {

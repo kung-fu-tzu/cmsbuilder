@@ -1,9 +1,9 @@
-package DBArray;
+package JDBI::Array;
 use strict qw(subs vars);
 
 use vars '@ISA';
 
-@ISA = 'DBObject';
+@ISA = 'JDBI::Object';
 
 my $max_admin_left = 20;
 
@@ -25,7 +25,7 @@ sub admin_left
 	if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
 	if( $o->{'_is_shcut'} ){ return $o->SUPER::admin_left(); }
 	
-	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
+	my %node = $JDBI::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
 	my $disp = $node{'s'} ? 'block' : 'none';
 	my $pic  = $node{'s'} ? 'minus' : 'plus';
 	
@@ -64,24 +64,38 @@ sub admin_view
 	for $e ($o->get_page($page)){
 		
 		print '<br>';
-		print '<a onclick="return doDel()" href="?url='.$o->myurl().'&act=dele&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0  alt="Удалить" src=x.gif></a>';
 		
-		if(${ref($o).'::pages_direction'}){
-			if($e->{'_ENUM'} != 1){ print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
-			if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+		if($o->access('w')){
+		
+			if($e->access('w')){
+				print '<a onclick="return doDel()" href="?url='.$o->myurl().'&act=dele&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0  alt="Удалить" src=x.gif></a>';
+			}else{
+				print '<img src=nx.gif>';
+			}
+			
+			if(${ref($o).'::pages_direction'}){
+				if($e->{'_ENUM'} != 1){ print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+				if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+			}else{
+				if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+				if($e->{'_ENUM'} != 1){ print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+			}
+			
+			if($e->access('w')){
+				if($e->{'_is_shcut'}){
+					print '<img border=0 alt="Этот элемент является ярлыком" src="shcut.gif">';
+				}else{
+					print '<a href="?act=move2&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'"><img border=0 alt="Переместить в другой каталог..." src="move2.gif"></a>';
+				}
+			}else{
+				print '<img src="nx.gif">';
+			}
+			
 		}else{
-			if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
-			if($e->{'_ENUM'} != 1){ print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+			print '<img src="nx.gif"><img src="nx.gif"><img src="nx.gif"><img align="absmiddle" src="bullet.gif">'
 		}
 		
-		if($e->{'_is_shcut'}){
-			print '<img border=0 alt="Этот элемент является ярлыком" src="shcut.gif">';
-		}else{
-			print '<a href="?act=move2&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'"><img border=0 alt="Переместить в другой каталог..." src="move2.gif"></a>';
-		}
-		
-		
-		print "\n",'&nbsp;&nbsp;',"\n";
+		print '<img align="absmiddle" src="nx.gif">';
 		print $e->admin_name();
 		$i++;
 		print "\n";
@@ -108,18 +122,22 @@ sub admin_view
 	}
 	
 	my $c;
-
-	print '<form action="?">';
-	print '<input type="hidden" name="act" value="adde">',"\n";
-	print '<input type="hidden" name="url" value="',$o->myurl(),'">',"\n";
-
-	print '<select name="cname"><OPTION selected></OPTION>';
-	for $c (@eml::dbos){
+	
+	if($o->access('a')){
 		
-		if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 and ${ref($o).'::add'} ne '*' ){ next; }
-		print "<OPTION value='$c'>${$c.'::name'}</OPTION>";
+		print '<form action="?">';
+		print '<input type="hidden" name="act" value="adde">',"\n";
+		print '<input type="hidden" name="url" value="',$o->myurl(),'">',"\n";
+		
+		print '<select name="cname"><OPTION selected></OPTION>';
+		for $c (@JDBI::classes){
+			
+			if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 and ${ref($o).'::add'} ne '*' ){ next; }
+			print "<OPTION value='$c'>${$c.'::name'}</OPTION>";
+		}
+		print '</select>&nbsp;&nbsp;<input type=submit value="Добавить"></form>';
 	}
-	print '</select>&nbsp;&nbsp;<input type=submit value="Добавить"></form>';
+	
 	print '<br><br>';
 }
 
@@ -148,6 +166,7 @@ sub get_page
 	my $o = shift;
 	my $page = shift;
 	my @ret;
+	#if(!$o->)
 	
 	if( ${ref($o).'::pages_direction'} )
 	    { @ret = $o->get_page_inc($page) }
@@ -344,9 +363,11 @@ sub elem_del
 {
 	my $o = shift;
 	my $eid = shift;
+	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	my $ob = $o->elem($eid);
+	if(!$ob->access('w')){ $o->err_add('У Вас нет разрешения изменять удаляемый элемент.'); return; }
 	
-	my $ob = $o->elem_cut($eid);
-	
+	$ob = $o->elem_cut($eid);
 	$ob->del();
 	
 	$ob = '';
@@ -356,6 +377,7 @@ sub elem_moveup
 {
 	my $o = shift;
 	my $num = shift;
+	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
 	$o->elem_moveto($num,$num-2);
 }
@@ -364,6 +386,7 @@ sub elem_movedown
 {
 	my $o = shift;
 	my $num = shift;
+	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
 	$o->elem_moveto($num,$num+1);
 }
@@ -372,6 +395,8 @@ sub elem_paste
 {
 	my $o = shift;
 	my $po = shift;
+	if(!$o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+	if(!$po->access('w')){ $o->err_add('У Вас нет разрешения изменять вставляемый элемент.'); return; }
 	
 	if($o->{'ID'} < 1){ return; }
 	
@@ -387,6 +412,7 @@ sub elem_paste_shcut
 {
 	my $o = shift;
 	my $po = shift;
+	if(!$o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
 	
 	if($o->{'ID'} < 1){ return; }
 	
@@ -403,14 +429,15 @@ sub elem_paste_ref
 	my $o = shift;
 	my $po = shift;
 	my $shcut = shift;
+	if(!$o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
 	
 	if($o->{'ID'} < 1){ return; }
 	if($po->{'ID'} < 1){ return; }
 	if(!$o->is_array_table()){ $o->create_array_table();  }
 	
-	if( !$o->elem_can_paste($po) ){ eml::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
+	if( !$o->elem_can_paste($po) ){ JDBI::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
 	
-	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{'ID'}.'` (ID,CLASS,SHCUT) VALUES (?,?,?)');
+	my $str = $JDBI::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{'ID'}.'` (ID,CLASS,SHCUT) VALUES (?,?,?)');
 	$str->execute($po->{'ID'},ref($po),$shcut?1:0);
 	
 	$o->sortT();
@@ -420,6 +447,7 @@ sub elem_can_paste
 {
 	my $o = shift;
 	my $po = shift;
+	if(!$o->access('a')){ return 0; }
 	
 	if( ${ref($o).'::add'} eq '*' ){ return 1 }
 	if( index( ${ref($o).'::add'}, ' '.ref($po).' ') < 0 ){ return 0 }
@@ -430,11 +458,12 @@ sub elem
 {
 	my $o = shift;
 	my $eid = shift;
+	if(!$o->access('x')){ $o->err_add('У Вас нет разрешения просматривать этот элемент.'); return undef; }
 	
 	if($o->{'ID'} < 1){ return undef; }
 	if(!$o->is_array_table()){ return undef; }
 	
-	my $str = $eml::dbh->prepare('SELECT * FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
+	my $str = $JDBI::dbh->prepare('SELECT * FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
 	
 	my $res = $str->fetchrow_hashref('NAME_uc');
@@ -454,11 +483,14 @@ sub elem_cut
 {
 	my $o = shift;
 	my $eid = shift;
+	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
 	if($o->{'ID'} < 1){ return; }
 	
 	my $to = $o->elem($eid);
 	if(!$to){ return undef; }
+	
+	if(!$to->access('w')){ $o->err_add('У Вас нет разрешения изменять вырезаемый элемент.'); return; }
 	
 	if(!$to->{'_is_shcut'}){
 		$to->{'PAPA_CLASS'} = '';
@@ -466,7 +498,7 @@ sub elem_cut
 		$to->save();
 	}
 	
-	my $str = $eml::dbh->prepare('DELETE FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
+	my $str = $JDBI::dbh->prepare('DELETE FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
 	
 	$o->sortT();
@@ -479,6 +511,7 @@ sub elem_moveto
 	my $o = shift;
 	my $enum = shift;
 	my $place = shift;
+	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
 	if($o->{'ID'} < 1){ return; }
 	
@@ -491,10 +524,10 @@ sub elem_moveto
 	
 	$o->sortT();
 	
-	my $str = $eml::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET num = num+1 WHERE num > '.$place );
+	my $str = $JDBI::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET num = num+1 WHERE num > '.$place );
 	$str->execute();
 	
-	$str = $eml::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
+	$str = $JDBI::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
 	
 	if($enum > $place){
 		$str->execute($place+1,$enum+1);
@@ -521,7 +554,7 @@ sub create_array_table
 	$sql .= '`SHCUT` SMALLINT DEFAULT \'0\' NOT NULL, ';
 	$sql .= 'INDEX ( `num` ) )';
 
-	my $str = $eml::dbh->prepare($sql);
+	my $str = $JDBI::dbh->prepare($sql);
 	$str->execute();
 	
 	$o->{'_isatable'} = 'yes';
@@ -539,7 +572,7 @@ sub is_array_table
 	
 	my $t;
 	
-	for $t ($eml::dbh->tables()){
+	for $t ($JDBI::dbh->tables()){
 		
 		if( lc('`arr_'.ref($o).'_'.$o->{'ID'}.'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
 		if( lc('arr_'.ref($o).'_'.$o->{'ID'}) eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
@@ -560,8 +593,9 @@ sub len
 
 	if($o->{'ID'} < 1){ return 0; }
 	if(!$o->is_array_table()){ return 0; }
+	if(!$o->access('x')){ return 0; }
 
-	my $str = $eml::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{'ID'}.'`');
+	my $str = $JDBI::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{'ID'}.'`');
 	$str->execute();
 	
 	my $res = $str->fetchrow_hashref('NAME_uc');
@@ -573,7 +607,12 @@ sub del
 {
 	my $o = shift;
 	my $i;
-	
+	my $papa = $o->papa();
+	if(!$papa){
+		if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	}else{
+		if(!$papa->access('x')){ $o->err_add('У Вас нет разрешения изменять родителя этого элемента.'); return; }
+	}
 	if($o->{'ID'} < 1){ return; }
 	
 	my $len = $o->len();
@@ -586,7 +625,7 @@ sub del
 	
 	if(!$o->is_array_table()){ $o->SUPER::del(); return; }
 	
-	my $str = $eml::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'`');
+	my $str = $JDBI::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'`');
 	$str->execute();
 	
 	$o->SUPER::del();
@@ -602,13 +641,13 @@ sub sortT
 	
 	$table = 'arr_'.ref($o).'_'.$o->{'ID'};
 	
-	$str = $eml::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
+	$str = $JDBI::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
 	$str->execute();
 	
-	$str = $eml::dbh->prepare( "SELECT num FROM `$table`" );
+	$str = $JDBI::dbh->prepare( "SELECT num FROM `$table`" );
 	$str->execute();
 	
-	$str2 = $eml::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
+	$str2 = $JDBI::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
 	
 	$i = 1;
 	while(($num) = $str->fetchrow_array()){

@@ -7,23 +7,15 @@ use vars '@ISA';
 use vars '$page';
 
 $name = 'Элемент';
-@ISA = 'DBObject';
+@ISA = 'JDBI::Object';
 $page = '/page.ehtml';
 
 %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' },
-	'tf'	  => { 'type' => 'file', 'msize' => 100, ext => ' bmp jpg ', 'name' => 'File' }
+	'tf'	  => { 'type' => 'file', 'msize' => 100, 'ext' => ' bmp jpg ', 'name' => 'File' }
 );
-
-sub new
-{
-	my $o = {};
-	bless($o);
-
-	return $o->_construct(@_);
-}
 
 sub DESTROY
 {

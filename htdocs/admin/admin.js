@@ -124,6 +124,20 @@ function OnOut(obj){
 
 }
 
+
+function ShowDetails(){
+	
+	hide1.style.display = 'none';
+	
+	show1.style.display = 'block';
+	show2.style.display = 'block';
+	show3.style.display = 'block';
+	show4.style.display = 'block';
+	
+	
+}
+
+
 document.onmousemove = MMove;
 
 

@@ -1,4 +1,4 @@
-package UserGroupDir;
+package UserRoot;
 use strict qw(subs vars);
 
 use vars '%props';
@@ -12,22 +12,14 @@ use vars '$dont_list_me';
 
 $name = 'Корень пользователей';
 $page = '/page.ehtml';
-$pages_direction = 0;
+$pages_direction = 1;
 $add  = ' UserGroup ';
-@ISA = 'DBArray';
+@ISA = 'JDBI::Array';
 
 %props = (
 
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя' }
 );
-
-sub new
-{
-	my $o = {};
-	bless($o);
-
-	return $o->_construct(@_);
-}
 
 sub DESTROY
 {

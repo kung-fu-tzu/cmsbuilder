@@ -92,10 +92,12 @@ INPUT
     PADDING-RIGHT: 5px;
     BORDER-TOP: #303130 1px solid;
     PADDING-LEFT: 5px;
+    LIST-STYLE-POSITION: outside;
     FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
     FONT-FAMILY: Arial, Helvetica;
+    LIST-STYLE-TYPE: disc;
     BACKGROUND-COLOR: #e2e9e2
 }
 SELECT
@@ -156,7 +158,8 @@ TD
     FONT-WEIGHT: bold;
     FONT-SIZE: 12px;
     COLOR: #ffffff;
-    FONT-FAMILY: Arial, Helvetica
+    FONT-FAMILY: Arial, Helvetica;
+    TEXT-DECORATION: none
 }
 .authors
 {

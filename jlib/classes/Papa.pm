@@ -8,7 +8,7 @@ use vars '$page';
 use vars '@aview';
 
 $name = 'Родитель';
-@ISA = 'DBObject';
+@ISA = 'JDBI::Object';
 $page = '/page.ehtml';
 
 %props = (
@@ -17,14 +17,6 @@ $page = '/page.ehtml';
 	'son'	  => { 'type' => 'object', 'class' => 'Elem', 'name' => 'Сын' },
 	'etext'	  => { 'type' => 'miniword', 'name' => 'Содержимое' }
 );
-
-sub new
-{
-	my $o = {};
-	bless($o);
-	
-	return $o->_construct(@_);
-}
 
 sub DESTROY
 {

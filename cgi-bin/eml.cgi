@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use lib '../jlib';
+
 package eml;
 
 use DBI;
@@ -14,8 +16,10 @@ use strict qw(subs vars);
 
 my $out = '';
 my $dir = '';
-my %su = ();
+my $su_real;
+my $su_root;
 my $su = 0;
+
 
 use vars '$print_error';
 use vars '$buff';
@@ -56,17 +60,20 @@ sub mymain
 	# Обнуление #
 
 	%dbo_cache = ();
-	$do_users = 1;
+	$do_users = 0;
 	$print_error = 1;
 	$buff = 1;
 	
-	$g_user = '';
+	$g_user = undef;
+	$g_group = undef;
 	@envs = ();
 	@dbos = ();
 	$dbh = '';
 	
-	%su = ();
 	$su = 0;
+	$su_real = '';
+	$su_root = '';
+	
 	
 	$out = '';
 	$dir = '';
@@ -141,6 +148,8 @@ sub mymain
 		push @envs, $f;
 	}
 	closedir(CLS);
+	require "$jlib/admin.cgi";
+	push @envs, 'admin';
 	
 	
 	if(!opendir(DBO,$dbo_dir)){err505('Can`t open dbo directory: '.$dbo_dir);}
@@ -154,31 +163,35 @@ sub mymain
 	closedir(DBO);
 	undef $file;
 	
+	# Обработка текущего пользователя ####################
+	
+	$su_root = UserGroup::new();
+	$su_root->{'_temp_object'} = 1;
+	$su_root->{'ID'} = 1;
+	$su_root->{'root'} = 1;
+	$su_root->{'cms'} = 1;
+	$su_root->{'html'} = 1;
+	
+	$g_user = User::new();
+	$g_user = $g_user->no_cache();
 	
 	if($do_users){
 		($g_user,$g_group) = JLogin::verif();
-		#$g_user  = $g_user?$g_user->no_cache():undef;
-		#$g_group = $g_group?$g_group->no_cache():undef;
+		$su = 0;
 		
-		if($g_user){ $g_user->{'_temp_object'} = 1 }
-		if($g_group){ $g_group->{'_temp_object'} = 1 }
+		$g_user->{'_temp_object'} = 1;
+		$g_group->{'_temp_object'} = 1;
+		#print '[',$g_group->name(),']<br>';
 		
 	}else{
-		$g_user = User::new();
-		$g_group = UserGroup::new();
-		
-		$g_user = $g_user->no_cache();
-		$g_group = $g_group->no_cache();
-		
 		$g_user->{'name'} = 'Монопольный режим';
 		$g_user->{'_temp_object'} = 1;
 		$g_user->{'ID'} = 1;
-		$g_group->{'_temp_object'} = 1;
-		$g_group->{'ID'} = 1;
 		
-		su_start();
+		$g_group = $su_root;
 	}
 	
+	######################################################
 	
 	# Считываем и парсим конструкции <!--#include ... -->
 	$str =~ s/<!--#include\s+(.+)\s+-->/SSI($1);/gei;
@@ -188,11 +201,23 @@ sub mymain
 	
 	undef $str;
 	
-	for($i=0;$i<=$#parts;$i++){
+	#for($i=0;$i<=$#parts;$i++){
+	#	
+	#	if($i % 2){ eval($parts[$i]); if($@){ err505('eval("'.$parts[$i].'")') } }
+	#	else{ print $parts[$i]; }
+	#}
+	
+	my $code = '';
+	my $part_num = 0;
+	
+	for($i=0;$i<=$#parts;$i+=2){
 		
-		if($i % 2){ eval($parts[$i]); if($@){ err505('eval("'.$parts[$i].'")') } }
-		else{ print $parts[$i]; }
+		$code .= 'print $parts['.$i.']; $part_num = '.($i+1).'; '.$parts[$i+1].';';
 	}
+	
+	eval($code);
+	if($@){ err505('eval("'.$parts[$part_num].'")') };
+	
 	
 	#print '<b> JLogin_sid = ',$sess{'JLogin_sid'},'</b>';
 	
@@ -208,13 +233,8 @@ sub su_start
 	if($su){ return }
 	$su = 1;
 	
-	$su{'cms'}  = $g_group->{'cms'};
-	$su{'html'} = $g_group->{'html'};
-	$su{'root'} = $g_group->{'root'};
-	
-	$g_group->{'cms'}  = 1;
-	$g_group->{'html'} = 1;
-	$g_group->{'root'} = 1;
+	$su_real = $g_group;
+	$g_group = $su_root;
 }
 
 sub su_stop
@@ -222,9 +242,7 @@ sub su_stop
 	if(!$su){ return }
 	$su = 0;
 	
-	$g_group->{'cms'}  = $su{'cms'};
-	$g_group->{'html'} = $su{'html'};
-	$g_group->{'root'} = $su{'root'};
+	$g_group = $su_real;
 }
 
 sub f2var
