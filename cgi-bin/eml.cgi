@@ -157,11 +157,11 @@ sub mymain
 	
 	if($do_users){
 		($g_user,$g_group) = JLogin::verif();
-		$g_user  = $g_user?$g_user->no_cache():undef;
-		$g_group = $g_group?$g_group->no_cache():undef;
+		#$g_user  = $g_user?$g_user->no_cache():undef;
+		#$g_group = $g_group?$g_group->no_cache():undef;
 		
-		$g_user->{'_temp_object'} = 1;
-		$g_group->{'_temp_object'} = 1;
+		if($g_user){ $g_user->{'_temp_object'} = 1 }
+		if($g_group){ $g_group->{'_temp_object'} = 1 }
 		
 	}else{
 		$g_user = User::new();

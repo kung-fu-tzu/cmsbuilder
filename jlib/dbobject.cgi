@@ -39,36 +39,6 @@ sub url2classid
 }
 
 
-
-
-###################################################################################################
-# Методы реализации разделения доступа
-###################################################################################################
-
-sub access_do
-{
-	
-	
-	
-	
-}
-
-sub access
-{
-	my $o = shift;
-	my $type = shift;
-	
-	if($eml::g_group->{'root'}){ return 1 }
-	if(length($type) != 1){ return 0 }
-	
-	if($eml::g_user->{'ID'} == $o->{'OID'} and $type eq 'r'){ return 1; }
-	
-	#if( $eml::gid == 0 ){ return 1; }
-	
-	return 0;
-}
-
-
 ###################################################################################################
 # Методы вывода данных в дизайн
 ###################################################################################################
@@ -128,7 +98,7 @@ sub name
 	my $ret;
 	
 	if($o->{'name'}){ return $o->{'name'} }
-	if($o->{'ID'} < 0){ return 'Объект был удалён: '.${ref($o).'::name'}.' '.$o->{'ID'} }
+	if($o->{'ID'} < 1){ return 'Объект был удалён: '.${ref($o).'::name'}.' '.$o->{'ID'} }
 	
 	return ${ref($o).'::name'}.' '.$o->{'ID'};
 }
@@ -145,81 +115,18 @@ sub file_href
 
 
 ###################################################################################################
-# Методы выполняющие поиск объектов
-###################################################################################################
-
-sub sel_one
-{
-	my $o = shift;
-	my $wh = shift;
-	
-	my $id;
-	
-	$o->save();
-	$o->clear();
-	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
-	$str->execute(@_);
-	
-	($id) = $str->fetchrow_array();
-	
-	if(! $id){ $o->clear(); return; }
-	
-	$o->{'ID'} = $id;
-	$o->reload();
-}
-
-sub sel_where
-{
-	my $o = shift;
-	my $wh = shift;
-	
-	my $id;
-	my @oar;
-	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
-	$str->execute(@_);
-	
-	while( ($id) = $str->fetchrow_array() ){
-		
-		push(@oar,&{ref($o).'::new'}($id));
-		
-	}
-	
-	return @oar;
-}
-
-sub o_sql
-{
-	my $o = shift;
-	my $wh = shift;
-	
-	my $id;
-	my @oar;
-	
-	my $str = $eml::dbh->prepare($wh);
-	$str->execute(@_);
-	
-	while( ($id) = $str->fetchrow_hashref('NAME_lc') ){
-		
-		push(@oar,&{ref($o).'::new'}($id->{'id'}));
-		
-	}
-	
-	return @oar;
-}
-
-
-###################################################################################################
 # Методы автоматизации администрирования
 ###################################################################################################
 
 sub admin_left
 {
 	my $o = shift;
-	my $img = $o->{'_is_ref'}?'ref.gif':'dot.gif';
 	
-	print '<nobr><img class="icon" align="absmiddle" src="',$img,'">',$o->admin_name(),'</nobr><br>',"\n";
+	if($o->{'_is_shcut'}){
+		print '<nobr><img class="icon" align="absmiddle" src="shcut.gif">',$o->admin_name(),'</nobr><br>',"\n";
+	}else{
+		print '<nobr><img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'</nobr><br>',"\n";
+	}
 }
 
 sub admin_name
@@ -234,7 +141,11 @@ sub admin_name
 	
 	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
 	
-	return '<span class="ahref" id="id_'.$o->myurl().'"> <a target="admin_right" href="right.ehtml?url='.$o->myurl().'">'.$ret.'</a> </span>';
+	if($o->{'_is_shcut'}){
+		return '<span class="ahref"> <a target="admin_right" href="right.ehtml?url='.$o->myurl().'">'.$ret.'</a> </span>';
+	}else{
+		return '<span class="ahref" id="id_'.$o->myurl().'"> <a target="admin_right" href="right.ehtml?url='.$o->myurl().'">'.$ret.'</a> </span>';
+	}
 }
 
 sub admin_tree
@@ -308,6 +219,9 @@ sub admin_view
 	
 	if(!$act){ $act = 'edit' }
 	
+	if($o->access('r')){print 'r'}
+	if($o->access('w')){print 'w'}
+	
 	if($o->err_is()){
 		
 		print '<table align="center"><tr><td class="mes_table"><font color="red">Возникла ошибка!</font><br><br>';
@@ -345,8 +259,13 @@ sub admin_view
 	if($act ne 'cre'){
 		print '<tr><td valign=top>Создан:</td><td>',$o->fromTIMESTAMP($o->{'CTS'}),'</td></tr>';
 		print '<tr><td valign=top>Изменён:</td><td>',$o->fromTIMESTAMP($o->{'ATS'}),'</td></tr>';
-		my $tu = User::new($o->{'OID'});
-		print '<tr><td valign=top>Владелец:</td><td>',$tu->name(),'</td></tr>';
+		
+		my $chown = $eml::g_group->{'root'}?'&nbsp;&nbsp;&nbsp;<a href="?act=chown&url='.$o->myurl().'">Изменить...</a>':'';
+		
+		my $tu = User::new();
+		$tu->load($o->{'OID'});
+		print '<tr><td valign=top>Владелец:</td><td>',$tu->name(),$chown,'</td></tr>';
+		$tu->clear();
 	}
 	
 	print "<tr>\n  <td>\n  </td>\n  <td align=right>\n";
@@ -432,7 +351,6 @@ sub clear
 # Методы для непосредственной работы с Базой Данных
 ###################################################################################################
 
-
 sub IDs
 {
 	my $o = shift;
@@ -472,8 +390,9 @@ sub del
 	my $key;
 	my %p = $o->props();
 	
+	if($o->{'_temp_object'}){ $o->clear(); return; }
 	if($o->{'ID'} eq 'cre'){ $o->clear(); return; }
-	if($o->{'ID'} < 0){ $o->clear(); return; }
+	if($o->{'ID'} < 1){ $o->clear(); return; }
 	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{'ID'}); }
 	
 	
@@ -500,7 +419,7 @@ sub reload
 	my %p = $o->props();
 	
 	if($o->{'ID'} eq 'cre'){ $o->{'ID'} = $o->insert(); }
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
 	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
 	
 	my $str = $eml::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
@@ -560,10 +479,13 @@ sub save
 	my @vals = ();
 	my $val;
 	
-	if($o->{'ID'} eq 'cre'){ $o->{'ID'} = $o->insert(); }
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'_temp_object'}){ return; }
+	if($o->{'ID'} eq 'cre'){ $o->{'ID'} = $o->insert(); $o->reload(); }
+	if($o->{'ID'} < 1){ return; }
 	if(!$o->access('w')){ return; }
 	if($o->{'ID'} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
+	
+	#print 'Saving: ',$o->myurl(),'<br>';
 	
 	my $sql = 'UPDATE `dbo_'.ref($o).'` SET ';
 	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?, ';
@@ -598,6 +520,8 @@ sub insert
 {
 	my $o = shift;
 	my $str;
+	
+	if($eml::g_user->{'ID'} < 1){ return -1; }
 	
 	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
 	$str->execute($eml::g_user->{'ID'});
@@ -648,13 +572,78 @@ sub creTABLE
 
 
 ###################################################################################################
+# Методы выполняющие поиск объектов
+###################################################################################################
+
+sub sel_one
+{
+	my $o = shift;
+	my $wh = shift;
+	
+	my $id;
+	
+	$o->save();
+	$o->clear();
+	
+	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	$str->execute(@_);
+	
+	($id) = $str->fetchrow_array();
+	
+	if(! $id){ $o->clear(); return; }
+	
+	$o->{'ID'} = $id;
+	$o->reload();
+}
+
+sub sel_where
+{
+	my $o = shift;
+	my $wh = shift;
+	
+	my $id;
+	my @oar;
+	
+	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	$str->execute(@_);
+	
+	while( ($id) = $str->fetchrow_array() ){
+		
+		push(@oar,&{ref($o).'::new'}($id));
+		
+	}
+	
+	return @oar;
+}
+
+sub o_sql
+{
+	my $o = shift;
+	my $wh = shift;
+	
+	my $id;
+	my @oar;
+	
+	my $str = $eml::dbh->prepare($wh);
+	$str->execute(@_);
+	
+	while( ($id) = $str->fetchrow_hashref('NAME_lc') ){
+		
+		push(@oar,&{ref($o).'::new'}($id->{'id'}));
+		
+	}
+	
+	return @oar;
+}
+
+
+###################################################################################################
 # Методы для реализации наследования Perl
 ###################################################################################################
 
 sub DESTROY
 {
 	my $o = shift;
-	if($o->{'_temp_object'}){ return; }
 	$o->save();
 }
 
@@ -829,10 +818,17 @@ sub papa
 {
 	my $o = shift;
 	
-	if($o->{'PAPA_CLASS'} eq '' or $o->{'PAPA_ID'} < 0){ return undef; }
+	if($o->{'PAPA_CLASS'} eq '' or $o->{'PAPA_ID'} < 1){ return undef; }
 	
 	return &{ $o->{'PAPA_CLASS'}.'::new' }($o->{'PAPA_ID'});
 }
+
+
+###################################################################################################
+# Методы реализации разделения доступа
+###################################################################################################
+
+require $eml::jlib.'/access.cgi';
 
 
 ###################################################################################################

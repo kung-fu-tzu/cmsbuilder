@@ -23,7 +23,7 @@ sub admin_left
 	my $o = shift;
 	
 	if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
-	if( $o->{'_is_ref'} ){ return $o->SUPER::admin_left(); }
+	if( $o->{'_is_shcut'} ){ return $o->SUPER::admin_left(); }
 	
 	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
 	my $disp = $node{'s'} ? 'block' : 'none';
@@ -31,21 +31,11 @@ sub admin_left
 	
 	print '<nobr><img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),'</nobr><br>',"\n";
 	
-	#print '<div id="id_'.ref($o).$o->{'ID'}.'"
-	#onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
-	#onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
-	#onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
-	#onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
-	#style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
-	#></div>';
-	#print "\n";
 	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
+	
 	my $to;
-	for $to ($o->get_all($max_admin_left)){
-		
-		$to->admin_left();
-		
-	}
+	for $to ($o->get_all($max_admin_left)){ $to->admin_left() }
+	
 	if($o->len() > $max_admin_left){ print '<nobr><img class="icon" align="absmiddle" src="bullet.gif"><font color="#ff7300" size=1>Элементов слишком много...</font></nobr><br>',"\n"; }
 	print '</div>',"\n";
 }
@@ -77,14 +67,18 @@ sub admin_view
 		print '<a onclick="return doDel()" href="?url='.$o->myurl().'&act=dele&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0  alt="Удалить" src=x.gif></a>';
 		
 		if(${ref($o).'::pages_direction'}){
-			if($e->{'_ENUM'} != 1){ print '<a href="?url='.$o->myurl().'&act=eup&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
-			if($e->{'_ENUM'} != $len){ print '<a href="?url='.$o->myurl().'&act=edown&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != 1){ print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
 		}else{
-			if($e->{'_ENUM'} != $len){ print '<a href="?url='.$o->myurl().'&&act=edownenum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
-			if($e->{'_ENUM'} != 1){ print '<a href="?url='.$o->myurl().'&act=eup&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != 1){ print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
 		}
 		
-		print '<a href="move2.ehtml?from='.$o->myurl().'&enum='.$e->{'_ENUM'}.'"><img border=0 alt="Переместить в другой каталог..." src=move2.gif></a>';
+		if($e->{'_is_shcut'}){
+			print '<img border=0 alt="Этот элемент является ярлыком" src="shcut.gif">';
+		}else{
+			print '<a href="?act=move2&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'"><img border=0 alt="Переместить в другой каталог..." src="move2.gif"></a>';
+		}
 		
 		
 		print "\n",'&nbsp;&nbsp;',"\n";
@@ -379,7 +373,7 @@ sub elem_paste
 	my $o = shift;
 	my $po = shift;
 	
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
 	
 	$o->elem_paste_ref($po);
 	
@@ -387,6 +381,16 @@ sub elem_paste
 	$po->{'PAPA_CLASS'} = ref($o);
 	
 	$po->save();
+}
+
+sub elem_paste_shcut
+{
+	my $o = shift;
+	my $po = shift;
+	
+	if($o->{'ID'} < 1){ return; }
+	
+	$o->elem_paste_ref($po,1);
 }
 
 
@@ -398,14 +402,16 @@ sub elem_paste_ref
 {
 	my $o = shift;
 	my $po = shift;
+	my $shcut = shift;
 	
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
+	if($po->{'ID'} < 1){ return; }
 	if(!$o->is_array_table()){ $o->create_array_table();  }
 	
 	if( !$o->elem_can_paste($po) ){ eml::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
 	
-	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{'ID'}.'` (ID,CLASS) VALUES (?,?)');
-	$str->execute($po->{'ID'},ref($po));
+	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{'ID'}.'` (ID,CLASS,SHCUT) VALUES (?,?,?)');
+	$str->execute($po->{'ID'},ref($po),$shcut?1:0);
 	
 	$o->sortT();
 }
@@ -425,7 +431,7 @@ sub elem
 	my $o = shift;
 	my $eid = shift;
 	
-	if($o->{'ID'} < 0){ return undef; }
+	if($o->{'ID'} < 1){ return undef; }
 	if(!$o->is_array_table()){ return undef; }
 	
 	my $str = $eml::dbh->prepare('SELECT * FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
@@ -435,7 +441,13 @@ sub elem
 	
 	if(!$res->{'CLASS'}){ return undef; }
 	
-	return &{ $res->{'CLASS'}.'::new' }($res->{'ID'});
+	if(!$res->{'SHCUT'}){ return &{ $res->{'CLASS'}.'::new' }($res->{'ID'}) }
+	
+	my $to = &{ $res->{'CLASS'}.'::new' }();
+	$to->load($res->{'ID'});
+	$to->{'_temp_object'} = 1;
+	$to->{'_is_shcut'} = 1;
+	return $to;
 }
 
 sub elem_cut
@@ -443,14 +455,16 @@ sub elem_cut
 	my $o = shift;
 	my $eid = shift;
 	
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
 	
 	my $to = $o->elem($eid);
 	if(!$to){ return undef; }
 	
-	$to->{'PAPA_CLASS'} = '';
-	$to->{'PAPA_ID'} = -1;
-	$to->save();
+	if(!$to->{'_is_shcut'}){
+		$to->{'PAPA_CLASS'} = '';
+		$to->{'PAPA_ID'} = -1;
+		$to->save();
+	}
 	
 	my $str = $eml::dbh->prepare('DELETE FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
@@ -466,14 +480,14 @@ sub elem_moveto
 	my $enum = shift;
 	my $place = shift;
 	
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
 	
-	if($place eq ''){ eml::err505('elem_moveto: Новая позиция пуста'); }
-	if($place < 0){ eml::err505('elem_moveto: Новая позиция меньше 1'); }
-	if($place == $enum){ eml::err505('elem_moveto: Новая позиция рана старой'); }
-	if($place > $o->len()){ eml::err505('elem_moveto: Новая позиция больше или равна длине массива'); }
+	if($place eq ''){ $o->err_add('Новая позиция пуста.'); return; }
+	if($place < 0){ $o->err_add('Новая позиция меньше 1.'); return; }
+	if($place == $enum){ $o->err_add('Новая позиция рана старой.'); return; }
+	if($place > $o->len()){ $o->err_add('Новая позиция больше или равна количеству элементов ('.$place.').'); return; }
 	
-	if(! $o->elem($enum)){ return; }
+	if(!$o->elem($enum)){ $o->err_add('Указанный элемент не существует ('.$enum.').'); return; }
 	
 	$o->sortT();
 	
@@ -504,6 +518,7 @@ sub create_array_table
 	$sql .= '`num` INT NOT NULL AUTO_INCREMENT , ';
 	$sql .= '`ID` INT DEFAULT \'-1\' NOT NULL, ';
 	$sql .= '`CLASS` VARCHAR(20) NOT NULL, ';
+	$sql .= '`SHCUT` SMALLINT DEFAULT \'0\' NOT NULL, ';
 	$sql .= 'INDEX ( `num` ) )';
 
 	my $str = $eml::dbh->prepare($sql);
@@ -516,7 +531,7 @@ sub is_array_table
 {
 	my $o = shift;
 	
-	if($o->{'ID'} < 0){ return 0; }
+	if($o->{'ID'} < 1){ return 0; }
 	
 	if($o->{'_isatable'} eq 'yes'){ return 1; }
 	if($o->{'_isatable'} eq 'no'){ return 0; }
@@ -543,7 +558,7 @@ sub len
 {
 	my $o = shift;
 
-	if($o->{'ID'} < 0){ return 0; }
+	if($o->{'ID'} < 1){ return 0; }
 	if(!$o->is_array_table()){ return 0; }
 
 	my $str = $eml::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{'ID'}.'`');
@@ -559,7 +574,7 @@ sub del
 	my $o = shift;
 	my $i;
 	
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
 	
 	my $len = $o->len();
 
@@ -582,7 +597,7 @@ sub sortT
 	my $o = shift;
 	my($i,$str,$str2,$num,$table);
 	
-	if($o->{'ID'} < 0){ return; }
+	if($o->{'ID'} < 1){ return; }
 	if(!$o->is_array_table()){ return; }
 	
 	$table = 'arr_'.ref($o).'_'.$o->{'ID'};

@@ -1,4 +1,4 @@
-<?eml login::cms() ?><html>
+<?eml admin::cms() ?><html>
 <head>
 <LINK rel="stylesheet" TYPE="text/css" HREF="style.css">
 <SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>

@@ -9,43 +9,88 @@ my $def_mod = 'Сайт';
 
 my $do_list;
 
+sub jchown
+{
+	my $url = eml::param('url');
+	my $uid = eml::param('uid');
+	my $obj = DBObject::url($url);
+	my $tu;
+	
+	if(!$eml::g_group->{'root'}){ eml::err403('Trying chown, less $eml::g_group->{"root"}'); return; }
+	
+	$eml::sess{'admin_refresh_left'} = 0;
+
+	if($uid){
+		
+		$uid =~ s/\D//g;
+		
+		$tu = User::new();
+		$tu->load($uid);
+		
+		if($tu->{'ID'} < 1){ $obj->err_add('Указанный пользователь не существует!'); return; }
+		
+		$obj->{'OID'} = $uid;
+		$obj->save();
+		
+		return;
+	}
+
+	$do_list = 0;
+
+	my $nowu = User::new( $obj->{'OID'} );
+	
+	print 'Изменение владельца для элемента: <b>',$obj->name(),'</b><br>';
+	print 'Текущий владелец элемента: <b>',$nowu->name(),'</b><br>';
+	
+	print '<br><br>Выберете нового владельца:<br><br>';
+	
+	my $count = 0;
+	for $tu ($nowu->sel_where(' 1 ')){
+		
+		if($tu->{'ID'} == $nowu->{'ID'}){ next; }
+		print '<img src="dot.gif" align="absmiddle"> <a href="?act=chown&url=',$url,'&uid=',$tu->{'ID'},'">',$tu->name(),'</a><br>';
+		$count++;
+	}
+	
+	if(!$count){ print '<center><b>Нет пользователей для отображения!</b></center>'; }
+}
+
 sub move2
 {
-	my $ufrom = eml::param('from');
+	my $url = eml::param('url');
 	my $uto = eml::param('to');
 	my $enum = eml::param('enum');
 	my $ref = eml::param('ref');
 	
-	my $from = DBObject::url($ufrom);
-	my $elem;
+	my $from = DBObject::url($url);
+	my $elem = $from->elem($enum);
+	
+	if($elem->{'_is_shcut'}){ $from->err_add('Меремещаемый элемен является ярлыком.'); return; }
 	
 	if($uto){
 		
 		my $to = DBObject::url($uto);
 		
-		$elem = $from->elem($enum);
 		if(!$to->elem_can_paste($elem)){ return; }
 		
 		if($ref){
 			$elem = $from->elem($enum);
-			$to->elem_paste_ref($elem,1);
+			$to->elem_paste_shcut($elem);
 			
 		}else{
 			$elem = $from->elem_cut($enum);
 			$to->elem_paste($elem);
 		}
 		
-		$eml::sess{'admin_refresh_left'} = 1;
-		
-		print '<script language="JavaScript">location.href = "right.ehtml?url=',$from->myurl(),'"</script>';
-		$do_list = 0;
 		return;
 	}
+
+	$eml::sess{'admin_refresh_left'} = 0;
+	$do_list = 0;
 	
-	$elem  = $from->elem($enum);
 	my $eclass = ref($elem);
 	
-	print '<center>Выберете раздел, в который переместить элемент: <b>',$elem->name(),'</b>.</center><br>';
+	print 'Выберете раздел, в который переместить элемент: <b>',$elem->name(),'</b>.<br><br>';
 	
 	my $count = 0;
 	
@@ -63,7 +108,7 @@ sub move2
 			if($from->myurl() eq $d->myurl()){ next; }
 			if($elem->myurl() eq $d->myurl()){ next; }
 			
-			print '<img src=dot.gif align=absmiddle><a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=1"><img align=absmiddle border=0 src="ref.gif"></a> <a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=0">',$d->name(),'</a><br>';
+			print '<img src="dot.gif" align="absmiddle"><a href="?act=move2&url=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=1"><img align=absmiddle border=0 src="shcut.gif"></a> <a href="?act=move2&url=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=0">',$d->name(),'</a><br>';
 			$count++;
 		}
 	}
@@ -88,6 +133,7 @@ sub action
 	my $cn = eml::param('cname');
 	my $enum = eml::param('enum');
 	my $page = eml::param('page');
+	
 	
 	my $w = DBObject::url($url);
 	
@@ -128,11 +174,14 @@ sub action
 	}
 	
 	if($act eq 'dele'){ $w->elem_del($enum); }
-
+	
 	if($act eq 'eup'){ $w->elem_moveup($enum); }
-
+	
 	if($act eq 'edown'){ $w->elem_movedown($enum); }
 	
+	if($act eq 'move2'){ move2(); }
+	
+	if($act eq 'chown'){ jchown(); }
 }
 
 sub left_tree
@@ -251,6 +300,9 @@ sub modules
 {
 	my $m;
 	my $sel_mod = eml::param('mod');
+	my $uname;
+	
+	if($eml::g_user){ $uname = $eml::g_user->name() }else{ $uname = 'Вы не вошли в систему' }
 	
 	if(!$sel_mod){ $sel_mod = $def_mod }
 	
@@ -265,7 +317,7 @@ sub modules
 	parent.document.frames.admin_left.location.href = "left.ehtml?url=',$mods{$sel_mod},'";
 	parent.document.frames.admin_right.location.href = "right.ehtml?url=',$mods{$sel_mod},'";
 	parent.document.all.module_div_it.innerHTML = "',$sel_mod,'";
-	parent.document.all.user_div_it.innerHTML = "',$eml::g_user->name(),'";
+	parent.document.all.user_div_it.innerHTML = "',$uname,'";
 	</SCRIPT>
 	';
 	
@@ -280,8 +332,11 @@ sub list
 	if(!$do_list){ return; }
 	
 	my $w = DBObject::url($url);
+	$w->save();
 	$w->reload();
 	$w->admin_view($page);
 }
+
+sub cms { if($eml::g_group->{'cms'} != 1){ eml::err403('$g_group->{"cms"} != 1'); } }
 
 return 1;

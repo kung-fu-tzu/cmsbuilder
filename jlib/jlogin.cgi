@@ -6,7 +6,7 @@ $errstr = '';
 
 sub login
 {
-	my($cook,$l,$p,$rnd);
+	my($cook,$l,$p,$rnd,$group);
 	$l = shift;
 	$p = shift;
 	
@@ -18,9 +18,14 @@ sub login
 	$tu->sel_one(' login = ? ',$l);
 	eml::su_stop();
 	
-	if($tu->{'ID'} < 0){return err("Неверное имя пользователя.");}
+	if($tu->{'ID'} < 1){return err("Неверное имя пользователя.");}
 	if($tu->{'pas'} ne $p){return err("Неверный пароль.");}
-	if($tu->papa() eq undef){return err("Вы не состоите ни в одной группе.");}
+	
+	eml::su_start();
+	$group = $tu->papa();
+	eml::su_stop();
+	if($group eq undef){return err("Вы не состоите ни в одной группе.");}
+	$group->clear();
 	
 	# login and password OK
 	
@@ -33,6 +38,7 @@ sub login
 	
 	eml::su_start();
 	$tu->save();
+	$tu->clear();
 	eml::su_stop();
 	
 	$eml::sess{'JLogin_sid'} = $rnd;
@@ -51,7 +57,7 @@ sub logout
 	my $tu = User::new();
 	$tu->sel_one(' sid = ? ',"$sid");
 	
-	if($tu->{'ID'} < 0){ return( err("Ваш ключ устарел. Войдите в систему повторно.") ); }
+	if($tu->{'ID'} < 1){ return( err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 	
 	$tu->{'sid'} = 0;
 	
@@ -62,7 +68,7 @@ sub logout
 
 sub verif
 {
-	my($co,%cook,$sid);
+	my($co,%cook,$sid,$group);
 	
 	$sid = $eml::sess{'JLogin_sid'};
 	
@@ -72,15 +78,23 @@ sub verif
 	
 	
 	my $tu = User::new();
+	
 	eml::su_start();
 	$tu->sel_one(' sid = ? ',"$sid");
+	$tu = $tu->no_cache();
 	eml::su_stop();
 	
 	#print STDERR $tu->{'ID'};
 	
-	if($tu->{'ID'} < 0){ return (undef,undef); }
-	if($tu->papa() eq undef){ return (undef,undef); }
+	if($tu->{'ID'} < 1){ return (undef,undef); }
 	
+	eml::su_start();
+	$group = $tu->papa();
+	$group = $group->no_cache();
+	eml::su_stop();
+	
+	if($group eq undef){ return (undef,undef); }
+	$group->clear();
 	return ($tu,$tu->papa());
 }
 

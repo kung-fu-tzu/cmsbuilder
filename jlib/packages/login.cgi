@@ -1,13 +1,6 @@
 package login;
 use strict qw(subs vars);
 
-sub cms
-{
-	if(!$eml::do_users){ return; }
-	
-	if($eml::g_group->{'cms'} != 1){ eml::err403('$g_group->{"cms"} != 1'); }
-}
-
 sub act
 {
 	my ($act,$login,$pas);
