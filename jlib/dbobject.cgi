@@ -26,7 +26,7 @@ sub myurl
 {
 	my $o = shift;
 	
-	return ref($o).$o->{'ID'};
+	return $o->{'_class'}.$o->{'ID'};
 }
 
 sub url2classid
@@ -71,14 +71,14 @@ sub des_page
 {
 	my $o = shift;
 	
-	print '<b>',$o->{'name'},'</b> Страничный вывод для класса "',ref($o),'" не определён!';
+	print '<b>',$o->{'name'},'</b> Страничный вывод для класса "',$o->{'_class'},'" не определён!';
 }
 
 sub des_preview
 {
 	my $o = shift;
 	
-	print '<b>',$o->{'name'},'</b> Предварительный вывод для класса "',ref($o),'" не определён!';
+	print '<b>',$o->{'name'},'</b> Предварительный вывод для класса "',$o->{'_class'},'" не определён!';
 }
 
 sub des_href
@@ -86,7 +86,7 @@ sub des_href
 	my $o = shift;
 	my $page = shift;
 	
-	return ${ref($o).'::page'}.'?obj='.$o->myurl();
+	return ${$o->{'_class'}.'::page'}.'?obj='.$o->myurl();
 }
 
 sub des_name
@@ -94,7 +94,7 @@ sub des_name
 	my $o = shift;
 	
 	my $dname = $o->{name};
-	if(!$dname){ $dname = ${ref($o).'::name'}; }
+	if(!$dname){ $dname = ${$o->{'_class'}.'::name'}; }
 	
 	return '<a href="'.$o->des_href().'">'.$dname.'</a>';
 }
@@ -105,9 +105,9 @@ sub name
 	my $ret;
 	
 	if($o->{name}){ return $o->{name} }
-	if($o->{'ID'} < 0){ return 'Объект был удалён: '.${ref($o).'::name'}.' '.$o->{ID} }
+	if($o->{'ID'} < 0){ return 'Объект был удалён: '.${$o->{'_class'}.'::name'}.' '.$o->{ID} }
 	
-	return ${ref($o).'::name'}.' '.$o->{ID};
+	return ${$o->{'_class'}.'::name'}.' '.$o->{ID};
 }
 
 sub file_href
@@ -117,7 +117,7 @@ sub file_href
 	my $id = $o->{ID};
 	my %props = $o->props();
 	
-	return '/files/'.ref($o)."_${name}_$id".$props{$name}{ext};
+	return '/files/'.$o->{'_class'}."_${name}_$id".$props{$name}{ext};
 }
 
 sub anyfile_href
@@ -127,7 +127,7 @@ sub anyfile_href
 	my $id = $o->{ID};
 	my %props = $o->props();
 	
-	return '/files/'.ref($o)."_${name}_$id".$o->{$name};
+	return '/files/'.$o->{'_class'}."_${name}_$id".$o->{$name};
 }
 
 
@@ -145,7 +145,7 @@ sub sel_one
 	$o->save();
 	$o->clear();
 	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.$o->{'_class'}.'` WHERE '.$wh);
 	$str->execute(@_);
 	
 	($id) = $str->fetchrow_array();
@@ -164,12 +164,12 @@ sub sel_where
 	my $id;
 	my @oar;
 	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
+	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.$o->{'_class'}.'` WHERE '.$wh);
 	$str->execute(@_);
 	
 	while( ($id) = $str->fetchrow_array() ){
 		
-		push(@oar,&{ref($o).'::new'}($id));
+		push(@oar,&{$o->{'_class'}.'::new'}($id));
 		
 	}
 	
@@ -189,7 +189,7 @@ sub o_sql
 	
 	while( ($id) = $str->fetchrow_hashref('NAME_lc') ){
 		
-		push(@oar,&{ref($o).'::new'}($id->{'id'}));
+		push(@oar,&{$o->{'_class'}.'::new'}($id->{'id'}));
 		
 	}
 	
@@ -222,7 +222,7 @@ sub admin_name
 	$ret =~ s/\<(?:.|\n)+?\>//g;
 	if(length($ret) > $admin_left_max_name_len){ $ret = substr($ret,0,$admin_left_max_name_len-1).'...' }
 	
-	return '<a id="id_'.ref($o).$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">&nbsp;'.$ret.'&nbsp;</a>';
+	return '<a id="id_'.$o->{'_class'}.$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.$o->{'_class'}.'&ID='.$o->{'ID'}.'">&nbsp;'.$ret.'&nbsp;</a>';
 }
 
 sub admin_tree
@@ -239,7 +239,7 @@ sub admin_tree
 		$count++;
 		unshift(@all, $o->admin_name());
 		
-		print 'ShowMe(parent.frames.admin_left.document.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.dbdot_'.ref($o).$o->{'ID'}.'); ',"\n";
+		print 'ShowMe(parent.frames.admin_left.document.all["dbi_'.$o->{'_class'}.$o->{'ID'}.'"],parent.frames.admin_left.document.all["dbdot_'.$o->{'_class'}.$o->{'ID'}.'"]); ',"\n";
 		
 	}while( $o = $o->papa() and $count < 50 );
 	
@@ -281,12 +281,12 @@ sub admin_list
 		
 		print '<tr><td height=15>';
 		
-		if($o->{PAPA_ID} < 0){ print "<a style='CURSOR: default' onclick='return doDel()' href=?class=".ref($o)."&ID=$i&act=del><img onmouseover=\"this.src='x_on.gif'\" onmouseout=\"this.src='x.gif'\" border=0 src=x.gif></a>"; }
+		if($o->{PAPA_ID} < 0){ print "<a style='CURSOR: default' onclick='return doDel()' href=?class=".$o->{'_class'}."&ID=$i&act=del><img onmouseover=\"this.src='x_on.gif'\" onmouseout=\"this.src='x.gif'\" border=0 src=x.gif></a>"; }
 		else{ print "<img border=0 src=nx.gif>" }
 		
 		print '</td><td width=10></td><td valign=top>';
 		
-		print "<a href=?class=".ref($o)."&ID=$i>".$o->name()."</a>";
+		print "<a href=?class=".$o->{'_class'}."&ID=$i>".$o->name()."</a>";
 		
 		print '</td></tr>';
 	}
@@ -296,7 +296,7 @@ sub admin_list
 	for(my $p=0;$p<$pages;$p++){
 		
 		if($p == $page){ print ' <b>'.($p+1).'</b> '; }
-		else{ print ' <a href="?class='.ref($o).'&page='.$p.'">'.($p+1).'</a> '; }
+		else{ print ' <a href="?class='.$o->{'_class'}.'&page='.$p.'">'.($p+1).'</a> '; }
 	}
 	
 	print '</center>';
@@ -307,11 +307,11 @@ sub admin_edit
 	my $o = shift;
 	my ($key,$val,@keys);
 	my %p = $o->props();
-	#if($eml::gid != 0){ eml::err403("DBO: EDIT with gid != 0,".ref($o).", ".$o->{ID}); }
+	#if($eml::gid != 0){ eml::err403("DBO: EDIT with gid != 0,".$o->{'_class'}.", ".$o->{ID}); }
 	
 	if($o->{ID} < 1){ $o->{'_print'} = "<font color=red>Ошибка: ID < 1.</font><br>\n"; return; }
 	
-	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
+	if( $#{ $o->{'_class'}.'::aview' } > -1 ){ @keys = @{ $o->{'_class'}.'::aview' }; }else{ @keys = keys( %p ); }
 	
 	for $key (@keys){
 		
@@ -333,20 +333,20 @@ sub admin_view
 	my $key;
 	my @keys;
 	my %p = $o->props();
-	#if($eml::gid != 0){ eml::err403("DBO: VIEW with gid != 0,".ref($o).", ".$o->{ID}); }
+	#if($eml::gid != 0){ eml::err403("DBO: VIEW with gid != 0,".$o->{'_class'}.", ".$o->{ID}); }
 	
 	print "\n\n";
 	print '<table width="100%" border=0><tr><td align=center>';
-	print "<!-- VIEW '".ref($o)."' WHERE ID = $o->{ID} -->\n";
+	print "<!-- VIEW '".$o->{'_class'}."' WHERE ID = $o->{ID} -->\n";
 	if($o->{'_print'}){ print $o->{'_print'}; $o->{'_print'} = ''; }
 	print '<form action="?" method="POST" enctype="multipart/form-data">',"\n";
 	print '<input type="hidden" name="ID" value="',$o->{ID},'">',"\n";
 	print '<input type="hidden" name="act" value="edit">',"\n";
-	print '<input type="hidden" name="class" value="'.ref($o).'">',"\n";
+	print '<input type="hidden" name="class" value="'.$o->{'_class'}.'">',"\n";
 	
 	print '<table width="100%">',"\n";
 	
-	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
+	if( $#{ $o->{'_class'}.'::aview' } > -1 ){ @keys = @{ $o->{'_class'}.'::aview' }; }else{ @keys = keys( %p ); }
 	for $key (@keys){
 		
 		print "<tr><td valign=top><b>".$p{$key}{name}.":</b></td><td>\n";
@@ -424,12 +424,14 @@ sub clear
 {
 	my $o = shift;
 	my $key;
+	my $cn = $o->{'_class'};
 	
 	for $key (keys( %$o )){
 		
 		$o->{$key} = '';
 	}
 	
+	$o->{'_class'} = $cn;
 	$o->{ID} = -1;
 }
 
@@ -450,7 +452,7 @@ sub IDs
 	if(!$col){ $col = 'ID' }
 	if($lim){ $lim = ' LIMIT '.$lim }
 	
-	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` ORDER BY '.$col.$lim);
+	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.$o->{'_class'}.'` ORDER BY '.$col.$lim);
 	$str->execute();
 	
 	while( ($id) = $str->fetchrow_array() ){
@@ -464,7 +466,7 @@ sub count
 {
 	my $o = shift;
 	
-	my $str = $eml::dbh->prepare('SELECT COUNT(ID) FROM `dbo_'.ref($o).'`');
+	my $str = $eml::dbh->prepare('SELECT COUNT(ID) FROM `dbo_'.$o->{'_class'}.'`');
 	$str->execute();
 	
 	my ($res) = $str->fetchrow_array();
@@ -480,7 +482,7 @@ sub del
 	
 	if($o->{ID} eq 'cre'){ $o->clear(); return; }
 	if($o->{ID} < 0){ $o->clear(); return; }
-	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{ID}); }
+	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to del(), '.$o->{'_class'}.', '.$o->{ID}); }
 	
 	
 	for $key (keys( %p )){
@@ -493,7 +495,7 @@ sub del
 		
 	}
 	
-	my $str = $eml::dbh->prepare('DELETE FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
+	my $str = $eml::dbh->prepare('DELETE FROM `dbo_'.$o->{'_class'}.'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{ID});
 	
 	$o->clear();
@@ -507,14 +509,14 @@ sub reload
 	
 	if($o->{ID} eq 'cre'){ $o->{ID} = $o->insert(); }
 	if($o->{ID} < 0){ return; }
-	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{ID}"); }
+	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to reload(), '.$o->{'_class'}.", $o->{ID}"); }
 	
-	my $str = $eml::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
+	my $str = $eml::dbh->prepare('SELECT * FROM `dbo_'.$o->{'_class'}.'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{ID});
 	
 	my $res = $str->fetchrow_hashref('NAME_lc');
 	
-	if($res->{id} != $o->{ID}){ print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}."\n"; $o->clear(); return; }
+	if($res->{id} != $o->{ID}){ print STDERR 'DBO: Loading from not existed row, class = "'.$o->{'_class'}.'",ID = '.$o->{ID}."\n"; $o->clear(); return; }
 	
 	my $id = 0;
 	my $have_o = 0;
@@ -530,7 +532,7 @@ sub reload
 			if($id < 1){ $id = 'cre' }
 			$o->{$key} = &{ $p{$key}{class}.'::new' }($id);
 			$o->{$key}->{PAPA_ID} = $o->{ID};
-			$o->{$key}->{PAPA_CLASS} = ref($o);
+			$o->{$key}->{PAPA_CLASS} = $o->{'_class'};
 		}
 	}
 	
@@ -554,9 +556,9 @@ sub save
 	
 	if($o->{ID} eq 'cre'){ $o->{ID} = $o->insert(); }
 	if($o->{ID} < 0){ return; }
-	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to save(), '.ref($o).", $o->{ID}"); }
+	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to save(), '.$o->{'_class'}.", $o->{ID}"); }
 	
-	my $sql = 'UPDATE `dbo_'.ref($o).'` SET ';
+	my $sql = 'UPDATE `dbo_'.$o->{'_class'}.'` SET ';
 	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?, ';
 	
 	for $key (keys( %p )){
@@ -590,10 +592,10 @@ sub insert
 	my $o = shift;
 	my $str;
 	
-	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
+	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.$o->{'_class'}.'` (OID,CTS) VALUES (?,NOW())');
 	$str->execute($eml::uid);
 	
-	$str = $eml::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
+	$str = $eml::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.$o->{'_class'}.'` LIMIT 1');
 	$str->execute();
 	my $id;
 	
@@ -612,9 +614,9 @@ sub creTABLE
 	if(ref($o)){ %p = $o->props(); }
 	else{ %p = &{$o.'::props'} }
 	
-	print '<br><a onclick="sql_',ref($o),'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',ref($o)?ref($o):$o,'":</b><br>';
+	print '<br><a onclick="sql_',$o->{'_class'},'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',ref($o)?$o->{'_class'}:$o,'":</b><br>';
 	
-	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.ref($o).'` ( '."\n";
+	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.$o->{'_class'}.'` ( '."\n";
 	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
 	$sql .= '`OID` INT DEFAULT \'-1\' NOT NULL, '."\n";
 	$sql .= '`ATS` TIMESTAMP NOT NULL, '."\n";
@@ -635,7 +637,7 @@ sub creTABLE
 	
 	$sql =~ s/\n/<br>\n/g;
 	
-	print '<div style="DISPLAY: none" id="sql_',ref($o),'">',$sql,'</div>';
+	print '<div style="DISPLAY: none" id="sql_',$o->{'_class'},'">',$sql,'</div>';
 }
 
 
@@ -654,7 +656,7 @@ sub props
 {
 	my $o = shift;
 	
-	return %{ref($o).'::props'};
+	return %{$o->{'_class'}.'::props'};
 }
 
 sub _construct
@@ -668,6 +670,8 @@ sub _construct
 	if(!$no_cache){
 		if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
 	}
+	
+	$o->{'_class'} = ref($o);
 	
 	$o->{ID} = $n;
 	$o->reload();
@@ -696,7 +700,7 @@ sub print_props
 	
 	print '<table border=1>';
 	
-	print '<tr><td align=center colSpan=2><b>'.ref($o).'</b></td></tr>';
+	print '<tr><td align=center colSpan=2><b>'.$o->{'_class'}.'</b></td></tr>';
 	
 	for $key (keys( %p )){
 		print '<tr><td>',$p{$key}{name},' (',$key,'):</td><td><b>',$p{$key}{type},'</b></td></tr>';

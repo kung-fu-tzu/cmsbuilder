@@ -160,6 +160,7 @@ sub mymain
 	}
 	closedir(DBO);
 	undef $file;
+	push @dbos, 'DBRef';
 	
 	
 	if($do_users){
@@ -174,7 +175,7 @@ sub mymain
 	else{
 		$uid = 1; $gid = 1;
 		$g_user = User::new();
-		$g_user->{'name'} = 'Temp Admin';
+		$g_user->{'name'} = 'Монопольный режим';
 		$g_group = UserGroup::new();
 		$g_group->{'adminka'} = 1;
 		$g_user->{'_temp_object'} = 1;

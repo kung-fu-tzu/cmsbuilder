@@ -22,7 +22,7 @@ sub init
 	
 	if($w){ $w->clear(); }
 	$w = &{ $cl.'::new' };
-	$class = $cl;
+	$class = $w->{'_class'};
 }
 
 sub move2
@@ -41,22 +41,24 @@ sub move2
 		
 		if($ref){
 			$elem = $from->elem($enum);
-			$to->elem_paste_ref($elem,1);
 			
-			$eml::sess{'admin_refresh_left'} = 1;
+			my $refo = DBRef::new_ref('cre');
+			$refo->ref_take($elem);
+			
+			$to->elem_paste($refo);
 		}else{
 			$elem = $from->elem_cut($enum);
 			$to->elem_paste($elem);
-			
-			$eml::sess{'admin_refresh_left'} = 1;
 		}
 		
-		print '<script language="JavaScript">location.href = "right.ehtml?ID=',$from->{'ID'},'&class=',ref($from),'"</script>';
+		$eml::sess{'admin_refresh_left'} = 1;
+		
+		print '<script language="JavaScript">location.href = "right.ehtml?ID=',$from->{'ID'},'&class=',$from->{'_class'},'"</script>';
 		return;
 	}
 	
 	$elem  = $from->elem($enum);
-	my $eclass = ref($elem);
+	my $eclass = $elem->{'_class'};
 	
 	print '<center>Выберете раздел, в который переместить элемент: <b>',$elem->name(),'</b>.</center><br>';
 	
@@ -143,7 +145,7 @@ sub action
 		$w->load( $id );
 		$w->elem_paste($to);
 		
-		if( ${ref($w).'::pages_direction'} ){ $page = $w->pages()-1; }else{ $page = 0; }
+		if( ${$w->{'_class'}.'::pages_direction'} ){ $page = $w->pages()-1; }else{ $page = 0; }
 		
 		eml::unflush();
 		#print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page.'&ac='.$rnd;
