@@ -1,162 +1,169 @@
-#!/usr/bin/perl
+#!/usr/bin/perl 
 
-# Скрипт парсит переданный в PATH файл.
-# Ищет в нём конструкции типа <?o ... ?>
-# Разбирает содержимое конструкции и передаёт управление
-# функциям Perl.
-# Функции выполнены в виде пакетов
-
-package main;
-
-# Опции парсера #######
-
-$eml::print_error = 1;
-$eml::DBI = 1;
-$eml::USR = 1;
-$eml::buff = 1;
-$eml::jlib = '../jlib';
-$eml::env_dir = $eml::jlib.'/envs';
-$eml::dbo_dir = $eml::jlib.'/dbo';
-
-#######################
-
-
-# Переменные парсера ##
-
-@eml::envs = ();
-@eml::dbos = ();
-$eml::out = '';
-#*MEM;
-if($eml::buff){
-	open(MEM,'>',\$eml::out);
-	select(MEM);
-}
-
-#######################
-
+use DBI;
 use CGI qw/param/;
 use POSIX qw(strftime);
 
-if($eml::DBI){use DBI;}
 
 
-# Если вызван напрямую - отбой.
-if($ENV{REDIRECT_STATUS} eq ""){ err404('REDIRECT_STATUS'); }
+use strict qw(subs vars);
+use warnings;
 
-$eml::rdir = $ENV{SCRIPT_FILENAME};
-$eml::file =~ s/\\/\//g;
-$eml::rdir =~ s/\/[^\/]+$/\//;
-chdir($eml::rdir);
+#package EML;
 
+my $out = '';
+my $dir = '';
 
-#$eml::root = $ENV{DOCUMENT_ROOT};
-$eml::file = $ENV{PATH_TRANSLATED};
-$eml::file =~ s/\\/\//g;
-
-$eml::dir = $eml::file;
-$eml::dir =~ s/\/[^\/]+$/\//;
-
-
-# Если пустой - отбой.
-if($eml::file eq ""){ err404('$ENV{PATH_TRANSLATED} - empty file name'); }
-
-# Если не в директории htdocs - тоже, отбой.
-#if($eml::file !~ /^$eml::root/){ err404('File name out of DOCUMENT_ROOT: '.$eml::file); }
-
-# Если такого файла нет, изображаем стандартную ошибку.
-if(!open(FILE, "< $eml::file")){ err404('File not found: '.$eml::file); }
-$/ = \0;
-my $str = <FILE>;
-$/ = "\n";
-close(FILE);
+use vars '$print_error';
+use vars '$buff';
+use vars '$jlib';
+use vars '$env_dir';
+use vars '$dbo_dir';
+use vars '$dbh';
+use vars '$uid';
+use vars '$gid';
+use vars '@dbos';
+use vars '@envs';
 
 
-# Заголовки
-my $str_time = strftime('%a, %d %b %Y %T %H:00:00 GMT',gmtime( time()+200 ));
-print "Content-type: text/html; charset=windows-1251\n";
-print "Pragma: no-cache\n";
-print "Last-Modified: $str_time\n";
-print "Expires: 0\n";
-print "\n";
-undef $str_time;
 
-if($eml::DBI){
-	use DBI;
-	# Конектимся к базе данных
+################################
+@envs = ();
+@dbos = ();
+$dbh = '';
+$print_error = 1;
+$buff = 1;
+$jlib = '../jlib';
+$env_dir = $jlib.'/envs';
+$dbo_dir = $jlib.'/dbo';
+$uid = -1;
+$gid = -1;
+################################
+
+sub mymain
+{
+	
+	my(@parts,$i,$co,$str,$str_time,$jlogin,$rdir,$file);
+
+	
+	
+	if($buff){
+		open(MEM,'>',\$out);
+		select(MEM);
+	}	
+	
+	
+	
+	if($ENV{REDIRECT_STATUS} eq ""){ err404('REDIRECT_STATUS'); }
+	
+	$rdir  = $ENV{SCRIPT_FILENAME};
+	$rdir =~ s/\/[^\/]+$/\//;
+	chdir($rdir);
+	
+	require $jlib.'/jlogin.cgi';
+	require $jlib.'/dbobject.cgi';
+	require $jlib.'/dbarray.cgi';
+	
+	$file = $ENV{PATH_TRANSLATED};
+	$file =~ s/\\/\//g;
+	
+	$dir = $file;
+	$dir =~ s/\/[^\/]+$/\//;
+	
+	if($file eq ""){ err404('$ENV{PATH_TRANSLATED} - empty file name'); }
+	
+	
+
+	if(!open(FILE, "< $file")){ err404('File not found: '.$file); }
+	$str = join('',<FILE>);
+	close(FILE);
+	
+	# Заголовки
+	$str_time = strftime('%a, %d %b %Y %T %H:00:00 GMT',gmtime( time()+200 ));
+	print "Content-type: text/html; charset=windows-1251\n";
+	print "Pragma: no-cache\n";
+	print "Last-Modified: $str_time\n";
+	print "Expires: 0\n";
+	print "\n";
+	undef $str_time;
+
+
 	$dbh = DBI->connect("DBI:mysql:engine", "root", "pas",{ RaiseError => 1 });
 	$dbh->{HandleError} = sub {err505($_[0]);};
-}
 
-if($eml::USR){
-	# Получаем ид. пользователя от модуля аутентификации :)
-	require $eml::jlib.'/jlogin.cgi';
+	
 	$jlogin = JLogin::new($dbh);
-	$uid = 0;
-	$gid = 0;
+	$uid = -1;
+	$gid = -1;
 	($uid,$gid) = $jlogin->verif();
+	undef $jlogin;
+	#$uid = 1; $gid = 0;
+	
+	my $f;
+	if(!opendir(CLS,$env_dir)){err505('Can`t open enveronments directory: '.$env_dir);}
+	while($f = readdir(CLS)){
+		if(! -f "$env_dir/$f"){next;}
+		require "$env_dir/$f";
+		#print "$env_dir/$f";
+	
+		$f =~ s/\.[^\.]*//;
+	
+		push @envs, $f;
+	}
+	closedir(CLS);
+
+
+
+	$co = new CGI;
+	
+	for($i=0;$i<=$#envs;$i++){
+	
+		%{'EML::'.$envs[$i].'::cook'} = $co->cookie( 'EML_'.$envs[$i] );
+		${'EML::'.$envs[$i].'::emlh'} = emlh($envs[$i]);
+	}
+	
+	
+	if(!opendir(DBO,$dbo_dir)){err505('Can`t open dbo directory: '.$dbo_dir);}
+	while($file = readdir(DBO)){
+		if(! -f "$dbo_dir/$file"){next;}
+		require "$dbo_dir/$file";
+		#print "$dbo_dir/$file";
+	
+		$file =~ s/\.[^\.]*//;
+	
+		push @dbos, $file;
+	}
+	closedir(DBO);
+	undef $file;
+	
+	
+	# Считываем и парсим конструкции <!--#include ... -->
+	$str =~ s/<!--#include\s+(.+)\s+-->/SSI($1);/gei;
+	
+	# Считываем и парсим конструкции <?o object.method() ?>
+	@parts = split(/<\?o(.+?)\?>/,$str);
+	
+	undef $str;
+	
+	for($i=0;$i<=$#parts;$i++){
+	
+		if($i % 2){ parse($parts[$i]) }
+		else{ print $parts[$i]; }
+	
+	}
+	
+	undef $dbh;
+	flush();
+
 }
-else{ $uid = 1; $gid = 0; }
 
-if($uid > 0 and $gid == 0){ $eml::print_error = 1 }else{ $eml::print_error = 0 };
-
-# Создаём кукис объект
-$co = new CGI;
-
-
-my $file;
-if(!opendir(CLS,$eml::env_dir)){err505('Can`t open enveronments directory: '.$eml::env_dir);}
-while($file = readdir(CLS)){
-	if(! -f "$eml::env_dir/$file"){next;}
-	require "$eml::env_dir/$file";
-
-	$file =~ s/\.[^\.]*//;
-
-	push @eml::envs, $file;
-}
-closedir(CLS);
-
-for(my $i=0;$i<=$#eml::envs;$i++){
-
-	%{'EML::'.$eml::envs[$i].'::cook'} = $co->cookie( 'EML_'.$eml::envs[$i] );
-	${'EML::'.$eml::envs[$i].'::emlh'} = emlh($eml::envs[$i]);
-}
-
-
-require $eml::jlib.'/dbobject.cgi';
-require $eml::jlib.'/dbarray.cgi';
-if(!opendir(DBO,$eml::dbo_dir)){err505('Can`t open dbo directory: '.$eml::dbo_dir);}
-while($file = readdir(DBO)){
-	if(! -f "$eml::dbo_dir/$file"){next;}
-	require "$eml::dbo_dir/$file";
-
-	$file =~ s/\.[^\.]*//;
-
-	push @eml::dbos, $file;
-}
-closedir(DBO);
-undef $file;
-
-# Считываем и парсим конструкции <!--#include ... -->
-$str =~ s/<!--#include\s+(.+)\s+-->/SSI($1);/gei;
-
-# Считываем и парсим конструкции <?o object.method() ?>
-@eml::parts = split(/<\?o(.+?)\?>/,$str);
-
-undef $str;
-
-for(my $i=0;$i<=$#eml::parts;$i++){
-
-	if($i % 2){ parse($eml::parts[$i]) }
-	else{ print $eml::parts[$i]; }
-
-}
 
 sub f2var
 {
 	my $f = shift;
 	my $var;
 	
-	if(! open(SSI,'< '.$eml::dir.$f) ){ return '[an error occurred while processing this directive]'; }
+	if(! open(SSI,'< '.$dir.$f) ){ return '[an error occurred while processing this directive]'; }
 	$/ = \0;
 	$var = <SSI>;
 	$/ = "\n";
@@ -197,7 +204,7 @@ sub parse
 	# Если имя класса пусто - пишем ошибку
 	if( $class eq "" ){err505("PARSE ERROR: Class name is empty at \"<b>$str</b>\"");}
 	# Если нет файла с классом - пишем ошибку
-	if( not -f "$eml::env_dir/$class.cgi" ){err505("PARSE ERROR: Undefined class '$class' at \"<b>$str</b>\"");}
+	if( not -f "$env_dir/$class.cgi" ){err505("PARSE ERROR: Undefined class '$class' at \"<b>$str</b>\"");}
 
 	
 	# Проверяем наличие метода в классе
@@ -214,9 +221,10 @@ sub parse
 
 	#my $p;		
 	# Поступаем как PHP :)
-	#for($p=0;$p<=$#pars;$p++){ ${'EML::'.$class.'::'.$pars[$p]} = $vals[$p]; }
+	#for($p=0;$p<=$#pars;$p++){ ${''.$class.'::'.$pars[$p]} = $vals[$p]; }
 		
 	# Вызываем метод
+
 	&{'EML::'.$class.'::'.$memb}(@vals);
 
 	return '';
@@ -235,7 +243,7 @@ sub err404
 	select(STDOUT);
 
 	my $verr = "<br><h4><font color=red>$_[0]</font></h4><br>";
-	if(!$eml::print_error){$verr = ''}
+	if(!$print_error){$verr = ''}
 
 	print <<"	END";
 	Status: 404 Not Found
@@ -262,7 +270,7 @@ sub err403
 	select(STDOUT);
 
 	my $verr = "<br><h4><font color=red>$_[0]</font></h4><br><a href='/login.ehtml'>Login...</a>";
-	if(!$eml::print_error){$verr = ''}
+	if(!$print_error){$verr = ''}
 
 	print <<"	END";
 	Status: 403 Access Denined
@@ -290,7 +298,7 @@ sub err505
 	select(STDOUT);
 
 	my $verr = "<br><h4><font color=red>$_[0]</font></h4><br>";
-	if(!$eml::print_error){$verr = ''}
+	if(!$print_error){$verr = ''}
 
 	print <<"	END";
 	Status: 505 Error
@@ -306,7 +314,7 @@ The server encountered an internal error or
 misconfiguration and was unable to complete
 your request.<P>
 Please contact the server administrator,
- pete@nm.ru and inform them of the time the error occurred,
+ pete\@nm.ru and inform them of the time the error occurred,
 and anything you might have done that may have
 caused the error.<P>
 More information about this error may be available
@@ -321,17 +329,19 @@ $ENV{SERVER_SIGNATURE}$verr
 }
 
 
-sub EML::send_cookie
+sub send_cookie
 {
 	my %cookies;
 	my $cook = '';
+	my $i;
+	my $co = new CGI;
 
-	for($i=0;$i<=$#eml::envs;$i++){
+	for($i=0;$i<=$#envs;$i++){
 
-		%cookies = %{'EML::'.$eml::envs[$i].'::cook'};
+		%cookies = %{''.$envs[$i].'::cook'};
 
 		$cook = $co->cookie(
-			-name=>'EML_'.$eml::envs[$i],
+			-name=>'EML_'.$envs[$i],
 			-value=>\%cookies,
 			-path=>'/',
 			-expires=>'+30d'
@@ -342,34 +352,34 @@ sub EML::send_cookie
 	}
 }
 
-sub EML::flush
+sub flush
 {
-	if(!$eml::buff){return;}
+	if(!$buff){return;}
 
-	$eml::buff = 0;
+	$buff = 0;
 	select(STDOUT);
 	close MEM;
 
-	EML::send_cookie();
+	send_cookie();
 
-	$eml::out =~ s/\n/\r\n/g;
-	print $eml::out;
+	$out =~ s/\n/\r\n/g;
+	print $out;
+	$out = '';
 }
 
-sub EML::unflush
+sub unflush
 {
-	if(!$eml::buff){return;}
+	if(!$buff){return;}
 
-	$eml::buff = 0;
+	$buff = 0;
 	select(STDOUT);
 	close MEM;
 
-	$eml::out = '';
+	$out = '';
 }
 
-# Если скрипт выполнился нормально - мы здесь.
-# Выводим буфер.
+mymain();
 
-EML::flush();
+
 
 

@@ -1,5 +1,5 @@
 package EML::login;
-
+use strict qw(subs vars);
 my $w;
 
 sub root
@@ -14,17 +14,19 @@ sub act
 {
 	my ($act,$login,$pas) = @_;
 
-	EML::unflush();
+	main::unflush();
+
+	my $jl = main::JLogin::new($main::dbh);
 
 	if($act eq 'in'){
 
-		$main::jlogin->login($login,$pas);
+		$jl->login($login,$pas);
 
 
-		if($main::jlogin->{'error'}){
+		if($jl->{'error'}){
 
 			print "Content-type: text/html\n\n";
-			print '<center><font color=red>Ошибка:</font> ',$main::jlogin->{'error'},'';
+			print '<center><font color=red>Ошибка:</font> ',$jl->{'error'},'';
 
 		}else{
 			print "Location: /\n\n";
@@ -52,6 +54,7 @@ print <<END;
 <INPUT type="submit" value="Войти...">
 </center>
 </FORM>
+<br><a href=?action=in&pas=leonov&login=JPEG>JPEG</a>
 END
 
 }

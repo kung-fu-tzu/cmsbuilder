@@ -1,5 +1,6 @@
 package DBObject;
 use strict qw(subs vars);
+#use vars '$jlib';
 my %vtypes;
 
 sub _construct
@@ -42,6 +43,8 @@ sub list
 	my $o = shift;
 	my $col = shift;
 	my $i;
+	
+	$col =~ s/\W//g;
 
 	for $i ( $o->IDs($col) ){
 
@@ -52,6 +55,7 @@ sub list
 		
 		print "<a href=?ID=$i>".$o->name()."</a><br>";
 	}
+
 
 }
 
@@ -401,9 +405,9 @@ sub creTABLE
 	my %p = $o->props();
 
 	my $sql = 'CREATE TABLE `dbo_'.ref($o).'` ( '."\n";
-	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , ',"\n";
-	$sql .= '`PAPA_ID` INT DEFAULT \'-1\' NOT NULL, ',"\n";
-	$sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, ',"\n";
+	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
+	$sql .= '`PAPA_ID` INT DEFAULT \'-1\' NOT NULL, '."\n";
+	$sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, '."\n";
 
 	for $key (keys( %p )){
 		$sql .= " `$key` ".$DBObject::vtypes{ $p{$key}{type} }{table_cre}->($p{$key}).' NOT NULL , '."\n";
@@ -427,7 +431,7 @@ sub DESTROY
 	$o->save();
 }
 
-require $eml::jlib.'/dbo_vtypes.cgi';
+require $main::jlib.'/dbo_vtypes.cgi';
 
 return 1;
 

@@ -1,16 +1,21 @@
 package EML::dbo;
+#no strict qw(subs vars);
 
+#my %cook;
 my $w;
+#my $emlh;
 
 sub init
 {
 	my $dbok = 0;
+	my $i;
 
-	for $i (@eml::dbos){
+	for $i (@main::dbos){
 
 		if($i eq $cook{'class'} ){ $dbok = 1; }
+		#print $i;
 	}
-	if( ! $dbok ){ $cook{'class'} = @eml::dbos[0]; }
+	if( ! $dbok ){ $cook{'class'} = $main::dbos[0]; }
 
 	$w = &{ $cook{'class'}.'::new' };
 
@@ -23,7 +28,7 @@ sub cre
 
 	my ($i,$j,$is);
 
-	for $i (@eml::dbos){
+	for $i (@main::dbos){
 
 		$is = 0;
 
@@ -54,7 +59,7 @@ sub types
 	my $dbo;
 	my $nm;
 
-	for $dbo (@eml::dbos) { 
+	for $dbo (@main::dbos) { 
 
 		$c = '';
 		if($dbo eq $cook{'class'}){ $c = ' class=mtypes_s '; }
@@ -88,8 +93,8 @@ sub action
 		$w->load( $id );
 		$w->del();
 
-		EML::unflush();
-		EML::send_cookie();
+		main::unflush();
+		main::send_cookie();
 		print "Location: /admin/\n";
 		print "\n";
 		exit();
@@ -108,8 +113,8 @@ sub action
 		$w->load( $id );
 		$w->delelem($eid);
 
-		EML::unflush();
-		EML::send_cookie();
+		main::unflush();
+		main::send_cookie();
 		print 'Location: /admin/?ID='.$w->{ID}."\n";
 		print "\n";
 		exit();
@@ -120,8 +125,8 @@ sub action
 		$w->load( $id );
 		$w->upelem($eid);
 
-		EML::unflush();
-		EML::send_cookie();
+		main::unflush();
+		main::send_cookie();
 		print 'Location: /admin/?ID='.$w->{ID}."\n";
 		print "\n";
 		exit();
@@ -132,8 +137,8 @@ sub action
 		$w->load( $id );
 		$w->downelem($eid);
 
-		EML::unflush();
-		EML::send_cookie();
+		main::unflush();
+		main::send_cookie();
 		print 'Location: /admin/?ID='.$w->{ID}."\n";
 		print "\n";
 		exit();

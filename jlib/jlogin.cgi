@@ -110,7 +110,7 @@ sub verif
 	my($self,$co,%cook,$sid,@row,$str);
 	$self = shift;
 
-	my $co = new CGI;
+	$co = new CGI;
 	%cook = $co->cookie( "JLogin" );
 
 	$sid = $cook{"sid"};
