@@ -1,0 +1,30 @@
+<?eml
+	CMS::cms();
+	$CMS::what_frame = 'right';
+?><html>
+<head>
+<link href="cmenu.css" rel="stylesheet" type="text/css">
+<link href="style.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" src="admin.js"></script>
+<script language="JavaScript" src="editor/fckeditor.js"></script>
+</head>
+<body bgcolor="#f0f4f0">
+<script language="JavaScript" src="cmenu.js"></script>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr><td width="17"></td><td>
+
+<br>
+<?eml CMS::cpanel() ?>
+<br>
+
+<script language="javascript">
+    parent.document.all.tree_div_it.innerHTML = '<img src="icons/cpanel.gif" align="absmiddle">&nbsp;&nbsp;<a target="admin_right" href="cpanel.ehtml">Панель управления</a>';
+
+</script>
+
+</td></tr>
+</table>
+
+</body>
+</html>

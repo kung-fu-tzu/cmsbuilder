@@ -1,17 +1,23 @@
-<?eml CMS::cms() ?><html>
+<?eml
+    CMS::cms();
+    $CMS::what_frame = 'left';
+    $JConfig::autosave = 0;
+?><html>
 <head>
 <link href="style.css" rel="stylesheet" type="text/css">
 <link href="cmenu.css" rel="stylesheet" type="text/css">
-<SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
-<SCRIPT LANGUAGE=javascript src="cmenu.js"></SCRIPT>
+<script language="JavaScript" src="admin.js"></script>
 </head>
-<body id="id_body" class="left_body">
+<body class="left_body">
+<script language="JavaScript" src="cmenu.js"></script>
 <?eml CMS::left_tree() ?>
 <br>
+    
 <script language="JavaScript">
     
     <?eml CMS::cmenus(); ?>
     
 </script>
+
 </body>
 </html>

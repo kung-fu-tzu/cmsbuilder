@@ -2,9 +2,11 @@ package JDBI::vtypes::object;
 our @ISA = 'JDBI::VType';
 # Объект ###################################################
 
+our $integrated = 1;
+
 sub table_cre
 {
-    return ' INT ';
+    return ' INT(11) ';
 }
 
 sub aview

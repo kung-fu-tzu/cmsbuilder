@@ -26,7 +26,7 @@ sub aview
     if( $obj->{$name} ){ $file_href = '<a target="_new" href="'.$obj->file_href($name).'">Скачать...</a>'; }
     if( $obj->{$name} and group()->{'files'} ){ $file_del = 'Удалить - <input type=checkbox name="'.$name.'_todel">'; }
     
-    if(!group()->{'files'}){
+    if(!$JDBI::group->{'files'}){
 	$not_perm = '\n\nЗапись файлов для Вашей группы не разрешена!';
 	$block = 'disabled';
     }
@@ -49,7 +49,7 @@ sub aedit
     my $val = shift;
     my $obj = shift;
     
-    if(!group()->{'files'}){
+    if(!$JDBI::group->{'files'}){
 	if($val){ $obj->err_add('Запись файлов для Вашей группы не разрешена.') }
 	return $obj->{$name};
     }

@@ -1,5 +1,10 @@
 package JDBI::VType;
 
+our $integrated;   # При загрузке этого виртуального типа, полю будет присвоено
+                  # автоматическое значение
+
+our $virtual;     # Не имеет столбца в таблице
+
 sub table_cre
 {
     return ' VARCHAR(100) ';

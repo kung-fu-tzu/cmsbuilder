@@ -20,9 +20,6 @@ sub init
     
     $path = '';
     %sess = ();
-    
-    *CORE::GLOBAL::header = \&header;
-    *CORE::GLOBAL::parser = \&parser;
 }
 
 sub doall
@@ -70,7 +67,9 @@ sub parse
     close(EMLFILE);
     
     # —читываем и парсим конструкции <!--#include ... -->
+    chdir($o->{'dir'});
     $o->{'data'} =~ s/<!--#include\s+(.+)\s+-->/SSI($o,$1);/gei;
+    chdir($o->{'cgi_dir'});
     
     # —читываем и парсим конструкции <?eml *** ?>
     $o->{'parts'} = [ split(/<\?eml((?:.|\n)+?)\?>/,$o->{'data'}) ];
@@ -126,7 +125,7 @@ sub f2var
     my $var;
     local *SSI;
     
-    unless( open(SSI,'< '.$o->{'dir'}.$f) ){ return '[an error occurred while processing this directive]'; }
+    unless( open(SSI,'< '.$f) ){ return '[an error occurred while processing this directive]'; }
     $var = join('',<SSI>);
     close(SSI);
     

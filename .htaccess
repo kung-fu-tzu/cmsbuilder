@@ -3,7 +3,7 @@ Options +Includes +MultiViews
 AddType text/html .shtml
 AddHandler server-parsed .shtml
 
-AddType application/x-httpd-perl_html .ehtml
-Action application/x-httpd-perl_html /cgi-bin/eml.cgi
+AddType application/x-httpd-enjine_html .ehtml
+Action application/x-httpd-enjine_html /cgi-bin/eml.cgi
 
-DirectoryIndex index.html index.shtml index.ehtml
+DirectoryIndex index.html index.htm index.shtml index.ehtml index.php

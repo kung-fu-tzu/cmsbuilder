@@ -10,14 +10,13 @@ our $dont_list_me = 0;
 our $icon = 1;
 
 our %props = (
-	
-	'name'    => { 'type' => 'string', 'length' => 100, 'name' => 'Название' }
+    'name'    => { 'type' => 'string', 'length' => 100, 'name' => 'Название' }
 );
 
 sub DESTROY
 {
-	my $o = shift;
-	$o->SUPER::DESTROY(@_);
+    my $o = shift;
+    $o->SUPER::DESTROY(@_);
 }
 
 return 1;

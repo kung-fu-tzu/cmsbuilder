@@ -1,141 +1,71 @@
 
-
 function ShowHide(obj,dot){
-
+	
 	if(obj.style.display == "none"){
-		
-		obj.style.display = "block";
-		dot.src = "img/minus.gif";
-		document.cookie = obj.id + " = s&1";
+	
+	obj.style.display = "block";
+	dot.src = "img/minus.gif";
+	document.cookie = obj.id + " = s&1";
 	}else{
-		obj.style.display = "none";
-		dot.src = "img/plus.gif";
-		document.cookie = obj.id + " = s&0";
+	obj.style.display = "none";
+	dot.src = "img/plus.gif";
+	document.cookie = obj.id + " = s&0";
 	}
-
-}
-
-function ShowMe(obj,dot){
-
-	if(obj){
-		
-		obj.style.display = "block";
-		dot.src = "img/minus.gif";
-		document.cookie = obj.id + " = s&1";
-	}
+	
 }
 
 function HideLeft(){
 	
 	id_left_td.style.display = "none";
+	id_left_border.style.display = "none";
 	id_show.style.display = "block";
 }
 
 function ShowLeft(){
 	
 	id_left_td.style.display = "block";
+	id_left_border.style.display = "block";
 	id_show.style.display = "none";
 }
 
 function doDel(){
-
+	
 	return window.confirm('Удалить?');
 }
 
-
-is_draging = 0;
-drag_obj = null;
-drag_dx = 0;
-drag_dy = 0;
-
-function StartDrag(obj){
+function SelectMod(obj){
 	
-	drag_obj = obj;
-	is_draging = 1;
-	
-	drag_obj.style.position = "absolute";
-	drag_obj.style.zIndex = 200;
-	
-	mx = event.x + document.body.scrollLeft - 2;
-	my = event.y + document.body.scrollTop - 2;
-	drag_dx = obj.getBoundingClientRect().left + document.body.scrollLeft - 2 - mx;
-	drag_dy = obj.getBoundingClientRect().top + document.body.scrollTop - 2 - my;
-	
-	return false;
+	if(obj) obj.className = 'selected_item';
 }
 
+var prev_obj;
 
-
-function SelectLeft(obj){
+function CMS_SelectLO(obj){
 	
-	//alert("select("+obj.tagName+")");
+	if(window.name != 'admin_left') return false;
+	if(!document.all[obj]) return false;
 	
-	if(obj){
-		
-		obj.style.backgroundColor = "#FBB57B";
-		obj.style.color = "#000000";
-		
-		if(parent.prev_left_obj){
-			
-			parent.prev_left_obj.style.color = "";
-			parent.prev_left_obj.style.backgroundColor = "";
-		}
-		
-		parent.prev_left_obj = obj;
-	}
+	if(document.all[prev_obj]) document.all[prev_obj].className = '';
+	
+	document.all[obj].className = 'selected_item';
+	
+	prev_obj = obj;
+	
+	return true;
 }
+document.CMS_SelectLO = CMS_SelectLO;
 
-function StopDrag(obj){
+function CMS_ShowMe(url){
 	
-	if(drag_obj != obj){
-		
-		window.status = "DO: Moving "+drag_obj.id+" to "+obj.id;
+	if(document.all['dbi_'+url]){
+	document.all['dbi_'+url].style.display = "block";
+	document.cookie = document.all['dbi_'+url].id + " = s&1";
 	}
 	
-	drag_obj.style.position = "";
-	
-	drag_obj = null;
-	is_draging = 0;
-	
-	obj.style.zIndex = 250;
-	
-	return false;
+	if(document.all['dbdot_'+url]){
+	document.all['dbdot_'+url].src = "img/minus.gif";
+	}
 }
-
-function MMove(){
-	
-	if( !is_draging || drag_obj == null) return;
-	
-	x = event.x + document.body.scrollLeft - 2;
-	y = event.y + document.body.scrollTop - 2;
-		
-	drag_obj.style.posLeft = x + drag_dx;
-	drag_obj.style.posTop = y + drag_dy;
-	
-}
-
-function OnOver(obj){
-	
-	if( !is_draging || drag_obj == null) return;
-	if( drag_obj == obj ) return;
-	
-	obj.style.backgroundColor = "#ffff00";
-	
-	window.status = "Move "+drag_obj.id+" to "+obj.id;
-
-}
-
-function OnOut(obj){
-	
-	if( !is_draging || drag_obj == null) return;
-	if( drag_obj == obj ) return;
-	
-	obj.style.backgroundColor = "#000000";
-	
-	window.status = "";
-
-}
-
 
 function ShowDetails(){
 	
@@ -146,12 +76,85 @@ function ShowDetails(){
 	show3.style.display = 'block';
 	show4.style.display = 'block';
 	show5.style.display = 'block';
+}
+
+function CMS_HaveParent(){
 	
-	
+	return parent.document != document;
+}
+
+//  Drag&Drop  //////////////////////////////////////////////////////////
+
+var f_drag_mouse_up;
+var f_drag_mouse_move;
+var drag_obj = null;
+var drag_line_n1;
+var drag_line_n2;
+var drag_num;
+var drag_start_num;
+var drag_href_url;
+
+
+function DnD_Line_OnMouseOver(num,obj){
+	if(obj.className != "drag_line_droped") obj.className = "drag_line_on";
+	drag_num = num;
+}
+
+function DnD_Line_OnMouseOut(num,obj){
+	if(obj.className != "drag_line_droped") obj.className = "drag_line";
+	drag_num = 0;
 }
 
 
-document.onmousemove = MMove;
+function DnD_OnMouseUp(){
+	
+	document.onmouseup = f_drag_mouse_up;
+	document.onmousemove = f_drag_mouse_move;
+	
+	if(!drag_num){
+	for(i=drag_line_n1;i<=drag_line_n2;i++) document.all['drag_line_'+i].style.display = 'none';
+	drag_obj.style.position = "";
+	}
+	
+	if(drag_num){
+	document.all['drag_line_'+drag_num].className = "drag_line_droped";
+	new_href = 'right.ehtml?url=' + drag_href_url + '&act=move&enum=' + drag_start_num + '&nnum=' + drag_num;
+	//alert(new_href);
+	document.location.href = new_href;
+	
+	}
+	
+	drag_obj = null;
+}
 
+function DnD_OnMouseMove(){
+	
+	if(!drag_obj) return;
+	
+	x = event.x + document.body.scrollLeft + 20;
+	y = event.y + document.body.scrollTop + 2;
+	
+	drag_obj.style.posLeft = x;
+	drag_obj.style.posTop = y;
+}
 
+function OnDragStart(obj){
+	
+	drag_obj = obj;
+	
+	drag_obj.style.position = "absolute";
+	drag_obj.style.zIndex = 200;
+	
+	f_drag_mouse_up = document.onmouseup;
+	document.onmouseup = DnD_OnMouseUp;
+	
+	f_drag_mouse_move = document.onmousemove;
+	document.onmousemove = DnD_OnMouseMove;
+	
+	DnD_OnMouseMove();
+	
+	for(i=drag_line_n1;i<=drag_line_n2;i++) document.all['drag_line_'+i].style.display = 'block';
+	
+	return false;
+}
 

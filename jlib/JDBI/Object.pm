@@ -1,8 +1,6 @@
 package JDBI::Object;
 use strict qw(subs vars);
-our @ISA = ('JDBI::Admin','JDBI::Access');
-our $AUTOLOAD;
-my %vtypes;
+our @ISA = ('JDBI::Access','JDBI::Base','JDBI::Admin','JDBI::OnEvents');
 my $page = '/page.ehtml';
 
 
@@ -10,36 +8,7 @@ my $page = '/page.ehtml';
 # Следующие методы находятся в разработке
 ###################################################################################################
 
-sub owner
-{
-    my $o = shift;
-    return User->new($o->{'OID'});
-}
 
-sub check
-{
-    my $class = shift;
-    
-    my $p = \%{ $class.'::props' };
-    
-    my $i;
-    for $i (0 .. $#{$class.'::aview'}){
-	
-	if(!$p->{${$class.'::aview'}[$i]}){
-	    print STDERR "\n",'@'.$class.'::aview contain prop ',${$class.'::aview'}[$i],' not existed in %'.$class.'::props.',"\n";
-	    splice(@{$class.'::aview'},$i,1)
-	}
-    }
-    
-    #print STDERR '[@'.$class.'::aview checked]';
-}
-
-sub enum
-{
-    my $o = shift;
-    
-    return $o->{'_ENUM'};
-}
 
 ###################################################################################################
 # Методы вывода данных в дизайн
@@ -125,16 +94,6 @@ sub file_href
 # Методы для реализации наследования Perl
 ###################################################################################################
 
-sub new
-{
-    my $class = shift;
-    
-    my $o = {};
-    bless($o,$class);
-    
-    return $o->_init(@_);
-}
-
 sub cre
 {
     my $class = shift;
@@ -149,54 +108,38 @@ sub cre
     return $o;
 }
 
+sub new
+{
+    my $class = shift;
+    
+    my $o = {};
+    bless($o,$class);
+    
+    return $o->_init(@_);
+}
+
 sub _init
 {
     my $o = shift;
     my $n = shift;
-    my $no_cache = shift;
     
-    if(!$n){ return $o; }
+    unless($n){ return $o; }
     
-    if($JDBI::dbo_cache{JDBI->user()->{'ID'}.ref($o).$n}){
-	$o->{'ID'} = 0;
-	return $JDBI::dbo_cache{JDBI->user()->{'ID'}.ref($o).$n};
+    if($JConfig::do_dbo_cache){
+	
+	my $sig = ref($o).$n;
+	
+	if(defined $JDBI::dbo_cache{$sig}){
+	    return $JDBI::dbo_cache{$sig};
+	}
+	$JDBI::dbo_cache{$sig} = $o;
     }
     
-    $o->load($n);
-    
-    $JDBI::dbo_cache{JDBI->user()->{'ID'}.ref($o).$o->{'ID'}} = $o;
+    $o->{'ID'} = $n;
+    $o->reload();
     
     return $o;
 }
-
-sub DESTROY
-{
-    my $o = shift;
-    #if($o->{'_modifide'}){ $o->save(); }
-    $o->save();
-    #print 'DESTROY: '.$o->myurl();
-}
-
-sub AUTOLOAD1
-{
-    my $o = shift;
-    my $val = shift;
-    
-    my $func = $AUTOLOAD;
-    $func =~ s/.*:://;
-    
-    my %p = %{ ref($o).'::props' };
-    if( !exists($p{$func}) ){ JIO::err505('JDBI::Object::AUTOLOAD : Call an undefined function "'.$AUTOLOAD.'", from object url = '.$o->myurl()); }
-    
-    if($val){
-	$o->{$func} = $val;
-	$o->{'_modifide'} = 1;
-	return $val;
-    }else{
-	return $o->{$func};
-    }
-}
-
 
 ###################################################################################################
 # Методы контроля ошибок
@@ -232,34 +175,50 @@ sub err_is
 # Дополнительные методы
 ###################################################################################################
 
-sub type { return 'Object'; }
-
-sub no_cache
-{
-    my $o = shift;
-    
-    my $no = ref($o)->new();
-    $no->load($o->{'ID'});
-    $no->{'_temp_object'} = 1;
-    
-    return $no;
-}
-
 sub myurl
 {
     my $o = shift;
-    
     return ref($o).$o->{'ID'};
 }
 
 sub papa
 {
     my $o = shift;
-    
     if($o->{'PAPA_CLASS'} eq '' or $o->{'PAPA_ID'} < 1){ return undef; }
     
     return( $o->{'PAPA_CLASS'}->new($o->{'PAPA_ID'}) );
 }
+
+sub owner
+{
+    my $o = shift;
+    return User->new($o->{'OID'});
+}
+
+sub enum
+{
+    my $o = shift;
+    
+    if(exists $o->{'_ENUM'}){ return $o->{'_ENUM'} }
+    
+    my $papa = $o->papa();
+    unless($papa){ $o->{'_ENUM'} = 0; return 0; }
+    unless($papa->type() eq 'Array'){ $o->{'_ENUM'} = 0; return 0; }
+    
+    $o->{'_ENUM'} = $papa->elem_tell_enum($o);
+    
+    return $o->{'_ENUM'};
+}
+
+sub as_string
+{
+    my $o = shift;
+    return $o->myurl();
+}
+
+sub type { return 'Object'; }
+
+use overload ('""' => \&as_string);
 
 return 1;
 

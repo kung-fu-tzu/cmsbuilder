@@ -5,24 +5,20 @@ our $w;
 
 sub init
 {
-    my $url = $eml::path;
+    $JConfig::autosave = 0;
+    
+    my $url = JEML::parser()->{'path'};
     $url =~ s/\\|\///g;
     $w = '';
     if(!$url){ return; }
     
-    $w = DBObject::url($url);
+    $w = JDBI::url($url);
 }
 
 sub page
 {
+    unless($w){ return; }
     $w->des_page();
 }
 
-
 return 1;
-
-
-
-
-
-

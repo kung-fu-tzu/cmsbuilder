@@ -3,32 +3,32 @@ use strict qw(subs vars);
 
 our $name = 'Пользователь';
 our @ISA = 'JDBI::Object';
-our @aview = qw/name login pas icq email city vvv1/;
+our @aview = qw/name login pas icq email city/;
 our $page = '/page';
 our $icon = 1;
 
 our %props = (
-	
 	'name'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Имя' },
 	'login'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
 	'pas'	  => { 'type' => 'password', 'length' => 50, 'name' => 'Пароль' },
-	'sid'	  => { 'type' => 'string', 'length' => 20, 'name' => 'Ключ' },
-	'icq'	  => { 'type' => 'int', 'length' => 15, 'name' => '#ICQ' },
+	'sid'	  => { 'type' => 'string', 'length' => 32, 'name' => 'Ключ' },
+	'icq'	  => { 'type' => 'int', 'name' => '#ICQ' },
 	'email'	  => { 'type' => 'string', 'length' => 50, 'name' => 'E-Mail' },
-	'city'	  => { 'type' => 'string', 'length' => 30, 'name' => 'Город' },
-	'vvv1'	  => { 'type' => 'formula', 'name' => 'Вирт1' }
+	'city'	  => { 'type' => 'string', 'length' => 30, 'name' => 'Город' }
 );
 
-sub install
+sub setup_fix_table
 {
 	my $class = shift;
-	my $str;
+	my $ret;
 	
-	$str = $JDBI::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `sid` )');
-	$str->execute();
+	$ret = $class->SUPER::setup_fix_table(@_);
 	
-	$str = $JDBI::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
-	$str->execute();
+	$JDBI::dbh->do('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `sid` )');
+	$JDBI::dbh->do('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
+	$JDBI::dbh->do('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `pas` )');
+	
+	return $ret;
 }
 
 sub save
@@ -42,12 +42,6 @@ sub save
 	$o->{'pas'} = $pas;
 	
 	return $ret;
-}
-
-sub DESTROY
-{
-	my $o = shift;
-	$o->SUPER::DESTROY(@_);
 }
 
 return 1;

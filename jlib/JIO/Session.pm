@@ -53,7 +53,7 @@ sub nocache
     my $class = shift;
     my($cch,$i,$n,@a,$m,$name,@rnd,$done);
     
-    for $i (0 .. (length($class)-1)){ $n = '['.$i.']'; }
+    $cch = 0; for $i (0 .. (length($class)-1)){ $n = length('['.$i.']'); }
     @a = qw/a p m G l r i u C r j/; # полные коды прав "cache"
            #0 1 2 3 4 5 6 7 8 9 10
     

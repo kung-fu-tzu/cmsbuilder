@@ -4,10 +4,13 @@ use JDBI::VType;
 use JDBI::Access;
 use JDBI::Base;
 use JDBI::Admin;
+use JDBI::OnEvents;
 use JDBI::Object;
 use JDBI::Array;
 use Classes::User;
 use Classes::UserGroup;
+use StdModule;
+use ModRoot;
 
 package JDBI;
 use strict qw(subs vars);
@@ -18,7 +21,7 @@ use Exporter;
 # Базовые переменные интерфейса
 ###################################################################################################
 
-our @EXPORT = ('url','user','group');
+our @EXPORT = ('url');
 our @ISA = 'Exporter';
 
 our $dbh;
@@ -27,6 +30,7 @@ our %vtypes;
 our $cgi;
 our @vtypes;
 our @classes;
+our @modules;
 
 our $user;
 our $group;
@@ -44,6 +48,7 @@ sub init()
     %vtypes = ();
     @classes = ();
     @vtypes = ();
+    @modules = ();
     $user = '';
     $group = '';
     
@@ -51,6 +56,29 @@ sub init()
     
     my $cdir;
     my $file;
+    
+    #------------- Modules ------------------------------------------
+    
+    # Собираем информацию о модулях.
+    opendir($cdir,$JConfig::path_lib.'/Modules');
+    while($file = readdir($cdir)){
+        unless(-f $JConfig::path_lib.'/Modules/'.$file){ next; }
+        unless($file =~ m/^\w+\.pm$/){ next; }
+        
+        $file =~ s/\.pm//g;
+        push @modules, $file;
+    }
+    closedir($cdir);
+    
+    # Инклудим модули
+    my $mod;
+    for $mod (@modules){ require 'Modules/'.$mod.'.pm'; }
+    #for $mod (@modules){ if($mod->can('onload')){ $mod->onload(); } }
+    if($JConfig::debug){ for $mod (@modules){ $mod->check(); } }
+    
+    #------------- /Modules -----------------------------------------
+    
+    #------------- VTypes -------------------------------------------
     
     # Собираем информацию о виртуальных типах.
     opendir($cdir,$JConfig::path_lib.'/JDBI/vtypes');
@@ -63,8 +91,13 @@ sub init()
     }
     closedir($cdir);
     
+    # Инклудим виртуальные типы
     my $vt;
     for $vt (@vtypes){ require 'JDBI/vtypes/'.$vt.'.pm'; }
+    
+    #------------- /VTypes ------------------------------------------
+    
+    #------------- Classes ------------------------------------------
     
     # Собираем информацию о имеющихся классах.
     opendir($cdir,$JConfig::path_lib.'/Classes');
@@ -77,16 +110,32 @@ sub init()
     }
     closedir($cdir);
     
-    
+    # Инклудим классы
     my $class;
     for $class (@classes){ require 'Classes/'.$class.'.pm'; }
-    for $class (@classes){ if($class->can('onload')){ $class->onload(); } }
-    if($JConfig::debug){ for $class (@classes){ if($class->can('check')){ $class->check(); } } }
+    #for $class (@classes){ if($class->can('onload')){ $class->onload(); } }
+    if($JConfig::debug){ for $class (@classes){ $class->check(); } }
+    
+    #------------- /Classes ------------------------------------------
+}
+
+sub cache_save
+{
+    if($JConfig::autosave){
+        my $to;
+        for $to (values(%dbo_cache)){ $to->save(); }
+    }
+}
+
+sub cache_clear
+{
+    cache_save();
+    %dbo_cache = ();
 }
 
 sub destruct()
 {
-    %dbo_cache = ();
+    cache_clear();
     
     $dbh->disconnect();
 }
@@ -110,28 +159,26 @@ sub dousers()
 {
     if($JConfig::users_do){
         
-        # Whatever...
+        JIO::Users::su_start($JConfig::user_guest);
+        JIO::Users->verif();
         
     }else{
         
         $user  = User->new();
         $user->{'ID'} = 1;
         $user->{'name'} = 'Монопольный режим';
-        $user->{'_temp_object'} = 1;
         
         $group = UserGroup->new();
         $group->{'ID'} = 1;
-        $group->{'name'} = 'Администраторы';
-        $group->{'html'} = 1;
-        $group->{'files'} = 1;
-        $group->{'cms'} = 1;
-        $group->{'root'} = 1;
-        $group->{'_temp_object'} = 1;
+        $group->{'name'}    = 'Администраторы';
+        
+        $group->{'html'}    = 1;
+        $group->{'files'}   = 1;
+        $group->{'cms'}     = 1;
+        $group->{'root'}    = 1;
+        $group->{'cpanel'}  = 1;
     }
 }
-
-sub user()  { return $user; }
-sub group() { return $group; }
 
 
 ###################################################################################################
@@ -161,7 +208,7 @@ sub url($)
 {
     my $url = shift;
     
-    if($url eq '-info'){ print 'Этот проект постоен на основе ядра,\nразработанного Леоновым Петром Алексеевичем (JPEG).\n\nНазвание ядра:	EnJine\nВерсия:		2.*'; }
+    if($url eq '-info'){ JIO::stop(); print 'Этот проект постоен на основе ядра,\nразработанного Леоновым Петром Алексеевичем (JPEG).\n\nНазвание ядра:	EnJine\nВерсия:		',$JCongif::version; return undef; }
     
     my ($class,$id) = url2classid($url);
     
@@ -191,7 +238,10 @@ sub classOK
     my $cn = shift;
     my $i = '';
     
-    for $i (@JDBI::classes){ if($i eq $cn ){ return 1; } }
+    for $i (@classes){ if($i eq $cn ){ return 1; } }
+    for $i (@modules){ if($i eq $cn ){ return 1; } }
+    
+    if($cn eq 'ModRoot' ){ return 1; }
     
     return 0;
 }
@@ -230,47 +280,11 @@ sub access_creTABLE
     $sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , ';
     $sql .= '`url` VARCHAR(50) NOT NULL, ';
     $sql .= '`memb` VARCHAR(50) DEFAULT \'\' NOT NULL, ';
-    $sql .= '`code` VARCHAR(20) DEFAULT \'\' NOT NULL, ';
+    $sql .= '`code` INT DEFAULT 0 NOT NULL, ';
     $sql .= 'INDEX ( `memb` ), INDEX ( `url` ) )';
     
     my $str = $JDBI::dbh->prepare($sql);
-    $str->execute();
-}
-
-sub creTABLE
-{
-    my $class = shift;
-    my($key,%p,$vtype);
-    
-    %p = %{$class.'::props'};
-    
-    print '<br><a onclick="sql_',$class,'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',$class,'":</b><br>';
-    
-    my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.$class.'` ( '."\n";
-    $sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
-    $sql .= '`OID` INT DEFAULT \'-1\' NOT NULL, '."\n";
-    $sql .= '`ATS` TIMESTAMP NOT NULL, '."\n";
-    $sql .= '`CTS` TIMESTAMP NOT NULL, '."\n";
-    $sql .= '`PAPA_ID` INT DEFAULT \'0\' NOT NULL, '."\n";
-    $sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, '."\n";
-    
-    for $key (keys(%p)){
-        
-        $vtype = 'JDBI::vtypes::'.$p{$key}{'type'};
-        
-        if( !${$vtype.'::virtual'} ){
-            $sql .= " `$key` ".$vtype->table_cre($p{$key}).' NOT NULL , '."\n";
-        }
-    }
-    $sql =~ s/,\s*$//;
-    $sql .= "\n )";
-    
-    my $str = $JDBI::dbh->prepare($sql);
-    $str->execute();
-    
-    $sql =~ s/\n/<br>\n/g;
-    
-    print '<div style="DISPLAY: none" id="sql_',$class,'">',$sql,'</div>';
+    return $str->execute();
 }
 
 sub purge_cache { %JDBI::dbo_cache = (); }

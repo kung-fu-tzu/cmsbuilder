@@ -1,11 +1,18 @@
-<?eml CMS::cms() ?><html>
+<?eml
+	CMS::cms();
+	$CMS::what_frame = 'modules';
+	$JConfig::autosave = 0;
+?><html>
 <head>
-<LINK rel="stylesheet" TYPE="text/css" HREF="style.css">
-<SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script language="JavaScript" src="admin.js"></script>
 </head>
 <body class="left_body" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
+<script language="JavaScript" src="cmenu.js"></script>
 
-<?eml CMS::modules() ?>
+<?eml
+    CMS::modules();
+?>
 
 </body>
 </html>

@@ -22,9 +22,11 @@
 </file>
 <file url="jlib/JDBI/Object.pm" id="A5F32293-ADF0-4B5E-960D-AA5313276617" name="Object.pm">
 </file>
-<file url="jlib/JDBI/VType.pm" id="FCFFF612-86EC-4036-AC20-088E8283AE08" name="VType.pm">
-</file>
 <file url="jlib/JDBI/Access.pm" id="55F989E2-4574-4094-974B-8FC163088F98" name="Access.pm">
+</file>
+<file url="jlib/JDBI/VType.pm" id="88252676-C66C-472D-AEB3-90E87BD811E1" name="VType.pm">
+</file>
+<file url="jlib/JDBI/OnEvents.pm" id="6501F01D-7E8D-475A-A849-3E4EA4CEF946" name="OnEvents.pm">
 </file>
 </folder>
 <folder id="BFC224A8-3737-41D9-8EF2-1D8C726C8483" name="vtypes">
@@ -96,14 +98,8 @@
 </file>
 <file url="jlib/Classes/UserGroup.pm" id="82B366D2-9676-4C73-95A7-1ABC43403D14" name="UserGroup.pm">
 </file>
-<file url="jlib/Classes/UserRoot.pm" id="C26C5EBD-964E-4C81-B606-0BB4AD118D7E" name="UserRoot.pm">
-</file>
-<file url="jlib/Classes/HttpRoot.pm" id="4A46BA8C-5ABE-41BB-8E3F-4DC684734EDE" name="HttpRoot.pm">
-</file>
 </folder>
 <folder id="DDA43E2A-19AF-45E9-8863-836A7B379591" name="etc">
-<file url="htdocs/admin/cmenu.js" id="61650D7D-8AD6-49A7-87A9-156EC298A3A4" name="cmenu.js">
-</file>
 <file url="htdocs/admin/right.ehtml" id="7FC732B6-970B-40EC-8A8F-94281F74C06A" name="right.ehtml">
 </file>
 <file url="htdocs/admin/left.ehtml" id="EA998A51-1BB3-4875-8E1B-7034E5C70EB8" name="left.ehtml">
@@ -112,11 +108,43 @@
 </file>
 <file url="htdocs/admin/admin.js" id="8DB4CE39-4348-4089-9EA4-7C1145E3CC36" name="admin.js">
 </file>
+<file url="htdocs/admin/cpanel.ehtml" id="F4CC6D4E-8DC4-47A1-81C0-6580866E4AF5" name="cpanel.ehtml">
+</file>
+<file url="htdocs/admin/cmenu.js" id="61650D7D-8AD6-49A7-87A9-156EC298A3A4" name="cmenu.js">
+</file>
+<file url="htdocs/admin/modules.ehtml" id="C257A3CB-A6E3-4470-9770-1EDC6AB58BCB" name="modules.ehtml">
+</file>
 </folder>
 <folder id="8400DC78-47C7-4A60-92E1-C5327FC84A2C" name="JIO">
 <file url="jlib/JIO/Session.pm" id="03475F24-39E5-47F5-96D0-CEEB267A6E57" name="Session.pm">
 </file>
+<file url="jlib/JIO/Ini.pm" id="D4100D49-AA45-4E7D-8F06-9B724922C512" name="Ini.pm">
+</file>
+<file url="jlib/JIO/Users.pm" id="C248A030-3D9C-4D6D-8BCA-D3DB5D0E5750" name="Users.pm">
+</file>
 </folder>
 <file url="jlib/CMS.pm" id="4EDF35B7-AAB8-44A9-B470-36F9F937EAA8" name="CMS.pm">
+</file>
+<file url="jlib/StdModule.pm" id="9E5F727F-448D-4B88-B959-E759EF4DDE17" name="StdModule.pm">
+</file>
+<folder id="F9361424-7FBD-4595-9098-8C08369F61DF" name="Modules">
+<file url="jlib/Modules/ModUsers.pm" id="07244731-E5E2-4497-B745-C2EDFF6C4D4C" name="ModUsers.pm">
+</file>
+<file url="jlib/Modules/ModHttp.pm" id="E1208F88-65C9-4604-9F34-E3D4628B6CA3" name="ModHttp.pm">
+</file>
+<file url="jlib/Modules/ModSysInfo.pm" id="3731B353-20B8-47B8-8801-4EE9C8C37875" name="ModSysInfo.pm">
+</file>
+</folder>
+<file url="jlib/ModRoot.pm" id="0D3813A4-466E-43B6-AA8B-9381B1EC1FF4" name="ModRoot.pm">
+</file>
+<folder id="FC620BBA-F8D6-4C5A-84E2-3BC359114C69" name="CMS">
+<file url="jlib/CMS/jchmod.pl" id="3B059A40-A433-4B4C-883C-0F409A2C4D03" name="jchmod.pl">
+</file>
+<file url="jlib/CMS/jchown.pl" id="F71CBE49-D404-48B3-9469-33BA1B4EDAE4" name="jchown.pl">
+</file>
+<file url="jlib/CMS/move2.pl" id="31A797B9-6AA7-4D41-81FE-865AD57182CB" name="move2.pl">
+</file>
+</folder>
+<file url="jlib/TimeMeter.pm" id="D038247D-A8F6-41AF-9E90-9A0976AF8360" name="TimeMeter.pm">
 </file>
 </project>

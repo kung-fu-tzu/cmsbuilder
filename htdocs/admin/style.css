@@ -188,3 +188,78 @@ TD
     BACKGROUND-COLOR: #e2e9e2;
     TEXT-ALIGN: center
 }
+IMG
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-BOTTOM: medium none
+}
+.selected_item
+{
+    BACKGROUND-COLOR: #fbb57b
+}
+.selected_item A:active
+{
+    COLOR: #000000
+}
+.selected_item A:link
+{
+    COLOR: #000000
+}
+.selected_item A:visited
+{
+    COLOR: #000000
+}
+.selected_item A:hover
+{
+    COLOR: #000000
+}
+.drag_line
+{
+    BORDER-RIGHT: medium none;
+    PADDING-RIGHT: 0px;
+    BORDER-TOP: medium none;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    BORDER-LEFT: medium none;
+    WIDTH: 50%;
+    PADDING-TOP: 0px;
+    BORDER-BOTTOM: medium none;
+    HEIGHT: 5px;
+    BACKGROUND-COLOR: #fbb57b;
+    TEXT-ALIGN: left
+}
+.drag_line_on
+{
+    BORDER-RIGHT: medium none;
+    PADDING-RIGHT: 0px;
+    BORDER-TOP: medium none;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    BORDER-LEFT: medium none;
+    WIDTH: 50%;
+    PADDING-TOP: 0px;
+    BORDER-BOTTOM: medium none;
+    HEIGHT: 5px;
+    BACKGROUND-COLOR: #ff7300;
+    TEXT-ALIGN: left
+}
+.drag_line_droped
+{
+    BORDER-RIGHT: medium none;
+    PADDING-RIGHT: 0px;
+    BORDER-TOP: medium none;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    BORDER-LEFT: medium none;
+    WIDTH: 50%;
+    PADDING-TOP: 0px;
+    BORDER-BOTTOM: medium none;
+    HEIGHT: 5px;
+    BACKGROUND-COLOR: #ff0000;
+    TEXT-ALIGN: left
+}

@@ -4,7 +4,10 @@ our @ISA = 'JDBI::VType';
 
 sub table_cre
 {
-    return ' INT ';
+    my $class = shift;
+    my %elem = %{$_[0]};
+    my $len = $elem{length} || 11;
+    return ' INT('.$len.') ';
 }
 
 sub aview
