@@ -1,6 +1,6 @@
 
 
-function OML_href(nspace){
+function EML_href(nspace){
 
 	var href = event.srcElement.getAttribute("href");
 	
@@ -11,9 +11,9 @@ function OML_href(nspace){
 	
 	cook = ar.join("&");
 
-	document.cookie = "OML_" + nspace + "=" + cook;
+	document.cookie = "EML_" + nspace + "=" + cook;
 
-	location.href = ser[0];
+	location.href = href;
 
 	return false;
 }

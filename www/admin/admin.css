@@ -1,0 +1,61 @@
+BODY
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    FONT-SIZE: 12px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    COLOR: white;
+    PADDING-TOP: 0px;
+    FONT-FAMILY: Verdana;
+    BACKGROUND-COLOR: gray
+}
+A
+{
+    COLOR: black;
+    TEXT-DECORATION: underline
+}
+A:hover
+{
+    COLOR: white;
+    TEXT-DECORATION: underline
+}
+.mtypes
+{
+    BORDER-RIGHT: black 1px;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: black 1px;
+    WIDTH: 1px;
+    COLOR: white;
+    BORDER-BOTTOM: black 1px;
+    BACKGROUND-COLOR: gray;
+    TEXT-ALIGN: center
+}
+TABLE
+{
+    FONT-SIZE: 12px;
+    COLOR: white;
+    FONT-FAMILY: Verdana
+}
+.mtypes_s
+{
+    BORDER-RIGHT: black 1px;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: black 1px;
+    COLOR: black;
+    BORDER-BOTTOM: black 1px;
+    BACKGROUND-COLOR: silver
+}
+.list
+{
+    BORDER-RIGHT: black 1px solid;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: black 1px solid;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: black 1px solid;
+    BORDER-BOTTOM: black 1px solid
+}

@@ -52,7 +52,8 @@ sub login
 
 	);
 
-	print $co->header(-cookie=>$cook);
+	print 'Set-Cookie: ',$cook->as_string,"\n";
+	#print $co->header(-cookie=>$cook);
 
 	return 1;
 }
@@ -97,7 +98,8 @@ sub logout
 
 
 
-	print $co->header(-cookie=>$cook);
+	#print $co->header(-cookie=>$cook);
+        print 'Set-Cookie: ',$cook->as_string,"\n";
 
 	return 1;
 }
@@ -138,6 +140,7 @@ sub cre
 		pas VARCHAR(20) NOT NULL,
 		sid VARCHAR(20) NOT NULL,
 		PRIMARY KEY (uid),
+		UNIQUE KEY sid (sid),
 		INDEX(sid),
 		INDEX(login)
 	)

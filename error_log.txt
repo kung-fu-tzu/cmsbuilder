@@ -1,6 +1,0 @@
-﻿[Fri Mar 05 19:50:43 2004] [error] [client 127.0.0.1] Can't locate object method "class_name" via package "EText" (perhaps you forgot to load "EText"?) at ../lib/ocls/Test.cgi line 21, <FILE> line 183.
-
-[Fri Mar 05 19:51:40 2004] [error] [client 127.0.0.1] Undefined subroutine &OML::Test::class called at ../lib/ocls/Test.cgi line 21, <FILE> line 183.
-
-[Fri Mar 05 19:52:52 2004] [error] [client 127.0.0.1] Not a SCALAR reference at ../lib/ocls/Test.cgi line 21, <FILE> line 183.
-
