@@ -1,4 +1,4 @@
-package User;
+package MyUser;
 $name = 'Пользователь';
 @ISA = 'DBObject';
 use strict qw(subs vars);

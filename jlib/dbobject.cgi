@@ -431,6 +431,8 @@ sub DESTROY
 	$o->save();
 }
 
+
+
 require $main::jlib.'/dbo_vtypes.cgi';
 
 return 1;

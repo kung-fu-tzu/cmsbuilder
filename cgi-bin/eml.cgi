@@ -1,5 +1,7 @@
 #!/usr/bin/perl 
 
+package main;
+
 use DBI;
 use CGI qw/param/;
 use POSIX qw(strftime);
@@ -7,12 +9,13 @@ use POSIX qw(strftime);
 
 
 use strict qw(subs vars);
-use warnings;
+#use warnings;
 
-#package EML;
+
 
 my $out = '';
 my $dir = '';
+my $do_users = 0;
 
 use vars '$print_error';
 use vars '$buff';
@@ -45,8 +48,7 @@ sub mymain
 	
 	my(@parts,$i,$co,$str,$str_time,$jlogin,$rdir,$file);
 
-	
-	
+
 	if($buff){
 		open(MEM,'>',\$out);
 		select(MEM);
@@ -91,13 +93,15 @@ sub mymain
 	$dbh = DBI->connect("DBI:mysql:engine", "root", "pas",{ RaiseError => 1 });
 	$dbh->{HandleError} = sub {err505($_[0]);};
 
-	
-	$jlogin = JLogin::new($dbh);
-	$uid = -1;
-	$gid = -1;
-	($uid,$gid) = $jlogin->verif();
-	undef $jlogin;
-	#$uid = 1; $gid = 0;
+	if($do_users){
+		$jlogin = JLogin::new($dbh);
+		$uid = -1;
+		$gid = -1;
+		($uid,$gid) = $jlogin->verif();
+		undef $jlogin;
+	}else{
+		$uid = 1; $gid = 0;
+	}
 	
 	my $f;
 	if(!opendir(CLS,$env_dir)){err505('Can`t open enveronments directory: '.$env_dir);}
@@ -378,8 +382,10 @@ sub unflush
 	$out = '';
 }
 
+#main::err403(3);
 mymain();
 
+print 'Done OK';
 
 
 

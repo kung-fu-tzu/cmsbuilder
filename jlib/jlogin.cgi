@@ -1,6 +1,8 @@
 package JLogin;
 use strict qw(subs vars);
 
+my $table = 'dbo_myuser';
+
 sub new
 {
 	my $self = {};
@@ -22,7 +24,7 @@ sub login
 
 	if($l eq '' or $p eq ''){ return $self->err('Пустое имя пользователя.'); }
 
-	$str = $self->{"dbh"}->prepare( "SELECT login, pas FROM dbo_user WHERE login = ?" );
+	$str = $self->{"dbh"}->prepare( "SELECT login, pas FROM $table WHERE login = ?" );
 	$str->execute("$l");
 
 	@row = $str->fetchrow_array();
@@ -38,7 +40,7 @@ sub login
 	$rnd = substr($rnd,0,20);
 
 
-	$str = $self->{"dbh"}->prepare( "UPDATE dbo_user SET sid = ? where login = ?" );
+	$str = $self->{"dbh"}->prepare( "UPDATE $table SET sid = ? where login = ?" );
 	$str->execute($rnd,$l);
 
 	$user{"sid"} = $rnd;
@@ -74,7 +76,7 @@ sub logout
 
 	if($sid eq "" or $sid == 0){ return( $self->err("Вы не вошли в систему.") ); }
 
-	$str = $self->{"dbh"}->prepare( "SELECT ID FROM dbo_user WHERE sid = ?" );
+	$str = $self->{"dbh"}->prepare( "SELECT ID FROM $table WHERE sid = ?" );
 	$str->execute("$sid");
 
 	@row = $str->fetchrow_array();
@@ -82,7 +84,7 @@ sub logout
 	if($#row < 0){ return( $self->err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 
 
-	$str = $self->{"dbh"}->prepare( "UPDATE dbo_user SET sid = 0 where sid = ?" );
+	$str = $self->{"dbh"}->prepare( "UPDATE $table SET sid = 0 where sid = ?" );
 	$str->execute($sid);
 
 
@@ -118,14 +120,14 @@ sub verif
 
 	if($sid eq "" or $sid == 0){return (-1,-1); }
 
-	$str = $self->{"dbh"}->prepare( "SELECT ID, GID FROM dbo_user WHERE sid = ?" );
+	$str = $self->{"dbh"}->prepare( "SELECT ID, GID FROM $table WHERE sid = ?" );
 	$str->execute($sid);
 
 	@row = $str->fetchrow_array();
 
-	if($#row < 0){ return 0; }
+	if($#row < 0){ return (-1,-1); }
 
-	return @row;
+	return (1,0);#@row;
 
 }
 
@@ -150,7 +152,7 @@ sub cre
 	$str = $self->{"dbh"}->prepare("create table $table;");
 	$str->execute() or return( $self->err(DBI::errstr) );
 
-	$str = $self->{"dbh"}->prepare( "INSERT INTO dbo_user (ID,login,pas,sid) VALUES (?,?,?,?)" );
+	$str = $self->{"dbh"}->prepare( "INSERT INTO $table (ID,login,pas,sid) VALUES (?,?,?,?)" );
 	$str->execute(1,"root","asdZ",0) or return( $self->err(DBI::errstr) );
 	$str->execute(2,"root1","asdZ1",0) or return( $self->err(DBI::errstr) );
 
@@ -163,7 +165,7 @@ sub drop
 	my($table,$str);
 	my $self = shift;
 
-	$str = $self->{"dbh"}->prepare("drop table dbo_user;");
+	$str = $self->{"dbh"}->prepare("DROP TABLE $table;");
 	$str->execute() or return( $self->err(DBI::errstr) );
 
 	return 1;

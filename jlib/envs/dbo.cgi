@@ -1,9 +1,9 @@
 package EML::dbo;
-#no strict qw(subs vars);
+use strict qw(subs vars);
 
-#my %cook;
+our %cook;
 my $w;
-#my $emlh;
+our $emlh;
 
 sub init
 {
@@ -16,7 +16,8 @@ sub init
 		#print $i;
 	}
 	if( ! $dbok ){ $cook{'class'} = $main::dbos[0]; }
-
+	
+	if($w){ $w->clear(); }
 	$w = &{ $cook{'class'}.'::new' };
 
 
