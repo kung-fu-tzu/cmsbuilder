@@ -1,44 +1,20 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>/ Format•C: Новости о высоких технологиях.</title>
+<title>Engine</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-<link href="/format.css" rel="stylesheet" type="text/css">
 </head>
 
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" rightmargin="0" bottommargin="0">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-<tr> 
-<td height="1">
+</tr>
+<!-- /шапка -->
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="1"><a href=/><img border=0 src="/img/up_1.jpg" width="302" height="69"></a></td>
-<td align="right" valign="middle">
-
-
-<td width=5></td>
-
-</td>
-</tr>
-</table>
-
-</td>
-</tr>
-<tr>
-<td height="1" valign="top" background="/img/m_bg.jpg"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+<td valign="top"><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
 <tr> 
-<td width="2"><a href=/><img src="/img/up_2.jpg" border=0 width="302" height="27"></a></td>
-<td width="1"><img src="/img/m3.jpg" width="3" height="27" hspace="0" align="absmiddle"></td>
-<td height="1" valign="top"><table border="0" cellpadding="0" cellspacing="0">
+<td width="140" valign="top" bgcolor="F4F4F4"><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr> 
-
+<td height="16" align="center" class="small">В дополнение</td>
 </tr>
-</table></td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<td height="1"><img src="/img/up_3.jpg" width="302" height="14"></td>
-</tr>
+<tr> 
+<td>

@@ -1,9 +1,9 @@
-<?eml admin::cms() ?>
+<?eml CMS::cms() ?>
 <a href="./"><font size='1'>В CMS</font></a><br>
 <center><h3>Установка...</h3></center>
 <hr>
 <br>
-<?eml admin::install() ?>
+<?eml CMS::install() ?>
 <br>
 <hr>
 <br><br>

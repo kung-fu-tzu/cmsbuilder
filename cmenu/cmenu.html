@@ -1,0 +1,202 @@
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+<TITLE></TITLE>
+<LINK rel="stylesheet" type="text/css" href="cmenu.css">
+</HEAD>
+<BODY id="id_body" onmousedown1="alert('BODY')">
+
+
+<TABLE id="test" BORDER=0 CELLSPACING=0 CELLPADDING=0>
+	<TR>
+		<TD></TD>
+	</TR>
+</TABLE>
+
+
+<INPUT type="button" onclick="testOnClick()" value="Hide/Show">
+
+
+<SCRIPT LANGUAGE=javascript>
+<!--
+
+// Базовый класс замороченных боксов
+function JBox(tag){
+	
+	var nobj;
+	nobj = document.createElement(tag || "DIV");
+	nobj.className = "cmenu_root";
+	nobj.visible = 0;
+	nobj.ismouseon = 0;
+	nobj.papa = document.body;
+	nobj.son = undefined;
+	nobj.temp_x = 0;
+	nobj.temp_y = 0;
+	
+	nobj.show = function(nx,ny){
+		
+		if(this.visible) return;
+		this.moveto(nx || 0, ny || 0);
+		this.visible = 1;
+		this.papa.appendChild(this);
+	}
+	
+	nobj.hide = function(){
+		
+		if(!this.visible) return;
+		if(this.son){ this.son.hide(); }
+		
+		this.visible = 0;
+		this.papa.removeChild(this);
+	}
+	
+	nobj.togle = function(){
+		if(this.visible) this.hide();
+		else this.show();
+	}
+	
+	nobj.moveto = function(nx,ny){
+	
+		this.style.posLeft = nx || this.temp_x;
+		this.style.posTop = ny || this.temp_y;
+		
+		this.temp_x = this.style.posLeft;
+		this.temp_y = this.style.posTop
+	}
+	
+	nobj.onmouseover = function(){
+		
+		this.ismouseon = 1; 
+	}
+	
+	nobj.onmouseout = function(){
+		
+		this.ismouseon = 0;
+	}
+	
+	nobj.elem_add = function(elem){
+		
+		if(elem.papa != this){
+		
+			elem.papa.elem_del(elem);
+			elem.papa = this;
+		}
+		
+		elem.show();
+	}
+	
+	nobj.elem_del = function(elem){
+		
+		if(elem.papa != this) return;
+		
+		elem.hide();
+		elem.papa = document.body;
+	}
+	
+	nobj.oncontextmenu = function(){
+		return false;
+	}
+	
+	return nobj;
+}
+
+// Класс меню. Основан на: JBox.
+function JMenu(){
+	
+	var nobj;
+	nobj = JBox("TABLE");
+	
+	var ntd = document.createElement('td');
+	var ntr = document.createElement('tr');
+	var ntbody = document.createElement('tbody');
+	
+	ntr.appendChild(ntd);
+	ntbody.appendChild(ntr);
+	nobj.appendChild(ntbody);
+	
+	nobj.td = ntd;
+	
+	nobj.cellPadding = 0;
+	nobj.cellSpacing = 0;
+	
+	nobj.appendChild = function(chld){
+		return nobj.td.appendChild(chld);
+	}
+	
+	nobj.onmousedown = function(){
+		window.status  = "down";
+		window.event.cancelBubble = true;
+	}
+	
+	return nobj;
+}
+
+// Класс элемента меню. Основан на JBox.
+function JMenuItem(itext){
+	
+	var nobj;
+	nobj = JBox("DIV");
+	
+	nobj.moveto = function(nx,ny){}
+	nobj.className = "cmenu_item";
+	nobj.innerText = itext;
+	
+	nobj.onmouseover = function(){
+		
+		this.ismouseon = 1;
+		this.className = "cmenu_item_on";
+	}
+	
+	nobj.onmouseout = function(){
+		
+		this.ismouseon = 0;
+		this.className = "cmenu_item";
+	}
+	
+	nobj.onmousedown = function(){
+		
+		alert(this.innerText);
+	}
+	
+	return nobj;
+}
+
+
+document.body.elem_del = function(elem){ elem.hide(); }
+
+
+//------------------------------------------------------
+
+menu1 = JMenu();
+menu1.show(200,80);
+
+a = JMenuItem("Три");
+
+
+menu1.elem_add(JMenuItem("Один"));
+menu1.elem_add(JMenuItem("Два"));
+menu1.elem_add(a);
+menu1.elem_add(JMenuItem("Четыре"));
+
+
+
+function testOnClick(){
+	
+	menu1.togle();
+}
+
+//-->
+</SCRIPT>
+
+
+<!--
+<P>
+<TABLE style="LEFT: 234px; POSITION: absolute; TOP: 160px; HEIGHT: 251px" cellSpacing=1 cellPadding=1 border=1 >
+  <TR>
+    <TD><DIV style="WIDTH: 100%">asdfasdfasdf</DIV><DIV style="WIDTH: 100%">1223</DIV></TD>
+  </TR>
+</TABLE></P>
+-->
+
+</BODY>
+</HTML>

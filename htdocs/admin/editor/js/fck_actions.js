@@ -176,7 +176,7 @@ function dialogTable(searchParentTable)
 			return ;
 	}
 
-	FCKShowDialog("dialog/fck_table.html", window, 350, 210);
+	FCKShowDialog("dialog/fck_table.html", window, 400, 310);
 	objContent.focus() ;
 }
 

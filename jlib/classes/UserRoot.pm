@@ -1,22 +1,13 @@
 package UserRoot;
 use strict qw(subs vars);
 
-use vars '%props';
-use vars '$name';
-use vars '$page';
-use vars '$pages_direction';
-use vars '@aview';
-use vars '$add';
-use vars '@ISA';
-use vars '$dont_list_me';
+our $name = 'Корень пользователей';
+our $page = '/page';
+our $pages_direction = 1;
+our $add  = ' UserGroup ';
+our @ISA = 'JDBI::Array';
 
-$name = 'Корень пользователей';
-$page = '/page.ehtml';
-$pages_direction = 1;
-$add  = ' UserGroup ';
-@ISA = 'JDBI::Array';
-
-%props = (
+our %props = (
 
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя' }
 );
@@ -24,7 +15,7 @@ $add  = ' UserGroup ';
 sub DESTROY
 {
 	my $o = shift;
-	$o->SUPER::DESTROY();
+	$o->SUPER::DESTROY(@_);
 }
 
 return 1;

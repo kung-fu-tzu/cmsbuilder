@@ -5,11 +5,11 @@ function ShowHide(obj,dot){
 	if(obj.style.display == "none"){
 		
 		obj.style.display = "block";
-		dot.src = "minus.gif";
+		dot.src = "img/minus.gif";
 		document.cookie = obj.id + " = s&1";
 	}else{
 		obj.style.display = "none";
-		dot.src = "plus.gif";
+		dot.src = "img/plus.gif";
 		document.cookie = obj.id + " = s&0";
 	}
 
@@ -20,7 +20,7 @@ function ShowMe(obj,dot){
 	if(obj){
 		
 		obj.style.display = "block";
-		dot.src = "minus.gif";
+		dot.src = "img/minus.gif";
 		document.cookie = obj.id + " = s&1";
 	}
 }
@@ -58,19 +58,19 @@ function SelectLeft(obj){
 	
 	//alert("select("+obj.tagName+")");
 	
-	if(parent.prev_left_obj){
-		
-		parent.prev_left_obj.style.color = "";
-		parent.prev_left_obj.style.backgroundColor = "";
-	}
-	
 	if(obj){
 		
 		obj.style.backgroundColor = "#FBB57B";
 		obj.style.color = "#000000";
+		
+		if(parent.prev_left_obj){
+			
+			parent.prev_left_obj.style.color = "";
+			parent.prev_left_obj.style.backgroundColor = "";
+		}
+		
+		parent.prev_left_obj = obj;
 	}
-
-	parent.prev_left_obj = obj;
 }
 
 function StopDrag(obj){
@@ -133,6 +133,7 @@ function ShowDetails(){
 	show2.style.display = 'block';
 	show3.style.display = 'block';
 	show4.style.display = 'block';
+	show5.style.display = 'block';
 	
 	
 }

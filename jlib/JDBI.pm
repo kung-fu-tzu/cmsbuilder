@@ -1,91 +1,141 @@
 use DBI;
-use CGI();
+use CGI 'param';
+use JDBI::VType;
+use JDBI::Access;
+use JDBI::Base;
+use JDBI::Admin;
 use JDBI::Object;
+use JDBI::Array;
 use Classes::User;
 use Classes::UserGroup;
-#use JDBI::Array;
 
 package JDBI;
 use strict qw(subs vars);
+use Exporter;
 
-our $err505 = sub { print "Content-type: text/html\n\n505<br>".join('<br>',@_); };
-our $err404 = sub { print "Content-type: text/html\n\n404<br>".join('<br>',@_);; };
-our $err403 = sub { print "Content-type: text/html\n\n403<br>".join('<br>',@_);; };
+
+###################################################################################################
+# Базовые переменные интерфейса
+###################################################################################################
+
+our @EXPORT = ('url','user','group');
+our @ISA = 'Exporter';
 
 our $dbh;
 our %dbo_cache;
 our %vtypes;
 our $cgi;
-our @vtypes  = qw( checkbox date file formula int microword miniword object password radio select string text time timestamp vstring );
-our @classes = qw( Elem User UserGroup UserRoot Dir Papa );
+our @vtypes;
+our @classes;
 
-my $user;
-my $group;
+our $user;
+our $group;
 
-sub init
+
+###################################################################################################
+# Конфигурационные функции интерфейса
+###################################################################################################
+
+sub init()
 {
     $dbh = '';
     $cgi = '';
     %dbo_cache = ();
     %vtypes = ();
+    @classes = ();
+    @vtypes = ();
     $user = '';
     $group = '';
     
-    $cgi = CGI->new();
+    $cgi = $JIO::cgi || CGI->new();
+    
+    my $cdir;
+    my $file;
+    
+    # Собираем информацию о виртуальных типах.
+    opendir($cdir,$JConfig::path_lib.'/JDBI/vtypes');
+    while($file = readdir($cdir)){
+        unless(-f $JConfig::path_lib.'/JDBI/vtypes/'.$file){ next; }
+        unless($file =~ m/^\w+\.pm$/){ next; }
+        
+        $file =~ s/\.pm//g;
+        push @vtypes, $file;
+    }
+    closedir($cdir);
     
     my $vt;
-    for $vt (@vtypes){ require 'JDBI/vtypes/'.$vt.'.cgi'; }
+    for $vt (@vtypes){ require 'JDBI/vtypes/'.$vt.'.pm'; }
+    
+    # Собираем информацию о имеющихся классах.
+    opendir($cdir,$JConfig::path_lib.'/Classes');
+    while($file = readdir($cdir)){
+        unless(-f $JConfig::path_lib.'/Classes/'.$file){ next; }
+        unless($file =~ m/^\w+\.pm$/){ next; }
+        
+        $file =~ s/\.pm//g;
+        push @classes, $file;
+    }
+    closedir($cdir);
+    
     
     my $class;
     for $class (@classes){ require 'Classes/'.$class.'.pm'; }
+    for $class (@classes){ if($class->can('onload')){ $class->onload(); } }
+    if($JConfig::debug){ for $class (@classes){ if($class->can('check')){ $class->check(); } } }
+}
+
+sub destruct()
+{
+    %dbo_cache = ();
+    
+    $dbh->disconnect();
 }
 
 sub connect
 {
-    my($dbd,$u,$p) = @_;
+    my $class = shift;
+    my($dbd,$u,$p);
+    
+    if(@_){
+        ($dbd,$u,$p) = @_;
+    }else{
+        ($dbd,$u,$p) = ($JConfig::mysql_base,$JConfig::mysql_user,$JConfig::mysql_pas);
+    }
+    
     $dbh = DBI->connect($dbd,$u,$p,{ RaiseError => 1 });
-    $dbh->{'HandleError'} = $err505;
+    $dbh->{'HandleError'} = \&JIO::err505;
 }
 
-sub dousers
+sub dousers()
 {
-    my($do) = shift;
-    
-    if($do){
+    if($JConfig::users_do){
         
-        # Whenever...
+        # Whatever...
         
     }else{
         
         $user  = User->new();
         $user->{'ID'} = 1;
-        $user->{'name'} = 'Монопольный доступ';
+        $user->{'name'} = 'Монопольный режим';
+        $user->{'_temp_object'} = 1;
         
         $group = UserGroup->new();
         $group->{'ID'} = 1;
         $group->{'name'} = 'Администраторы';
-        $group->{'html'} = 1;
+        $group->{'html'} = 0;
         $group->{'cms'} = 1;
         $group->{'root'} = 1;
+        $group->{'_temp_object'} = 1;
     }
 }
 
-sub user  { return $user->no_cache(); }
-sub group { return $group->no_cache(); }
+sub user()  { return $user; }
+sub group() { return $group; }
 
 
-####################################################################################
-
-####################################################################################
-
-sub err505 { $err505->(@_) }
-sub err404 { $err404->(@_) }
-sub err403 { $err403->(@_) }
-
-sub classOK { return 1; }
-
-
-####################################################################################
+###################################################################################################
+# Базовые функции интерфейса
+###################################################################################################
 
 sub print_props
 {
@@ -106,13 +156,13 @@ sub print_props
     return '';
 }
 
-sub url
+sub url($)
 {
     my $url = shift;
     
     my ($class,$id) = url2classid($url);
     
-    my $to = &{$class.'::new'}($id);
+    my $to = $class->new($id);
     
     return $to;
 }
@@ -123,41 +173,24 @@ sub url2classid
     
     my ($class,$id) = ('','');
     
-    if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ JDBI::err505('Invalid object requested: '.$url); }
+    if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ JIO::err505('Invalid object requested: '.$url); }
     
     $class = $1;
     $id = $2;
     
-    if( !JDBI::classOK($class) ){ JDBI::err505('Invalid class name requested: '.$class); }
+    if( !JDBI::classOK($class) ){ JIO::err505('Invalid class name requested: '.$class); }
     
     return ($class,$id);
 }
 
-sub url
+sub classOK
 {
-    my $url = shift;
+    my $cn = shift;
+    my $i = '';
     
-    my ($class,$id) = url2classid($url);
+    for $i (@JDBI::classes){ if($i eq $cn ){ return 1; } }
     
-    my $to = &{$class.'::new'}($id);
-    
-    return $to;
-}
-
-sub url2classid
-{
-    my $url = shift;
-    
-    my ($class,$id) = ('','');
-    
-    if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ JDBI::err505('Invalid object requested: '.$url); }
-    
-    $class = $1;
-    $id = $2;
-    
-    if( ! JDBI::classOK($class) ){ JDBI::err505('Invalid class name requested: '.$class); }
-    
-    return ($class,$id);
+    return 0;
 }
 
 sub fromTIMESTAMP
@@ -188,6 +221,18 @@ sub fromTIMESTAMP
     return $date;
 }
 
+sub access_creTABLE
+{
+    my $sql = 'CREATE TABLE IF NOT EXISTS `access` ( '."\n";
+    $sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , ';
+    $sql .= '`url` VARCHAR(50) NOT NULL, ';
+    $sql .= '`memb` VARCHAR(50) DEFAULT \'\' NOT NULL, ';
+    $sql .= '`code` VARCHAR(20) DEFAULT \'\' NOT NULL, ';
+    $sql .= 'INDEX ( `memb` ), INDEX ( `url` ) )';
+    
+    my $str = $JDBI::dbh->prepare($sql);
+    $str->execute();
+}
 
 sub creTABLE
 {
@@ -222,6 +267,45 @@ sub creTABLE
     
     print '<div style="DISPLAY: none" id="sql_',$class,'">',$sql,'</div>';
 }
+
+sub purge_cache { %JDBI::dbo_cache = (); }
+
+sub dump_cache
+{
+    my $obj;
+    my $file;
+    open($file,'>'.$JConfig::path_tmp.'/cache.html');
+    print $file '<HTML><BODY><TITLE>Содержимое %JDBI::dbo_cache, для процесса с PID = ',$$,'</TITLE><TABLE border=1>';
+    print $file '<TR><TD><b>url</d></TD><TD><b>name</b></TD><TD><b>addres</b></TD></TR>';
+    for $obj (keys(%JDBI::dbo_cache)){
+        print $file '<TR><TD>',$obj,'</TD><TD>',$JDBI::dbo_cache{$obj}->name(),'</TD><TD>',$JDBI::dbo_cache{$obj},'</TD></TR>';
+    }
+    print $file '</TABLE></BODY></HTML>';
+    close($file);
+}
+
+sub HTMLfilter
+{
+    my $val = shift;
+    
+    $val =~ s/</&lt;/g;
+    $val =~ s/>/&gt;/g;
+    
+    return $val;
+}
+
+sub MD5
+{
+    my $var = shift;
+    
+    my $str = $dbh->prepare('SELECT MD5(?)');
+    $str->execute($var);
+    
+    my ($res) = $str->fetchrow_array();
+    return $res;
+}
+
+###################################################################################################
 
 return 1;
 

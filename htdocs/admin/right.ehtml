@@ -1,20 +1,22 @@
-<?eml admin::cms() ?><html>
+<?eml CMS::cms(); ?><html>
 <head>
-<LINK rel="stylesheet" TYPE="text/css" HREF="style.css">
+<link href="cmenu.css" rel="stylesheet" type="text/css">
+<link href="style.css" rel="stylesheet" type="text/css">
 <SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
+<SCRIPT LANGUAGE=javascript src="cmenu.js"></SCRIPT>
 <SCRIPT LANGUAGE=javascript src="editor/fckeditor.js"></SCRIPT>
 </head>
-<body bgcolor="#f0f4f0" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
+<body id="id_body" bgcolor="#f0f4f0" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
 
-<table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td width=10></td><td>
 
 <br>
 
-<?eml admin::action() ?>
-<?eml admin::list() ?>
+<?eml CMS::action() ?>
+<?eml CMS::list() ?>
 
-<div style="DISPLAY: none" id="tree_div"><?eml admin::tree() ?></div>
+<div style="DISPLAY: none" id="tree_div"><?eml CMS::tree() ?></div>
 
 </td></tr>
 </table>
@@ -24,12 +26,7 @@
 
 parent.document.all.tree_div_it.innerHTML = tree_div.innerHTML;
 
-<?eml
-	if($eml::sess{'admin_refresh_left'}){
-		print 'parent.frames.admin_left.document.location.reload();';
-		$eml::sess{'admin_refresh_left'} = 0;
-	}
-?>
+<?eml CMS::jscript(); ?>
 
 </script>
 

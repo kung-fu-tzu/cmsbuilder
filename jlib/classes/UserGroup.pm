@@ -1,26 +1,18 @@
 package UserGroup;
 use strict qw(subs vars);
 
-use vars '%props';
-use vars '$name';
-use vars '$page';
-use vars '$pages_direction';
-use vars '@aview';
-use vars '$add';
-use vars '@ISA';
-use vars '$dont_list_me';
+our $name = 'Группа пользователей';
+our $page = '/page';
+our $pages_direction = 1;
+our $add  = ' User ';
+our @aview = qw/name html files cms root/;
+our @ISA = 'JDBI::Array';
 
-$name = 'Группа пользователей';
-$page = '/page.ehtml';
-$pages_direction = 0;
-$add  = ' User ';
-@aview = qw/name html cms root/;
-@ISA = 'JDBI::Array';
-
-%props = (
-
+our %props = (
+	
 	'name'  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя группы' },
 	'html'  => { 'type' => 'checkbox', 'name' => 'Разрешить <b>HTML</b>' },
+	'files' => { 'type' => 'checkbox', 'name' => 'Разрешить загрузку файлов' },
 	'root'  => { 'type' => 'checkbox', 'name' => 'Полный доступ' },
 	'cms'   => { 'type' => 'checkbox', 'name' => 'Доступ к <b>СА</b>' }
 );
@@ -28,7 +20,7 @@ $add  = ' User ';
 sub DESTROY
 {
 	my $o = shift;
-	$o->SUPER::DESTROY();
+	$o->SUPER::DESTROY(@_);
 }
 
 return 1;

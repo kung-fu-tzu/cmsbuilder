@@ -1,26 +1,21 @@
 package Elem;
 use strict qw(subs vars);
 
-use vars '%props';
-use vars '$name';
-use vars '@ISA';
-use vars '$page';
+our $name = 'Элемент';
+our @ISA = 'JDBI::Object';
+our $page = '/page';
 
-$name = 'Элемент';
-@ISA = 'JDBI::Object';
-$page = '/page.ehtml';
-
-%props = (
+our %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' },
-	'tf'	  => { 'type' => 'file', 'msize' => 100, 'ext' => ' bmp jpg ', 'name' => 'File' }
+	'tf'	  => { 'type' => 'file', 'msize' => 100, 'ext' => ' bmp jpg gif txt html ', 'name' => 'File' }
 );
 
 sub DESTROY
 {
 	my $o = shift;
-	$o->SUPER::DESTROY();
+	$o->SUPER::DESTROY(@_);
 }
 
 return 1;

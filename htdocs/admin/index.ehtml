@@ -1,0 +1,103 @@
+<?eml CMS::cms() ?><html>
+<head>
+<title>Система администрирования сайта</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<link href="style.css" rel="stylesheet" type="text/css">
+
+</head>
+<body id="id_body" bgcolor="#ffffff">
+
+
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr height=40 bgColor=#ff7300><td align=center>
+	<TABLE height="100%" cellSpacing=0 cellPadding=0 width="95%"  border=0>
+		<TR>
+			<TD class="tdlr" align=left><a href="/"><font class="site_name">На сайт...</font></a></TD>
+			<TD class="tdlr" align=right>
+                                <A href="/login.ehtml?act=out"><IMG height=27 alt="Выход" src="img/exit.gif" width=44 border=0></A>
+			</TD>
+		</TR>
+	</TABLE>
+          
+</td></tr>
+
+
+
+
+
+<tr><td bgcolor="#DDE3E6" align=center>
+
+	<TABLE height="100%" cellSpacing=0 cellPadding=0 width="95%"  border=0 align=center>
+		<TR>
+			<td width=3 bgcolor="#9AABB5"></td>
+			<td width="30%" valign=top bgcolor=F7F7F7>
+			
+				<TABLE cellSpacing=0 cellPadding=0 width=100% height=100% border=0 bgcolor=F0F4F0>
+					<tr height=40><td>
+						<TABLE cellSpacing=0 cellPadding=0 width=100%  border=0 bgcolor=F0F4F0>
+							<tr><td height=34 width=14></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td></tr>
+							<tr><td colspan=2 class=red_hr></td></tr>
+						</table>
+					</td></tr>
+					<tr><td>
+                                        	
+						<IFRAME name=admin_left frameBorder=0 width="100%" height="100%"></IFRAME>
+                                                
+					</td></tr>
+					<tr height=150><td bgcolor="#F7F7F7" valign=top>
+                                                
+						<TABLE cellSpacing=0 cellPadding=0 width=100% height=100% border=0 bgcolor=F0F4F0>
+							<tr><td colspan=2 class=red_hr></td></tr>
+							<tr><td width=15 height=34></td><td valign=middle align=left><b>Персональные модули:</b></td></tr>
+							<tr><td colspan=2 class=red_hr></td></tr>
+                                                        <tr><td colspan=2>
+                                                            <IFRAME name=admin_modules src="modules.ehtml" frameBorder=0 width="100%" height="100%"></IFRAME>
+                                                        </td></tr>
+						</table>
+					</td></tr>
+				</TABLE>
+				
+			</td>
+			<td width=3 bgcolor="#9AABB5"></td>
+			<td  align=left>
+			
+			<TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0">
+				<tr><td height=34 valign=middle align=left>
+                                    <TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0"><tr><td width=16>&nbsp;</td><td>
+                                    <b>Редактирование элемента:</b><br><div id="tree_div_it">Элемен не выбран</div>
+                                    </td></TABLE>
+                                
+                                </td></tr>
+				<tr><td class=red_hr></td></tr>
+                                <tr><td>
+                                    <IFRAME name=admin_right frameBorder=0 width="100%" height="100%"></IFRAME>
+                                </td></tr>
+			</TABLE>
+			
+			</td>
+			<td width=3 bgcolor="#9AABB5"></td>
+		</TR>
+	</TABLE>
+
+</td></tr>
+
+
+
+
+
+<tr height=24 bgColor=#ff7300><td align=center>
+
+	<TABLE height="100%" cellSpacing=0 cellPadding=0 width="95%"  border=0>
+		<TR>
+			<TD class="tdlr" align=left><a target="admin_right" href="credits.html"><font class="authors">О системе администрирования...</font></a></TD>
+			<TD class="tdlr" align="right"><font class="authors"><b><nobr><div id="user_div_it"></div></nobr></b></font></TD>
+		</TR>
+	</TABLE>
+</td></tr>
+
+
+
+</table>
+
+</body>
+</html>

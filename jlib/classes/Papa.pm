@@ -1,17 +1,11 @@
 package Papa;
 use strict qw(subs vars);
 
-use vars '%props';
-use vars '$name';
-use vars '@ISA';
-use vars '$page';
-use vars '@aview';
+our $name = 'Родитель';
+our @ISA = 'JDBI::Object';
+our $page = '/page';
 
-$name = 'Родитель';
-@ISA = 'JDBI::Object';
-$page = '/page.ehtml';
-
-%props = (
+our %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'son'	  => { 'type' => 'object', 'class' => 'Elem', 'name' => 'Сын' },
@@ -21,7 +15,7 @@ $page = '/page.ehtml';
 sub DESTROY
 {
 	my $o = shift;
-	$o->SUPER::DESTROY();
+	$o->SUPER::DESTROY(@_);
 }
 
 return 1;

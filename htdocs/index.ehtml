@@ -1,0 +1,7 @@
+<!--#include file="shapka.txt" -->
+<!--#include file="left.txt" -->
+
+<?eml print 'A'; ?>
+
+<!--#include file="copyright.txt" -->
+<!--#include file="users.txt" -->

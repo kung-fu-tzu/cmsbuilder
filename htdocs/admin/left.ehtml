@@ -1,11 +1,17 @@
-<?eml admin::cms() ?><html>
+<?eml CMS::cms() ?><html>
 <head>
-<LINK rel="stylesheet" TYPE="text/css" HREF="style.css">
+<link href="style.css" rel="stylesheet" type="text/css">
+<link href="cmenu.css" rel="stylesheet" type="text/css">
 <SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
+<SCRIPT LANGUAGE=javascript src="cmenu.js"></SCRIPT>
 </head>
-<body class="left_body">
-<?eml admin::left_tree() ?>
-<?eml #DBObject::dump_cache() ?>
+<body id="id_body" class="left_body">
+<?eml CMS::left_tree() ?>
 <br>
+<script language="JavaScript">
+    
+    <?eml CMS::cmenus(); ?>
+    
+</script>
 </body>
 </html>

@@ -1,18 +1,12 @@
 package User;
 use strict qw(subs vars);
 
-use vars '%props';
-use vars '$name';
-use vars '@ISA';
-use vars '$page';
-use vars '@aview';
+our $name = 'Пользователь';
+our @ISA = 'JDBI::Object';
+our @aview = qw/name login pas icq email city/;
+our $page = '/page';
 
-$name = 'Пользователь';
-@ISA = 'JDBI::Object';
-@aview = qw/name login pas icq email city/;
-$page = '/page.ehtml';
-
-%props = (
+our %props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Имя' },
 	'login'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
@@ -28,17 +22,30 @@ sub install
 	my $class = shift;
 	my $str;
 	
-	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `sid` )');
+	$str = $JDBI::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `sid` )');
 	$str->execute();
 	
-	$str = $eml::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
+	$str = $JDBI::dbh->prepare('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
 	$str->execute();
+}
+
+sub save
+{
+	my $o = shift;
+	my($pas,$ret);
+	
+	$pas = $o->{'pas'};
+	if($o->{'pas'}){ $o->{'pas'} = JDBI->MD5($o->{'pas'}); }
+	$ret = $o->SUPER::save(@_);
+	$o->{'pas'} = $pas;
+	
+	return $ret;
 }
 
 sub DESTROY
 {
 	my $o = shift;
-	$o->SUPER::DESTROY();
+	$o->SUPER::DESTROY(@_);
 }
 
 return 1;

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="BD099AC8-A94E-4EC5-A978-58F8AE9F9FDB" name="engine" kpf_version="2">
+<preference-set id="">
+</preference-set>
+<file url="jlib/JEML.pm" id="75CAE6AA-4B26-48A6-B21A-19405154D3A0" name="JEML.pm">
+</file>
+<file url="jlib/JConfig.pm" id="2F3D50BA-8AA7-4082-96CC-5428BC29E29F" name="JConfig.pm">
+</file>
+<file url="jlib/JDBI.pm" id="1A2B9C26-F425-4B38-B17D-8DBB7ADCDFCC" name="JDBI.pm">
+</file>
+<file url="jlib/JIO.pm" id="D85F91C8-C0A7-412E-AFF3-22C8AECD63E7" name="JIO.pm">
+</file>
+<file url="cgi-bin/eml.cgi" id="1A02CC64-F9C0-418E-B351-3157EA047B45" name="eml.cgi">
+</file>
+<folder id="10A1F04F-AAB1-41A0-99BE-1C09A9E8D316" name="JDBI">
+<file url="jlib/JDBI/Admin.pm" id="60E620FD-B3F4-451F-8D00-ECAAC7E2BC6D" name="Admin.pm">
+</file>
+<file url="jlib/JDBI/Array.pm" id="156F22AD-5F3B-4E30-A25D-9903D8B6955D" name="Array.pm">
+</file>
+<file url="jlib/JDBI/Base.pm" id="A3C5346A-69EC-4739-8295-7A949AE7C3B4" name="Base.pm">
+</file>
+<file url="jlib/JDBI/Object.pm" id="A5F32293-ADF0-4B5E-960D-AA5313276617" name="Object.pm">
+</file>
+<file url="jlib/JDBI/VType.pm" id="FCFFF612-86EC-4036-AC20-088E8283AE08" name="VType.pm">
+</file>
+<file url="jlib/JDBI/Access.pm" id="55F989E2-4574-4094-974B-8FC163088F98" name="Access.pm">
+</file>
+</folder>
+<folder id="BFC224A8-3737-41D9-8EF2-1D8C726C8483" name="VTypes">
+<preference-set id="">
+  <string id="import_type">makeFlat</string>
+  <string id="import_dirname">E:\home\engine\jlib\JDBI\vtypes</string>
+  <boolean id="import_recursive">0</boolean>
+  <string id="import_include_matches">*.pm</string>
+</preference-set>
+<file url="jlib/JDBI/vtypes/file.pm" id="9EBD8BF9-55D7-48C7-BF95-E41A9152163F" name="file.pm">
+</file>
+<file url="jlib/JDBI/vtypes/checkbox.pm" id="AEFB44FF-BE8E-48B2-98D5-8C9E2F0D519C" name="checkbox.pm">
+</file>
+<file url="jlib/JDBI/vtypes/ClassList.pm" id="91787782-0675-4572-B5E5-C5A5BECB3E80" name="ClassList.pm">
+</file>
+<file url="jlib/JDBI/vtypes/date.pm" id="C9ED576F-AA74-49AC-A919-0460B4FE281E" name="date.pm">
+</file>
+<file url="jlib/JDBI/vtypes/formula.pm" id="41054DF1-45AB-45E0-B57A-75F0270C3ADE" name="formula.pm">
+</file>
+<file url="jlib/JDBI/vtypes/int.pm" id="83163E5C-F447-42C4-BD9E-540A5DFE7B31" name="int.pm">
+</file>
+<file url="jlib/JDBI/vtypes/microword.pm" id="7441F6EA-7D5D-45F9-AEAD-5E895682723E" name="microword.pm">
+</file>
+<file url="jlib/JDBI/vtypes/miniword.pm" id="80F245AE-FD40-4B15-8617-46CCB541E623" name="miniword.pm">
+</file>
+<file url="jlib/JDBI/vtypes/object.pm" id="BC0CDEBF-8898-4E80-9FF0-BA025AC08FD2" name="object.pm">
+</file>
+<file url="jlib/JDBI/vtypes/password.pm" id="05D79435-EBF8-4EED-A6C3-A3E7CA401E9A" name="password.pm">
+</file>
+<file url="jlib/JDBI/vtypes/radio.pm" id="56FEEE3E-BEBA-485E-825D-11B3CEFBC977" name="radio.pm">
+</file>
+<file url="jlib/JDBI/vtypes/select.pm" id="9100B92E-2629-4D59-9DDF-198BA7080149" name="select.pm">
+</file>
+<file url="jlib/JDBI/vtypes/string.pm" id="431D92CE-A88F-4E2C-9BF2-0334414A4A2A" name="string.pm">
+</file>
+<file url="jlib/JDBI/vtypes/text.pm" id="6B4918DD-6E50-40E3-AE1B-7CA9ABF6D561" name="text.pm">
+</file>
+<file url="jlib/JDBI/vtypes/time.pm" id="4461D75C-8177-436A-A86B-60733DD5A2C9" name="time.pm">
+</file>
+<file url="jlib/JDBI/vtypes/timestamp.pm" id="93D19E7B-3A4A-4B84-9A8B-B274B96928F1" name="timestamp.pm">
+</file>
+<file url="jlib/JDBI/vtypes/vstring.pm" id="8C1F2881-D2A1-4581-8D19-EB5F000ADC52" name="vstring.pm">
+</file>
+</folder>
+<folder id="5514EE38-C0BB-43F7-8181-A6C18F76D0A0" name="Packages">
+<preference-set id="">
+  <string id="import_dirname">E:\home\engine\jlib\Packages</string>
+  <string id="import_include_matches">*.pm</string>
+</preference-set>
+<file url="jlib/Packages/design.pm" id="95121712-5532-4BC7-99E2-BD4723C1A1B5" name="design.pm">
+</file>
+<file url="jlib/Packages/login.pm" id="B7D1A7FA-A060-471F-BA05-4054D8551D0E" name="login.pm">
+</file>
+<file url="jlib/Packages/register.pm" id="ED301869-D6B9-4C15-A3EF-E52C7D2A247C" name="register.pm">
+</file>
+</folder>
+<folder id="7463D6E4-DE8B-4B3B-86C6-69F827466DAB" name="Classes">
+<preference-set id="">
+  <string id="import_dirname">E:\home\engine\jlib\Classes</string>
+  <string id="import_include_matches">*</string>
+</preference-set>
+<file url="jlib/Classes/Dir.pm" id="2A6630CD-B141-4423-A4E4-11055C4929DA" name="Dir.pm">
+</file>
+<file url="jlib/Classes/Elem.pm" id="7DDC1AA4-7024-4AEF-A06C-D1EC24DA73F4" name="Elem.pm">
+</file>
+<file url="jlib/Classes/Papa.pm" id="E31BAF10-F6D5-4B9D-A5F9-0FC981CB616D" name="Papa.pm">
+</file>
+<file url="jlib/Classes/User.pm" id="E9873FF7-0BCD-4305-BEF2-D9D8B536112A" name="User.pm">
+</file>
+<file url="jlib/Classes/UserGroup.pm" id="82B366D2-9676-4C73-95A7-1ABC43403D14" name="UserGroup.pm">
+</file>
+<file url="jlib/Classes/UserRoot.pm" id="C26C5EBD-964E-4C81-B606-0BB4AD118D7E" name="UserRoot.pm">
+</file>
+</folder>
+<folder id="DDA43E2A-19AF-45E9-8863-836A7B379591" name="etc">
+<file url="htdocs/admin/cmenu.js" id="61650D7D-8AD6-49A7-87A9-156EC298A3A4" name="cmenu.js">
+</file>
+<file url="htdocs/admin/right.ehtml" id="7FC732B6-970B-40EC-8A8F-94281F74C06A" name="right.ehtml">
+</file>
+<file url="htdocs/admin/left.ehtml" id="EA998A51-1BB3-4875-8E1B-7034E5C70EB8" name="left.ehtml">
+</file>
+<file url="htdocs/admin/index.ehtml" id="6A562760-F484-48A3-8D06-1EC9CA1396DA" name="index.ehtml">
+</file>
+</folder>
+<folder id="8400DC78-47C7-4A60-92E1-C5327FC84A2C" name="JIO">
+<file url="jlib/JIO/Session.pm" id="03475F24-39E5-47F5-96D0-CEEB267A6E57" name="Session.pm">
+</file>
+</folder>
+<file url="jlib/CMS.pm" id="4EDF35B7-AAB8-44A9-B470-36F9F937EAA8" name="CMS.pm">
+</file>
+</project>
