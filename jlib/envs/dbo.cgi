@@ -115,6 +115,30 @@ sub action
 		exit();
 	}
 
+	if($act eq 'eup'){
+
+		$w->load( $id );
+		$w->upelem($eid);
+
+		EML::unflush();
+		EML::send_cookie();
+		print 'Location: /admin/?ID='.$w->{ID}."\n";
+		print "\n";
+		exit();
+	}
+
+	if($act eq 'edown'){
+
+		$w->load( $id );
+		$w->downelem($eid);
+
+		EML::unflush();
+		EML::send_cookie();
+		print 'Location: /admin/?ID='.$w->{ID}."\n";
+		print "\n";
+		exit();
+	}
+
 }
 
 sub tree

@@ -112,7 +112,11 @@ sub aview
 	for($i=1;$i<=$o->len();$i++){
 		
 		$e = $o->elem($i);
-		print '<br>',"<a onclick='return doDel()' href=?ID=".$o->{ID}."&enum=$i&act=dele><img border=0 src=x.gif></a> \&nbsp;";
+		print '<br>';
+		print "<a onclick='return doDel()' href=?ID=".$o->{ID}."&enum=$i&act=dele><img border=0 src=x.gif></a>";
+		print "<a href=?ID=".$o->{ID}."&enum=$i&act=eup><img border=0 src=up.gif></a>";
+		print "<a href=?ID=".$o->{ID}."&enum=$i&act=edown><img border=0 src=down.gif></a>";
+		print '&nbsp;&nbsp;';
 		print '<a '.$EML::dbo::emlh.' href=?class='.ref($e).'&ID='.$e->{ID}.'>',$e->name(),'</a>';
 	}
 	
@@ -137,6 +141,38 @@ sub DESTROY
 {
 	my $o = shift;
 	$o->SUPER::DESTROY();
+}
+
+sub upelem
+{
+	my $o = shift;
+	my $num = shift;
+	if($num == 1){ return; }
+	
+	my $table = 'arr_'.ref($o).'_'.$o->{ID};
+	
+	my $str = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
+	$str->execute(99999,$num-1);
+	$str->execute($num-1,$num);
+	$str->execute($num,99999);
+	
+	$o->sortT();
+}
+
+sub downelem
+{
+	my $o = shift;
+	my $num = shift;
+	if($num == $o->len()){ return; }
+	
+	my $table = 'arr_'.ref($o).'_'.$o->{ID};
+	
+	my $str = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
+	$str->execute(99999,$num+1);
+	$str->execute($num+1,$num);
+	$str->execute($num,99999);
+	
+	$o->sortT();
 }
 
 sub sortT
