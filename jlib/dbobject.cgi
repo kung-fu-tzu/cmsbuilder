@@ -3,6 +3,8 @@ use strict qw(subs vars);
 my %vtypes;
 my $page = '/page.ehtml';
 
+my $admin_left_max_name_len = 20;
+
 
 
 ###################################################################################################
@@ -14,7 +16,7 @@ sub url
 	my $url = shift;
 	
 	my ($class,$id) = url2classid($url);
-
+	
 	my $to = &{$class.'::new'}($id);
 	
 	return $to;
@@ -32,12 +34,12 @@ sub url2classid
 	my $url = shift;
 	
 	my ($class,$id) = ('','');
-
+	
 	if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
-
+	
 	$class = $1;
 	$id = $2;
-
+	
 	if( ! eml::classOK($class) ){ eml::err505('Invalid class name requested: '.$class); }
 	
 	return ($class,$id);
@@ -55,7 +57,6 @@ sub des_tree
 	while($o = $o->papa() and $count < 50){
 		$count++;
 		unshift(@all, $o->des_name());
-		
 	}
 	
 	print join(' :: ',@all);
@@ -91,13 +92,11 @@ sub des_href
 sub des_name
 {
 	my $o = shift;
-	my $page = shift;
 	
 	my $dname = $o->{name};
 	if(!$dname){ $dname = ${ref($o).'::name'}; }
 	
 	return '<a href="'.$o->des_href().'">'.$dname.'</a>';
-	#return '<a href="'.${ref($o).'::page'}.'?obj='.ref($o).$o->{'ID'}.($page?('&page='.$page):('')).'">'.$dname.'</a>';
 }
 
 sub name
@@ -106,6 +105,7 @@ sub name
 	my $ret;
 	
 	if($o->{name}){ return $o->{name} }
+	if($o->{'ID'} < 0){ return 'Îáúåêò áûë óäàë¸í: '.${ref($o).'::name'}.' '.$o->{ID} }
 	
 	return ${ref($o).'::name'}.' '.$o->{ID};
 }
@@ -203,8 +203,9 @@ sub o_sql
 sub admin_left
 {
 	my $o = shift;
+	my $img = $o->{'_is_ref'}?'ref.gif':'dot.gif';
 	
-	print '<nobr><img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'</nobr><br>',"\n";
+	print '<nobr><img class="icon" align="absmiddle" src="',$img,'">',$o->admin_name(),'</nobr><br>',"\n";
 }
 
 sub admin_name
@@ -212,13 +213,14 @@ sub admin_name
 	my $o = shift;
 	my $ret;
 	
-	if($o->{name}){
-		$ret = $o->{name};
-	}else{
+	#if($o->{name}){
+	#	$ret = $o->{name};
+	#}else{
 		$ret = $o->name();
-	}
+	#}
 	
 	$ret =~ s/\<(?:.|\n)+?\>//g;
+	if(length($ret) > $admin_left_max_name_len){ $ret = substr($ret,0,$admin_left_max_name_len-1).'...' }
 	
 	return '<a id="id_'.ref($o).$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">&nbsp;'.$ret.'&nbsp;</a>';
 }
@@ -231,17 +233,17 @@ sub admin_tree
 	my @all;
 	my $count = 0;
 	
-	print '<script>';
+	print '<script>',"\n";
 	
 	do{
 		$count++;
 		unshift(@all, $o->admin_name());
 		
-		print 'ShowMe(parent.frames.admin_left.document.all.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.all.dbdot_'.ref($o).$o->{'ID'}.'); ';
+		print 'ShowMe(parent.frames.admin_left.document.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.dbdot_'.ref($o).$o->{'ID'}.'); ',"\n";
 		
 	}while( $o = $o->papa() and $count < 50 );
 	
-	print 'SelectLeft(parent.frames.admin_left.document.all.id_'.ref($me).$me->{'ID'}.');';
+	print 'SelectLeft(parent.frames.admin_left.document.all["id_'.ref($me).$me->{'ID'}.'"]);',"\n";
 	
 	print '</script>';
 	
@@ -507,14 +509,11 @@ sub reload
 	if($o->{ID} < 0){ return; }
 	if($o->{ID} =~ m/\D/){ eml::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{ID}"); }
 	
-	my $sql = 'SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1';
-	
-	my $str = $eml::dbh->prepare($sql);
+	my $str = $eml::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
 	$str->execute($o->{ID});
 	
 	my $res = $str->fetchrow_hashref('NAME_lc');
 	
-	#if($res->{id} != $o->{ID}){ eml::err505('DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}); }
 	if($res->{id} != $o->{ID}){ print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}."\n"; $o->clear(); return; }
 	
 	my $id = 0;
@@ -651,21 +650,34 @@ sub DESTROY
 	$o->save();
 }
 
+sub props
+{
+	my $o = shift;
+	
+	return %{ref($o).'::props'};
+}
+
 sub _construct
 {
 	my $o = shift;
 	my $n = shift;
+	my $no_cache = shift;
 	
 	if($n eq ''){ $n = -1; }
 	
-	#if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
+	if(!$no_cache){
+		if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
+	}
 	
 	$o->{ID} = $n;
 	$o->reload();
 	
 	$o->do_access();
 	
-	#if($o->{ID} > -1){ $eml::dbo_cache{ref($o).$o->{ID}} = $o; }
+	if(!$no_cache){
+		if($o->{ID} > -1){ $eml::dbo_cache{ref($o).$o->{ID}} = $o; }
+	}
+	
 	return $o;
 }
 

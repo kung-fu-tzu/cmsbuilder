@@ -7,7 +7,6 @@ use CGI ('param');
 use POSIX ('strftime');
 
 
-
 use strict qw(subs vars);
 #use warnings;
 
@@ -32,6 +31,7 @@ use vars '@envs';
 use vars '%sess';
 use vars '$do_users';
 use vars '$files_dir';
+use vars '%opts';
 
 use vars '$uid';
 use vars '$gid';
@@ -46,9 +46,12 @@ sub mymain
 	$jlib = '../jlib';
 	$env_dir = $jlib.'/packages';
 	$dbo_dir = $jlib.'/classes';
-	$sess_dir = $jlib.'/sessions';
+	$sess_dir = $jlib.'/etc/sessions';
 	
 	$files_dir = '../htdocs/files/';
+	
+	%opts = ();
+	dbmopen(%opts,$jlib.'/etc/options',0640) or die 'OPTIONS_NOT_OPEN';
 	
 	################################
 	
@@ -91,6 +94,7 @@ sub mymain
 	require $jlib.'/jsession.cgi';
 	require $jlib.'/dbobject.cgi';
 	require $jlib.'/dbarray.cgi';
+	require $jlib.'/dbref.cgi';
 	
 	%sess = ();
 	JSession::start();
@@ -112,7 +116,7 @@ sub mymain
 		open(MEM,'>out'.$$.'.tmp');
 		select(MEM);
 	}	
-
+	
 	if(!open(FILE, "< $file")){ err404('File not found: '.$file); }
 	$str = join('',<FILE>);
 	close(FILE);
@@ -125,11 +129,12 @@ sub mymain
 	print "Expires: 0\n";
 	print "\n";
 	undef $str_time;
-
+	
+	
 	require 'mysql_cfg.cgi'; 
 	$dbh = DBI->connect(ret_mysql(),{ RaiseError => 1 });
 	$dbh->{HandleError} = sub {err505($_[0]);};
-
+	
 	my $f;
 	if(!opendir(CLS,$env_dir)){err505('Can`t open enveronments directory: '.$env_dir);}
 	while($f = readdir(CLS)){
@@ -142,7 +147,7 @@ sub mymain
 		push @envs, $f;
 	}
 	closedir(CLS);
-
+	
 	
 	if(!opendir(DBO,$dbo_dir)){err505('Can`t open dbo directory: '.$dbo_dir);}
 	while($file = readdir(DBO)){
@@ -158,28 +163,29 @@ sub mymain
 	
 	
 	if($do_users){
-		$jlogin = JLogin::new();
 		$uid = -1;
 		$gid = -1;
-		($g_user,$g_group) = $jlogin->verif();
+		($g_user,$g_group) = JLogin::verif();
 		$g_user->{'_temp_object'} = 1;
 		$g_group->{'_temp_object'} = 1;
 		$uid = $g_user->{'ID'};
 		$gid = $g_group->{'ID'};
 	}
-	#else{
-	#	$uid = 1; $gid = 1;
-	#	$g_user = User::new(0);
-	#	$g_group = UserGroup::new(0);
-	#	$g_group->{'adminka'} = 1;
-	#	
-	#}
-
-
+	else{
+		$uid = 1; $gid = 1;
+		$g_user = User::new();
+		$g_user->{'name'} = 'Temp Admin';
+		$g_group = UserGroup::new();
+		$g_group->{'adminka'} = 1;
+		$g_user->{'_temp_object'} = 1;
+		$g_group->{'_temp_object'} = 1;
+	}
+	
+	
 	# —читываем и парсим конструкции <!--#include ... -->
 	$str =~ s/<!--#include\s+(.+)\s+-->/SSI($1);/gei;
 	
-	# —читываем и парсим конструкции <?eml object.method() ?>
+	# —читываем и парсим конструкции <?eml package::sub() ?>
 	@parts = split(/<\?eml((?:.|\n)+?)\?>/,$str);
 	
 	undef $str;
@@ -188,15 +194,16 @@ sub mymain
 		
 		if($i % 2){ eval($parts[$i]); if($@){ err505('eval("'.$parts[$i].'")') } }
 		else{ print $parts[$i]; }
-		
 	}
+	
+	#print '<b> JLogin_sid = ',$sess{'JLogin_sid'},'</b>';
 	
 	flush();
 	%dbo_cache = ();
 	undef $dbh;
 	
+	dbmclose(%opts);
 }
-
 
 sub f2var
 {
@@ -206,7 +213,7 @@ sub f2var
 	if(! open(SSI,'< '.$dir.$f) ){ return '[an error occurred while processing this directive]'; }
 	$var = join('',<SSI>);
 	close(SSI);
-
+	
 	return $var;
 }
 
@@ -218,22 +225,6 @@ sub SSI
 	if($str =~ m/\w+="(.+?)"/){ $ret = f2var($1); }
 	
 	return $ret;
-}
-
-sub su
-{
-	$ruid = $uid;
-	$uid = 0;
-	$rgid = $gid;
-	$gid = 0;
-}
-
-sub unsu
-{
-	$uid = $ruid;
-	$ruid = -1;
-	$gid = $rgid;
-	$rgid = -1;
 }
 
 sub flush
@@ -275,19 +266,13 @@ sub classOK
 {
 	my $cn = shift;
 	my $i = '';
-
-	for $i (@eml::dbos){
-
-		if($i eq $cn ){ return 1; }
-
-	}
-
+	
+	for $i (@eml::dbos){ if($i eq $cn ){ return 1; } }
+	
 	return 0;
-
 }
 
 mymain();
 
-
-
+#print 'END OK';
 

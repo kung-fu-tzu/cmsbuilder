@@ -1,16 +1,20 @@
 package Elem;
+use strict qw(subs vars);
+
+use vars '%props';
+use vars '$name';
+use vars '@ISA';
+use vars '$page';
+
 $name = 'Элемент';
 @ISA = 'DBObject';
 $page = '/page.ehtml';
-use strict qw(subs vars);
 
-my %props = (
+%props = (
 	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' }
 );
-
-sub props { return %props; }
 
 sub new
 {

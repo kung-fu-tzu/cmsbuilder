@@ -30,6 +30,7 @@ sub move2
 	my $ufrom = eml::param('from');
 	my $uto = eml::param('to');
 	my $enum = eml::param('enum');
+	my $ref = eml::param('ref');
 	
 	my $from = DBObject::url($ufrom);
 	my $elem;
@@ -38,10 +39,17 @@ sub move2
 		
 		my $to = DBObject::url($uto);
 		
-		$elem = $from->elem_cut($enum);
-		$to->elem_paste($elem);
-		
-		$eml::sess{'admin_refresh_left'} = 1;
+		if($ref){
+			$elem = $from->elem($enum);
+			$to->elem_paste_ref($elem,1);
+			
+			$eml::sess{'admin_refresh_left'} = 1;
+		}else{
+			$elem = $from->elem_cut($enum);
+			$to->elem_paste($elem);
+			
+			$eml::sess{'admin_refresh_left'} = 1;
+		}
 		
 		print '<script language="JavaScript">location.href = "right.ehtml?ID=',$from->{'ID'},'&class=',ref($from),'"</script>';
 		return;
@@ -68,7 +76,7 @@ sub move2
 			if($from->myurl() eq $d->myurl()){ next; }
 			if($elem->myurl() eq $d->myurl()){ next; }
 			
-			print '<img src=dot.gif align=absmiddle> <a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'">',$d->name(),'</a><br>';
+			print '<img src=dot.gif align=absmiddle><a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=1"><img align=absmiddle border=0 src="ref.gif"></a> <a href="?from=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=0">',$d->name(),'</a><br>';
 			$count++;
 		}
 	}
@@ -294,6 +302,7 @@ sub modules
 	parent.document.frames.admin_left.location.href = "left.ehtml?url=',$mods{$sel_mod},'";
 	parent.document.frames.admin_right.location.href = "right.ehtml?ID=',$id,'&class=',$class,'";
 	parent.document.all.module_div_it.innerHTML = "',$sel_mod,'";
+	parent.document.all.user_div_it.innerHTML = "',$eml::g_user->name(),'";
 	</SCRIPT>
 	';
 	

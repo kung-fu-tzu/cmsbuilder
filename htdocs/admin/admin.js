@@ -3,7 +3,7 @@
 function ShowHide(obj,dot){
 
 	if(obj.style.display == "none"){
-	
+		
 		obj.style.display = "block";
 		dot.src = "minus.gif";
 		document.cookie = obj.id + " = s&1";
@@ -18,11 +18,10 @@ function ShowHide(obj,dot){
 function ShowMe(obj,dot){
 
 	if(obj){
-
+		
 		obj.style.display = "block";
 		dot.src = "minus.gif";
 		document.cookie = obj.id + " = s&1";
-
 	}
 }
 
@@ -56,32 +55,29 @@ function StartDrag(obj){
 
 
 function SelectLeft(obj){
-
-	//alert(parent.prev_left_obj);
-
+	
+	//alert("select("+obj.tagName+")");
+	
 	if(parent.prev_left_obj){
-
+		
 		parent.prev_left_obj.style.color = "";
 		parent.prev_left_obj.style.backgroundColor = "";
 	}
-
+	
 	if(obj){
-
+		
 		obj.style.backgroundColor = "#FBB57B";
 		obj.style.color = "#000000";
-
 	}
 
 	parent.prev_left_obj = obj;
-
 }
 
 function StopDrag(obj){
 	
 	if(drag_obj != obj){
-	
+		
 		window.status = "DO: Moving "+drag_obj.id+" to "+obj.id;
-	
 	}
 	
 	drag_obj.style.position = "";

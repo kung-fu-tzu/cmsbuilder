@@ -1,6 +1,10 @@
 package DBArray;
-@ISA = 'DBObject';
 use strict qw(subs vars);
+
+use vars '@ISA';
+
+@ISA = 'DBObject';
+
 my $max_admin_left = 20;
 
 
@@ -19,6 +23,7 @@ sub admin_left
 	my $o = shift;
 	
 	if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
+	if( $o->{'_is_ref'} ){ return $o->SUPER::admin_left(); }
 	
 	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
 	my $disp = $node{'s'} ? 'block' : 'none';
@@ -70,7 +75,13 @@ sub admin_view
 			if($e->{'_ENUM'} != 1){ print '<a href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=eup&page='.$page.'"><img border=0 src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
 		}
 		
-		print '<a href="move2.ehtml?from='.ref($o).$o->{'ID'}.'&enum='.$e->{'_ENUM'}.'"><img border=0 src=move2.gif></a>';
+		if($e->{'_is_ref'}){
+			print '<img border=0 src="ref.gif">';
+		}else{
+			print '<a href="move2.ehtml?from='.ref($o).$o->{'ID'}.'&enum='.$e->{'_ENUM'}.'"><img border=0 src=move2.gif></a>';
+		}
+		
+		
 		print "\n",'&nbsp;&nbsp;',"\n";
 		#print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
 		print $e->admin_name();
@@ -338,7 +349,9 @@ sub elem_del
 	my $eid = shift;
 	
 	my $ob = $o->elem_cut($eid);
+	
 	$ob->del();
+	
 	$ob = '';
 }
 

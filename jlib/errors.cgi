@@ -9,7 +9,7 @@ sub err404
 	
 	print "Location: /errors/404.html\n\n";
 	
-	print STDERR 'EML.CGI 404 ERROR: '.$_[0];
+	print STDERR 'EML.CGI 404 ERROR: '.$_[0].'; '.$@;
 	exit();
 }
 
@@ -22,7 +22,7 @@ sub err403
 	
 	print "Location: /errors/403.html\n\n";
 	
-	print STDERR 'EML.CGI 403 ERROR: '.$_[0];
+	print STDERR 'EML.CGI 403 ERROR: '.$_[0].'; '.$@;
 	exit();
 }
 

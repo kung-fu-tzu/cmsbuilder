@@ -1,18 +1,26 @@
 package UserGroupRoot;
+use strict qw(subs vars);
+
+use vars '%props';
+use vars '$name';
+use vars '$page';
+use vars '$pages_direction';
+use vars '@aview';
+use vars '$add';
+use vars '@ISA';
+use vars '$dont_list_me';
+
 $name = 'Группа пользователей';
 $page = '/page.ehtml';
 $pages_direction = 0;
 $add  = ' User ';
 @ISA = 'DBArray';
-use strict qw(subs vars);
 
-my %props = (
+%props = (
 
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя группы' },
 	'adminka' => { 'type' => 'checkbox', 'name' => 'Доступ к админке' }
 );
-
-sub props { return %props; }
 
 sub new
 {

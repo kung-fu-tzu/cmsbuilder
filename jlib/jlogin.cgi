@@ -1,34 +1,24 @@
 package JLogin;
 use strict qw(subs vars);
 
-my $table;
-
-sub new
-{
-	my $self = {};
-	bless($self);
-	
-	$self->{"error"} = "";
-	
-	return $self;
-}
+use vars '$errstr';
+$errstr = '';
 
 sub login
 {
-	my($cook,%user,$l,$p,$rnd);
-	my $self = shift;
+	my($cook,$l,$p,$rnd);
 	$l = shift;
 	$p = shift;
 	
-	if($l eq '' or $p eq ''){ return $self->err('Пустое имя пользователя или пароль.'); }
+	if($l eq '' or $p eq ''){ return err('Пустое имя пользователя или пароль.'); }
 	
 	my $tu = User::new();
 	
 	$tu->sel_one(' login = ? ',$l);
 	
-	if($tu->{'ID'} < 0){return $self->err("Неверное имя пользователя.");}
-	if($tu->{'pas'} ne $p){return $self->err("Неверный пароль.");}
-	if($tu->papa() eq undef){return $self->err("Вы не состоите ни в одной группе.");}
+	if($tu->{'ID'} < 0){return err("Неверное имя пользователя.");}
+	if($tu->{'pas'} ne $p){return err("Неверный пароль.");}
+	if($tu->papa() eq undef){return err("Вы не состоите ни в одной группе.");}
 	
 	# login and password OK
 	
@@ -39,18 +29,7 @@ sub login
 	
 	$tu->{'sid'} = $rnd;
 	
-	$user{"sid"} = $rnd;
-	
-	my $co = new CGI;
-	
-	$cook = $co->cookie(
-		-name=>"JLogin",
-		-value=>\%user,
-		-path=>'/',
-		-expires=>'+365d'
-	);
-	
-	print 'Set-Cookie: ',$cook->as_string,"\n";
+	$eml::sess{'JLogin_sid'} = $rnd;
 	
 	return 1;
 }
@@ -58,53 +37,40 @@ sub login
 sub logout
 {
 	my(%cook,$cook,%user,$l,$p,$sid);
-	my $self = shift;
-
-
+	
 	my $co = new CGI;
 	%cook = $co->cookie( "JLogin" );
-
+	
 	$sid = $cook{"sid"};
 	$sid =~ s/\D//;
-
-	if($sid eq '' or $sid == 0){ return( $self->err("Вы не вошли в систему.") ); }
-
+	
+	if($sid eq '' or $sid == 0){ return( err("Вы не вошли в систему.") ); }
+	
 	my $tu = User::new();
 	$tu->sel_one(' sid = ? ',"$sid");
-
-	if($tu->{'ID'} < 0){ return( $self->err("Ваш ключ устарел. Войдите в систему повторно.") ); }
+	
+	if($tu->{'ID'} < 0){ return( err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 	
 	$tu->{'sid'} = 0;
 	
 	$user{"sid"} = 0;
 	
 	
-	$cook = $co->cookie(
-		-name=>"JLogin",
-		-value=>\%user,
-		-path=>'/',
-		-expires=>'+365d'
-
-	);
-	
-	
-	print 'Set-Cookie: ',$cook->as_string,"\n";
+	delete( $eml::sess{'JLogin_sid'} );
 	
 	return 1;
 }
 
 sub verif
 {
-	my($self,$co,%cook,$sid);
-	$self = shift;
+	my($co,%cook,$sid);
 	
-	$co = new CGI;
-	%cook = $co->cookie( "JLogin" );
+	$sid = $eml::sess{'JLogin_sid'};
 	
-	$sid = $cook{"sid"};
-	$sid =~ s/\D//;
+	#print '<b> JLogin_sid = ',$eml::sess{'JLogin_sid'},'</b>';	
 	
-	if($sid eq "" or $sid == 0){ return (undef,undef); }
+	if($sid eq '' or $sid == 0){ return (undef,undef); }
+	
 	
 	my $tu = User::new();
 	$tu->sel_one(' sid = ? ',"$sid");
@@ -117,9 +83,7 @@ sub verif
 
 sub err
 {
-	my $self = shift;
-	my $errstr = shift;
-	$self->{"error"} = $errstr;
+	$errstr = shift;
 	return 0;
 }
 

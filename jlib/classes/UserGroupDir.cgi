@@ -1,17 +1,25 @@
 package UserGroupDir;
+use strict qw(subs vars);
+
+use vars '%props';
+use vars '$name';
+use vars '$page';
+use vars '$pages_direction';
+use vars '@aview';
+use vars '$add';
+use vars '@ISA';
+use vars '$dont_list_me';
+
 $name = 'Корень пользователей';
 $page = '/page.ehtml';
 $pages_direction = 0;
 $add  = ' UserGroup ';
 @ISA = 'DBArray';
-use strict qw(subs vars);
 
-my %props = (
+%props = (
 
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя' }
 );
-
-sub props { return %props; }
 
 sub new
 {

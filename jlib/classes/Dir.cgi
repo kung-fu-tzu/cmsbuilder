@@ -1,4 +1,15 @@
 package Dir;
+use strict qw(subs vars);
+
+use vars '%props';
+use vars '$name';
+use vars '$page';
+use vars '$pages_direction';
+use vars '@aview';
+use vars '$add';
+use vars '@ISA';
+use vars '$dont_list_me';
+
 $name = 'Директория';
 $page = '/page.ehtml';
 $pages_direction = 0;
@@ -6,17 +17,19 @@ $pages_direction = 0;
 $add  = ' Elem Dir Papa ';
 @ISA = 'DBArray';
 $dont_list_me = 0;
-use strict qw(subs vars);
 
-my %props = (
-
+%props = (
+	
 	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
 );
 
-sub props
+sub go
 {
-	return %props;
+	my $o = shift;
+	
+	print '<nobr><b>go(',$o,')</b></nobr>';
+	
 }
 
 sub new
