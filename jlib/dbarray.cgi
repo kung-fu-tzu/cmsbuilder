@@ -72,9 +72,11 @@ sub admin_view
 		print "\n",'&nbsp;&nbsp;',"\n";
 		#print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
 		print $e->admin_name();
+		$i++;
 		print "\n";
 	}
 	
+	if(!$i){ print '<center>Нет элементов.</center>'; }
 	
 	if($o->pages() > 1){
 		

@@ -643,6 +643,8 @@ sub _construct
 	$o->{ID} = $n;
 	$o->reload();
 	
+	$o->do_access();
+	
 	if($o->{ID} > -1){ $eml::dbo_cache{ref($o).$o->{ID}} = $o; }
 	return $o;
 }
@@ -673,6 +675,14 @@ sub print_props
 	return '';
 }
 
+sub do_access
+{
+	
+	
+	
+	
+}
+
 sub access
 {
 	my $o = shift;
@@ -680,7 +690,7 @@ sub access
 	
 	if(length($type) != 1){ return 0; }
 	
-	if( $eml::gid == 0 ){ return 1; }
+	#if( $eml::gid == 0 ){ return 1; }
 	
 	my $papa = $o->papa();
 	
