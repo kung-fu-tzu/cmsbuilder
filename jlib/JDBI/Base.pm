@@ -8,10 +8,10 @@ use strict qw(subs vars);
 our %sys_cols = (
 	
 	'ID'			=> 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY',
-	'OID'		    => 'INT DEFAULT \'-1\' NOT NULL',
-	'ATS'		    => 'TIMESTAMP NOT NULL',
-	'CTS'		    => 'TIMESTAMP NOT NULL',
-	'PAPA_ID'	    => 'INT DEFAULT \'0\' NOT NULL',
+	'OID'			=> 'INT DEFAULT \'-1\' NOT NULL',
+	'ATS'			=> 'TIMESTAMP NOT NULL',
+	'CTS'			=> 'TIMESTAMP NOT NULL',
+	'PAPA_ID'		=> 'INT DEFAULT \'0\' NOT NULL',
 	'PAPA_CLASS'	=> 'VARCHAR(20) NOT NULL'
 );
 
@@ -130,6 +130,7 @@ sub reload
 	
 	if($res->{'id'} != $o->{'ID'}){
 		print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n";
+		if($JConfig::lfnexrow_error505){ JIO::err505('exrow_error'); }
 		$o->clear();
 		return;
 	}
@@ -168,7 +169,6 @@ sub reload
 		}
 	}
 	
-	#$o->{'_was_loaded'} = 1;
 	if($have_o == 1){ $o->save() }
 }
 
@@ -180,7 +180,6 @@ sub save
 	my @vals = ();
 	my $val;
 	
-	#unless($o->{'_was_loaded'}){ return; }
 	if(!exists $o->{'ID'} or $o->{'ID'} < 1){ return; }
 	if(!$o->access('w')){ return; }
 	if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
@@ -196,7 +195,7 @@ sub save
 		
 		$sql .= "\n $key = ?,";
 		
-		#if( ${ 'JDBI::vtypes::'.$p->{$key}{'type'}.'::integrated' }){ 1; }
+		#if( ${ 'JDBI::vtypes::'.$p->{$key}{'type'}.'::filter' }){ 1; }
 		
 		if( $p->{$key}{'type'} eq 'object' ){
 			
@@ -252,11 +251,11 @@ sub check
 	
 	my $i;
 	for $i (0 .. $#{$class.'::aview'}){
-	
-	if(!$p->{${$class.'::aview'}[$i]}){
-		print STDERR "\n",'@'.$class.'::aview contain prop ',${$class.'::aview'}[$i],' not existed in %'.$class.'::props.',"\n";
-		splice(@{$class.'::aview'},$i,1)
-	}
+		
+		if(!$p->{${$class.'::aview'}[$i]}){
+			print STDERR "\n",'@'.$class.'::aview contain prop ',${$class.'::aview'}[$i],' not existed in %'.$class.'::props.',"\n";
+			splice(@{$class.'::aview'},$i,1)
+		}
 	}
 	
 	#print STDERR '[@'.$class.'::aview checked]';
@@ -418,7 +417,7 @@ sub table_cre
 	
 	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.$class.'` ( '."\n";
 	
-	for $sc (keys(%sys_cols)){
+	for $sc (sort(keys(%sys_cols))){
 		$sql .= '`'.$sc.'` '.$sys_cols{$sc}.', '."\n";
 	}
 	

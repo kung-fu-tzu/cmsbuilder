@@ -263,3 +263,8 @@ IMG
     BACKGROUND-COLOR: #ff0000;
     TEXT-ALIGN: left
 }
+.red_font
+{
+    FONT-WEIGHT: bold;
+    COLOR: #ff7300
+}

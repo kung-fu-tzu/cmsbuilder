@@ -1,7 +1,4 @@
-<?eml
-	CMS::cms();
-	$CMS::what_frame = 'right';
-?><html>
+<?eml CMS::cms(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css">
 <link href="style.css" rel="stylesheet" type="text/css">
@@ -11,6 +8,12 @@
 <body bgcolor="#f0f4f0">
 <script language="JavaScript" src="cmenu.js"></script>
 
+<?eml CMS::user_shtoolbox() ?>
+<script language="JavaScript">
+Tree_div_it();
+</script>
+
+
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td width=10></td><td>
 
@@ -18,11 +21,10 @@
 
 <?eml CMS::modr() ?>
 
-<div style="DISPLAY: none" id="tree_div"><?eml CMS::tree() ?></div>
-
 </td></tr>
 </table>
 
+<?eml CMS::tree() ?>
 
 <script language="JavaScript">
 

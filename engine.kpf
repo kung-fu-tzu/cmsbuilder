@@ -114,6 +114,10 @@
 </file>
 <file url="htdocs/admin/modules.ehtml" id="C257A3CB-A6E3-4470-9770-1EDC6AB58BCB" name="modules.ehtml">
 </file>
+<file url="htdocs/admin/modr.ehtml" id="30528614-77E2-4B33-AAF0-DE5D9778442E" name="modr.ehtml">
+</file>
+<file url="htdocs/admin/modl.ehtml" id="4F223B61-0F14-4E35-9541-2680469CC573" name="modl.ehtml">
+</file>
 </folder>
 <folder id="8400DC78-47C7-4A60-92E1-C5327FC84A2C" name="JIO">
 <file url="jlib/JIO/Session.pm" id="03475F24-39E5-47F5-96D0-CEEB267A6E57" name="Session.pm">

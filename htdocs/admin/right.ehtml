@@ -1,7 +1,4 @@
-<?eml
-	CMS::cms();
-	$CMS::what_frame = 'right';
-?><html>
+<?eml CMS::cms(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css">
 <link href="style.css" rel="stylesheet" type="text/css">
@@ -11,19 +8,10 @@
 <body bgcolor="#f0f4f0">
 <script language="JavaScript" src="cmenu.js"></script>
 
-<script language="JavaScript">
 
-if(!CMS_HaveParent()){
-    document.write(
-'    <table cellSpacing="0" cellPadding="0" width="100%" border="0" bgcolor="#F0F4F0">'+
-'	<tr>'+
-'	    <td width="16"><img id="id_show" style="DISPLAY: none" src="img/show.gif" onclick="ShowLeft()"></td>'+
-'	    <td><b>јктивный элемент:</b><br><div id="tree_div_it">Ёлемент не выбран</div></td><br>'+
-'	</tr>'+
-'	<tr><td>&nbsp;</td></tr>'+
-'	<tr><td colspan="2" class="red_hr"></td></tr>'+
-'    </table>');
-}
+<?eml CMS::user_shtoolbox() ?>
+<script language="JavaScript">
+Tree_div_it();
 </script>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -41,9 +29,12 @@ if(!CMS_HaveParent()){
 
 
 <script language="JavaScript">
+	<?eml CMS::jscript(); ?>
+</script>
 
-<?eml CMS::jscript(); ?>
 
+<script language="JavaScript">
+Status_div_it();
 </script>
 
 </body>

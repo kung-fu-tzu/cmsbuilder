@@ -6,24 +6,24 @@ our $virtual = 1;
 
 sub aview
 {
-    my $class = shift;
-    my $name = shift;
-    my $val = shift;
-    my $obj = shift;
-    my $ret;
-    
-    $ret = join(',',keys(%$obj));
-    
-    return $ret;
+	my $class = shift;
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+	my $ret;
+	
+	$ret = join(',',keys(%$obj));
+	
+	return $ret;
 }
 
 sub aedit
 {
-    my $class = shift;
-    my $name = shift;
-    my $val;
-    
-    return $val;
+	my $class = shift;
+	my $name = shift;
+	my $val;
+	
+	return $val;
 }
 
 1;

@@ -1,8 +1,4 @@
-<?eml
-	CMS::cms();
-	$CMS::what_frame = 'left';
-	$JConfig::autosave = 0;
-?><html>
+<?eml CMS::cms(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css">
 <link href="style.css" rel="stylesheet" type="text/css">

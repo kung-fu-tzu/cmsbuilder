@@ -8,13 +8,13 @@ our $page = '/page';
 our $icon = 1;
 
 our %props = (
-	'name'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Имя' },
-	'login'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
-	'pas'	  => { 'type' => 'password', 'length' => 50, 'name' => 'Пароль' },
-	'sid'	  => { 'type' => 'string', 'length' => 32, 'name' => 'Ключ' },
-	'icq'	  => { 'type' => 'int', 'name' => '#ICQ' },
-	'email'	  => { 'type' => 'string', 'length' => 50, 'name' => 'E-Mail' },
-	'city'	  => { 'type' => 'string', 'length' => 30, 'name' => 'Город' }
+	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Имя' },
+	'login'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
+	'pas'		=> { 'type' => 'password', 'length' => 50, 'name' => 'Пароль' },
+	'sid'		=> { 'type' => 'string', 'length' => 32, 'name' => 'Ключ' },
+	'icq'		=> { 'type' => 'int', 'name' => '#ICQ' },
+	'email'		=> { 'type' => 'string', 'length' => 50, 'name' => 'E-Mail' },
+	'city'		=> { 'type' => 'string', 'length' => 30, 'name' => 'Город' }
 );
 
 sub setup_fix_table

@@ -12,20 +12,21 @@ our @aview = qw/name dolist/;
 our $icon = 1;
 
 our %props = (
-    'name'    => { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
-    'dolist'  => { 'type' => 'checkbox', 'name' => 'Отображать' }
+	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
+	'dolist'	=> { 'type' => 'checkbox', 'name' => 'Отображать' }
 );
 
 sub install_code
 {
-    my $mod = shift;
-    
-    my $mr = ModRoot->new(1);
-    
-    my $to = $mod->cre();
-    $to->{'name'} = 'Сайт';
-    
-    $mr->elem_paste($to);
+	my $mod = shift;
+	
+	my $mr = ModRoot->new(1);
+	
+	my $to = $mod->cre();
+	$to->{'name'} = 'Сайт';
+	$to->save();
+	
+	$mr->elem_paste($to);
 }
 
 return 1;

@@ -1,8 +1,4 @@
-<?eml
-    CMS::cms();
-    $CMS::what_frame = 'main';
-    $JConfig::autosave = 0;
-?><html>
+<?eml CMS::cms(); ?><html>
 <head>
 <title>Система администрирования</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
@@ -14,78 +10,78 @@
 
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
 <tr height="40" bgColor="#ff7300"><td align="center">
-    <table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
+	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
 	<tr>
-	    <td width="10%" class="tdlr" align="left"><a href="/"><font class="site_name">На сайт...</font></a></td>
-	    <td width="80%" align="center"><?eml CMS::main_menu() ?></td>
-	    <td width="10%" class="tdlr" align="right">
+		<td width="10%" class="tdlr" align="left"><a href="/"><font class="site_name">На сайт...</font></a></td>
+		<td width="80%" align="center"><?eml CMS::main_menu() ?></td>
+		<td width="10%" class="tdlr" align="right">
 		<?eml CMS::user_exit() ?>
-	    </td>
+		</td>
 	</tr>
-    </table>
+	</table>
 </td></tr>
 
 
 
 <tr><td bgcolor="#DDE3E6" align="center">
-    
-    <table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0" align="center">
+	
+	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0" align="center">
 	<tr>
-	    <?eml if($JConfig::have_left_frame){ ?>
-	    <td width="3" id="id_left_border" bgcolor="#9AABB5"></td>
-	    <td width="30%" id="id_left_td" valign="top" bgcolor="#F7F7F7">
+		<?eml if($JConfig::have_left_frame){ ?>
+		<td width="3" id="id_left_border" bgcolor="#9AABB5"></td>
+		<td width="30%" id="id_left_td" valign="top" bgcolor="#F7F7F7">
 		
 		<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
-		    <tr height="40"><td>
+			<tr height="40"><td>
 			<table cellSpacing="0" cellPadding="0" width="100%"  border="0" bgcolor="#F0F4F0">
-			    <tr><td height="34" width="1"><img src="img/null.gif" width="14"></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td><td width="1"><img alt="Скрыть дерево" src="img/hide.gif" onclick="HideLeft()"></td></tr>
-			    <tr><td colspan="3" class="red_hr"></td></tr>
+				<tr><td height="34" width="1"><img src="img/null.gif" width="14"></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td><td width="1"><img alt="Скрыть дерево" src="img/hide.gif" onclick="HideLeft()"></td></tr>
+				<tr><td colspan="3" class="red_hr"></td></tr>
 			</table>
-		    </td></tr>
-		    <tr><td>
+			</td></tr>
+			<tr><td>
 			
 			<iframe name="admin_left" frameBorder="0" width="100%" height="100%"></iframe>
 			
-		    </td></tr>
-		    <tr height="150"><td bgcolor="#F7F7F7" valign="top">
+			</td></tr>
+			<tr height="150"><td bgcolor="#F7F7F7" valign="top">
 			
 			<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
-			    <tr><td colspan="2" class="red_hr"></td></tr>
-			    <tr><td width="1" height="34"><img src="img/null.gif" width="14"></td><td valign="middle" align="left"><b>Персональные модули:</b></td></tr>
-			    <tr><td colspan="2" class="red_hr"></td></tr>
-			    <tr><td colspan="2">
+				<tr><td colspan="2" class="red_hr"></td></tr>
+				<tr><td width="1" height="34"><img src="img/null.gif" width="14"></td><td valign="middle" align="left"><b>Персональные модули:</b></td></tr>
+				<tr><td colspan="2" class="red_hr"></td></tr>
+				<tr><td colspan="2">
 				<iframe name="admin_modules" src="modules.ehtml" frameBorder="0" width="100%" height="100%"></iframe>
-			    </td></tr>
+				</td></tr>
 			</table>
-		    </td></tr>
+			</td></tr>
 		</table>
 		
-	    </td>
-	    <?eml } ?>
-	    <td width="3" bgcolor="#9AABB5"></td>
-	    <td align="left">
-	    
-	    <table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
+		</td>
+		<?eml } ?>
+		<td width="3" bgcolor="#9AABB5"></td>
+		<td align="left">
+		
+		<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
 		<tr><td height="34" valign="middle" align="left">
-		    <table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
+			<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
 			<tr>
-			    <td width="16"><img id="id_show" style="DISPLAY: none" src="img/show.gif" onclick="ShowLeft()"></td>
-			    <td><b>Активный элемент:</b><br><div id="tree_div_it">Элемент не выбран</div></td>
+				<td width="16"><img id="id_show" style="DISPLAY: none" src="img/show.gif" onclick="ShowLeft()"></td>
+				<td><b>Активный элемент:</b><br><div id="tree_div_it">Элемент не выбран</div></td>
 			</tr>
-		    </table>
-		    
+			</table>
+			
 		</td></tr>
 		<tr><td class="red_hr"></td></tr>
 		<tr><td>
-		    <iframe name="admin_right" frameBorder="0" width="100%" height="100%"></iframe>
+			<iframe name="admin_right" frameBorder="0" width="100%" height="100%"></iframe>
 		</td></tr>
-	    </table>
-	    
-	    </td>
-	    <td width="3" bgcolor="#9AABB5"></td>
+		</table>
+		
+		</td>
+		<td width="3" bgcolor="#9AABB5"></td>
 	</TR>
-    </table>
-    
+	</table>
+	
 </td></tr>
 
 
@@ -93,12 +89,12 @@
 
 
 <tr height="24" bgColor=#ff7300><td align="center">
-    <table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
+	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
 	<tr>
-	    <td class="tdlr" align="left"><a target="admin_right" href="credits.html"><font class="authors">О системе администрирования...</font></a></td>
-	    <td class="tdlr" align="right"><font class="authors"><b><nobr><?eml CMS::user_name() ?></nobr></b></font></td>
+		<td class="tdlr" align="left"><a target="admin_right" href="credits.html"><font class="authors">О системе администрирования...</font></a></td>
+		<td class="tdlr" align="right"><font class="authors"><b><nobr><?eml CMS::user_name() ?></nobr></b></font></td>
 	</tr>
-    </table>
+	</table>
 </td></tr>
 
 

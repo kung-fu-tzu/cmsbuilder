@@ -4,7 +4,7 @@ our @ISA = 'JDBI::VType';
 
 sub table_cre
 {
-    return ' INT(11) ';
+	return ' INT(11) ';
 }
 
 1;

@@ -1,6 +1,6 @@
 use File::Find;
 
-$what = '    ';
+$what = '	';
 $dircnt = 0;
 $i = 1;
 $| = 1;
@@ -12,15 +12,18 @@ $dircnt++;
 
 sub p
 {
-	open(F,$_);
 	if($i % int($dircnt/10) == 0){ print '.'; }
-	while($str = <F>)
-	{
-		if($str =~ m/$what/i){ $cnt{$_}++; }
-	}
-	
-	close(F);
 	$i++;
+	
+	if($_ eq 'space2tab.pl'){ next; }
+	
+	open(F,$_);
+	$f = join('',<F>);
+	close(F);
+	$f =~ s/    /	/g;
+	open(F,'> '.$_);
+	print F $f;
+	close(F);
 }
 
 find(\&cnt,'.');

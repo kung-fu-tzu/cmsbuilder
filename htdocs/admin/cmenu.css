@@ -108,11 +108,9 @@ BODY
 }
 .cmenu_4
 {
-    FONT-WEIGHT: 900;
-    FONT-SIZE: 7px;
+    FONT-SIZE: 10px;
     LEFT: 5px;
     WIDTH: 100%;
-    FONT-FAMILY: Webdings;
     POSITION: relative;
     TEXT-ALIGN: right
 }

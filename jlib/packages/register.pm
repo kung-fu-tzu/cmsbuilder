@@ -1,12 +1,17 @@
 package register;
 use strict qw(subs vars);
 
+# !!! Ётот код может не соответствовать стандарту 2.0
+#     ѕакет будет выполнен в виде модул€.
+
+=comm
+
 sub register
 {
 	my($login,$pas,$email,$icq,$city,$nick,$pas2,$action) = @_;
 	
 	if($action eq 'reg'){
-	
+		
 		my @err;
 		
 		if($login =~ m/(\W)/){ push @err, 'Ћогин содержит недопустимый символ "'.$1.'"';}
@@ -27,7 +32,7 @@ sub register
 		my $tu = MyUser::new();
 		
 		if($#err == -1){
-		
+			
 			$tu->sel(' login = ? ',$login);
 			if($tu->{ID} > 0){ push @err, 'ѕользователь с таким логином уже существует';}
 			
@@ -65,7 +70,7 @@ sub register
 			print "Location: /\n\n";
 			
 		}
-	
+		
 	}
 	
 	print "
@@ -159,5 +164,7 @@ ENDD
 	}
 	
 }
+
+=cut
 
 return 1;

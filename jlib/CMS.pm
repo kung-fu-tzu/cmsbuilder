@@ -6,7 +6,6 @@ use JIO;
 
 our $def_mod = 'ModUsers';
 our $do_list;
-our $what_frame;
 
 sub jchmod { require $JConfig::path_lib.'/CMS/jchmod.pl'; jchmod(); }
 sub jchown { require $JConfig::path_lib.'/CMS/jchown.pl'; jchown(); }
@@ -16,7 +15,7 @@ sub arr_sort
 {
 	my $by = param('by');
 	
-    my $w = url(param('url'));
+	my $w = url(param('url'));
 	
 	if($by eq 'reverse'){ $w->reverse(); }
 	if($by eq 'class'){ $w->sortT('CLASS'); }
@@ -34,51 +33,53 @@ sub action
 	my $enum = param('enum');
 	my $page = param('page');
 	
-	
-	my $w = url($url);
-	
 	$do_list = 1;
 	
 	if($act){ sess()->{'admin_refresh_left'} = 1; }
 	else{ return; }
 	
+	unless($url){ print 'Ошибка: url не определено!'; return; }
+	my $w = url($url);
+	
 	
 	if($act eq 'edit'){
-	
-	my $tname = $w->name();
-	$w->admin_edit();
-	if($tname eq $w->name()){ sess()->{'admin_refresh_left'} = 0; }
+		
+		my $tname = $w->name();
+		$w->admin_edit();
+		$w->save();
+		$w->reload(); # Некоторые изменения, например ATS, OID, вступают в силу после reload()
+		if($tname eq $w->name()){ sess()->{'admin_refresh_left'} = 0; }
 	}
 	
 	if($act eq 'cre'){
-	
-	if(!JDBI::classOK($cn)){ return; }
-	
-	if(!$w->access('a')){ $w->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
-	
-	my $to = $cn->cre();
-	$to->admin_edit();
-	
-	$w->elem_paste($to);
+		
+		if(!JDBI::classOK($cn)){ return; }
+		
+		if(!$w->access('a')){ $w->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+		
+		my $to = $cn->cre();
+		$to->admin_edit();
+		$w->save();
+		
+		$w->elem_paste($to);
 	}
 	
 	if($act eq 'adde'){
-	
-	if(!JDBI::classOK($cn)){ return; }
-	
-	if(!$w->access('a')){ $w->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
-	
-	sess()->{'admin_refresh_left'} = 0;
-	$do_list = 0;
-	
-	my $to = $cn->new();
-	$to->admin_cre($w);
+		
+		unless(JDBI::classOK($cn)){ return; }
+		
+		unless($w->access('a')){ $w->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+		
+		sess()->{'admin_refresh_left'} = 0;
+		$do_list = 0;
+		
+		my $to = $cn->new();
+		$to->admin_cre($w);
 	}
 	
 	if($act eq 'move'){
-	
-	my $nnum = param('nnum');
-	$w->elem_moveto($enum,$nnum);
+		
+		$w->elem_moveto($enum,param('nnum'));
 	}
 	
 	if($act eq 'dele'){ $w->elem_del($enum); }
@@ -99,27 +100,19 @@ sub action
 sub left_tree
 {
 	unless($JConfig::have_left_tree){
-	print '<br><br><br><center>Дерево елементов отключено.</center>';
-	return;
+		print '<br><br><br><center>Дерево елементов отключено.</center>';
+		return;
 	}
 	
 	my $url = param('url');
+	unless($url){ print 'Ошибка: url не определено!'; return; }
 	
-	unless($url){ print 'Error: url not specified!'; }
-	
-	my $to;
-	$to = url($url);
-	$to->admin_left();
+	url($url)->admin_left();
 }
 
 sub tree
 {
-	my $url = param('url');
-	my $to;
-	
-	$to = url($url);
-	
-	$to->admin_tree();
+	url(param('url'))->admin_tree();
 }
 
 sub main_menu
@@ -146,8 +139,8 @@ sub cpanel
 		JDBI::access_creTABLE();
 		ModRoot->table_cre();
 		my $mr = ModRoot->cre();
-		$mr->{'name'} = 'Модули';
-        $mr->save();
+		$mr->{'name'} = 'Корень модулей';
+		$mr->save();
 		
 		print 'Таблицы всех классов, таблица разрешений и корень модулей успешно установлены.<br><br>';
 		
@@ -157,7 +150,7 @@ sub cpanel
 	}
 	
 	if($act eq 'table_fix'){
-	
+		
 		for $mod (@JDBI::modules){ $mod->table_fix() }
 		
 		print '<br><br><a href="cpanel.ehtml">Назад...</a>';
@@ -168,13 +161,13 @@ sub cpanel
 		$refresh = 1;
 		
 		for $mod (@JDBI::modules){ $refresh = $mod->install() && $refresh; }
-		
-		if($refresh){ print '<br>Модули успешно установлены.'; }
-		else{ print '<br><br><a href="cpanel.ehtml">Назад...</a>'; }
+			
+			if($refresh){ print '<br>Модули успешно установлены.'; }
+			else{ print '<br><br><a href="cpanel.ehtml">Назад...</a>'; }
 		}
 		
 		unless(ModRoot->table_have()){
-		print 'Структура не установлена! <a href="?act=table_cre"><b>Установить...</b></a>';
+		print 'Структура базы не установлена! <a href="?act=table_cre"><b>Установить...</b></a>';
 		return;
 	}
 	
@@ -192,7 +185,7 @@ sub user_name
 {
 	my $uname;
 	
-	if($JConfig::users_do){
+	if($JConfig::users_do_e){
 		$uname = $JDBI::group->name().' / '.$JDBI::user->name();
 	}else{ $uname = 'Монопольный режим'; }
 	
@@ -201,13 +194,31 @@ sub user_name
 
 sub user_exit
 {
+	unless($JConfig::users_do_e){ return; }
 	print '<a href="',$JConfig::http_eroot,'/login.ehtml?act=out"><img align="absmiddle" alt="Выход" src="img/logoff.gif"></a>';
+}
+
+sub user_shtoolbox
+{
+	print '<textarea style="DISPLAY: none" id="shtoolbox">';
+	CMS::main_menu();
+	print '&nbsp;&nbsp;';
+	CMS::user_exit();
+	print '</textarea>';
+	
+	print '<textarea style="DISPLAY: none" id="shbottombox">';
+	CMS::user_name();
+	print '</textarea>';
 }
 
 sub modules
 {
 	unless(ModRoot->table_have()){
-		print '<br><center>Структура базы не установлена!</center>';
+		print '<br><center>Структура базы не установлена!</center>
+		<script language="JavaScript">
+			parent.admin_right.location.href = "cpanel.ehtml";
+		</script>
+		';
 		return;
 	}
 	
@@ -232,7 +243,7 @@ sub modules
 		
 	}
 	
-	unless(@mods){ print '<br><center>Ни один модуль не установлен.</center>'; }
+	unless(@mods){ print '<br><center>Нет модулей для отображения.</center>'; }
 }
 
 sub modr
@@ -261,7 +272,6 @@ sub jscript
 	
 	print ' if(CMS_HaveParent()) parent.document.all.tree_div_it.innerHTML = tree_div.innerText;
 		else tree_div_it.innerHTML = tree_div.innerText;
-		
 	';
 	
 	cmenus();
@@ -271,8 +281,8 @@ sub cmenus
 {
 	my $url;
 	for $url (keys(%JDBI::dbo_cache)){
-	$JDBI::dbo_cache{$url}->admin_cmenu();
-	print "\n\n";
+		$JDBI::dbo_cache{$url}->admin_cmenu();
+		print "\n\n";
 	}
 }
 
@@ -282,19 +292,19 @@ sub list
 	my $url = param('url');
 	my $act = param('act');
 	
-	if(!$do_list){ return; }
+	unless($do_list){ return; }
 	
 	my $w = url($url);
-	$w->save();
-	$w->reload();
-	if(!$w->access('r')){ $w->err_add('У вас нет разрешений для просмотра этого элемента.'); }
+	#$w->save();
+	#$w->reload();
+	unless($w->access('r')){ $w->err_add('У вас нет разрешений для просмотра этого элемента.'); }
 	$w->admin_view($page);
 }
 
 sub cms
 {
-	if(!$JDBI::group->{'cms'}){
-	JIO::err402('$JDBI::group->{"cms"} != 1');
+	unless($JDBI::group->{'cms'}){
+		JIO::err402('$JDBI::group->{"cms"} != 1');
 	}
 }
 

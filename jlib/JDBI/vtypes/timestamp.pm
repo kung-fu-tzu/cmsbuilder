@@ -4,7 +4,7 @@ our @ISA = 'JDBI::VType';
 
 sub table_cre
 {
-    return ' TIMESTAMP ';
+	return ' TIMESTAMP ';
 }
 
 1;
