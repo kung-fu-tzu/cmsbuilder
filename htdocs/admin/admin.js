@@ -14,6 +14,17 @@ function ShowHide(obj,dot){
 
 }
 
+function ShowMe(obj,dot){
+
+	if(obj){
+
+		obj.style.display = "block";
+		dot.src = "minus.gif";
+		document.cookie = obj.id + " = s&1";
+
+	}
+}
+
 function doDel(){
 
 	return window.confirm('Удалить?');
@@ -41,6 +52,28 @@ function StartDrag(obj){
 	return false;
 }
 
+
+
+function SelectLeft(obj){
+
+	//alert(parent.prev_left_obj);
+
+	if(parent.prev_left_obj){
+
+		parent.prev_left_obj.style.color = "";
+		parent.prev_left_obj.style.backgroundColor = "";
+	}
+
+	if(obj){
+
+		obj.style.backgroundColor = "#ff7300";
+		obj.style.color = "#000000";
+
+	}
+
+	parent.prev_left_obj = obj;
+
+}
 
 function StopDrag(obj){
 	

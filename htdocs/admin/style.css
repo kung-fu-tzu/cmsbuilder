@@ -108,6 +108,7 @@ INPUT
 {
     BORDER-RIGHT: #303130 1px solid;
     BORDER-TOP: #303130 1px solid;
+    FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
     FONT-FAMILY: Arial, Helvetica, sans-serif;
@@ -117,6 +118,7 @@ SELECT
 {
     BORDER-RIGHT: #303130 1px solid;
     BORDER-TOP: #303130 1px solid;
+    FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
     FONT-FAMILY: Arial, Helvetica, sans-serif;
@@ -126,6 +128,7 @@ TEXTAREA
 {
     BORDER-RIGHT: #303130 1px solid;
     BORDER-TOP: #303130 1px solid;
+    FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
     FONT-FAMILY: Arial, Helvetica, sans-serif;
@@ -138,4 +141,11 @@ BODY
     PADDING-BOTTOM: 0px;
     MARGIN: 0px;
     PADDING-TOP: 0px
+}
+.pages_table
+{
+    BORDER-RIGHT: #ff7300 1px solid;
+    BORDER-TOP: #ff7300 1px solid;
+    BORDER-LEFT: #ff7300 1px solid;
+    BORDER-BOTTOM: #ff7300 1px solid
 }

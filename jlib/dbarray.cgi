@@ -13,6 +13,34 @@ use strict qw(subs vars);
 # Методы автоматизации администрирования
 ###################################################################################################
 
+sub admin_left
+{
+	my $o = shift;
+	
+	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
+	my $disp = $node{'s'} ? 'block' : 'none';
+	my $pic  = $node{'s'} ? 'minus' : 'plus';
+	
+	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"<br>\n";
+	
+	#print '<div id="id_'.ref($o).$o->{'ID'}.'"
+	#onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
+	#onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
+	#onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
+	#onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
+	#style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
+	#></div>';
+	#print "\n";
+	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
+	my $to;
+	for $to ($o->get_all()){
+		
+		$to->admin_left();
+		
+	}
+	print '</div>',"\n";
+}
+
 sub admin_view
 {
 	my $o = shift;
@@ -21,8 +49,6 @@ sub admin_view
 	my $i = 0;
 	
 	$o->SUPER::admin_view();
-	
-	print '<br><hr align=left style="WIDTH: 200px">';
 	
 	my $len = $o->len();
 	if(!$page){ $page = 0; }
@@ -42,20 +68,27 @@ sub admin_view
 		
 		#print "<a onclick='MoveMe(".$e->{'_ENUM'}."); return false;' href='#'><img border=0 src=move2.gif></a>";
 		print '&nbsp;&nbsp;';
-		print '<a href=?class='.ref($e).'&ID='.$e->{'ID'}.'>',$e->name(),'</a>';
+		print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
 	}
 	
-	print '<br><br><center>';
 	
-	my $p;
-	for($p=0;$p<$o->pages();$p++){
+	if($o->pages() > 1){
 		
-		if($p == $page){ print '<b>'.($p+1).'</b>'; }
-		else{ print ' <a href="?class='.ref($o).'&ID='.$o->{'ID'}.'&page='.$p.'">'.($p+1).'</a> ' }
+		print '<br><br><center>';	
+		print '<table class="pages_table" cellspacing="0" cellpadding="0"><tr>';
+		
+		my $p;
+		for($p=0;$p<$o->pages();$p++){
 			
+			if($p == $page){ print '<td width=20 align=center height=20 bgcolor="#ff7300"><b>'.($p+1).'</b></td>'; }
+			else{ print '<td width=20 align=center height=20><a href="?class='.ref($o).'&ID='.$o->{'ID'}.'&page='.$p.'">'.($p+1).'</a><td>' }
+				
+		}
+		
+		print '</tr></table>';
+		print '</center>';
+		
 	}
-	
-	print '</center>';
 	
 	my $c;
 

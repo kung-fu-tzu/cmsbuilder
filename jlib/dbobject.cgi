@@ -154,29 +154,8 @@ sub admin_left
 {
 	my $o = shift;
 	
-	if($o->type() eq 'DBObject'){ print '<img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'<br>',"\n"; return; }
+	print '<img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'<br>',"\n";
 	
-	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
-	my $disp = $node{'s'} ? 'block' : 'none';
-	my $pic  = $node{'s'} ? 'minus' : 'plus';
-	
-	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"<br>\n";
-	#print '<div id="id_'.ref($o).$o->{'ID'}.'"
-	#onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
-	#onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
-	#onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
-	#onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
-	#style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
-	#></div>';
-	#print "\n";
-	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
-	my $to;
-	for $to ($o->get_all()){
-		
-		$to->admin_left();
-		
-	}
-	print '</div>',"\n";
 }
 
 sub admin_name
@@ -191,7 +170,7 @@ sub admin_name
 	}
 	
 	#$ret =~ s/\s/\&nbsp;/g;
-	return '<a target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
+	return '<a id="id_'.ref($o).$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
 
 }
 
@@ -202,11 +181,17 @@ sub admin_tree
 	my @all;
 	my $count = 0;
 	
+	print '<script>';
+	
 	do{
 		$count++;
 		unshift(@all, '<a href=?class='.ref($o).'&ID='.$o->{ID}.'>'.$o->name().'</a>');
 		
+		print 'ShowMe(parent.frames.admin_left.document.all.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.all.dbdot_'.ref($o).$o->{'ID'}.'); ';
+		
 	}while( $o = $o->papa() and $count < 50 );
+	
+	print '</script>';
 	
 	print join(' :: ',@all);
 }
@@ -303,16 +288,16 @@ sub admin_view
 	print '<input type="hidden" name="ID" value="',$o->{ID},'">',"\n";
 	print '<input type="hidden" name="act" value="edit">',"\n";
 	print '<input type="hidden" name="class" value="'.ref($o).'">',"\n";
-	print '<table>',"\n";
-
+	
+	print '<table width="100%>',"\n";
 	my @keys;
 
 	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
 
 
 	for $key (@keys){
-
-		print "<tr><td valign=top>".$p{$key}{name}.":</td><td>\n";
+		
+		print "<tr><td valign=center><b>".$p{$key}{name}.":</b></td><td>\n";
 		print $DBObject::vtypes{ $p{$key}{type} }{aview}->( $key, $o->{$key}, $o );
 		print "\n</td>\n</tr>\n";
 	}

@@ -207,5 +207,6 @@ sub list
 	}
 }
 
+sub w { return $w; }
 
 return 1;

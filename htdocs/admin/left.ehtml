@@ -5,5 +5,6 @@
 </head>
 <body class="left_body">
 <?eml admin::left_tree() ?>
+<br>
 </body>
 </html>
