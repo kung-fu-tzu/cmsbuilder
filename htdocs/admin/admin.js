@@ -67,7 +67,7 @@ function SelectLeft(obj){
 
 	if(obj){
 
-		obj.style.backgroundColor = "#ff7300";
+		obj.style.backgroundColor = "#FBB57B";
 		obj.style.color = "#000000";
 
 	}

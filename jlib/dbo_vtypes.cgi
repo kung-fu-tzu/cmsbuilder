@@ -275,6 +275,21 @@ $vtypes{string}{aview} = sub {
 
 };
 
+$vtypes{string}{aview} = sub {
+
+	my $name = shift;
+	my $val = shift;
+
+	$val =~ s/\"/\&quot;/g;
+	$val =~ s/\</\&lt;/g;
+	$val =~ s/\>/\&gt;/g;
+
+	my $ret = '<input class="winput" type=text name="'.$name.'" value="'.$val.'">';
+
+	return $ret;
+
+};
+
 # Пароль ####################################################
 
 $vtypes{password}{table_cre} = sub {
@@ -298,6 +313,20 @@ $vtypes{password}{aview} = sub {
 
 };
 
+$vtypes{password}{aedit} = sub {
+
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+	
+	$old = $obj->{$name};
+	$old =~ s/./*/g;
+	
+	if($val eq $old){ return $obj->{$name}; }
+	if($val eq ''){ return $obj->{$name}; }
+	
+	return $val;
+};
 
 # Безразмерная строка ####################################################
 
@@ -385,7 +414,7 @@ $vtypes{file}{aedit} = sub {
 	my ($buff,$len,$todel);
 	if($id =~ m/\D/){ return 0; }
 
-	my $fdir = '../htdocs/files/';
+	my $fdir = $eml::files_dir;
 
 	#print "Saved: $fdir".ref($obj)."_${name}_$id".$props{$name}{ext};
 
@@ -424,7 +453,7 @@ $vtypes{file}{del} = sub {
 	my %props = $obj->props();
 	my $id = $obj->{ID};
         
-        my $fdir = '../htdocs/files/';
+        my $fdir = $eml::files_dir;
         
         unlink( $fdir.ref($obj)."_${name}_$id".$props{$name}{ext} );
 };
@@ -465,7 +494,7 @@ $vtypes{anyfile}{aedit} = sub {
 	my ($buff,$len,$todel);
 	if($id =~ m/\D/){ return 0; }
 
-	my $fdir = '../htdocs/files/';
+	my $fdir = $eml::files_dir;
 
 	#print "Saved: $fdir".ref($obj)."_${name}_$id".$props{$name}{ext};
         
@@ -515,7 +544,7 @@ $vtypes{anyfile}{del} = sub {
 	my %props = $obj->props();
 	my $id = $obj->{ID};
         
-        my $fdir = '../htdocs/files/';
+        my $fdir = $eml::files_dir;
         
         unlink( $fdir.ref($obj)."_${name}_$id".$obj->{$name} );
 };

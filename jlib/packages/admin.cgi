@@ -109,8 +109,11 @@ sub action
 	
 	if($act eq 'edit'){
 		$w->load( $id );
+		my $tname = $w->name();
+		
 		$w->admin_edit();
 		
+		if($tname eq $w->name()){ $eml::sess{'admin_refresh_left'} = 0; }
 	}
 	
 	if($act eq 'del'){

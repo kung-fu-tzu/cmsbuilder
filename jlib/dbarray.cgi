@@ -1,6 +1,7 @@
 package DBArray;
 @ISA = 'DBObject';
 use strict qw(subs vars);
+my $max_admin_left = 20;
 
 
 ###################################################################################################
@@ -35,11 +36,12 @@ sub admin_left
 	#print "\n";
 	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
 	my $to;
-	for $to ($o->get_all()){
+	for $to ($o->get_all($max_admin_left)){
 		
 		$to->admin_left();
 		
 	}
+	if($o->len() > $max_admin_left){ print '<nobr><img class="icon" align="absmiddle" src="bullet.gif"><font color="#ff7300" size=1>Ёлементов слишком много...</font></nobr><br>',"\n"; }
 	print '</div>',"\n";
 }
 
@@ -149,21 +151,37 @@ sub get_page
 sub get_all
 {
 	my $o = shift;
-	my $page = shift;
+	my $mlen = shift;
 	my @ret;
 	
+	my $len = $o->len();
+	if($mlen < 1){$mlen = $len}
+	if($len > $mlen){ $len = $mlen; }
+	
 	if( ${ref($o).'::pages_direction'} )
-	    { @ret = $o->get_all_inc($page) }
-	else{ @ret = $o->get_all_dec($page) }
+	    { @ret = $o->get_all_inc($len) }
+	else{ @ret = $o->get_all_dec($len) }
 	
 	return @ret;
 }
 
-sub get_all_inc
+sub get_all_class
 {
 	my $o = shift;
-	my $page = shift;
-	$page =~ s/\D//g;
+	my @classes = @_;
+	my @ret;
+	
+	if( ${ref($o).'::pages_direction'} )
+	    { @ret = $o->get_all_class_inc(@classes) }
+	else{ @ret = $o->get_all_class_dec(@classes) }
+	
+	return @ret;
+}
+
+sub get_all_class_inc
+{
+	my $o = shift;
+	my @classes = @_;
 	
 	my $to;
 	my @ret;
@@ -181,11 +199,10 @@ sub get_all_inc
 	return @ret;
 }
 
-sub get_all_dec
+sub get_all_class_dec
 {
 	my $o = shift;
-	my $page = shift;
-	$page =~ s/\D//g;
+	my @classes = @_;
 	
 	my $to;
 	my @ret;
@@ -198,6 +215,51 @@ sub get_all_dec
 		
 		push @ret, $to;
 		$i--;
+	}
+	
+	return @ret;
+}
+
+sub get_all_inc
+{
+	my $o = shift;
+	my $len = shift;
+	
+	my $to;
+	my @ret;
+	my $i = 1;
+	my $count = 0;
+		
+	while($to = $o->elem($i) and $count <= $len){
+		
+		$to->{'_ENUM'} = $i;
+		
+		push @ret, $to;
+		$i++;
+		$count++;
+	}
+	
+	return @ret;
+}
+
+sub get_all_dec
+{
+	my $o = shift;
+	my $len = shift;
+	
+	my $to;
+	my @ret;
+	my $i = $o->len();
+	my $count = 0;
+	
+	
+	while($to = $o->elem($i) and $count <= $len){
+		
+		$to->{'_ENUM'} = $i;
+		
+		push @ret, $to;
+		$i--;
+		$count++;
 	}
 	
 	return @ret;

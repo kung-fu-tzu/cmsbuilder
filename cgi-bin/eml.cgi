@@ -4,7 +4,7 @@ package eml;
 
 use DBI;
 use CGI ('param');
-use POSIX qw(strftime);
+use POSIX ('strftime');
 
 
 
@@ -31,6 +31,7 @@ use vars '@dbos';
 use vars '@envs';
 use vars '%sess';
 use vars '$do_users';
+use vars '$files_dir';
 
 use vars '$uid';
 use vars '$gid';
@@ -46,6 +47,8 @@ sub mymain
 	$env_dir = $jlib.'/packages';
 	$dbo_dir = $jlib.'/classes';
 	$sess_dir = $jlib.'/sessions';
+	
+	$files_dir = '../htdocs/files/';
 	
 	################################
 	

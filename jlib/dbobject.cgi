@@ -33,7 +33,7 @@ sub url2classid
 	
 	my ($class,$id) = ('','');
 
-	if( $url !~ m/^(\w+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
+	if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
 
 	$class = $1;
 	$id = $2;
@@ -73,14 +73,31 @@ sub des_page
 	print '<b>',$o->{'name'},'</b> Страничный вывод для класса "',ref($o),'" не определён!';
 }
 
+sub des_preview
+{
+	my $o = shift;
+	
+	print '<b>',$o->{'name'},'</b> Предварительный вывод для класса "',ref($o),'" не определён!';
+}
+
+sub des_href
+{
+	my $o = shift;
+	my $page = shift;
+	
+	return ${ref($o).'::page'}.'?obj='.$o->myurl();
+}
+
 sub des_name
 {
 	my $o = shift;
+	my $page = shift;
 	
 	my $dname = $o->{name};
 	if(!$dname){ $dname = ${ref($o).'::name'}; }
 	
-	return '<a href="'.${ref($o).'::page'}.'?obj='.ref($o).$o->{'ID'}.'">'.$dname.'</a>';
+	return '<a href="'.$o->des_href().'">'.$dname.'</a>';
+	#return '<a href="'.${ref($o).'::page'}.'?obj='.ref($o).$o->{'ID'}.($page?('&page='.$page):('')).'">'.$dname.'</a>';
 }
 
 sub name
@@ -198,11 +215,12 @@ sub admin_name
 	if($o->{name}){
 		$ret = $o->{name};
 	}else{
-		$ret = $o->name(); #${ref($o).'::name'}.' '.$o->{ID};
+		$ret = $o->name();
 	}
 	
-	#$ret =~ s/\s/\&nbsp;/g;
-	return '<a id="id_'.ref($o).$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
+	$ret =~ s/\<(?:.|\n)+?\>//g;
+	
+	return '<a id="id_'.ref($o).$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">&nbsp;'.$ret.'&nbsp;</a>';
 }
 
 sub admin_tree
@@ -285,13 +303,15 @@ sub admin_list
 sub admin_edit
 {
 	my $o = shift;
-	my ($key,$val);
+	my ($key,$val,@keys);
 	my %p = $o->props();
 	#if($eml::gid != 0){ eml::err403("DBO: EDIT with gid != 0,".ref($o).", ".$o->{ID}); }
 	
 	if($o->{ID} < 1){ $o->{'_print'} = "<font color=red>Ошибка: ID < 1.</font><br>\n"; return; }
 	
-	for $key (keys( %p )){
+	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
+	
+	for $key (@keys){
 		
 		$val = eml::param($key);
 		
@@ -638,14 +658,14 @@ sub _construct
 	
 	if($n eq ''){ $n = -1; }
 	
-	if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
+	#if($eml::dbo_cache{ref($o).$n}){ $o->{'ID'} = -1; return $eml::dbo_cache{ref($o).$n} };
 	
 	$o->{ID} = $n;
 	$o->reload();
 	
 	$o->do_access();
 	
-	if($o->{ID} > -1){ $eml::dbo_cache{ref($o).$o->{ID}} = $o; }
+	#if($o->{ID} > -1){ $eml::dbo_cache{ref($o).$o->{ID}} = $o; }
 	return $o;
 }
 

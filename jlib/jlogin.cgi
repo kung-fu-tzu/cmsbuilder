@@ -70,7 +70,7 @@ sub logout
 	if($sid eq '' or $sid == 0){ return( $self->err("Вы не вошли в систему.") ); }
 
 	my $tu = User::new();
-	$tu->sel_one(' sid = ? ',$sid);
+	$tu->sel_one(' sid = ? ',"$sid");
 
 	if($tu->{'ID'} < 0){ return( $self->err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 	
@@ -107,7 +107,7 @@ sub verif
 	if($sid eq "" or $sid == 0){ return (undef,undef); }
 	
 	my $tu = User::new();
-	$tu->sel_one(' sid = ? ',$sid);
+	$tu->sel_one(' sid = ? ',"$sid");
 	
 	if($tu->{'ID'} < 0){ return (undef,undef); }
 	if($tu->papa() eq undef){ return (undef,undef); }

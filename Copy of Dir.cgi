@@ -16,7 +16,19 @@ my %props = (
 
 sub props
 {
-	return %props;
+	my $o = shift;
+	my %tprops = $o->SUPER::props();
+	
+	my $key;
+	
+	for $key (keys(%props)){
+		
+		if($tprops{$key}){ eml::err505('PROPS: overlaying "'.$key.'" by class "'.ref($o).'"'); }
+		
+		$tprops{$key} = $props{$key};
+	}
+	
+	return %tprops;
 }
 
 sub new

@@ -4,7 +4,7 @@ A:link
     COLOR: #606260;
     FONT-FAMILY: Arial, Helvetica, sans-serif
     none:;
-    TEXT-DECORATION: underline
+    TEXT-DECORATION: none
 }
 A:visited
 {
@@ -12,7 +12,7 @@ A:visited
     COLOR: #606260;
     FONT-FAMILY: Arial, Helvetica, sans-serif
     none:;
-    TEXT-DECORATION: underline
+    TEXT-DECORATION: none
 }
 A:active
 {
@@ -20,7 +20,7 @@ A:active
     COLOR: #606260;
     FONT-FAMILY: Arial, Helvetica, sans-serif
     none:;
-    TEXT-DECORATION: underline
+    TEXT-DECORATION: none
 }
 A:hover
 {
@@ -28,7 +28,7 @@ A:hover
     COLOR: #606260;
     FONT-FAMILY: Arial, Helvetica, sans-serif
     none:;
-    TEXT-DECORATION: none
+    TEXT-DECORATION: underline
 }
 TABLE
 {
