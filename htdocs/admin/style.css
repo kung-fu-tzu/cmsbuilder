@@ -30,45 +30,15 @@ A:hover
     none:;
     TEXT-DECORATION: none
 }
-.br-1
-{
-    BORDER-RIGHT: #9aabb5 3px solid;
-    BORDER-TOP: #9aabb5 0px solid;
-    FONT-WEIGHT: normal;
-    FONT-SIZE: 11px;
-    BORDER-LEFT: #9aabb5 3px solid;
-    COLOR: #606260;
-    BORDER-BOTTOM: #9aabb5 0px solid;
-    FONT-FAMILY: Arial, Helvetica, sans-serif
-}
-.br-2
-{
-    BORDER-RIGHT: #9aabb5 3px solid;
-    BORDER-TOP: #9aabb5 0px solid;
-    FONT-WEIGHT: normal;
-    FONT-SIZE: 11px;
-    BORDER-LEFT: #9aabb5 0px solid;
-    COLOR: #606260;
-    BORDER-BOTTOM: #9aabb5 0px solid;
-    FONT-FAMILY: Arial, Helvetica, sans-serif
-}
-.br-3
-{
-    BORDER-RIGHT: #ff7300 0px solid;
-    PADDING-RIGHT: 10px;
-    BORDER-TOP: #ff7300 6px solid;
-    PADDING-LEFT: 10px;
-    FONT-WEIGHT: normal;
-    FONT-SIZE: 11px;
-    BORDER-LEFT: #ff7300 0px solid;
-    COLOR: #606260;
-    BORDER-BOTTOM: #ff7300 0px solid;
-    FONT-FAMILY: Arial, Helvetica, sans-serif
-}
 TABLE
 {
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
     FONT-SIZE: 11px;
-    COLOR: black;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    COLOR: #606260;
+    PADDING-TOP: 0px;
     FONT-FAMILY: 'Arial CYR', 'Arial Cyr', Arial
 }
 .list
@@ -107,7 +77,9 @@ A:active
 INPUT
 {
     BORDER-RIGHT: #303130 1px solid;
+    PADDING-RIGHT: 5px;
     BORDER-TOP: #303130 1px solid;
+    PADDING-LEFT: 5px;
     FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
@@ -140,6 +112,7 @@ BODY
     PADDING-LEFT: 0px;
     PADDING-BOTTOM: 0px;
     MARGIN: 0px;
+    COLOR: #606260;
     PADDING-TOP: 0px
 }
 .pages_table
@@ -148,4 +121,45 @@ BODY
     BORDER-TOP: #ff7300 1px solid;
     BORDER-LEFT: #ff7300 1px solid;
     BORDER-BOTTOM: #ff7300 1px solid
+}
+IFRAME
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    PADDING-TOP: 0px
+}
+TD
+{
+}
+.site_name
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    COLOR: #ffffff;
+    FONT-FAMILY: Arial
+}
+.authors
+{
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 12px;
+    COLOR: #ffffff;
+    FONT-FAMILY: Arial
+}
+.red_hr
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    WIDTH: 100%;
+    PADDING-TOP: 0px;
+    HEIGHT: 6pt;
+    BACKGROUND-COLOR: #ff7300
+}
+.tdlr
+{
+    PADDING-RIGHT: 15px;
+    PADDING-LEFT: 15px
 }

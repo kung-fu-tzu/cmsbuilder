@@ -6,24 +6,8 @@
 <body bgcolor="#f0f4f0" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
 <?eml admin::init() ?>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr><td height=6 width="10"></td><td></td></tr>
-<tr>
-<td width="10">&nbsp;</td>
-<td><strong>Редактирование элемента:</strong></td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td>
-<?eml admin::tree() ?>
-</td>
-</tr>
-<tr><td height=6 width="10"></td><td></td></tr>
-</table>
 
-<table width="100%"  border="0" cellspacing="0" cellpadding="0">
-<tr><td class="br-3">&nbsp;</td></tr>
-</table>
+<div style="DISPLAY: none" id="tree_div"><?eml admin::tree() ?></div>
 
 <?eml admin::action() ?>
 
@@ -33,18 +17,24 @@
 <?eml if($eml::sess{'admin_refresh_left'}){ print '<center>Изменения успешно внесены.</center><br>'; } ?>
 
 <?eml admin::list() ?>
+
+
 </td></tr>
 </table>
 
 
+<script language="JavaScript">
+
+parent.document.all.tree_div_it.innerHTML = tree_div.innerHTML;
+
 <?eml
-
-if($eml::sess{'admin_refresh_left'}){
-	print '<script language="JavaScript">parent.frames.admin_left.document.location.reload();</script>';
-	delete( $eml::sess{'admin_refresh_left'} );
-}
-
+	if($eml::sess{'admin_refresh_left'}){
+		print 'parent.frames.admin_left.document.location.reload();';
+		delete( $eml::sess{'admin_refresh_left'} );
+	}
 ?>
+
+</script>
 
 </body>
 </html>

@@ -183,7 +183,7 @@ sub admin_tree
 	
 	do{
 		$count++;
-		unshift(@all, '<a href=?class='.ref($o).'&ID='.$o->{ID}.'>'.$o->name().'</a>');
+		unshift(@all, '<a target="admin_right" href=right.ehtml?class='.ref($o).'&ID='.$o->{ID}.'>'.$o->name().'</a>');
 		
 		print 'ShowMe(parent.frames.admin_left.document.all.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.all.dbdot_'.ref($o).$o->{'ID'}.'); ';
 		
@@ -306,6 +306,7 @@ sub admin_view
 	print "</form>\n\n";
 	print "  </td>\n</tr>\n</table>";
 }
+
 
 ###################################################################################################
 # Вспомогательные методы работы с Базой Данных

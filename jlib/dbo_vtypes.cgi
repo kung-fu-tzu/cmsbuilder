@@ -140,7 +140,7 @@ $vtypes{int}{aview} = sub {
 	my $name = shift;
 	my $val = shift;
 
-	my $ret = "<input cols=6 type=text name='$name' value=\"$val\">";
+	my $ret = "<input width=50 type=text name='$name' value=\"$val\">";
 
 	return $ret;
 
@@ -177,7 +177,32 @@ $vtypes{string}{aview} = sub {
 	$val =~ s/\</\&lt;/g;
 	$val =~ s/\>/\&gt;/g;
 
-	my $ret = "<input cols=60 type=text name='$name' value=\"$val\">";
+	my $ret = "<input width=200 type=text name='$name' value=\"$val\">";
+
+	return $ret;
+
+};
+
+# Безразмерная строка ####################################################
+
+$vtypes{vstring}{table_cre} = sub {
+
+	my %elem = %{$_[0]};
+
+	return ' TEXT ';
+
+};
+
+$vtypes{vstring}{aview} = sub {
+
+	my $name = shift;
+	my $val = shift;
+
+	$val =~ s/\"/\&quot;/g;
+	$val =~ s/\</\&lt;/g;
+	$val =~ s/\>/\&gt;/g;
+
+	my $ret = "<input width=200 type=text name='$name' value=\"$val\">";
 
 	return $ret;
 

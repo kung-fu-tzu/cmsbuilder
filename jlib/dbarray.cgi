@@ -67,8 +67,9 @@ sub admin_view
 		}
 		
 		#print "<a onclick='MoveMe(".$e->{'_ENUM'}."); return false;' href='#'><img border=0 src=move2.gif></a>";
-		print '&nbsp;&nbsp;';
+		print "\n",'&nbsp;&nbsp;',"\n";
 		print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
+		print "\n";
 	}
 	
 	
