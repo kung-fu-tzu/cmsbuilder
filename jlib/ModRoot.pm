@@ -46,7 +46,7 @@ sub admin_add
 		
 		for $c (@JDBI::modules){
 			if(${$c.'::one_instance'}){ next }
-			print '<img align="absmiddle" src="',$c->admin_icon(),'">&nbsp;&nbsp;<a href="right.ehtml?url=',$o->myurl(),'&act=adde&cname=',$c,'">',${$c.'::name'},'</a><br>';
+			print $c->admin_cname('','right.ehtml?url='.$o->myurl().'&act=adde&cname='.$c),'<br>';
 		}
 	}
 	print '</td></tr></table><br>';

@@ -61,6 +61,7 @@ sub admin_cmenu_for_son
 		
 		print 'elem_add(JHR());';
 		print 'elem_add(JMIDelete("Удалить","right.ehtml?url=',$o->myurl(),'&act=dele&enum=',$son->enum(),'&page=0"));';
+		print 'elem_add(JMIHref("Ярлык...","right.ehtml?url=',$o->myurl(),'&act=mkshcut&enum=',$son->enum(),'"));';
 		print 'elem_add(JMIHref("Переместить...","right.ehtml?url='.$o->myurl().'&act=move2&enum='.$son->enum().'"));';
 		
 	}
@@ -113,12 +114,6 @@ sub admin_left
 	print '</div>',"\n";
 }
 
-sub admin_cre
-{
-	my $o = shift;
-	return $o->SUPER::admin_cre(@_);
-}
-
 sub admin_view
 {
 	my $o = shift;
@@ -148,14 +143,9 @@ sub admin_view
 		$n2 = $e->enum();
 		
 		if($o->access('w')){
-			
-			$up =   ($e->enum() != 1)?'<a href="?url='.$o->myurl().'&act=eup&enum='.$e->enum().'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">';
-			$down = ($e->enum() != $len)?'<a href="?url='.$o->myurl().'&act=edown&enum='.$e->enum().'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">';
-			
-			if(${ref($o).'::pages_direction'}){ print $up,$down; }else{ print $down,$up; }
-			
+			$e->admin_arrayline($o,$page);
 		}else{
-			print '<img align="absmiddle" src="img/nx.gif"><img align="absmiddle" src="img/nx.gif">';
+			print '<img align="absmiddle" src="img/nx.gif">' x 2;
 		}
 		
 		print '<img align="absmiddle" src="img/nx.gif">';
@@ -210,8 +200,9 @@ sub admin_add
 	
 	for $c (@JDBI::classes){
 		
-		if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 and ${ref($o).'::add'} ne '*' ){ next; }
-		print '<img align="absmiddle" src="',$c->admin_icon(),'">&nbsp;&nbsp;<a href="right.ehtml?url=',$o->myurl(),'&act=adde&cname=',$c,'">',${$c.'::name'},'</a><br>';
+		unless($o->elem_can_add($c)){ next; }
+		if($c eq 'ShortCut'){ next; }
+		print $c->admin_cname('','right.ehtml?url='.$o->myurl().'&act=adde&cname='.$c),'<br>';
 		$count++;
 	}
 	
@@ -304,10 +295,10 @@ sub elem_del
 {
 	my $o = shift;
 	my $eid = shift;
-	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	my $obj = $o->elem($eid);
-	if(!$obj){ $o->err_add($eid.$o->myurl()); return; }
-	if(!$obj->access('w')){ $o->err_add('У Вас нет разрешения изменять удаляемый элемент.'); return; }
+	unless($obj){ $o->err_add($eid.$o->myurl()); return; }
+	unless($obj->access('w')){ $o->err_add('У Вас нет разрешения изменять удаляемый элемент.'); return; }
 	
 	$obj = $o->elem_cut($eid);
 	$obj->del();
@@ -319,7 +310,7 @@ sub elem_moveup
 {
 	my $o = shift;
 	my $num = shift;
-	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
 	$o->elem_moveto($num,$num-2);
 }
@@ -328,7 +319,7 @@ sub elem_movedown
 {
 	my $o = shift;
 	my $num = shift;
-	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
 	$o->elem_moveto($num,$num+1);
 }
@@ -348,7 +339,7 @@ sub elem_paste
 	$po->{'PAPA_CLASS'} = ref($o);
 	
 	$po->save();
-	$po->on_Array_elem_paste($po);
+	$po->on_Array_elem_paste($o);
 }
 
 
@@ -407,7 +398,7 @@ sub elem_paste_ref
 	if($po->{'ID'} < 1){ return; }
 	unless($o->is_array_table()){ $o->create_array_table();  }
 	
-	if( !$o->elem_can_paste($po) ){ JIO::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
+	unless($o->elem_can_paste($po)){ JIO::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
 	
 	my $str;
 	
@@ -437,9 +428,25 @@ sub elem_can_paste
 		if($i > 50){ return 0; } # Есть залупленные объекты
 	}
 	
-	if( ${ref($o).'::add'} eq '*' ){ return 1 }
-	if( index( ${ref($o).'::add'}, ' '.ref($po).' ') < 0 ){ return 0 }
-	return 1;
+	
+	if($o->elem_can_add(ref($po))){
+		if(ref($po) eq 'ShortCut'){ return $o->elem_can_add( ref($po->shcut_obj()) ); }
+		return 1;
+	}else{
+		return 0;
+	}
+}
+
+sub elem_can_add
+{
+	my $o = shift;
+	my $c = shift;
+	my $myc = ref($o)?ref($o):$o;
+	
+	if( ${$myc.'::add'} eq '*' ){ return 1; }
+	if( index( ${$myc.'::add'}, ' '.$c.' ') >= 0 ){ return 1; }
+	
+	return 0;
 }
 
 sub elem_tell_enum

@@ -45,7 +45,7 @@ sub access_add
 	my $code = shift;
 	my($res,$str);
 	
-	if(!access_memb_name($m)){ $o->err_add('Неверно указан элемент.'); return; }
+	unless(access_memb_name($m)){ $o->err_add('Неверно указан элемент.'); return; }
 	
 	$str = $JDBI::dbh->prepare('SELECT ID FROM `access` WHERE memb = ? AND url = ?');
 	$str->execute($m,$o->myurl());
@@ -70,7 +70,7 @@ sub access_del
 	my $m = shift;
 	my($res,$str,$have);
 	
-	if(!access_memb_name($m)){ $o->err_add('Неверно указан элемент.'); return; }
+	unless(access_memb_name($m)){ $o->err_add('Неверно указан элемент.'); return; }
 	
 	$have = 0;
 	$str = $JDBI::dbh->prepare('SELECT ID FROM `access` WHERE memb = ? AND url = ?');
@@ -91,20 +91,20 @@ sub access_add_list
 	$str->execute($o->myurl());
 	while( $res = $str->fetchrow_hashref('NAME_lc') ){ $membs{$res->{'memb'}} = 1; }
 	
-	print 'Добавление разрешений для элемента: <b>',$o->name(),'</b><br><br>';
+	print 'Добавление разрешений для элемента: <b>',$o->admin_name(),'</b><br><br>';
 	print '<b>Специальные:</b><br><br>';
 	
 	$count = 0;
-	if(!$membs{'all'}){ print '<a href="?url=',$o->myurl(),'&act=chmod&chact=add&memb=all">Все</a><br>'; $count++; }
-	if(!$membs{'owner'}){ print '<a href="?url=',$o->myurl(),'&act=chmod&chact=add&memb=owner">Владелец</a> (сейчас: ',$o->owner->admin_name(),')<br>'; $count++; }
-	if(!$count){ print 'Нет элементов для отображения.'; }
+	unless($membs{'all'}){ print '<a href="?url=',$o->myurl(),'&act=chmod&chact=add&memb=all">Все</a><br>'; $count++; }
+	unless($membs{'owner'}){ print '<a href="?url=',$o->myurl(),'&act=chmod&chact=add&memb=owner">Владелец</a> (сейчас: ',$o->owner->admin_name(),')<br>'; $count++; }
+	unless($count){ print 'Нет элементов для отображения.'; }
 	
 	print '<br><br><b>Группы:</b><br><br>';
 	
 	$count = 0;
 	for $tg (UserGroup->sel_where(' 1 ')){
 		
-		if(!$membs{$tg->myurl()}){ print '<a href="?url=',$o->myurl(),'&act=chmod&chact=add&memb=',$tg->myurl(),'">',$tg->name(),'</a><br>'; $count++; }
+		unless($membs{$tg->myurl()}){ print $tg->admin_cname( $tg->name(),'?url='.$o->myurl().'&act=chmod&chact=add&memb='.$tg->myurl() ),'<br>'; $count++; }
 	}
 	if(!$count){ print 'Нет групп для отображения.'; }
 	
@@ -113,9 +113,9 @@ sub access_add_list
 	$count = 0;
 	for $tu (User->sel_where(' 1 ')){
 		
-		if(!$membs{$tu->myurl()}){ print '<a href="?url=',$o->myurl(),'&act=chmod&chact=add&memb=',$tu->myurl(),'">',$tu->name(),'</a><br>'; $count++; }
+		unless($membs{$tu->myurl()}){ print $tu->admin_cname( $tu->name(),'?url='.$o->myurl().'&act=chmod&chact=add&memb='.$tu->myurl() ),'<br>'; $count++; }
 	}
-	if(!$count){ print 'Нет пользователей для отображения.'; }
+	unless($count){ print 'Нет пользователей для отображения.'; }
 }
 
 sub access_view
@@ -228,11 +228,11 @@ sub access_edit
 	
 	for $res ( @all ){
 	$membs{$res->{'memb'}} = 0;
-	for $type (keys(%access_types)){
-		$box = param($res->{'memb'}.'_'.$type);
-		#print $membs{$res->{'memb'}} ,'|', ($box?$type:0), '=', $membs{$res->{'memb'}} | ($box?$type:0),'<br>';
-		$membs{$res->{'memb'}} |= ($box?$type:0);
-	}
+		for $type (keys(%access_types)){
+			$box = param($res->{'memb'}.'_'.$type);
+			#print $membs{$res->{'memb'}} ,'|', ($box?$type:0), '=', $membs{$res->{'memb'}} | ($box?$type:0),'<br>';
+			$membs{$res->{'memb'}} |= ($box?$type:0);
+		}
 	}
 	
 	$str = $JDBI::dbh->prepare('UPDATE `access` SET code = ? WHERE memb = ? AND url = ?');

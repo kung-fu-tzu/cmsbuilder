@@ -13,8 +13,7 @@ sub jchown
 		
 		$uid =~ s/\D//g;
 		
-		$tu = User->new();
-		$tu->load($uid);
+		$tu = User->new($uid);
 		
 		if($tu->{'ID'} < 1){ $obj->err_add('”казанный пользователь не существует.'); return; }
 		

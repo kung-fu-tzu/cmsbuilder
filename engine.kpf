@@ -33,8 +33,8 @@
 <preference-set id="">
   <string id="import_type">makeFlat</string>
   <string id="import_dirname">E:\home\engine\jlib\JDBI\vtypes</string>
-  <string id="import_include_matches">*.pm</string>
   <boolean id="import_recursive">0</boolean>
+  <string id="import_include_matches">*.pm</string>
 </preference-set>
 <file url="jlib/JDBI/vtypes/file.pm" id="9EBD8BF9-55D7-48C7-BF95-E41A9152163F" name="file.pm">
 </file>
@@ -97,6 +97,8 @@
 <file url="jlib/Classes/User.pm" id="E9873FF7-0BCD-4305-BEF2-D9D8B536112A" name="User.pm">
 </file>
 <file url="jlib/Classes/UserGroup.pm" id="82B366D2-9676-4C73-95A7-1ABC43403D14" name="UserGroup.pm">
+</file>
+<file url="jlib/Classes/ShortCut.pm" id="E9DFD8DC-334B-4990-A791-687A996CAA6B" name="ShortCut.pm">
 </file>
 </folder>
 <folder id="DDA43E2A-19AF-45E9-8863-836A7B379591" name="etc">

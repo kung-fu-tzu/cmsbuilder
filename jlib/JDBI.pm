@@ -236,14 +236,26 @@ sub url2classid
 sub classOK
 {
 	my $cn = shift;
-	my $i = '';
+	#my $i = '';
 	
-	for $i (@classes){ if($i eq $cn ){ return 1; } }
-	for $i (@modules){ if($i eq $cn ){ return 1; } }
+	#for $i (@classes){ if($i eq $cn ){ return 1; } }
+	#for $i (@modules){ if($i eq $cn ){ return 1; } }
 	
-	if($cn eq 'ModRoot' ){ return 1; }
+	if(indexA($cn,@classes,@modules,'ModRoot') >= 0){ return 1; }
+	
+	#if($cn eq 'ModRoot' ){ return 1; }
 	
 	return 0;
+}
+
+sub indexA
+{
+	my $val = shift;
+	
+	my $i = $[;
+	for(;$i<=$#_;$i++){ if($_[$i] eq $val){ return $i; } }
+	
+	return $[-1;
 }
 
 sub fromTIMESTAMP

@@ -268,3 +268,14 @@ IMG
     FONT-WEIGHT: bold;
     COLOR: #ff7300
 }
+.shcut_icon
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    Z-INDEX: 1;
+    VISIBILITY: inherit;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    PADDING-TOP: 0px;
+    POSITION: absolute
+}

@@ -1,6 +1,6 @@
 use File::Find;
 
-$what = 'Объект был удалён';
+$what = 'admin_icon';
 $dircnt = 0;
 $i = 1;
 $| = 1;

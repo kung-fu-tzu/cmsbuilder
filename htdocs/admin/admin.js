@@ -16,7 +16,7 @@ function Tree_div_it(){
 	'	<tr><td colspan="4" class="red_hr"></td></tr>'+
 	'	</table>'+
 	
-	'	</td></tr><tr><td>');
+	'	</td></tr><tr><td valign="top">');
 	}
 	
 }

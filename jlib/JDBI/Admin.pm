@@ -15,23 +15,58 @@ sub admin_left
 	print '<nobr><img align="absmiddle" src="img/nx.gif">',$o->admin_name(),'</nobr><br>',"\n";
 }
 
+sub admin_arrayline
+{
+	my $o = shift;
+	my $a = shift;
+	my $page = shift;
+	
+	my $enum = $o->enum();
+	
+	print( ($enum != $a->len())?'<a href="?url='.$a->myurl().'&act=edown&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
+	print( ($enum != 1)?'<a href="?url='.$a->myurl().'&act=eup&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
+}
+
+sub admin_hicon {}
+
 sub admin_name
 {
 	my $o = shift;
 	my $href = shift || $o->admin_right_href();
 	my $targ = shift || 'admin_right';
-	my $ret;
+	my ($ret,$icon,$myurl);
 	
 	$ret = $o->name();
-	
 	$ret =~ s/\<(?:.|\n)+?\>//g;
+	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
 	if(length($ret) > $JConfig::admin_max_left_name_len){ $ret = substr($ret,0,$JConfig::admin_max_left_name_len-1).'...' }
 	
+	$icon = $o->admin_hicon().'<img align="absmiddle" src="'.$o->admin_icon().'">';
+	$myurl = $o->myurl();
+	return '<nobr id="cmenu_'.$myurl.'" ondragstart="drag_start_num = '.$o->enum().'; return OnDragStart(cmenu_'.$myurl.')" oncontextmenu="return OnContext(cmenu_'.$myurl.')" style="CURSOR: default">'.$icon.'&nbsp;<span style="CURSOR: default" id="id_'.$myurl.'">&nbsp;<a target="'.$targ.'" href="'.$href.'">'.$ret.'</a>&nbsp;</span></nobr>';
+}
+
+sub admin_cname
+{
+	my $c = shift;
+	my $name = shift || ${$c.'::name'};
+	my $href = shift;
+	return '<nobr style="CURSOR: default"><img align="absmiddle" src="'.$c->admin_icon().'">&nbsp;&nbsp;'.($href?'<a href="'.$href.'">':'').$name.($href?'</a>':'').'</nobr>'
+}
+
+sub admin_pname
+{
+	my $o = shift;
+	my ($ret,$icon,$myurl);
+	
+	$ret = $o->name();
+	$ret =~ s/\<(?:.|\n)+?\>//g;
 	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
+	if(length($ret) > $JConfig::admin_max_left_name_len){ $ret = substr($ret,0,$JConfig::admin_max_left_name_len-1).'...' }
 	
-	if(!$o->access('r')){ return '<nobr style="CURSOR: default">'.($o->{'_is_shcut'}?'<img align="absmiddle" src="img/shcut.gif">':'').'<img align="absmiddle" src="'.$o->admin_icon().'">&nbsp;<span style="CURSOR: default" class="ahref"> '.$ret.' </span></nobr>'; }
-	
-	return '<nobr id="cmenu_'.$o->myurl().'" ondragstart="drag_start_num = '.$o->enum().'; return OnDragStart(cmenu_'.$o->myurl().')" oncontextmenu="return OnContext(cmenu_'.$o->myurl().')" style="CURSOR: default">'.($o->{'_is_shcut'}?'<img align="absmiddle" src="img/shcut.gif">':'').'<img align="absmiddle" src="'.$o->admin_icon().'">&nbsp;<span style="CURSOR: default" '.($o->{'_is_shcut'}?'':'id="id_'.$o->myurl().'"').'>&nbsp;<a target="'.$targ.'" href="'.$href.'">'.$ret.'</a>&nbsp;</span></nobr>';
+	$icon = $o->admin_hicon().'<img align="absmiddle" src="'.$o->admin_icon().'">';
+	$myurl = $o->myurl();
+	return '<nobr style="CURSOR: default">'.$icon.'&nbsp;&nbsp;'.$ret.'&nbsp;</nobr>';
 }
 
 sub admin_icon
@@ -44,12 +79,6 @@ sub admin_icon
 }
 
 sub admin_right_href
-{
-	my $o = shift;
-	return $o->admin_href(@_);
-}
-
-sub admin_href
 {
 	my $o = shift;
 	return 'right.ehtml?url='.$o->myurl();
@@ -65,7 +94,9 @@ sub admin_cmenu
 	print 'all_menus.',$o->myurl(),' = JMenu();';
 	print 'with(all_menus.',$o->myurl(),'){';
 	
-	print 'elem_add(JTitle("<img align=\\\"absmiddle\\\" src=\\\"',$o->admin_icon(),'\\\">&nbsp;&nbsp;',$o->name(),'"));';
+	my $title = $o->admin_pname();
+	$title =~ s/"/\\\\\\"/g;
+	print 'elem_add(JTitle("'.$title.'"));';
 	
 	$o->admin_cmenu_for_self();
 	
@@ -80,11 +111,11 @@ sub admin_cmenu_for_self
 	my $o = shift;
 	
 	if($o->access('r')){
-		print 'elem_add(JMIHref("Открыть","',$o->admin_href(),'"));';
+		print 'elem_add(JMIHref("Открыть","',$o->admin_right_href(),'"));';
 	}
 	
 	if($o->access('c')){
-		print 'elem_add(JMIHref("Разрешения...","right.ehtml?act=chmod&url=',$o->myurl(),'"));';
+		print 'elem_add(JMIHref("Разрешения...","right.ehtml?url=',$o->myurl(),'&act=chmod"));';
 	}
 }
 

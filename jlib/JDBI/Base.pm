@@ -11,9 +11,43 @@ our %sys_cols = (
 	'OID'			=> 'INT DEFAULT \'-1\' NOT NULL',
 	'ATS'			=> 'TIMESTAMP NOT NULL',
 	'CTS'			=> 'TIMESTAMP NOT NULL',
+	#'SHCUT'			=> 'INT DEFAULT \'0\' NOT NULL',
 	'PAPA_ID'		=> 'INT DEFAULT \'0\' NOT NULL',
 	'PAPA_CLASS'	=> 'VARCHAR(20) NOT NULL'
 );
+
+
+###################################################################################################
+# Следующие методы находятся в разработке
+###################################################################################################
+
+#sub shcut_cre
+#{
+#	my $o = shift;
+#	
+#	my $tsh = ref($o)->cre();
+#	$tsh->{'SHCUT'} = $o->{'ID'};
+#	$tsh->save();
+#	
+#	return $tsh;
+#}
+
+sub shcut_cre
+{
+	my $o = shift;
+	my $nobase = shift;
+	my $tsh;
+	
+	$tsh = $nobase?ShortCut->new():ShortCut->cre();
+	
+	$tsh->{'obj_id'}	= $o->{'ID'};
+	$tsh->{'obj_class'}	= ref($o);
+	$tsh->{'_o'}		= $o;
+	
+	unless($nobase){ $tsh->save(); }
+	
+	return $tsh;
+}
 
 
 ###################################################################################################
@@ -140,8 +174,24 @@ sub reload
 	$o->{'OID'} = $res->{'oid'};
 	$o->{'CTS'} = $res->{'cts'};
 	$o->{'ATS'} = $res->{'ats'};
+	$o->{'SHCUT'} = $res->{'shcut'};
 	
 	unless($o->access('r')){ return; }
+	
+	#if($o->{'SHCUT'}){
+	#	
+	#	my $myid  = $o->{'ID'};
+	#	my $shcut = $o->{'SHCUT'};
+	#	$o->clear();
+	#	
+	#	$o->{'ID'} = $shcut;
+	#	$o->reload();
+	#	
+	#	$o->{'_SH_ID'} = $myid;
+	#	#$o->{'CUT'} = $shcut;
+	#	
+	#	return;
+	#}
 	
 	my $id = 0;
 	my $have_o = 0;
@@ -184,10 +234,25 @@ sub save
 	if(!$o->access('w')){ return; }
 	if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
 	
+	#if($o->{'SHCUT'}){
+	#	
+	#	my $myid  = $o->{'ID'};
+	#	my $shcut = $o->{'SHCUT'};
+	#	$o->clear();
+	#	
+	#	$o->{'ID'} = $shcut;
+	#	$o->reload();
+	#	
+	#	$o->{'ID'} = $myid;
+	#	$o->{'SHCUT'} = $shcut;
+	#	
+	#	return;
+	#}
+	
 	#print 'Saving: ',$o->myurl(),'<br>';
 	
 	my $sql = 'UPDATE `dbo_'.ref($o).'` SET ';
-	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?, ';
+	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?, ';#SHCUT = ?, 
 	
 	for $key (keys( %$p )){
 		
@@ -203,7 +268,7 @@ sub save
 				$o->{$key}->save();
 				$val = $o->{$key}->{'ID'};
 			}else{
-				$val = -1;
+				$val = 0;
 			}
 		}
 		else{ $val = $o->{$key}; }
@@ -218,7 +283,7 @@ sub save
 	
 	my $str;
 	$str = $JDBI::dbh->prepare($sql);
-	$str->execute($o->{'OID'},$o->{'PAPA_ID'},$o->{'PAPA_CLASS'},@vals,$o->{'ID'});
+	$str->execute($o->{'OID'},$o->{'PAPA_ID'},$o->{'PAPA_CLASS'},@vals,$o->{'ID'});#,$o->{'SHCUT'}
 }
 
 sub insert
@@ -261,48 +326,11 @@ sub check
 	#print STDERR '[@'.$class.'::aview checked]';
 }
 
-sub save_as
-{
-	my $o = shift;
-	my $n = shift;
-	
-	$o->{'ID'} = $n;
-	$o->save();
-	
-	return $n;
-}
-
-sub save_to
-{
-	my $o = shift;
-	my $n = shift;
-	my $t = 0;
-	
-	$t = $o->{'ID'};
-	$o->{'ID'} = $n;
-	$o->save();
-	$o->{'ID'} = $t;
-	
-	return $n;
-}
-
-sub loadr
-{
-	my $o = shift;
-	my $n = shift;
-	
-	$o->clear();
-	
-	$o->{'ID'} = $n;
-	$o->reload();
-}
-
 sub load
 {
 	my $o = shift;
 	my $n = shift;
 	
-	$o->save();
 	$o->clear();
 	
 	$o->{'ID'} = $n;
@@ -312,7 +340,7 @@ sub load
 sub clear
 {
 	my $o = shift;
-	delete $JDBI::dbo_cache{ref($o),$o->{'ID'}};
+	delete $JDBI::dbo_cache{ref($o).$o->{'ID'}};
 	
 	%$o = ();
 	$o->{'ID'} = 0;

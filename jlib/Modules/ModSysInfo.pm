@@ -8,13 +8,12 @@ our @classes = ();
 
 our $page = '/page';
 our $add  = ' ';
-our @aview = qw/name dolist/;
+our @aview = qw/name/;
 our $one_instance = 1;
 our $simple = 1;
 
 our %props = (
-	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
-	'dolist'  => { 'type' => 'checkbox', 'name' => 'Отображать' }
+	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
 );
 
 sub admin_modr

@@ -39,7 +39,7 @@ our $mysql_pas		= 'pas';
 
 # JDBI
 
-our $users_do					= 0;
+our $users_do					= 1;
 our $users_login_list			= 1;
 our $users_pasoff				= 1;
 our $user_admin					= '1';

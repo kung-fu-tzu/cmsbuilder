@@ -8,13 +8,12 @@ our @classes = qw/UserGroup User/;
 our $page = '/page';
 our $pages_direction = 1;
 our $add  = ' UserGroup ';
-our @aview = qw/name dolist/;
+our @aview = qw/name/;
 our $icon = 1;
 our $one_instance = 1;
 
 our %props = (
-	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
-	'dolist'	=> { 'type' => 'checkbox', 'name' => 'Отображать' }
+	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
 );
 
 sub install_code

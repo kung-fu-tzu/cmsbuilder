@@ -7,13 +7,12 @@ our @classes = qw/Elem Papa Dir/;
 
 our $page = '/page';
 our $pages_direction = 1;
-our $add  = ' Elem Dir Papa ';
-our @aview = qw/name dolist/;
+our $add  = ' Elem Dir Papa ShortCut ';
+our @aview = qw/name/;
 our $icon = 1;
 
 our %props = (
-	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
-	'dolist'	=> { 'type' => 'checkbox', 'name' => 'Отображать' }
+	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
 );
 
 sub install_code

@@ -1,9 +1,0 @@
-<html>
-<body bgcolor="#AAAAAA">
-
-<iframe name="my_iframe" src="b.html"></iframe>
-
-<button onclick="my_iframe.ChangeVal('Стал')">Жми</button>
-
-</body>
-</html>

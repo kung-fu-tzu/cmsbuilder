@@ -7,9 +7,21 @@ use JIO;
 our $def_mod = 'ModUsers';
 our $do_list;
 
-sub jchmod { require $JConfig::path_lib.'/CMS/jchmod.pl'; jchmod(); }
-sub jchown { require $JConfig::path_lib.'/CMS/jchown.pl'; jchown(); }
-sub move2  { require $JConfig::path_lib.'/CMS/move2.pl';  move2(); }
+sub jchmod { require $JConfig::path_lib.'/CMS/jchmod.pl'; jchmod(@_); }
+sub jchown { require $JConfig::path_lib.'/CMS/jchown.pl'; jchown(@_); }
+sub move2  { require $JConfig::path_lib.'/CMS/move2.pl';  move2(@_); }
+
+sub mkshcut
+{
+	my $w = url(param('url'));
+	my $enum = param('enum');
+	
+	my $to = $w->elem($enum);
+	
+	my $to_sh = $to->shcut_cre();
+	$w->elem_paste($to_sh);
+	
+}
 
 sub arr_sort
 {
@@ -88,7 +100,7 @@ sub action
 	
 	if($act eq 'edown'){ $w->elem_movedown($enum); }
 	
-	if($act eq 'move2'){ move2(); }
+	if($act eq 'move2' or $act eq 'mkshcut'){ move2($act); }
 	
 	if($act eq 'chown'){ jchown(); }
 	
@@ -145,15 +157,25 @@ sub cpanel
 		print 'Таблицы всех классов, таблица разрешений и корень модулей успешно установлены.<br><br>';
 		
 		for $mod (@JDBI::modules){ $mod->table_cre() }
-		
-		print '<br><br><a href="cpanel.ehtml">Назад...</a>';
 	}
 	
 	if($act eq 'table_fix'){
+		my $ch;
+		for $mod (@JDBI::modules){ $ch |= $mod->table_fix(); }
 		
-		for $mod (@JDBI::modules){ $mod->table_fix() }
+		print '<br>';
+		if($ch){ print 'Структура обновлена.'; }
+		else{ print 'Обновление не требуется.'; }
+	}
+	
+	if($act eq 'object_stat'){
 		
-		print '<br><br><a href="cpanel.ehtml">Назад...</a>';
+		for $mod (@JDBI::modules,'',@JDBI::classes){
+			
+			unless($mod){ print '<br>'; next; }
+			
+			print 
+		}
 	}
 	
 	if($act eq 'install_mods'){
@@ -162,20 +184,24 @@ sub cpanel
 		
 		for $mod (@JDBI::modules){ $refresh = $mod->install() && $refresh; }
 			
-			if($refresh){ print '<br>Модули успешно установлены.'; }
-			else{ print '<br><br><a href="cpanel.ehtml">Назад...</a>'; }
-		}
+		if($refresh){ print '<br>Модули успешно установлены.'; }
+		else{ print '<br>Установка не требуется.'; }
+	}
 		
-		unless(ModRoot->table_have()){
+	unless(ModRoot->table_have()){
 		print 'Структура базы не установлена! <a href="?act=table_cre"><b>Установить...</b></a>';
 		return;
 	}
+	
+	if($act){ print '<br><br><a href="cpanel.ehtml">Назад...</a>'; }
 	
 	unless($act){
 		
 		print url('ModRoot1')->admin_name(),'<br>';
 		print '<img src="icons/install.gif" align="absmiddle">&nbsp;&nbsp;<a target="admin_right" href="cpanel.ehtml?act=table_fix">Обновить структуру...</a><br>';
-		print '<img src="icons/install.gif" align="absmiddle">&nbsp;&nbsp;<a target="admin_right" href="cpanel.ehtml?act=install_mods">Поставить модули...</a><br>';
+		print '<img src="icons/install.gif" align="absmiddle">&nbsp;&nbsp;<a target="admin_right" href="cpanel.ehtml?act=install_mods">Поставить модули...</a><br><br>';
+		
+		print '<img src="icons/install.gif" align="absmiddle">&nbsp;&nbsp;<a target="admin_right" href="cpanel.ehtml?act=object_stat">Статистика объектов</a><br>';
 	}
 	
 	if($refresh){ print '<script language="JavaScript">parent.frames.admin_modules.document.location.href = parent.frames.admin_modules.document.location.href;</script>'; }
@@ -295,8 +321,9 @@ sub list
 	unless($do_list){ return; }
 	
 	my $w = url($url);
-	#$w->save();
-	#$w->reload();
+	
+	#$w->elem_paste(url('User1')->shcut());
+	
 	unless($w->access('r')){ $w->err_add('У вас нет разрешений для просмотра этого элемента.'); }
 	$w->admin_view($page);
 }
