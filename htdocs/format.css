@@ -1,0 +1,137 @@
+A:link
+{
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    TEXT-DECORATION: underline;
+    none: 
+}
+A:visited
+{
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    TEXT-DECORATION: underline;
+    none: 
+}
+A:active
+{
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    TEXT-DECORATION: underline;
+    none: 
+}
+A:hover
+{
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    TEXT-DECORATION: none;
+    none: 
+}
+IMG
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-BOTTOM: medium none
+}
+.input
+{
+    BORDER-RIGHT: #4c8bae 1px solid;
+    BORDER-TOP: #4c8bae 1px solid;
+    MARGIN-TOP: 0px;
+    FONT-SIZE: 10px;
+    BACKGROUND-IMAGE: none;
+    BORDER-LEFT: #4c8bae 1px solid;
+    COLOR: #4c8bae;
+    BORDER-BOTTOM: #4c8bae 1px solid;
+    BACKGROUND-REPEAT: repeat;
+    FONT-FAMILY: Verdana, Arial, Helvetica, Sans-Serif;
+    BACKGROUND-COLOR: transparent
+}
+.but
+{
+    BORDER-RIGHT: #ffcc00 2px solid;
+    BORDER-TOP: #ffcc00 1px solid;
+    MARGIN-TOP: 0px;
+    FONT-SIZE: 10px;
+    BACKGROUND: #2e4453 repeat-x;
+    BORDER-LEFT: #ffcc00 1px solid;
+    COLOR: #ffffff;
+    BORDER-BOTTOM: #ffcc00 1px solid;
+    FONT-FAMILY: Verdana, Arial, Helvetica, Sans-Serif
+}
+.title
+{
+    FONT-SIZE: 10px;
+    COLOR: #000000;
+    FONT-FAMILY: Verdana
+}
+TD
+{
+    FONT-SIZE: 11px;
+    COLOR: #000000;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.newsz
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    COLOR: #000000;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.newsp
+{
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    FONT-STYLE: italic;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.small
+{
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 10px;
+    FONT-STYLE: normal;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.time
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    COLOR: #516381;
+    FONT-FAMILY: Tahoma, Verdana
+}
+.space
+{
+    PADDING-RIGHT: 10px;
+    PADDING-LEFT: 10px;
+    FONT-SIZE: 12px;
+    PADDING-BOTTOM: 2px;
+    PADDING-TOP: 2px;
+    FONT-FAMILY: Tahoma, Verdana
+}
+.date
+{
+    PADDING-LEFT: 5px;
+    FONT-SIZE: 10px;
+    COLOR: #516381;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.color
+{
+    COLOR: #000000
+}
+.r-space
+{
+    PADDING-RIGHT: 10px;
+    PADDING-LEFT: 5px;
+    PADDING-BOTTOM: 5px;
+    PADDING-TOP: 5px
+}
+.title
+{
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 11px;
+    COLOR: #233848;
+    FONT-STYLE: normal;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
+    TEXT-DECORATION: none
+}

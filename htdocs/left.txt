@@ -1,0 +1,19 @@
+
+<table width="100%" border="0">
+<tr>
+<td>
+
+FILES
+
+</td>
+</tr>
+</table>
+
+<table width="100%" border="0" class="sp">
+<tr>
+<td><br>
+<a href="/page.ehtml?obj=Dir1"> <br>
+Новые программы... </a></td>
+</tr>
+</table>
+

@@ -1,4 +1,47 @@
 
+# Время ####################################################
+
+$vtypes{time}{table_cre} = sub {
+
+	return ' TIME ';
+
+};
+
+$vtypes{time}{aview} = sub {
+
+	my $name = shift;
+	my $val = shift;
+        my $ret;
+        
+        my @a = split(/\:/,$val);
+        
+        if($a[0] < 1){$a[0] = ''}
+        if($a[1] < 1){$a[1] = ''}
+        if($a[2] < 1){$a[2] = ''}
+        
+	$ret = "<input cols=4 style='WIDTH: 20px' type=text name='${name}_h' value=\"$a[0]\">";
+        $ret .= "<input cols=4 style='WIDTH: 20px' type=text name='${name}_m' value=\"$a[1]\">";
+        $ret .= "<input cols=6 style='WIDTH: 20px' type=text name='${name}_s' value=\"$a[2]\">";
+
+	return $ret;
+
+};
+
+$vtypes{time}{aedit} = sub {
+
+	my $name = shift;
+	my $val;
+
+        my $h = eml::param($name.'_h');
+        my $m = eml::param($name.'_m');
+        my $s = eml::param($name.'_s');
+
+        $val = $h.':'.$m.':'.$s;
+
+	return $val;
+
+};
+
 # Дата ####################################################
 
 $vtypes{date}{table_cre} = sub {
@@ -19,9 +62,9 @@ $vtypes{date}{aview} = sub {
         if($a[1] < 1){$a[1] = ''}
         if($a[2] < 1){$a[2] = ''}
         
-	$ret = "<input cols=4 type=text name='${name}_d' value=\"$a[2]\">";
-        $ret .= "<input cols=4 type=text name='${name}_m' value=\"$a[1]\">";
-        $ret .= "<input cols=6 type=text name='${name}_y' value=\"$a[0]\">";
+	$ret = "<input cols=4 style='WIDTH: 20px' type=text name='${name}_d' value=\"$a[2]\">";
+        $ret .= "<input cols=4 style='WIDTH: 20px' type=text name='${name}_m' value=\"$a[1]\">";
+        $ret .= "<input cols=6 style='WIDTH: 50px' type=text name='${name}_y' value=\"$a[0]\">";
 
 	return $ret;
 
@@ -32,9 +75,9 @@ $vtypes{date}{aedit} = sub {
 	my $name = shift;
 	my $val;
 
-        my $d = main::param($name.'_d');
-        my $m = main::param($name.'_m');
-        my $y = main::param($name.'_y');
+        my $d = eml::param($name.'_d');
+        my $m = eml::param($name.'_m');
+        my $y = eml::param($name.'_y');
 
         $val = $y.'-'.$m.'-'.$d;
 
@@ -59,7 +102,7 @@ $vtypes{object}{aview} = sub {
 
 	my %props = $obj->props();
 
-	my $ret = "<a $EML::dbo::emlh href=?class=".$props{$name}{class}."\&ID=".$obj->{$name}->{ID}.">".$obj->{$name}->name()."</a>";#$obj->{$name}->name()
+	my $ret = "<a href=?class=".$props{$name}{class}."\&ID=".$obj->{$name}->{ID}.">".$obj->{$name}->name()."</a>";#$obj->{$name}->name()
 
 	return $ret;
 
@@ -201,7 +244,7 @@ $vtypes{file}{aedit} = sub {
 	my ($buff,$len,$todel);
 	if($id =~ m/\D/){ return 0; }
 
-	my $fdir = '../www/files/';
+	my $fdir = '../htdocs/files/';
 
 	#print "Saved: $fdir".ref($obj)."_${name}_$id".$props{$name}{ext};
 
@@ -219,7 +262,7 @@ $vtypes{file}{aedit} = sub {
 		return 1;
 
 	}else{
-		$todel = main::param($name.'_todel');
+		$todel = eml::param($name.'_todel');
 
 		if($todel) {
 			unlink( $fdir.ref($obj)."_${name}_$id".$props{$name}{ext} );
@@ -240,9 +283,100 @@ $vtypes{file}{del} = sub {
 	my %props = $obj->props();
 	my $id = $obj->{ID};
         
-        my $fdir = '../www/files/';
+        my $fdir = '../htdocs/files/';
         
         unlink( $fdir.ref($obj)."_${name}_$id".$props{$name}{ext} );
+};
+
+# Любой файл ######################################################
+
+$vtypes{anyfile}{table_cre} = sub {
+
+	my %elem = %{$_[0]};
+
+	return ' VARCHAR(10) ';
+
+};
+
+$vtypes{anyfile}{aview} = sub {
+
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+	my $file_href;
+
+	if( $obj->{$name} ){ $file_href = "<a target=_new href='".$obj->anyfile_href($name)."'>скачать</a>"; }
+
+	my $ret = "<input type=checkbox name='${name}_todel'> - удалить. <input type=file cols=30 name='$name'> $file_href";
+
+	return $ret;
+
+};
+
+$vtypes{anyfile}{aedit} = sub {
+
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+
+	my %props = $obj->props();
+	my $id = $obj->{ID};
+	my ($buff,$len,$todel);
+	if($id =~ m/\D/){ return 0; }
+
+	my $fdir = '../htdocs/files/';
+
+	#print "Saved: $fdir".ref($obj)."_${name}_$id".$props{$name}{ext};
+        
+	if($val){
+                
+		unlink( $fdir.ref($obj)."_${name}_$id".$obj->{$name} );
+                
+                $val =~ m/(\.\w+$)/;
+                my $ext = $1;
+                
+                $ext =~ s/[^\w\.]//g;
+                
+                $obj->{$name} = $ext;
+                
+                #print $val;
+                
+		open DBO_FILE, "> $fdir".ref($obj)."_${name}_$id".$obj->{$name};
+                
+		binmode DBO_FILE;
+		while ( read($val,$buff,2048) and $len <= $props{$name}{msize} ) {
+			print DBO_FILE $buff;
+			$len += 2048;
+		}
+		close DBO_FILE;
+
+		return $ext;
+
+	}else{
+		$todel = eml::param($name.'_todel');
+
+		if($todel) {
+			unlink( $fdir.ref($obj)."_${name}_$id".$obj->{$name} );
+			return '';
+		}		
+	}
+
+	return $obj->{$name};
+
+};
+
+$vtypes{anyfile}{del} = sub {
+
+	my $name = shift;
+	my $val = shift;
+	my $obj = shift;
+        
+	my %props = $obj->props();
+	my $id = $obj->{ID};
+        
+        my $fdir = '../htdocs/files/';
+        
+        unlink( $fdir.ref($obj)."_${name}_$id".$obj->{$name} );
 };
 
 # Галочка ###################################################
@@ -265,6 +399,17 @@ $vtypes{checkbox}{aview} = sub {
 	my $ret = "<input type=checkbox name='$name' $val>";
 
 	return $ret;
+
+};
+
+$vtypes{checkbox}{aedit} = sub {
+
+	my $name = shift;
+	my $val = shift;
+
+	if($val){$val = 1}
+
+	return $val;
 
 };
 

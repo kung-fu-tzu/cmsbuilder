@@ -1,0 +1,122 @@
+<!--#include file="../shapka.txt" -->
+<!-- /шапка -->
+<SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
+<LINK rel="stylesheet" TYPE="text/css" HREF="admin.css">
+<tr>
+<td valign="top"><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td width="0" valign="top" bgcolor="F4F4F4"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td height="16" align="center" background="/img/l_up_m_bg.jpg" class="small">В дополнение</td>
+</tr>
+<tr> 
+<td>
+
+<!--#include file="../left.txt" -->
+
+</td>
+</tr>
+</table></td>
+<td width="2" valign="top" bgcolor="DCDCDC"></td>
+<td valign="top" bgcolor="FCFCFC">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td valign="top">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr> 
+	<td align="center" bgcolor="D2D9DF">
+	
+<a href="/">На сайт...</a>
+	<?eml print '<b>Sess: '.$eml::sess{'id'}.'</b>'; ?>
+	</td>
+	</tr>
+	</table>
+
+
+
+
+<?eml login::root() ?>
+<?eml admin::init() ?>
+
+<TABLE style="HEIGHT: 100%" height="100%" cellSpacing=0 cellPadding=0 
+width="100%" border=0>
+
+<TR>
+    <TD vAlign=top 
+align=center style="HEIGHT: 30px" height=30 
+   ><?eml admin::action() ?></TD></TR>
+
+<TR>
+    <TD vAlign=top 
+align=left style="HEIGHT: 30px" height=30 
+   ><?eml admin::types() ?></TD></TR>
+
+  <TR>
+    <TD vAlign=top 
+align=left>
+<TABLE WIDTH=100% BORDER=0 CELLSPACING=0 CELLPADDING=0>
+	<TR>
+		<TD width=0>&nbsp;</TD>
+		<TD width=600 class=list><?eml admin::tree() ?><br><?eml admin::list() ?></TD>
+		<TD>&nbsp;</TD>
+	</TR>
+</TABLE>
+
+
+
+</TD></TR>
+<TR>
+    <TD vAlign=top 
+align=left style="HEIGHT: 50px" height=50 
+   ></TD></TR>
+
+</TABLE>
+
+
+</td>
+</tr>
+<tr> 
+<td align="center" valign="bottom" class="small">
+
+<!--#include file="../copyright.txt" -->
+
+</td>
+</tr>
+</table></td>
+<td width="2" valign="top" bgcolor="DCDCDC">&nbsp;</td>
+<td width="140" valign="top" bgcolor="F4F4F4"><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td height="16" align="center" background="/img/r_up_m_bg.jpg" class="small">Для пользователя</td>
+</tr>
+<tr>
+<td valign="top">
+
+<table width="100%" height="100%" border="0">
+<tr> 
+<td valign="top">
+
+<!--#include file="../users.txt" -->
+
+</td>
+</tr>
+<tr> 
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td height="1" align="center" valign="bottom">
+
+<!--#include file="../banners.txt" -->
+
+</td>
+</tr>
+</table></td>
+</tr>
+</table></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

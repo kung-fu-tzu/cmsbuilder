@@ -1,0 +1,73 @@
+<!--#include file="shapka.txt" -->
+
+<!-- /шапка -->
+
+<tr>
+<td valign="top"><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td width="140" valign="top" bgcolor="F4F4F4"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td height="16" align="center" background="img/l_up_m_bg.jpg" class="small">В дополнение</td>
+</tr>
+<tr> 
+<td>
+
+<!--#include file="left.txt" -->
+
+</td>
+</tr>
+</table></td>
+<td width="2" valign="top" bgcolor="DCDCDC"></td>
+<td valign="top" bgcolor="FCFCFC">
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td valign="top">
+
+<?eml design::page(); ?>
+
+</td>
+</tr>
+<tr> 
+<td align="center" valign="bottom" class="small">
+
+<!--#include file="copyright.txt" -->
+
+</td>
+</tr>
+</table></td>
+<td width="2" valign="top" bgcolor="DCDCDC">&nbsp;</td>
+<td width="140" valign="top" bgcolor="F4F4F4"><table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+<tr> 
+<td height="16" align="center" background="img/r_up_m_bg.jpg" class="small">Для пользователя</td>
+</tr>
+<tr>
+<td valign="top">
+
+<table width="100%" height="100%" border="0">
+<tr> 
+<td valign="top">
+
+<!--#include file="users.txt" -->
+
+</td>
+</tr>
+<tr> 
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td height="1" align="center" valign="bottom">
+
+<!--#include file="banners.txt" -->
+
+</td>
+</tr>
+</table></td>
+</tr>
+</table></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

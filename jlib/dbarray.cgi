@@ -2,34 +2,283 @@ package DBArray;
 @ISA = 'DBObject';
 use strict qw(subs vars);
 
-sub insert
+
+###################################################################################################
+# Следующие методы находятся в разработке
+###################################################################################################
+
+
+
+###################################################################################################
+# Методы автоматизации администрирования
+###################################################################################################
+
+sub admin_view
 {
 	my $o = shift;
+	my $page = shift;
+	my $e;
+	my $i = 0;
+	
+	$o->SUPER::admin_view();
+	
+	print '<br><hr align=left style="WIDTH: 200px">';
+	
+	my $len = $o->len();
+	if(!$page){ $page = 0; }
+	
+	for $e ($o->get_page($page)){
+		
+		print '<br>';
+		print '<a onclick="return doDel()" href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=dele&page='.$page.'"><img border=0 src=x.gif></a>';
+		
+		if(${ref($o).'::pages_direction'}){
+			if($e->{'_ENUM'} != 1){ print '<a href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=eup&page='.$page.'"><img border=0 src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != $len){ print '<a href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=edown&page='.$page.'"><img border=0 src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+		}else{
+			if($e->{'_ENUM'} != $len){ print '<a href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=edown&page='.$page.'"><img border=0 src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != 1){ print '<a href="?class='.ref($o).'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=eup&page='.$page.'"><img border=0 src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+		}
+		
+		#print "<a onclick='MoveMe(".$e->{'_ENUM'}."); return false;' href='#'><img border=0 src=move2.gif></a>";
+		print '&nbsp;&nbsp;';
+		print '<a href=?class='.ref($e).'&ID='.$e->{'ID'}.'>',$e->name(),'</a>';
+	}
+	
+	print '<br><br><center>';
+	
+	my $p;
+	for($p=0;$p<$o->pages();$p++){
+		
+		if($p == $page){ print '<b>'.($p+1).'</b>'; }
+		else{ print ' <a href="?class='.ref($o).'&ID='.$o->{'ID'}.'&page='.$p.'">'.($p+1).'</a> ' }
+			
+	}
+	
+	print '</center>';
+	
+	my $c;
 
-	my $nid = $o->SUPER::insert();;
+	print '<form action="?">';
+	print '<input type="hidden" name="ID" value="',$o->{ID},'">',"\n";
+	print '<input type="hidden" name="act" value="adde">',"\n";
+	print '<input type="hidden" name="class" value="',ref($o),'">',"\n";
 
-	my $sql = 'CREATE TABLE `arr_'.ref($o).'_'.$nid.'` ( '."\n";
-	$sql .= '`num` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , ';
-	$sql .= '`ID` INT DEFAULT \'-1\' NOT NULL, ';
-	$sql .= '`CLASS` VARCHAR(20) NOT NULL )';
-
-	my $str = $main::dbh->prepare($sql);
-	$str->execute();
-
-	return $nid;
-
+	print '<select name=cname><OPTION selected></OPTION>';
+	for $c (@eml::dbos){
+		
+		if( index( ${ref($o).'::add'}, $c) < 0 ){ next; }
+		print "<OPTION value='$c'>${$c.'::name'}</OPTION>";
+	}
+	print '</select><input type=submit value="Добавить"></form>';
+	print '<br><br>';
 }
 
-sub len
+
+###################################################################################################
+# Методы для работы со страницами
+###################################################################################################
+
+sub pages
 {
 	my $o = shift;
+	
+	my $len = $o->len();
+	
+	if(!$o->{'onpage'}){ $o->{'onpage'} = 20; }
+	
+	$len /= $o->{'onpage'};
+	
+	if($len != int($len)){ $len = int($len); $len++; }
+	
+	return $len;
+}
 
-	my $str = $main::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{ID}.'`');
-	$str->execute();
+sub get_page
+{
+	my $o = shift;
+	my $page = shift;
+	my @ret;
 	
-	my $res = $str->fetchrow_hashref('NAME_uc');
+	if( ${ref($o).'::pages_direction'} )
+	    { @ret = $o->get_page_inc($page) }
+	else{ @ret = $o->get_page_dec($page) }
 	
-	return $res->{'LEN'};
+	return @ret;
+}
+
+sub get_all
+{
+	my $o = shift;
+	my $page = shift;
+	my @ret;
+	
+	if( ${ref($o).'::pages_direction'} )
+	    { @ret = $o->get_all_inc($page) }
+	else{ @ret = $o->get_all_dec($page) }
+	
+	return @ret;
+}
+
+sub get_all_inc
+{
+	my $o = shift;
+	my $page = shift;
+	$page =~ s/\D//g;
+	
+	my $to;
+	my @ret;
+	my $i = 1;
+	
+	
+	while($to = $o->elem($i)){
+		
+		$to->{'_ENUM'} = $i;
+		
+		push @ret, $to;
+		$i++;
+	}
+	
+	return @ret;
+}
+
+sub get_all_dec
+{
+	my $o = shift;
+	my $page = shift;
+	$page =~ s/\D//g;
+	
+	my $to;
+	my @ret;
+	my $i = $o->len();
+	
+	
+	while($to = $o->elem($i)){
+		
+		$to->{'_ENUM'} = $i;
+		
+		push @ret, $to;
+		$i--;
+	}
+	
+	return @ret;
+}
+
+sub get_page_dec
+{
+	my $o = shift;
+	my $page = shift;
+	$page =~ s/\D//g;
+	
+	if($page >= $o->pages()){ $page = $o->pages() - 1; }
+	if(!$page){ $page = 0; }
+	
+	if(!$o->{'onpage'}){ $o->{'onpage'} = 20; }
+	
+	my $i = $o->{'onpage'} * $page;
+	my $len = 0;
+	my $to;
+	my @ret;
+	
+	$i = $o->len() - $i;
+	
+	while($to = $o->elem($i) and $len < $o->{'onpage'}){
+		
+		$to->{'_ENUM'} = $i;
+		
+		push @ret, $to;
+		
+		$len++;
+		$i--;
+		
+	}
+	
+	return @ret;
+}
+
+sub get_page_inc
+{
+	my $o = shift;
+	my $page = shift;
+	$page =~ s/\D//g;
+	
+	if($page >= $o->pages()){ $page = $o->pages() - 1; }
+	if(!$page){ $page = 0; }
+	
+	if(!$o->{'onpage'}){ $o->{'onpage'} = 20; }
+	
+	my $i = $o->{'onpage'} * $page + 1;
+	my $len = 0;
+	my $to;
+	my @ret;
+	
+	while($to = $o->elem($i) and $len < $o->{'onpage'}){
+		
+		$to->{'_ENUM'} = $i;
+		
+		push @ret, $to;
+		
+		$len++;
+		$i++;
+		
+	}
+	
+	return @ret;
+}
+
+
+###################################################################################################
+# Методы для работы с элементами
+###################################################################################################
+
+sub elem_del
+{
+	my $o = shift;
+	my $eid = shift;
+	
+	my $ob = $o->elem_cut($eid);
+	$ob->del();
+	$ob = '';
+}
+
+sub elem_moveup
+{
+	my $o = shift;
+	my $num = shift;
+	
+	$o->elem_moveto($num,$num-2);
+}
+
+sub elem_movedown
+{
+	my $o = shift;
+	my $num = shift;
+	
+	$o->elem_moveto($num,$num+1);
+}
+
+
+###################################################################################################
+# Методы для непосредственной работы с массивом
+###################################################################################################
+
+sub elem_paste
+{
+	my $o = shift;
+	my $po = shift;
+	
+	if($o->{ID} < 0){ return; }
+	if(!$o->is_array_table()){ $o->create_array_table();  }
+	
+	$po->{PAPA_ID} = $o->{ID};
+	$po->{PAPA_CLASS} = ref($o);
+	
+	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{ID}.'` (ID,CLASS) VALUES (?,?)');
+	$str->execute($po->{ID},ref($po));
+	
+	$po->save();
+	
+	$o->sortT();
 }
 
 sub elem
@@ -37,142 +286,155 @@ sub elem
 	my $o = shift;
 	my $eid = shift;
 	
-	my $sql = 'SELECT * FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ? LIMIT 1';
-
-	my $str = $main::dbh->prepare($sql);
+	if($o->{ID} < 0){ return undef; }
+	if(!$o->is_array_table()){ return undef; }
+	
+	my $str = $eml::dbh->prepare('SELECT * FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
 	
 	my $res = $str->fetchrow_hashref('NAME_uc');
 	
-	return &{ 'main::'.$res->{'CLASS'}.'::new' }($res->{ID});
+	if(!$res->{'CLASS'}){ return undef; }
 	
+	return &{ $res->{'CLASS'}.'::new' }($res->{ID});
 }
 
-sub addelem
-{
-	my $o = shift;
-	my $class = shift;
-	
-	my $nob = &{ 'main::'.$class.'::new' }('cre');
-	$nob->{PAPA_ID} = $o->{ID};
-	$nob->{PAPA_CLASS} = ref($o);
-	
-	my $str = 'INSERT INTO `arr_'.ref($o).'_'.$o->{ID}.'` (ID,CLASS) VALUES (?,?)';
-	$str = $main::dbh->prepare($str);
-	$str->execute($nob->{ID},$class);
-	
-	$o->sortT();
-}
-
-sub delelem
+sub elem_cut
 {
 	my $o = shift;
 	my $eid = shift;
 	
-	my $ob = $o->elem($eid);
-	$ob->{PAPA_ID} = -1;
-	$ob->{PAPA_CLASS} = '';
-	$ob->del();
+	if($o->{ID} < 0){ return; }
 	
-	my $sql = 'DELETE FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ?';
-	my $str = $main::dbh->prepare($sql);
+	my $to = $o->elem($eid);
+	if(!$to){ return undef; }
+	
+	$to->{'PAPA_CLASS'} = '';
+	$to->{'PAPA_ID'} = -1;
+	$to->save();
+	
+	my $str = $eml::dbh->prepare('DELETE FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
-
+	
 	$o->sortT();
+	
+	return $to;
+}
+
+sub elem_moveto
+{
+	my $o = shift;
+	my $enum = shift;
+	my $place = shift;
+	
+	if($o->{ID} < 0){ return; }
+	
+	if($place eq ''){ eml::err505('elem_moveto: Новая позиция пуста'); }
+	if($place < 0){ eml::err505('elem_moveto: Новая позиция меньше 1'); }
+	if($place == $enum){ eml::err505('elem_moveto: Новая позиция рана старой'); }
+	if($place > $o->len()){ eml::err505('elem_moveto: Новая позиция больше или равна длине массива'); }
+	
+	if(! $o->elem($enum)){ return; }
+	
+	$o->sortT();
+	
+	my $str = $eml::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{ID}.'` SET num = num+1 WHERE num > '.$place );
+	$str->execute();
+	
+	$str = $eml::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{ID}.'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
+	
+	if($enum > $place){
+		$str->execute($place+1,$enum+1);
+	}else{
+		$str->execute($place+1,$enum);
+	}
+	
+	$o->sortT();
+}
+
+
+###################################################################################################
+# Методы для оптимизации использования таблиц
+###################################################################################################
+
+sub create_array_table
+{
+	my $o = shift;
+	
+	my $sql = 'CREATE TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'` ( '."\n";# IF NOT EXISTS
+	$sql .= '`num` INT NOT NULL AUTO_INCREMENT , ';
+	$sql .= '`ID` INT DEFAULT \'-1\' NOT NULL, ';
+	$sql .= '`CLASS` VARCHAR(20) NOT NULL, ';
+	$sql .= 'INDEX ( `num` ) )';
+
+	my $str = $eml::dbh->prepare($sql);
+	$str->execute();
+	
+	$o->{'_isatable'} = 'yes';
+}
+
+sub is_array_table
+{
+	my $o = shift;
+	
+	if($o->{ID} < 0){ return 0; }
+	
+	if($o->{'_isatable'} eq 'yes'){ return 1; }
+	if($o->{'_isatable'} eq 'no'){ return 0; }
+	
+	
+	my $t;
+	
+	for $t ($eml::dbh->tables()){
+		
+		if( lc('`arr_'.ref($o).'_'.$o->{'ID'}.'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
+	}
+	
+	$o->{'_isatable'} = 'no';
+	return 0;
+}
+
+
+###################################################################################################
+# Методы для непосредственной работы с Базой Данных
+###################################################################################################
+
+sub len
+{
+	my $o = shift;
+
+	if($o->{ID} < 0){ return 0; }
+	if(!$o->is_array_table()){ return 0; }
+
+	my $str = $eml::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{ID}.'`');
+	$str->execute();
+	
+	my $res = $str->fetchrow_hashref('NAME_uc');
+	
+	return $res->{'LEN'};
 }
 
 sub del
 {
 	my $o = shift;
 	my $i;
+	
+	if($o->{ID} < 0){ return; }
+	
 	my $len = $o->len();
 
 	for($i=1;$i<=$len;$i++){
 		
-		$o->delelem(1);
+		$o->elem_del(1);
 		
 	}
 	
-	my $str = $main::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{ID}.'`');
+	if(!$o->is_array_table()){ $o->SUPER::del(); return; }
+	
+	my $str = $eml::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{ID}.'`');
 	$str->execute();
 	
 	$o->SUPER::del();
-}
-
-sub aview
-{
-	my $o = shift;
-	my $e;
-	my $i;
-
-	$o->SUPER::aview();
-
-	print '<br><hr align=left style="WIDTH: 200px">';
-
-	for($i=1;$i<=$o->len();$i++){
-		
-		$e = $o->elem($i);
-		print '<br>';
-		print "<a onclick='return doDel()' href=?ID=".$o->{ID}."&enum=$i&act=dele><img border=0 src=x.gif></a>";
-		print "<a href=?ID=".$o->{ID}."&enum=$i&act=eup><img border=0 src=up.gif></a>";
-		print "<a href=?ID=".$o->{ID}."&enum=$i&act=edown><img border=0 src=down.gif></a>";
-		print '&nbsp;&nbsp;';
-		print '<a '.$EML::dbo::emlh.' href=?class='.ref($e).'&ID='.$e->{ID}.'>',$e->name(),'</a>';
-	}
-	
-	print '<br><br>';
-	
-	my $c;
-	
-	print '<form action=?>';
-	print '<input type="hidden" name="ID" value="',$o->{ID},'">',"\n";
-	print '<input type="hidden" name="act" value="adde">',"\n";
-
-	print '<select name=cname><OPTION selected></OPTION>';
-	for $c (@eml::dbos){
-		
-		print "<OPTION value='$c'>${'main::'.$c.'::name'}</OPTION>";
-	}
-	print '</select><input type=submit value="Добавить"></form>';
-	print '<br><br>';
-}
-
-sub DESTROY
-{
-	my $o = shift;
-	$o->SUPER::DESTROY();
-}
-
-sub upelem
-{
-	my $o = shift;
-	my $num = shift;
-	if($num == 1){ return; }
-	
-	my $table = 'arr_'.ref($o).'_'.$o->{ID};
-	
-	my $str = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
-	$str->execute(99999,$num-1);
-	$str->execute($num-1,$num);
-	$str->execute($num,99999);
-	
-	$o->sortT();
-}
-
-sub downelem
-{
-	my $o = shift;
-	my $num = shift;
-	if($num == $o->len()){ return; }
-	
-	my $table = 'arr_'.ref($o).'_'.$o->{ID};
-	
-	my $str = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
-	$str->execute(99999,$num+1);
-	$str->execute($num+1,$num);
-	$str->execute($num,99999);
-	
-	$o->sortT();
 }
 
 sub sortT
@@ -180,15 +442,18 @@ sub sortT
 	my $o = shift;
 	my($i,$str,$str2,$num,$table);
 	
+	if($o->{ID} < 0){ return; }
+	if(!$o->is_array_table()){ return; }
+	
 	$table = 'arr_'.ref($o).'_'.$o->{ID};
 	
-	$str = $main::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
+	$str = $eml::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
 	$str->execute();
 	
-	$str = $main::dbh->prepare( "SELECT num FROM `$table`" );
+	$str = $eml::dbh->prepare( "SELECT num FROM `$table`" );
 	$str->execute();
 	
-	$str2 = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
+	$str2 = $eml::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
 	
 	$i = 1;
 	while(($num) = $str->fetchrow_array()){
@@ -198,5 +463,24 @@ sub sortT
 	}
 
 }
+
+###################################################################################################
+# Методы для реализации наследования Perl
+###################################################################################################
+
+sub DESTROY
+{
+	my $o = shift;
+	$o->SUPER::DESTROY();
+}
+
+
+###################################################################################################
+# Дополнительные методы
+###################################################################################################
+
+sub type { return 'DBArray'; }
+
+
 
 return 1;

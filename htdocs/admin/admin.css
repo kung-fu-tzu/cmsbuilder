@@ -1,0 +1,46 @@
+.mtypes
+{
+    BORDER-RIGHT: 1px;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: #d2d9df 1px solid;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: black 1px;
+    WIDTH: 1px;
+    COLOR: white;
+    BORDER-BOTTOM: black 1px;
+    TEXT-ALIGN: center
+}
+TABLE
+{
+    FONT-SIZE: 12px;
+    COLOR: white;
+    FONT-FAMILY: Verdana
+}
+.mtypes_s
+{
+    BORDER-RIGHT: #d2d9df 1px;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: #d2d9df 1px;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: #d2d9df 1px;
+    COLOR: black;
+    BORDER-BOTTOM: #d2d9df 1px;
+    BACKGROUND-COLOR: silver
+}
+.list
+{
+    BORDER-RIGHT: #d2d9df 1px solid;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: #d2d9df 1px solid;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: #d2d9df 1px solid;
+    BORDER-BOTTOM: #d2d9df 1px solid
+}
+.left_all
+{
+}
+.left_dir
+{
+    PADDING-LEFT: 11px;
+    LINE-HEIGHT: 10px
+}
