@@ -1,5 +1,5 @@
 package DBObject;
-
+use strict qw(subs vars);
 my %vtypes;
 
 sub _construct
@@ -131,7 +131,7 @@ sub aview
 
 }
 
-sub delete
+sub del
 {
 	my $o = shift;
 	my $key;
@@ -152,6 +152,7 @@ sub delete
 	$str->execute($o->{ID});
 
 	for $key (keys( %p )){ $o->{$key} = ''; }
+	$o->{ID} = -1;
 
 }
 
@@ -171,7 +172,7 @@ sub reload
 
 	my $res = $str->fetchrow_hashref('NAME_lc');
 
-	if($res->{id} != $o->{ID}){ main::err505('DBO: Loading from not existed row, ID = '.$o->{ID}); }
+	if($res->{id} != $o->{ID}){ main::err505('DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{ID}); }
 
 	my $id = 0;
 	my $have_o = 0;
@@ -212,12 +213,13 @@ sub tree
 	my $o = shift;
 
 	my @all;
+	my $count = 0;
 
 	do{
-
+		$count++;
 		unshift(@all, '<a '.$EML::dbo::emlh.' href=?class='.ref($o).'&ID='.$o->{ID}.'>'.$o->name().'</a>');
 
-	}while($o = $o->papa());
+	}while($o = $o->papa() and $count < 50);
 
 	print join(' :: ',@all);
 

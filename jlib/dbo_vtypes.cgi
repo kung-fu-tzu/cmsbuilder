@@ -81,7 +81,7 @@ $vtypes{object}{del} = sub {
 	my $val = shift;
 	my $obj = shift;
         
-        $obj->{$name}->delete();
+        $obj->{$name}->del();
 };
 
 # Число ####################################################

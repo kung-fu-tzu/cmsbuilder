@@ -66,13 +66,13 @@ if($eml::file eq ""){ err404('$ENV{PATH_TRANSLATED} - empty file name'); }
 # Если такого файла нет, изображаем стандартную ошибку.
 if(!open(FILE, "< $eml::file")){ err404('File not found: '.$eml::file); }
 $/ = \0;
-$str = <FILE>;
+my $str = <FILE>;
 $/ = "\n";
 close(FILE);
 
 
 # Заголовки
-$str_time = strftime('%a, %d %b %Y %T %H:00:00 GMT',gmtime( time()+200 ));
+my $str_time = strftime('%a, %d %b %Y %T %H:00:00 GMT',gmtime( time()+200 ));
 print "Content-type: text/html; charset=windows-1251\n";
 print "Pragma: no-cache\n";
 print "Last-Modified: $str_time\n";
@@ -98,6 +98,7 @@ else{ $uid = 1; }
 
 # Создаём кукис объект
 $co = new CGI;
+
 
 my $file;
 if(!opendir(CLS,$eml::env_dir)){err505('Can`t open enveronments directory: '.$eml::env_dir);}

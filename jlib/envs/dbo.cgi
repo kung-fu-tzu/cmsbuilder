@@ -86,12 +86,13 @@ sub action
 
 	if($act eq 'del'){
 		$w->load( $id );
-		$w->delete();
+		$w->del();
 
 		EML::unflush();
 		EML::send_cookie();
 		print "Location: /admin/\n";
 		print "\n";
+		exit();
 	}
 
 	if($act eq 'adde'){
@@ -111,6 +112,7 @@ sub action
 		EML::send_cookie();
 		print 'Location: /admin/?ID='.$w->{ID}."\n";
 		print "\n";
+		exit();
 	}
 
 }

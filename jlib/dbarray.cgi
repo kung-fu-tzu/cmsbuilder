@@ -1,6 +1,6 @@
 package DBArray;
-
 @ISA = 'DBObject';
+use strict qw(subs vars);
 
 sub insert
 {
@@ -20,7 +20,7 @@ sub insert
 
 }
 
-sub length
+sub len
 {
 	my $o = shift;
 
@@ -72,25 +72,44 @@ sub delelem
 	my $ob = $o->elem($eid);
 	$ob->{PAPA_ID} = -1;
 	$ob->{PAPA_CLASS} = '';
-	$ob->delete();
+	$ob->del();
 	
-	my $str = 'DELETE FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ?';
-	$str = $main::dbh->prepare($str);
+	my $sql = 'DELETE FROM `arr_'.ref($o).'_'.$o->{ID}.'` WHERE num = ?';
+	my $str = $main::dbh->prepare($sql);
 	$str->execute($eid);
 
 	$o->sortT();
+}
+
+sub del
+{
+	my $o = shift;
+	my $i;
+	my $len = $o->len();
+
+	for($i=1;$i<=$len;$i++){
+		
+		$o->delelem(1);
+		
+	}
+	
+	my $str = $main::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{ID}.'`');
+	$str->execute();
+	
+	$o->SUPER::del();
 }
 
 sub aview
 {
 	my $o = shift;
 	my $e;
+	my $i;
 
 	$o->SUPER::aview();
 
 	print '<br><hr align=left style="WIDTH: 200px">';
 
-	for($i=1;$i<=$o->length();$i++){
+	for($i=1;$i<=$o->len();$i++){
 		
 		$e = $o->elem($i);
 		print '<br>',"<a onclick='return doDel()' href=?ID=".$o->{ID}."&enum=$i&act=dele><img border=0 src=x.gif></a> \&nbsp;";
@@ -128,17 +147,17 @@ sub sortT
 	$table = 'arr_'.ref($o).'_'.$o->{ID};
 	
 	$str = $main::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
-	if( not $str->execute() ){ print DBI::errstr; exit(); }
+	$str->execute();
 	
 	$str = $main::dbh->prepare( "SELECT num FROM `$table`" );
-	if( not $str->execute() ){ print DBI::errstr; exit(); }
+	$str->execute();
 	
 	$str2 = $main::dbh->prepare( "UPDATE `$table` SET `num` = ? WHERE `num` = ?" );
 	
 	$i = 1;
 	while(($num) = $str->fetchrow_array()){
 	
-	    if( not $str2->execute($i,$num) ){ print DBI::errstr; exit(); }
+	    $str2->execute($i,$num);
 	    $i++;
 	}
 

@@ -1,13 +1,13 @@
 package Str;
-
-$name = 'Строка';
 @ISA = 'DBObject';
+$name = 'Строка';
+use strict qw(subs vars);
 
 sub props
 {
 	my %props = (
 
-		url	=> { type => string, length => 100, name => 'Адрес в интернете' }
+		'url'	=> { 'type' => 'string', 'length' => 100, 'name' => 'Адрес в интернете' }
 	);
 
 	return %props;
@@ -18,7 +18,6 @@ sub new
 	my $o = {};
 	bless($o);
 
-	$o->{PROPS} = %props;
 	$o->_construct(@_);
 
 	return $o;

@@ -1,16 +1,16 @@
 package Text;
-
 $name = 'Текстовый&nbsp;документ';
 @ISA = 'DBObject';
+use strict qw(subs vars);
 
 sub props
 {
 	my %props = (
 
-		url	=> { type => string, length => 100, name => 'Адрес в интернете (если есть)' },
-		name	=> { type => string, length => 50, name => 'Заглавие' },
-		context => { type => text, name => 'Текст' },
-		str	=> { type => object, class => Str, name => 'Строка текста' }
+		'url'	=> { 'type' => 'string', 'length' => 100, 'name' => 'Адрес в интернете (если есть)' },
+		'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Заглавие' },
+		'context' => { 'type' => 'text', 'name' => 'Текст' },
+		'str'	=> { 'type' => 'object', 'class' => 'Str', 'name' => 'Строка текста' }
 
 	);
 
@@ -22,7 +22,6 @@ sub new
 	my $o = {};
 	bless($o);
 
-	$o->{PROPS} = %props;
 	$o->_construct(@_);
 
 	return $o;
