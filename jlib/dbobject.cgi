@@ -160,7 +160,15 @@ sub admin_left
 	my $disp = $node{'s'} ? 'block' : 'none';
 	my $pic  = $node{'s'} ? 'minus' : 'plus';
 	
-	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"<br>\n";
+	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"\n";
+	print '<div id="id_'.ref($o).$o->{'ID'}.'"
+	onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
+	onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
+	onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
+	onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
+	style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
+	></div>';
+	print "<br>\n";
 	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
 	my $to;
 	for $to ($o->get_all()){
@@ -601,6 +609,8 @@ sub _construct
 {
 	my $o = shift;
 	my $n = shift;
+	
+	if($n eq ''){ $n = -1; }
 	
 	$o->{ID} = $n;
 	$o->reload();

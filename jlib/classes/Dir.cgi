@@ -7,16 +7,13 @@ $add  = 'Elem Dir';
 @ISA = 'DBArray';
 use strict qw(subs vars);
 
-sub props
-{
-	my %props = (
+my %props = (
 
-		'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-		'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
-	);
+	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
+	'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
+);
 
-	return %props;
-}
+sub props { return %props; }
 
 sub new
 {

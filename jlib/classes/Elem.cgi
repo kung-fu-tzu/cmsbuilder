@@ -4,18 +4,13 @@ $name = 'Элемент';
 $page = '/page.ehtml';
 use strict qw(subs vars);
 
+my %props = (
+	
+	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
+	'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' }
+);
 
-sub props
-{
-	my %props = (
-
-		'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-		'etext'	  => { 'type' => 'text', 'name' => 'Содержимое' }
-
-	);
-
-	return %props;
-}
+sub props { return %props; }
 
 sub new
 {

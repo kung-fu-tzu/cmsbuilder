@@ -1,9 +1,12 @@
+<HTML>
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+<TITLE></TITLE>
+</HEAD>
+<BODY>
 
-function doDel(){
-
-	return window.confirm('Удалить?');
-}
-
+<SCRIPT LANGUAGE=javascript>
+<!--
 
 is_draging = 0;
 drag_obj = null;
@@ -81,5 +84,24 @@ function OnOut(obj){
 
 document.onmousemove = MMove;
 
+//-->
+</SCRIPT>
 
+<DIV id="id_Dir1"
+ onmouseover="return OnOver(id_Dir1)"
+ onmouseout="return OnOut(id_Dir1)"
+ onmouseup="return StopDrag(id_Dir1)"
+ onmousedown="return StartDrag(id_Dir1)"
+ style="Z-INDEX: 250; WIDTH: 30px; HEIGHT: 30px; BACKGROUND-COLOR: black">
+</DIV>
 
+<DIV id=id_Elem1
+ onmouseover="return OnOver(id_Elem1)"
+ onmouseout="return OnOut(id_Elem1)"
+ onmouseup="return StopDrag(id_Elem1)"
+ onmousedown="return StartDrag(id_Elem1)"
+ style="Z-INDEX: 250; WIDTH: 30px; HEIGHT: 30px; BACKGROUND-COLOR: black">
+</DIV>
+
+</BODY>
+</HTML>

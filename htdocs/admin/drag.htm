@@ -1,0 +1,181 @@
+<html>
+<head>
+<LINK rel="stylesheet" TYPE="text/css" HREF="admin.css">
+<SCRIPT LANGUAGE=javascript src="admin1.js"></SCRIPT>
+</head>
+<body>
+<SCRIPT LANGUAGE=javascript>
+<!--
+function ShowHide(obj,dot){
+
+	if(obj.style.display == "none"){
+	
+		obj.style.display = "block";
+		dot.src = "minus.gif";
+		document.cookie = obj.id + " = s&1";
+	}else{
+		obj.style.display = "none";
+		dot.src = "plus.gif";
+		document.cookie = obj.id + " = s&0";
+	}
+
+}
+
+
+
+
+
+
+is_draging = 0;
+drag_obj = null;
+drag_dx = 0;
+drag_dy = 0;
+
+function StartDrag(obj){
+	
+	drag_obj = obj;
+	is_draging = 1;
+	
+	drag_obj.style.position = "absolute";
+	drag_obj.style.zIndex = 300;
+	
+	mx = event.x + document.body.scrollLeft - 2;
+	my = event.y + document.body.scrollTop - 2;
+	//drag_dx = obj.getBoundingClientRect().left + document.body.scrollLeft - 2 - mx;
+	//drag_dy = obj.getBoundingClientRect().top + document.body.scrollTop - 2 - my;
+	drag_obj.style.posLeft = mx;
+	drag_obj.style.posTop = my;
+	
+	
+	return false;
+}
+
+
+function StopDrag(obj){
+	
+	if(drag_obj != obj){
+	
+		window.status = "DO: Moving "+drag_obj.id+" to "+obj.id;
+	
+	}
+	
+	drag_obj.style.position = "";
+	
+	drag_obj = null;
+	is_draging = 0;
+	
+	obj.style.zIndex = 250;
+	
+	return false;
+}
+
+function MMove(){
+	
+	if( !is_draging || drag_obj == null) return;
+	
+	x = event.x + document.body.scrollLeft - 2;
+	y = event.y + document.body.scrollTop - 2;
+		
+	drag_obj.style.posLeft = x;
+	drag_obj.style.posTop = y;
+	
+}
+
+function OnOver(obj){
+	
+	if( !is_draging || drag_obj == null) return;
+	if( drag_obj == obj ) return;
+	
+	obj.style.backgroundColor = "#ffff00";
+	
+	window.status = "Move "+drag_obj.id+" to "+obj.id;
+
+}
+
+function OnOut(obj){
+	
+	if( !is_draging || drag_obj == null) return;
+	if( drag_obj == obj ) return;
+	
+	obj.style.backgroundColor = "#000000";
+	
+	window.status = "";
+
+}
+
+document.onmousemove = MMove;
+
+
+//-->
+</SCRIPT>
+<p style="BACKGROUND-COLOR: silver" align=center>Структура сайта:</p>
+
+<div class="left_body">
+<img class="icon" align="absMiddle" id="dbdot_Dir1" src="minus.gif" onclick="ShowHide(dbi_Dir1,dbdot_Dir1)"><A href="right.ehtml?class=Dir&amp;ID=1" target=admin_right >Корень</A>
+<div id="id_Dir1"
+	 onmouseover
+	="return OnOver(id_Dir1)"
+	 onmouseout
+	="return OnOut(id_Dir1)"
+	 onmouseup      
+	="return StopDrag(id_Dir1)" onmousedown="return StartDrag(id_Dir1)" style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"></div><br>
+<div id="dbi_Dir1" class="left_dir" style="DISPLAY: block">
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=21" target=admin_right >dfsdfgsdfg</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=22" target=admin_right >Оооо&nbsp;:)</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=20" target=admin_right >Название</A><br>
+<img class="icon" align="absMiddle" id="dbdot_Dir3" src="minus.gif" onclick="ShowHide(dbi_Dir3,dbdot_Dir3)"><A href="right.ehtml?class=Dir&amp;ID=3" target=admin_right >Папка</A>
+<div id="id_Dir3"
+	 onmouseover
+	="return OnOver(id_Dir3)"
+	 onmouseout
+	="return OnOut(id_Dir3)"
+	 onmouseup      
+	="return StopDrag(id_Dir3)" onmousedown="return StartDrag(id_Dir3)" style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"></div><br>
+<div id="dbi_Dir3" class="left_dir" style="DISPLAY: block">
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=28" target=admin_right >Без&nbsp;имени&nbsp;(&nbsp;Элемент&nbsp;28&nbsp;)</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=29" target=admin_right >Ещё&nbsp;фигня</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=27" target=admin_right >111234</A><br>
+<img class="icon" align="absMiddle" id="dbdot_Dir4" src="minus.gif" onclick="ShowHide(dbi_Dir4,dbdot_Dir4)"><A href="right.ehtml?class=Dir&amp;ID=4" target=admin_right >Ещё&nbsp;папка</A>
+<div id="id_Dir4"
+	 onmouseover
+	="return OnOver(id_Dir4)"
+	 onmouseout
+	="return OnOut(id_Dir4)"
+	 onmouseup      
+	="return StopDrag(id_Dir4)" onmousedown="return StartDrag(id_Dir4)" style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"  ></div><br>
+<div id="dbi_Dir4" class="left_dir" style="DISPLAY: block">
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=31" target=admin_right >Новое&nbsp;название&nbsp;3</A><br>
+<img class="icon" align="absMiddle" id="dbdot_Dir12" src="minus.gif" onclick="ShowHide(dbi_Dir12,dbdot_Dir12)"><A href="right.ehtml?class=Dir&amp;ID=12" target=admin_right >Папка,&nbsp;в&nbsp;папке,&nbsp;которая&nbsp;в&nbsp;папке...</A>
+<div id="id_Dir12"
+	 onmouseover
+	="return OnOver(id_Dir12)"
+	 onmouseout
+	="return OnOut(id_Dir12)"
+	 onmouseup      
+	="return StopDrag(id_Dir12)" onmousedown="return StartDrag(id_Dir12)" style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"></div><br>
+<div id="dbi_Dir12" class="left_dir" style="DISPLAY: block">
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=38" target=admin_right >Поименуем</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=44" target=admin_right >Наименуем</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=39" target=admin_right >Отименуем</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=45" target=admin_right >Заименуем</A><br>
+</div>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=30" target=admin_right >Название</A><br>
+</div>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=26" target=admin_right >11124</A><br>
+</div>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=19" target=admin_right >Новое&nbsp;название</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=18" target=admin_right >Без&nbsp;имени&nbsp;(&nbsp;Элемент&nbsp;18&nbsp;)</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=17" target=admin_right >Без&nbsp;имени&nbsp;(&nbsp;Элемент&nbsp;17&nbsp;)</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=3" target=admin_right >Без&nbsp;имени&nbsp;(&nbsp;Элемент&nbsp;3&nbsp;)</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=8" target=admin_right >Простая&nbsp;страница</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=11" target=admin_right >Страница&nbsp;2</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=14" target=admin_right >Как&nbsp;это&nbsp;удобно,&nbsp;блин!!!!</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=4" target=admin_right >Что&nbsp;ж&nbsp;это&nbsp;я&nbsp;раньше&nbsp;не&nbsp;додумался</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=1" target=admin_right >Тема1</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=7" target=admin_right >Тема&nbsp;2</A><br>
+<img class="icon" align="absMiddle" src="dot.gif"><A href="right.ehtml?class=Elem&amp;ID=5" target=admin_right >Пятый&nbsp;элемент&nbsp;;)</A><br>
+</div>
+
+</div>
+</body>
+</html>
