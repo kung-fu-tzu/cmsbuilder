@@ -1,0 +1,3 @@
+
+AddType application/x-httpd-parse_html .html
+Action application/x-httpd-parse_html /cgi-bin/parser.cgi
