@@ -3,7 +3,8 @@
 <title>Система администрирования сайта</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
 <link href="style.css" rel="stylesheet" type="text/css">
-
+<SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
+<SCRIPT LANGUAGE=javascript src="cmenu.js"></SCRIPT>
 </head>
 <body id="id_body" bgcolor="#ffffff">
 
@@ -30,13 +31,13 @@
 	<TABLE height="100%" cellSpacing=0 cellPadding=0 width="95%"  border=0 align=center>
 		<TR>
 			<td width=3 bgcolor="#9AABB5"></td>
-			<td width="30%" valign=top bgcolor=F7F7F7>
+			<td width="30%" id="id_left_td" valign=top bgcolor=F7F7F7>
 			
 				<TABLE cellSpacing=0 cellPadding=0 width=100% height=100% border=0 bgcolor=F0F4F0>
 					<tr height=40><td>
 						<TABLE cellSpacing=0 cellPadding=0 width=100%  border=0 bgcolor=F0F4F0>
-							<tr><td height=34 width=14></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td></tr>
-							<tr><td colspan=2 class=red_hr></td></tr>
+							<tr><td height=34 width=14></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td><td width="1"><img alt="Скрыть дерево" src="img/hide.gif" onclick="HideLeft()"></td></tr>
+							<tr><td colspan=3 class=red_hr></td></tr>
 						</table>
 					</td></tr>
 					<tr><td>
@@ -63,9 +64,12 @@
 			
 			<TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0">
 				<tr><td height=34 valign=middle align=left>
-                                    <TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0"><tr><td width=16>&nbsp;</td><td>
-                                    <b>Редактирование элемента:</b><br><div id="tree_div_it">Элемен не выбран</div>
-                                    </td></TABLE>
+                                    <TABLE cellSpacing=0 cellPadding=0 width="100%" height="100%" border=0 bgcolor="#F0F4F0">
+					<tr>
+					    <td width=16><img id="id_show" style="DISPLAY: none" src="img/show.gif" onclick="ShowLeft()"></td>
+					    <td><b>Редактирование элемента:</b><br><div id="tree_div_it">Элемен не выбран</div></td>
+					</tr>
+				    </TABLE>
                                 
                                 </td></tr>
 				<tr><td class=red_hr></td></tr>

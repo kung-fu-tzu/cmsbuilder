@@ -2,7 +2,10 @@ package JDBI::vtypes::file;
 use CGI 'param';
 our @ISA = 'JDBI::VType';
 use JDBI;
-#our $dont_html_filter = 1;
+our $dont_html_filter = 1;
+# Содержимое файла и так не фильтруется - $val содержит имя файла.
+# А данные читаются из потока.
+
 # Любой файл ######################################################
 
 sub table_cre

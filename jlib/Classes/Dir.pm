@@ -3,9 +3,9 @@ use strict qw(subs vars);
 
 our $name = 'Директория';
 our $page = '/page';
-our $pages_direction = 0;
+our $pages_direction = 1;
 #our @aview = qw/name onpage/;
-our $add  = ' Elem Dir Papa ';
+our $add  = ' Elem Dir Papa User HttpRoot ';
 our @ISA = 'JDBI::Array';
 our $dont_list_me = 0;
 

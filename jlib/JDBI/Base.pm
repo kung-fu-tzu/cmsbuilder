@@ -125,6 +125,7 @@ sub reload
     my $o = shift;
     my $key;
     my $p = \%{ ref($o).'::props' };
+    my $v = \%{ ref($o).'::virtual' };
     
     if($o->{'ID'} < 1){ return; }
     if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
@@ -134,12 +135,19 @@ sub reload
     
     my $res = $str->fetchrow_hashref('NAME_lc');
     
-    if($res->{'id'} != $o->{'ID'}){ print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n"; $o->clear(); return; }
+    if($res->{'id'} != $o->{'ID'}){
+        print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n";
+        $o->clear();
+        return;
+    }
     
     my $id = 0;
     my $have_o = 0;
     
     for $key (keys( %$p )){
+        
+        if(${'JDBI::vtypes::'.$p->{$key}{'type'}.'::virtual'}){ next }
+        
         $o->{$key} = $res->{$key};
         
         if( $p->{$key}{'type'} eq 'object' ){
@@ -191,6 +199,9 @@ sub save
     $sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?, ';
     
     for $key (keys( %$p )){
+        
+        if(${'JDBI::vtypes::'.$p->{$key}{'type'}.'::virtual'}){ next }
+        
         $sql .= "\n $key = ?,";
         
         if( $p->{$key}{'type'} eq 'object' ){

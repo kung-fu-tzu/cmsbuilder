@@ -13,11 +13,7 @@ sub admin_left
 {
     my $o = shift;
     
-    if($o->{'_is_shcut'}){
-        print '<nobr><img class="icon" align="absmiddle" src="img/shcut.gif">',$o->admin_name(),'</nobr><br>',"\n";
-    }else{
-        print '<nobr><img class="icon" align="absmiddle" src="img/nx.gif">',$o->admin_name(),'</nobr><br>',"\n";
-    }
+    print '<nobr><img align="absmiddle" src="img/nx.gif">',$o->admin_name(),'</nobr><br>',"\n";
 }
 
 sub admin_name
@@ -32,9 +28,9 @@ sub admin_name
     
     if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
     
-    if(!$o->access('r')){ return '<span style="CURSOR: default" class="ahref" id="id_'.$o->myurl().'"> '.$ret.' </span>'; }
+    if(!$o->access('r')){ return '<nobr style="CURSOR: default">'.($o->{'_is_shcut'}?'<img align="absmiddle" src="img/shcut.gif">':'').'<img objstr="',$o->myurl(),'" align="absmiddle" src="'.$o->admin_icon().'">&nbsp;<span style="CURSOR: default" class="ahref"> '.$ret.' </span></nobr>'; }
     
-    return '<img objstr="',$o->myurl(),'" align="absmiddle" src="'.$o->admin_icon().'"><span style="CURSOR: default" objstr="',$o->myurl(),'" class="ahref" '.($o->{'_is_shcut'}?'':'id="id_'.$o->myurl().'"').'> <a objstr="',$o->myurl(),'" target="admin_right" href="'.$o->admin_href().'">'.$ret.'</a> </span>';
+    return '<nobr style="CURSOR: default">'.($o->{'_is_shcut'}?'<img align="absmiddle" src="img/shcut.gif">':'').'<img objstr="',$o->myurl(),'" align="absmiddle" src="'.$o->admin_icon().'">&nbsp;<span style="CURSOR: default" objstr="',$o->myurl(),'" '.($o->{'_is_shcut'}?'':'id="id_'.$o->myurl().'"').'>&nbsp;<a objstr="',$o->myurl(),'" target="admin_right" href="'.$o->admin_href().'">'.$ret.'</a>&nbsp;</span></nobr>';
 }
 
 sub admin_icon
@@ -63,7 +59,7 @@ sub admin_cmenu
         print ',["---","hr:"]';
         
         if($o->papa() and !$o->{'_is_property'}){
-            print ',["Удалить","right.ehtml?url=',$o->papa()->myurl(),'&act=dele&enum=',$o->{'_ENUM'},'&page=0","doDel()"]';
+            print ',["Удалить","right.ehtml?url=',$o->{'_ARRAY'},'&act=dele&enum=',$o->{'_ENUM'},'&page=0","doDel()"]';
             if(!$o->{'_is_shcut'}){ print ',["Переместить...","right.ehtml?act=move2&url='.$o->papa()->myurl().'&enum='.$o->{'_ENUM'}.'"]' }
         }
     }
@@ -111,7 +107,7 @@ sub admin_tree
 sub admin_edit
 {
     my $o = shift;
-    my ($key,$val,@keys);
+    my ($key,$val,@keys,$vtype);
     my $p = \%{ ref($o).'::props' };
     
     if($o->{'ID'} < 1){ $o->err_add('Объект не существует.'); return; }
@@ -121,7 +117,7 @@ sub admin_edit
     for $key (@keys){
         
         $val = param($key);
-        my $vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
+        $vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
         
         if(!$JDBI::group->{'html'} and !${$vtype.'::dont_html_filter'}){ $val = JDBI::HTMLfilter($val); }
         
@@ -200,16 +196,20 @@ sub admin_view
 sub admin_props
 {
     my $o = shift;
-    my ($key,@keys);
+    my ($key,@keys,$vtype);
     
     my $p = \%{ ref($o).'::props' };
     
     if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %$p ); }
     for $key (@keys){
-        my $vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
-        print '<tr><td valign=top width="100"><label for="',$key,'">',$p->{$key}{'name'},':</td><td>';
-        print $vtype->aview( $key, $o->{$key}, $o );
-        print '</td></tr>';
+        $vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
+        if(${ $vtype.'::admin_own_html' }){
+            print $vtype->aview( $key, $o->{$key}, $o );
+        }else{
+            print '<tr><td valign=top width="20%" valign="center"><label for="',$key,'">',$p->{$key}{'name'},':</td><td width="80%" align="left" valign="middle">';
+            print $vtype->aview( $key, $o->{$key}, $o );
+            print '</td></tr>';
+        }
     }
 }
 

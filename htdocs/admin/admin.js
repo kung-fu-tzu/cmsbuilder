@@ -25,6 +25,18 @@ function ShowMe(obj,dot){
 	}
 }
 
+function HideLeft(){
+	
+	id_left_td.style.display = "none";
+	id_show.style.display = "block";
+}
+
+function ShowLeft(){
+	
+	id_left_td.style.display = "block";
+	id_show.style.display = "none";
+}
+
 function doDel(){
 
 	return window.confirm('Удалить?');

@@ -27,12 +27,12 @@
 <file url="jlib/JDBI/Access.pm" id="55F989E2-4574-4094-974B-8FC163088F98" name="Access.pm">
 </file>
 </folder>
-<folder id="BFC224A8-3737-41D9-8EF2-1D8C726C8483" name="VTypes">
+<folder id="BFC224A8-3737-41D9-8EF2-1D8C726C8483" name="vtypes">
 <preference-set id="">
   <string id="import_type">makeFlat</string>
   <string id="import_dirname">E:\home\engine\jlib\JDBI\vtypes</string>
-  <boolean id="import_recursive">0</boolean>
   <string id="import_include_matches">*.pm</string>
+  <boolean id="import_recursive">0</boolean>
 </preference-set>
 <file url="jlib/JDBI/vtypes/file.pm" id="9EBD8BF9-55D7-48C7-BF95-E41A9152163F" name="file.pm">
 </file>
@@ -98,6 +98,8 @@
 </file>
 <file url="jlib/Classes/UserRoot.pm" id="C26C5EBD-964E-4C81-B606-0BB4AD118D7E" name="UserRoot.pm">
 </file>
+<file url="jlib/Classes/HttpRoot.pm" id="4A46BA8C-5ABE-41BB-8E3F-4DC684734EDE" name="HttpRoot.pm">
+</file>
 </folder>
 <folder id="DDA43E2A-19AF-45E9-8863-836A7B379591" name="etc">
 <file url="htdocs/admin/cmenu.js" id="61650D7D-8AD6-49A7-87A9-156EC298A3A4" name="cmenu.js">
@@ -107,6 +109,8 @@
 <file url="htdocs/admin/left.ehtml" id="EA998A51-1BB3-4875-8E1B-7034E5C70EB8" name="left.ehtml">
 </file>
 <file url="htdocs/admin/index.ehtml" id="6A562760-F484-48A3-8D06-1EC9CA1396DA" name="index.ehtml">
+</file>
+<file url="htdocs/admin/admin.js" id="8DB4CE39-4348-4089-9EA4-7C1145E3CC36" name="admin.js">
 </file>
 </folder>
 <folder id="8400DC78-47C7-4A60-92E1-C5327FC84A2C" name="JIO">

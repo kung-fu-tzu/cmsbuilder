@@ -15,7 +15,7 @@ our $path_home      = '/home/engine';
 
 
 our $path_lib       = $path_home . '/jlib';
-our $path_etc       = $path_home . '/etc';
+#our $path_etc       = $path_home . '/etc';
 our $path_tmp       = $path_home . '/tmp';
 our $path_htdocs    = $path_home . '/htdocs';
 

@@ -4,6 +4,7 @@ use strict qw(subs vars);
 our $name = 'Ёлемент';
 our @ISA = 'JDBI::Object';
 our $page = '/page';
+our $icon = 1;
 
 our %props = (
 	

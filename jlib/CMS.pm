@@ -5,7 +5,7 @@ use JDBI;
 use JIO;
 
 my %mods = (
-	'Сайт' => 'Dir1',
+	'Сайт' => 'HttpRoot1',
 	'Пользователи' => 'UserRoot1'
     );
 my $def_mod = 'Сайт';
@@ -143,7 +143,7 @@ sub move2
 	    if($elem->myurl() eq $d->myurl()){ next; }
 	    if(!$d->access('a')){ next; }
 	    
-	    print '<img src="img/dot.gif" align="absmiddle"><a href="?act=move2&url=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=1"><img align=absmiddle border=0 src="img/shcut.gif"></a> <a href="?act=move2&url=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=0">',$d->name(),'</a><br>';
+	    print '<img src="',$d->admin_icon(),'" align="absmiddle"><a href="?act=move2&url=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=1"><img align=absmiddle border=0 src="img/shcut.gif"></a> <a href="?act=move2&url=',$from->myurl(),'&to=',$d->myurl(),'&enum=',$enum,'&ref=0">',$d->name(),'</a><br>';
 	    $count++;
 	}
     }
@@ -394,8 +394,10 @@ sub modules
 	$to = url($mods{$m});
 	if(!$to->access('x')){ next; }
 	
-	if($m eq $sel_mod){ print '<img src="img/bullet_hl.gif" align=absmiddle> <b>',$m,'</b><br>' }
-	else{ print '<img src="img/bullet.gif" align=absmiddle> <a href="?mod=',$m,'">',$m,'</a><br>' }
+	print '<nobr>';
+	if($m eq $sel_mod){ print '<img src="',$to->admin_icon(),'" align=absmiddle> <b>',$m,'</b><br>' }
+	else{ print '<img src="',$to->admin_icon(),'" align=absmiddle> <a href="?mod=',$m,'">',$m,'</a><br>' }
+	print '</nobr>';
     }
     
     print '
@@ -406,9 +408,6 @@ sub modules
     parent.document.all.user_div_it.innerHTML = "',$uname,'";
     </SCRIPT>
     ';
-    #my $key;
-    #for $key (keys %ENV ){	print "$key = $ENV{$key}<br>"; }
-    
 }
 
 sub jscript
@@ -448,7 +447,7 @@ sub list
 
 sub cms
 {
-    if(group()->{'cms'} != 1){
+    if(!group()->{'cms'}){
 	JIO::err403('group()->{"cms"} != 1');
     }
 }

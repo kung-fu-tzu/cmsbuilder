@@ -7,6 +7,7 @@ our $pages_direction = 1;
 our $add  = ' User ';
 our @aview = qw/name html files cms root/;
 our @ISA = 'JDBI::Array';
+our $icon = 1;
 
 our %props = (
 	

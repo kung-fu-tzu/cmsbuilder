@@ -4,6 +4,7 @@ use strict qw(subs vars);
 our $name = 'Родитель';
 our @ISA = 'JDBI::Object';
 our $page = '/page';
+our @aview = qw/name etext son/;
 
 our %props = (
 	

@@ -122,7 +122,8 @@ sub dousers()
         $group = UserGroup->new();
         $group->{'ID'} = 1;
         $group->{'name'} = 'Администраторы';
-        $group->{'html'} = 0;
+        $group->{'html'} = 1;
+        $group->{'files'} = 1;
         $group->{'cms'} = 1;
         $group->{'root'} = 1;
         $group->{'_temp_object'} = 1;
@@ -159,6 +160,8 @@ sub print_props
 sub url($)
 {
     my $url = shift;
+    
+    if($url eq '-info'){ print 'Этот проект постоен на основе ядра,\nразработанного Леоновым Петром Алексеевичем (JPEG).\n\nНазвание ядра:	EnJine\nВерсия:		2.*'; }
     
     my ($class,$id) = url2classid($url);
     
@@ -237,8 +240,7 @@ sub access_creTABLE
 sub creTABLE
 {
     my $class = shift;
-    my $key;
-    my %p;
+    my($key,%p,$vtype);
     
     %p = %{$class.'::props'};
     
@@ -253,8 +255,11 @@ sub creTABLE
     $sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, '."\n";
     
     for $key (keys(%p)){
-        if($vtypes{ $p{$key}{'type'} }{'table_cre'}){
-            $sql .= " `$key` ".$vtypes{ $p{$key}{'type'} }{'table_cre'}->($p{$key}).' NOT NULL , '."\n";
+        
+        $vtype = 'JDBI::vtypes::'.$p{$key}{'type'};
+        
+        if( !${$vtype.'::virtual'} ){
+            $sql .= " `$key` ".$vtype->table_cre($p{$key}).' NOT NULL , '."\n";
         }
     }
     $sql =~ s/,\s*$//;

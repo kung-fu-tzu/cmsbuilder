@@ -8,7 +8,7 @@ sub table_cre
     my %elem = %{$_[0]};
     my %vars = %{ $elem{'variants'} };
     
-    return " ENUM( '".join("', '",keys(%vars))."' )  ";
+    return " ENUM( '".join("', '",sort(keys(%vars)))."' )  ";
 }
 
 sub aview
@@ -26,7 +26,7 @@ sub aview
     my $ret = '<SELECT name="'.$name.'">';
     my $chkd = '';
     
-    for $var (keys(%vars)){
+    for $var (sort(keys(%vars))){
 	
 	if($var eq $val){ $chkd = ' selected '; }else{ $chkd = ' '; }
 	$ret .= '<OPTION '.$chkd.' value="'.$var.'">'.$vars{$var}.'</OPTION>';

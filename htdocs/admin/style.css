@@ -38,7 +38,7 @@ TABLE
 }
 .left_dir
 {
-    PADDING-LEFT: 8px
+    PADDING-LEFT: 6px
 }
 .left_body
 {
@@ -48,12 +48,6 @@ TABLE
     MARGIN: 6px 0px 0px 5px;
     PADDING-TOP: 0px;
     BACKGROUND-COLOR: #f7f7f7
-}
-.icon
-{
-    MARGIN-TOP: 2px;
-    MARGIN-BOTTOM: 2px;
-    MARGIN-RIGHT: 3px
 }
 A:active
 {

@@ -3,8 +3,9 @@ use strict qw(subs vars);
 
 our $name = 'Пользователь';
 our @ISA = 'JDBI::Object';
-our @aview = qw/name login pas icq email city/;
+our @aview = qw/name login pas icq email city vvv1/;
 our $page = '/page';
+our $icon = 1;
 
 our %props = (
 	
@@ -15,6 +16,7 @@ our %props = (
 	'icq'	  => { 'type' => 'int', 'length' => 15, 'name' => '#ICQ' },
 	'email'	  => { 'type' => 'string', 'length' => 50, 'name' => 'E-Mail' },
 	'city'	  => { 'type' => 'string', 'length' => 30, 'name' => 'Город' },
+	'vvv1'	  => { 'type' => 'formula', 'name' => 'Вирт1' }
 );
 
 sub install

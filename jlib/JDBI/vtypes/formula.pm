@@ -2,27 +2,17 @@ package JDBI::vtypes::formula;
 our @ISA = 'JDBI::VType';
 # Формула ####################################################
 
-sub table_cre
-{
-    return ' DATE ';
-}
+our $virtual = 1;
 
 sub aview
 {
     my $class = shift;
     my $name = shift;
     my $val = shift;
+    my $obj = shift;
     my $ret;
     
-    my @a = split(/\-/,$val);
-    
-    if($a[0] < 1){$a[0] = ''}
-    if($a[1] < 1){$a[1] = ''}
-    if($a[2] < 1){$a[2] = ''}
-    
-    $ret = "<input cols=4 style='WIDTH: 20px' type=text name='${name}_d' value=\"$a[2]\">";
-    $ret .= "<input cols=4 style='WIDTH: 20px' type=text name='${name}_m' value=\"$a[1]\">";
-    $ret .= "<input cols=6 style='WIDTH: 50px' type=text name='${name}_y' value=\"$a[0]\">";
+    $ret = join(',',keys(%$obj));
     
     return $ret;
 }
@@ -32,12 +22,6 @@ sub aedit
     my $class = shift;
     my $name = shift;
     my $val;
-    
-    my $d = eml::param($name.'_d');
-    my $m = eml::param($name.'_m');
-    my $y = eml::param($name.'_y');
-    
-    $val = $y.'-'.$m.'-'.$d;
     
     return $val;
 }

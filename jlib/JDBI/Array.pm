@@ -1,6 +1,7 @@
 package JDBI::Array;
 use strict qw(subs vars);
 our @ISA = 'JDBI::Object';
+use JIO;
 
 
 ###################################################################################################
@@ -17,21 +18,21 @@ sub admin_left
 {
     my $o = shift;
     
-    if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
-    if( $o->{'_is_shcut'} ){ return $o->SUPER::admin_left(); }
+    if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(@_); }
+    if( $o->{'_is_shcut'} ){ return $o->SUPER::admin_left(@_); }
     
-    my %node = $JDBI::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
+    my %node = $JDBI::cgi->cookie( 'dbi_'.$o->myurl() );
     my $disp = $node{'s'} ? 'block' : 'none';
     my $pic  = $node{'s'} ? 'minus' : 'plus';
     
-    print '<nobr><img objstr="',$o->myurl(),'" class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="img/'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),'</nobr><br>',"\n";
+    print '<nobr><img align="absmiddle" id="dbdot_'.$o->myurl().'" src="img/'.$pic.'.gif" onclick="ShowHide(dbi_'.$o->myurl().',dbdot_'.$o->myurl().')">',$o->admin_name(),'</nobr><br>',"\n";
     
-    print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
+    print '<div id="dbi_'.$o->myurl().'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
     
     my $to;
     for $to ($o->get_all($JConfig::admin_max_left)){ $to->admin_left() }
     
-    if($o->len() > $JConfig::admin_max_left){ print '<nobr><img class="icon" align="absmiddle" src="img/bullet.gif"><font color="#ff7300" size=1>Элементов слишком много...</font></nobr><br>',"\n"; }
+    if($o->len() > $JConfig::admin_max_left){ print '<nobr><font color="#ff7300" size=1>Элементов слишком много...</font></nobr><br>',"\n"; }
     print '</div>',"\n";
 }
 
@@ -47,6 +48,7 @@ sub admin_view
     my $page = shift;
     my $e;
     my $i = 0;
+    my($up,$down);
     
     $o->SUPER::admin_view();
     
@@ -61,16 +63,13 @@ sub admin_view
 	
 	if($o->access('w')){
 	    
-	    if(${ref($o).'::pages_direction'}){
-		if($e->{'_ENUM'} != 1){    print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src="img/up.gif"></a>'; }else{ print '<img src="img/nx.gif">' }
-		if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src="img/down.gif"></a>'; }else{ print '<img src="img/nx.gif">' }
-	    }else{
-		if($e->{'_ENUM'} != $len){ print '<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src="img/up.gif"></a>'; }else{ print '<img src="img/nx.gif">' }
-		if($e->{'_ENUM'} != 1){    print '<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src="img/down.gif"></a>'; }else{ print '<img src="img/nx.gif">' }
-	    }
+	    $up =   ($e->{'_ENUM'} != 1)?'<a href="?act=eup&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">';
+	    $down = ($e->{'_ENUM'} != $len)?'<a href="?act=edown&url='.$o->myurl().'&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">';
+	    
+	    if(${ref($o).'::pages_direction'}){ print $up,$down; }else{ print $down,$up; }
 	    
 	}else{
-	    print '<img src="img/nx.gif"><img src="img/nx.gif">'
+	    print '<img align="absmiddle" src="img/nx.gif"><img align="absmiddle" src="img/nx.gif">';
 	}
 	
 	print '<img align="absmiddle" src="img/nx.gif">';
@@ -175,8 +174,6 @@ sub get_all_class_inc
     
     while($to = $o->elem($i)){
 	
-	$to->{'_ENUM'} = $i;
-	
 	push @ret, $to;
 	$i++;
     }
@@ -195,8 +192,6 @@ sub get_all_class_dec
     
     
     while($to = $o->elem($i)){
-	
-	$to->{'_ENUM'} = $i;
 	
 	push @ret, $to;
 	$i--;
@@ -234,8 +229,6 @@ sub get_all_inc
     
     while($to = $o->elem($i) and $count <= $len){
 	
-	$to->{'_ENUM'} = $i;
-	
 	push @ret, $to;
 	$i++;
 	$count++;
@@ -255,8 +248,6 @@ sub get_all_dec
     my $count = 0;
     
     while($to = $o->elem($i) and $count <= $len){
-	
-	$to->{'_ENUM'} = $i;
 	
 	push @ret, $to;
 	$i--;
@@ -286,8 +277,6 @@ sub get_page_dec
     
     while($to = $o->elem($i) and $len < $o->{'onpage'}){
 	
-	$to->{'_ENUM'} = $i;
-	
 	push @ret, $to;
 	
 	$len++;
@@ -315,8 +304,6 @@ sub get_page_inc
     
     while($to = $o->elem($i) and $len < $o->{'onpage'}){
 	
-	$to->{'_ENUM'} = $i;
-	
 	push @ret, $to;
 	
 	$len++;
@@ -336,13 +323,14 @@ sub elem_del
     my $o = shift;
     my $eid = shift;
     if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
-    my $ob = $o->elem($eid);
-    if(!$ob->access('w')){ $o->err_add('У Вас нет разрешения изменять удаляемый элемент.'); return; }
+    my $obj = $o->elem($eid);
+    if(!$obj){ $o->err_add($eid.$o->myurl()); return; }
+    if(!$obj->access('w')){ $o->err_add('У Вас нет разрешения изменять удаляемый элемент.'); return; }
     
-    $ob = $o->elem_cut($eid);
-    $ob->del();
+    $obj = $o->elem_cut($eid);
+    $obj->del();
     
-    $ob = '';
+    $obj = '';
 }
 
 sub elem_moveup
@@ -409,7 +397,7 @@ sub elem_paste_ref
     
     if( !$o->elem_can_paste($po) ){ JIO::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
     
-    my $str = $JDBI::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{'ID'}.'` (ID,CLASS,SHCUT) VALUES (?,?,?)');
+    my $str = $JDBI::dbh->prepare('INSERT INTO `arr_'.$o->myurl().'` (ID,CLASS,SHCUT) VALUES (?,?,?)');
     $str->execute($po->{'ID'},ref($po),$shcut?1:0);
     
     $o->sortT();
@@ -430,21 +418,33 @@ sub elem
 {
     my $o = shift;
     my $eid = shift;
+    
     if(!$o->access('x')){ $o->err_add('У Вас нет разрешения просматривать этот элемент.'); return undef; }
     
     if($o->{'ID'} < 1){ return undef; }
     if(!$o->is_array_table()){ return undef; }
     
-    my $str = $JDBI::dbh->prepare('SELECT * FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
+    my $str = $JDBI::dbh->prepare('SELECT * FROM `arr_'.$o->myurl().'` WHERE num = ? LIMIT 1');
     $str->execute($eid);
     
     my $res = $str->fetchrow_hashref('NAME_uc');
     
-    if(!$res->{'CLASS'}){ return undef; }
+    if(!$res->{'CLASS'}){ return undef }
     
     my $to = $res->{'CLASS'}->new($res->{'ID'});
+    $to->{'_ENUM'} = $eid;
+    $to->{'_ARRAY'} = $o->myurl();
     
     if($res->{'SHCUT'}){ $to->{'_is_shcut'} = 1; }
+    
+    if(!$to->{'ID'}){
+	
+	#print '[',$eid,'-',$o->myurl(),']';
+	$str = $JDBI::dbh->prepare('DELETE FROM `arr_'.$o->myurl().'` WHERE num = ? LIMIT 1');
+	$str->execute($eid);
+	sess()->{'admin_refresh_left'} = 1;
+    }
+    
     
     return $to;
 }
@@ -468,7 +468,7 @@ sub elem_cut
 	$to->save();
     }
     
-    my $str = $JDBI::dbh->prepare('DELETE FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
+    my $str = $JDBI::dbh->prepare('DELETE FROM `arr_'.$o->myurl().'` WHERE num = ? LIMIT 1');
     $str->execute($eid);
     
     $o->sortT();
@@ -494,10 +494,10 @@ sub elem_moveto
     
     $o->sortT();
     
-    my $str = $JDBI::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET num = num+1 WHERE num > '.$place );
+    my $str = $JDBI::dbh->prepare( 'UPDATE `arr_'.$o->myurl().'` SET num = num+1 WHERE num > '.$place );
     $str->execute();
     
-    $str = $JDBI::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
+    $str = $JDBI::dbh->prepare( 'UPDATE `arr_'.$o->myurl().'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
     
     if($enum > $place){
 	$str->execute($place+1,$enum+1);
@@ -517,7 +517,7 @@ sub create_array_table
 {
     my $o = shift;
     
-    my $sql = 'CREATE TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'` ( '."\n";# IF NOT EXISTS
+    my $sql = 'CREATE TABLE `arr_'.$o->myurl().'` ( '."\n";# IF NOT EXISTS
     $sql .= '`num` INT NOT NULL AUTO_INCREMENT , ';
     $sql .= '`ID` INT DEFAULT \'-1\' NOT NULL, ';
     $sql .= '`CLASS` VARCHAR(20) NOT NULL, ';
@@ -542,8 +542,8 @@ sub is_array_table
     my $t;
     for $t ($JDBI::dbh->tables()){
 	
-	if( lc('`arr_'.ref($o).'_'.$o->{'ID'}.'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
-	if( lc('arr_'.ref($o).'_'.$o->{'ID'}) eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
+	if( lc('`arr_'.$o->myurl().'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
+	if( lc('arr_'.$o->myurl()) eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
     }
     
     $o->{'_isatable'} = 'no';
@@ -563,7 +563,7 @@ sub len
     if(!$o->is_array_table()){ return 0; }
     if(!$o->access('x')){ return 0; }
     
-    my $str = $JDBI::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{'ID'}.'`');
+    my $str = $JDBI::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.$o->myurl().'`');
     $str->execute();
     
     my $res = $str->fetchrow_hashref('NAME_uc');
@@ -587,12 +587,13 @@ sub del
     
     for($i=1;$i<=$len;$i++){ $o->elem_del(1); }
     
-    if(!$o->is_array_table()){ $o->SUPER::del(); return; }
+    if($o->is_array_table()){
+	
+	my $str = $JDBI::dbh->prepare('DROP TABLE `arr_'.$o->myurl().'`');
+	$str->execute();
+    }
     
-    my $str = $JDBI::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'`');
-    $str->execute();
-    
-    $o->SUPER::del();
+    return $o->SUPER::del();
 }
 
 sub sortT
@@ -603,7 +604,7 @@ sub sortT
     if($o->{'ID'} < 1){ return; }
     if(!$o->is_array_table()){ return; }
     
-    $table = 'arr_'.ref($o).'_'.$o->{'ID'};
+    $table = 'arr_'.$o->myurl();
     
     $str = $JDBI::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
     $str->execute();
