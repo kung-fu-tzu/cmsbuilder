@@ -1,31 +1,9 @@
 <?eml login::root() ?><html>
 <head>
-<LINK rel="stylesheet" TYPE="text/css" HREF="admin.css">
+<LINK rel="stylesheet" TYPE="text/css" HREF="style.css">
 <SCRIPT LANGUAGE=javascript src="admin.js"></SCRIPT>
 </head>
-<body>
-<SCRIPT LANGUAGE=javascript>
-<!--
-function ShowHide(obj,dot){
-
-	if(obj.style.display == "none"){
-	
-		obj.style.display = "block";
-		dot.src = "minus.gif";
-		document.cookie = obj.id + " = s&1";
-	}else{
-		obj.style.display = "none";
-		dot.src = "plus.gif";
-		document.cookie = obj.id + " = s&0";
-	}
-
-}
-//-->
-</SCRIPT>
-<p style="BACKGROUND-COLOR: silver" align=center>Структура сайта:</p>
-
-<div class="left_body">
+<body class="left_body">
 <?eml admin::left_tree() ?>
-</div>
 </body>
 </html>

@@ -157,10 +157,8 @@ sub tree
 	if(! $id){ return; }
 	if($id eq 'cre'){ return; }
 	
-	print '<br>';
 	$w->load($id);
 	$w->admin_tree();
-	print '<br>';
 }
 
 sub cre

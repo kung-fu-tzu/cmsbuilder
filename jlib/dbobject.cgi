@@ -160,15 +160,15 @@ sub admin_left
 	my $disp = $node{'s'} ? 'block' : 'none';
 	my $pic  = $node{'s'} ? 'minus' : 'plus';
 	
-	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"\n";
-	print '<div id="id_'.ref($o).$o->{'ID'}.'"
-	onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
-	onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
-	onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
-	onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
-	style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
-	></div>';
-	print "<br>\n";
+	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"<br>\n";
+	#print '<div id="id_'.ref($o).$o->{'ID'}.'"
+	#onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
+	#onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
+	#onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
+	#onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
+	#style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
+	#></div>';
+	#print "\n";
 	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
 	my $to;
 	for $to ($o->get_all()){
@@ -190,7 +190,7 @@ sub admin_name
 		$ret = 'Без имени ( '.${ref($o).'::name'}.' '.$o->{ID}.' )';
 	}
 	
-	$ret =~ s/\s/\&nbsp;/g;
+	#$ret =~ s/\s/\&nbsp;/g;
 	return '<a target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
 
 }
@@ -295,7 +295,7 @@ sub admin_view
 	if($eml::gid != 0){ eml::err403("DBO: VIEW with gid != 0,".ref($o).", ".$o->{ID}); }
 
 	print "\n\n";
-	print "<table border=0><tr><td align=center>";
+	print '<table width="100%" border=0><tr><td align=center>';
 	print "<!-- VIEW '".ref($o)."' WHERE ID = $o->{ID} -->\n";
 	if($o->{'_print'}){ print $o->{'_print'}; $o->{'_print'} = ''; }
 	print '<form action="?" method="POST" enctype="multipart/form-data">',"\n";

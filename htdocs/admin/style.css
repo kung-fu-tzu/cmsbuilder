@@ -1,0 +1,141 @@
+A:link
+{
+    FONT-SIZE: 11px;
+    COLOR: #606260;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
+    TEXT-DECORATION: underline
+}
+A:visited
+{
+    FONT-SIZE: 11px;
+    COLOR: #606260;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
+    TEXT-DECORATION: underline
+}
+A:active
+{
+    FONT-SIZE: 11px;
+    COLOR: #606260;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
+    TEXT-DECORATION: underline
+}
+A:hover
+{
+    FONT-SIZE: 11px;
+    COLOR: #606260;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
+    TEXT-DECORATION: none
+}
+.br-1
+{
+    BORDER-RIGHT: #9aabb5 3px solid;
+    BORDER-TOP: #9aabb5 0px solid;
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    BORDER-LEFT: #9aabb5 3px solid;
+    COLOR: #606260;
+    BORDER-BOTTOM: #9aabb5 0px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.br-2
+{
+    BORDER-RIGHT: #9aabb5 3px solid;
+    BORDER-TOP: #9aabb5 0px solid;
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    BORDER-LEFT: #9aabb5 0px solid;
+    COLOR: #606260;
+    BORDER-BOTTOM: #9aabb5 0px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.br-3
+{
+    BORDER-RIGHT: #ff7300 0px solid;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: #ff7300 6px solid;
+    PADDING-LEFT: 10px;
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 11px;
+    BORDER-LEFT: #ff7300 0px solid;
+    COLOR: #606260;
+    BORDER-BOTTOM: #ff7300 0px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+TABLE
+{
+    FONT-SIZE: 11px;
+    COLOR: black;
+    FONT-FAMILY: 'Arial CYR', 'Arial Cyr', Arial
+}
+.list
+{
+    BORDER-RIGHT: #d2d9df 1px solid;
+    PADDING-RIGHT: 10px;
+    BORDER-TOP: #d2d9df 1px solid;
+    PADDING-LEFT: 10px;
+    BORDER-LEFT: #d2d9df 1px solid;
+    BORDER-BOTTOM: #d2d9df 1px solid
+}
+.left_dir
+{
+    PADDING-LEFT: 8px
+}
+.left_body
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 6px 0px 0px 6px;
+    PADDING-TOP: 0px;
+    BACKGROUND-COLOR: #f7f7f7
+}
+.icon
+{
+    MARGIN-TOP: 2px;
+    MARGIN-BOTTOM: 2px;
+    MARGIN-RIGHT: 3px
+}
+A:active
+{
+    COLOR: black;
+    TEXT-DECORATION: none
+}
+INPUT
+{
+    BORDER-RIGHT: #303130 1px solid;
+    BORDER-TOP: #303130 1px solid;
+    BORDER-LEFT: #303130 1px solid;
+    BORDER-BOTTOM: #303130 1px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #e2e9e2
+}
+SELECT
+{
+    BORDER-RIGHT: #303130 1px solid;
+    BORDER-TOP: #303130 1px solid;
+    BORDER-LEFT: #303130 1px solid;
+    BORDER-BOTTOM: #303130 1px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #e2e9e2
+}
+TEXTAREA
+{
+    BORDER-RIGHT: #303130 1px solid;
+    BORDER-TOP: #303130 1px solid;
+    BORDER-LEFT: #303130 1px solid;
+    BORDER-BOTTOM: #303130 1px solid;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    BACKGROUND-COLOR: #e2e9e2
+}
+BODY
+{
+    PADDING-RIGHT: 0px;
+    PADDING-LEFT: 0px;
+    PADDING-BOTTOM: 0px;
+    MARGIN: 0px;
+    PADDING-TOP: 0px
+}

@@ -1,0 +1,66 @@
+a:Link {text-decoration:underline; font-size: 11px; none; color: "#606260"}
+a:Visited {text-decoration:underline; font-size: 11px; none; color: "#606260"}
+a:Active {text-decoration:underline; font-size: 11px; none; color: "#606260"}
+a:Hover {text-decoration:none; font-size: 11px; none; color: "#606260"}
+
+.br-1 {
+	border-top-width: 0px;
+	border-right-width: 3px;
+	border-bottom-width: 0px;
+	border-left-width: 3px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #9AABB5;
+	border-right-color: #9AABB5;
+	border-bottom-color: #9AABB5;
+	border-left-color: #9AABB5;
+	color: #606260;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+
+
+}
+.br-2 {
+	border-top-width: 0px;
+	border-right-width: 3px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #9AABB5;
+	border-right-color: #9AABB5;
+	border-bottom-color: #9AABB5;
+	border-left-color: #9AABB5;
+}
+.br-3 {
+	border-top-width: 6px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #FF7300;
+	border-right-color: #FF7300;
+	border-bottom-color: #FF7300;
+	border-left-color: #FF7300;
+	padding-left: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #606260;
+	font-size: 11px;
+	padding-right: 10px;
+
+
+
+}
+td {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #606260;
+}

@@ -1,4 +1,19 @@
 
+function ShowHide(obj,dot){
+
+	if(obj.style.display == "none"){
+	
+		obj.style.display = "block";
+		dot.src = "minus.gif";
+		document.cookie = obj.id + " = s&1";
+	}else{
+		obj.style.display = "none";
+		dot.src = "plus.gif";
+		document.cookie = obj.id + " = s&0";
+	}
+
+}
+
 function doDel(){
 
 	return window.confirm('Удалить?');
