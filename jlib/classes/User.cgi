@@ -1,6 +1,7 @@
 package User;
 $name = 'Пользователь';
 @ISA = 'DBObject';
+@aview = qw/name login pas icq email city/;
 $page = '/page.ehtml';
 use strict qw(subs vars);
 
@@ -10,7 +11,6 @@ my %props = (
 	'login'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
 	'pas'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Пароль' },
 	'sid'	  => { 'type' => 'string', 'length' => 20, 'name' => 'Ключ' },
-	'gid'	  => { 'type' => 'int', 'name' => 'Номер группы' },
 	'icq'	  => { 'type' => 'int', 'length' => 15, 'name' => 'Номер Аска' },
 	'email'	  => { 'type' => 'string', 'length' => 50, 'name' => 'Мыло' },
 	'city'	  => { 'type' => 'string', 'length' => 30, 'name' => 'Город' },

@@ -143,11 +143,30 @@ sub action
 	
 }
 
+sub left_tree1
+{
+	my $http = Dir::new(1);
+	$http->admin_left();
+	
+	print '<br><hr><br>';
+	
+	my $users = UserGroupDir::new(1);
+	$users->admin_left();
+
+}
+
 sub left_tree
 {
-	my $obj = Dir::new(1);
+	my $url = eml::param('url');
+	my $to;
 	
-	$obj->admin_left();
+	if($url){
+		$to = DBObject::url($url);
+	}else{
+		$to = Dir::new(1);
+	}
+	
+	$to->admin_left();
 }
 
 sub tree
@@ -161,9 +180,11 @@ sub tree
 	$w->admin_tree();
 }
 
-sub cre
+sub install
 {
-	my ($i,$j,$is);
+	my ($i,$j,$is,$count);
+	
+	print '<center><h4>Создание таблиц.</h4></center><br>';
 	
 	for $i (@eml::dbos){
 		
@@ -178,12 +199,44 @@ sub cre
 			
 			my $to = &{ $i.'::new' };
 			$to->creTABLE();
+			$count++;
 			undef $to;
 			
 		}
 		
 	}
 	
+	print '<br>';
+	print $count?( 'Создано таблиц: <b>'.$count.'</b>' ):( 'Ниодной таблицы не было создано.' );
+	print '<br>';
+	
+	print '<hr><br><center><h4>Создание структуры.</h4></center><br>';
+	
+	my $root = Dir::new('cre');
+	$root->{'name'} = 'Главная страница';
+	
+	my $groot = UserGroupDir::new('cre');
+	$groot->{'name'} = 'Группы пользователей';
+
+	
+	my $agroup = UserGroup::new('cre');
+	$agroup->{'name'} = 'Администраторы';
+	
+	my $admin = User::new('cre');
+	$admin->{'login'} = 'admin';
+	$admin->{'pas'} = $admin->{'login'};
+	$admin->{'name'} = 'Администратор';
+	$admin->{'gid'} = 0;
+	
+	$agroup->elem_paste($admin);
+	$groot->elem_paste($agroup);
+	
+	print 'Имя http корня: "<b>',$root->{'name'},'</b>"<br>';
+	print 'Имя user корня: "<b>',$groot->{'name'},'</b>"<br>';
+	print 'Логин и пароль Администратора: "<b>',$admin->{'login'},'</b>"<br>';
+	print 'Имя группы Администратора: "<b>',$agroup->{'name'},'</b>"<br>';
+	
+	print '<br>';
 }
 
 sub list

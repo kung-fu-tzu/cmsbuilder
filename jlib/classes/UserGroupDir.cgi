@@ -1,16 +1,14 @@
-package Dir;
-$name = 'Директория';
+package UserGroupDir;
+$name = 'Корень пользователей';
 $page = '/page.ehtml';
 $pages_direction = 0;
-#@aview = qw/name onpage/;
-$add  = ' Elem Dir Papa ';
+$add  = ' UserGroup ';
 @ISA = 'DBArray';
 use strict qw(subs vars);
 
 my %props = (
 
-	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-	'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
+	'name'	  => { 'type' => 'string', 'length' => 100, 'name' => 'Имя' }
 );
 
 sub props { return %props; }

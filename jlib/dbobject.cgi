@@ -8,6 +8,23 @@ my $page = '/page.ehtml';
 # Следующие методы находятся в разработке
 ###################################################################################################
 
+sub url
+{
+	my $url = shift;
+	
+	my ($class,$id) = ('','');
+
+	if( $url !~ m/^(\w+)(\d+)$/ ){ eml::err505('Invalid object requested: '.$url); }
+
+	$class = $1;
+	$id = $2;
+
+	if( ! eml::classOK($class) ){ eml::err505('Invalid class name requested: '.$class); }
+
+	my $to = &{$class.'::new'}($id);
+	
+	return $to;
+}
 
 sub des_tree
 {
@@ -36,7 +53,7 @@ sub des_page
 {
 	my $o = shift;
 	
-	print '<b>',$o->{'name'},'</b> Страничный вывод для этого класса не определён!';
+	print '<b>',$o->{'name'},'</b> Страничный вывод для класса "',ref($o),'" не определён!';
 }
 
 sub des_name
@@ -153,7 +170,7 @@ sub admin_left
 {
 	my $o = shift;
 	
-	print '<img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'<br>',"\n";
+	print '<nobr><img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'</nobr><br>',"\n";
 }
 
 sub admin_name
@@ -293,16 +310,19 @@ sub admin_view
 	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
 	for $key (@keys){
 		
-		print "<tr><td valign=center><b>".$p{$key}{name}.":</b></td><td>\n";
+		print "<tr><td valign=top><b>".$p{$key}{name}.":</b></td><td>\n";
 		print $DBObject::vtypes{ $p{$key}{type} }{aview}->( $key, $o->{$key}, $o );
 		print "\n</td>\n</tr>\n";
 	}
 	
 	print "<tr>\n  <td>\n  </td>\n  <td align=right>\n";
-	print "    <input type=submit value=Сохранить>\n";
+	print "\n";
 	print "  </td>\n</tr>\n";
 	
 	print "</table>\n";
+	
+	print '<center><br><input type=submit value=Сохранить></center>';
+	
 	print "</form>\n\n";
 	print "  </td>\n</tr>\n</table>";
 }
@@ -548,7 +568,12 @@ sub creTABLE
 {
 	my $o = shift;
 	my $key;
-	my %p = $o->props();
+	my %p;
+	
+	if(ref($o)){ %p = $o->props(); }
+	else{ %p = &{$o.'::props'} }
+	
+	print '<br><a onclick="sql_',ref($o),'.style.display = \'block\'; return false;" href="open">+</a> <b>Создание таблицы для класса "',ref($o)?ref($o):$o,'":</b><br>';
 	
 	my $sql = 'CREATE TABLE IF NOT EXISTS `dbo_'.ref($o).'` ( '."\n";
 	$sql .= '`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY , '."\n";
@@ -557,7 +582,9 @@ sub creTABLE
 	$sql .= '`PAPA_CLASS` VARCHAR(20) NOT NULL, '."\n";
 	
 	for $key (keys( %p )){
-		$sql .= " `$key` ".$DBObject::vtypes{ $p{$key}{type} }{table_cre}->($p{$key}).' NOT NULL , '."\n";
+		if($DBObject::vtypes{ $p{$key}{type} }{table_cre}){
+			$sql .= " `$key` ".$DBObject::vtypes{ $p{$key}{type} }{table_cre}->($p{$key}).' NOT NULL , '."\n";
+		}
 	}
 	$sql =~ s/,\s*$//;
 	$sql .= "\n )";
@@ -567,8 +594,7 @@ sub creTABLE
 	
 	$sql =~ s/\n/<br>\n/g;
 	
-	print $sql;
-	print '<br>';
+	print '<div style="DISPLAY: none" id="sql_',ref($o),'">',$sql,'</div>';
 }
 
 

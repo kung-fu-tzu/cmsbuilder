@@ -1,7 +1,7 @@
 package JLogin;
 use strict qw(subs vars);
 
-my $table = 'dbo_User';
+my $table = 'dbo_myuser';
 
 sub new
 {
@@ -44,6 +44,7 @@ sub login
 	$str->execute($rnd,$l);
 
 	$user{"sid"} = $rnd;
+	$user{"test"} = 'one';
 
 	my $co = new CGI;
 
@@ -119,12 +120,11 @@ sub verif
 
 	if($sid eq "" or $sid == 0){return (-1,-1); }
 
-	$str = $self->{"dbh"}->prepare( "SELECT ID FROM ".$table." WHERE sid = ? " );# 
-	my $res = $str->execute("$sid");
+	$str = $self->{"dbh"}->prepare( "SELECT ID, GID FROM $table WHERE sid = ?" );
+	$str->execute($sid);
 
-	my ($uid) = $str->fetchrow_array();
-	
-	
+	@row = $str->fetchrow_array();
+
 	if($#row < 0){ return (-1,-1); }
 
 	@row;

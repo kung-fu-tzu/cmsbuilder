@@ -21,7 +21,7 @@ sub admin_left
 	my $disp = $node{'s'} ? 'block' : 'none';
 	my $pic  = $node{'s'} ? 'minus' : 'plus';
 	
-	print '<img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),"<br>\n";
+	print '<nobr><img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),'</nobr><br>',"\n";
 	
 	#print '<div id="id_'.ref($o).$o->{'ID'}.'"
 	#onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
@@ -101,7 +101,7 @@ sub admin_view
 	print '<select name=cname><OPTION selected></OPTION>';
 	for $c (@eml::dbos){
 		
-		if( index( ${ref($o).'::add'}, $c) < 0 ){ next; }
+		if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 ){ next; }
 		print "<OPTION value='$c'>${$c.'::name'}</OPTION>";
 	}
 	print '</select><input type=submit value="Добавить"></form>';
@@ -303,6 +303,9 @@ sub elem_paste
 	
 	if($o->{ID} < 0){ return; }
 	if(!$o->is_array_table()){ $o->create_array_table();  }
+	
+	my $cname = ref($po);
+	if( index( ${ref($o).'::add'}, ' '.$cname.' ') < 0 ){ eml::err505('Trying to add element with classname "'.$cname.'", to array "'.ref($o).'"'); }
 	
 	$po->{PAPA_ID} = $o->{ID};
 	$po->{PAPA_CLASS} = ref($o);

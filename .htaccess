@@ -6,4 +6,4 @@ AddHandler server-parsed .shtml
 AddType application/x-httpd-perl_html .ehtml
 Action application/x-httpd-perl_html /cgi-bin/eml.cgi
 
-DirectoryIndex index.shtml index.ehtml index.html
+DirectoryIndex index.html index.shtml index.ehtml

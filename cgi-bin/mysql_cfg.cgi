@@ -2,9 +2,9 @@
 
 {
 
-	my $m_db = 'DBI:mysql:engine';
-	my $m_pas = 'root';
-	my $m_login = 'pas';
+	my $m_db = 'DBI:mysql:webwork_engine';
+	my $m_pas = 'webwork';
+	my $m_login = 'sntglweZ';
 
 
 sub ret_mysql

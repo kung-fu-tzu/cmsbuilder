@@ -1,4 +1,58 @@
 
+# Микроворд #####################################################
+
+$vtypes{'microword'}{table_cre} = sub {
+
+	my %elem = %{$_[0]};
+
+	return ' TEXT ';
+
+};
+
+$vtypes{'microword'}{'aview'} = sub {
+
+	my $name = shift;
+	my $val = shift;
+
+	$val =~ s/\"/\&quot;/g;
+	$val =~ s/\</\&lt;/g;
+	$val =~ s/\>/\&gt;/g;
+
+    my $ret = <<MICRO;
+        
+        
+        <TEXTAREA class=admin_input name="${name}" style="DISPLAY: none; HEIGHT: 148px">$val</TEXTAREA>
+        <script>${name}_mw_loaded = 0;</script>
+        <iframe src="/microword.html" id="${name}_mw" style="WIDTH: 100%; HEIGHT: 100%"
+        
+            onload="${name}_mw.document.body.innerHTML = ${name}.value; ${name}_mw.document.designMode = 'On'; ${name}_mw_loaded = 1;"
+            onmouseout = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
+            onmouseover = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
+            onkeyup = "if(!${name}_mw_loaded) return; ${name}.value = ${name}_mw.document.body.innerHTML"
+            
+        ></iframe>
+        <INPUT type="button" value="HTML"   onclick=' ${name}.style.display = "block"; document.all.${name}_mw.style.display = "none";  ${name}_to_norm.style.display = "block"; ${name}_to_html.style.display = "none";'  id="${name}_to_html">
+        <INPUT type="button" value="Normal" onclick=' ${name}.style.display = "none";  document.all.${name}_mw.style.display = "block"; ${name}_to_norm.style.display = "none";  ${name}_to_html.style.display = "block"; ${name}_mw.document.body.innerHTML = ${name}.value;' id="${name}_to_norm" style="DISPLAY: none">
+
+MICRO
+
+        return $ret;
+};
+
+
+# Временная метка ####################################################
+
+$vtypes{timestamp}{table_cre} = sub {
+
+	return ' TIMESTAMP ';
+
+};
+
+$vtypes{timestamp}{aview} = sub {};
+
+$vtypes{timestamp}{aedit} = sub {};
+
+
 # Время ####################################################
 
 $vtypes{time}{table_cre} = sub {
@@ -177,7 +231,7 @@ $vtypes{string}{aview} = sub {
 	$val =~ s/\</\&lt;/g;
 	$val =~ s/\>/\&gt;/g;
 
-	my $ret = "<input width=200 type=text name='$name' value=\"$val\">";
+	my $ret = '<input class="winput" type=text name="'.$name.'" value="'.$val.'">';
 
 	return $ret;
 
@@ -202,7 +256,7 @@ $vtypes{vstring}{aview} = sub {
 	$val =~ s/\</\&lt;/g;
 	$val =~ s/\>/\&gt;/g;
 
-	my $ret = "<input width=200 type=text name='$name' value=\"$val\">";
+	my $ret = '<input class="winput" type=text name="'.$name.'" value="'.$val.'">';
 
 	return $ret;
 
@@ -227,7 +281,7 @@ $vtypes{text}{aview} = sub {
 	$val =~ s/\</\&lt;/g;
 	$val =~ s/\>/\&gt;/g;
 
-	my $ret = "<textarea cols=42 rows=15 name='$name'>$val</textarea>";
+	my $ret = '<textarea class="winput" cols=42 rows=15 name="'.$name.'">'.$val.'</textarea>';
 
 	return $ret;
 
@@ -252,7 +306,7 @@ $vtypes{file}{aview} = sub {
 
 	if( $obj->{$name} ){ $file_href = "<a target=_new href='".$obj->file_href($name)."'>скачать</a>"; }
 
-	my $ret = "<input type=checkbox name='${name}_todel'> - удалить. <input type=file cols=30 name='$name'> $file_href";
+	my $ret = '<input class="winput" type=checkbox name="'.$name.'_todel"> - удалить. <input type=file cols=30 name="'.$name.'"> '.$file_href;
 
 	return $ret;
 
@@ -332,7 +386,7 @@ $vtypes{anyfile}{aview} = sub {
 
 	if( $obj->{$name} ){ $file_href = "<a target=_new href='".$obj->anyfile_href($name)."'>скачать</a>"; }
 
-	my $ret = "<input type=checkbox name='${name}_todel'> - удалить. <input type=file cols=30 name='$name'> $file_href";
+	my $ret = '<input type=checkbox name="'.$name.'_todel"> - удалить. <input type=file cols=30 name="'.$name.'"> '.$file_href;
 
 	return $ret;
 

@@ -1,3 +1,8 @@
-Создание таблиц
-
-<?eml admin::cre() ?>
+<center><h3>Установка...</h3></center>
+<hr>
+<br>
+<?eml admin::install() ?>
+<br>
+<hr>
+<br><br>
+Процесс установки завершён.
