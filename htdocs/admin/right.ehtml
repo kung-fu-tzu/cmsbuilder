@@ -5,19 +5,16 @@
 <SCRIPT LANGUAGE=javascript src="editor/fckeditor.js"></SCRIPT>
 </head>
 <body bgcolor="#f0f4f0" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
-<?eml admin::init() ?>
-<?eml admin::action() ?>
-<br>
-
-<div style="DISPLAY: none" id="tree_div"><?eml admin::tree() ?></div>
 
 <table width="100%"  border="0" cellspacing="0" cellpadding="0">
 <tr><td width=10></td><td>
 
-<?eml if($eml::sess{'admin_refresh_left'}){ print '<center>Изменения успешно внесены.</center><br>'; } ?>
+<br>
 
+<?eml admin::action() ?>
 <?eml admin::list() ?>
 
+<div style="DISPLAY: none" id="tree_div"><?eml admin::tree() ?></div>
 
 </td></tr>
 </table>
@@ -30,7 +27,7 @@ parent.document.all.tree_div_it.innerHTML = tree_div.innerHTML;
 <?eml
 	if($eml::sess{'admin_refresh_left'}){
 		print 'parent.frames.admin_left.document.location.reload();';
-		delete( $eml::sess{'admin_refresh_left'} );
+		$eml::sess{'admin_refresh_left'} = 0;
 	}
 ?>
 

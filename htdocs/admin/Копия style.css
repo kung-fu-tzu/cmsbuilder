@@ -2,28 +2,32 @@ A:link
 {
     FONT-SIZE: 11px;
     COLOR: #606260;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
     TEXT-DECORATION: none
 }
 A:visited
 {
     FONT-SIZE: 11px;
     COLOR: #606260;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
     TEXT-DECORATION: none
 }
 A:active
 {
     FONT-SIZE: 11px;
     COLOR: #606260;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
     TEXT-DECORATION: none
 }
 A:hover
 {
     FONT-SIZE: 11px;
     COLOR: #606260;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+    none:;
     TEXT-DECORATION: underline
 }
 TABLE
@@ -35,7 +39,7 @@ TABLE
     MARGIN: 0px;
     COLOR: #606260;
     PADDING-TOP: 0px;
-    FONT-FAMILY: Arial, Helvetica
+    FONT-FAMILY: 'Arial CYR', 'Arial Cyr', Arial
 }
 .list
 {
@@ -44,13 +48,11 @@ TABLE
     BORDER-TOP: #d2d9df 1px solid;
     PADDING-LEFT: 10px;
     BORDER-LEFT: #d2d9df 1px solid;
-    BORDER-BOTTOM: #d2d9df 1px solid;
-    FONT-FAMILY: Arial, Helvetica
+    BORDER-BOTTOM: #d2d9df 1px solid
 }
 .left_dir
 {
-    PADDING-LEFT: 8px;
-    FONT-FAMILY: Arial, Helvetica
+    PADDING-LEFT: 8px
 }
 .left_body
 {
@@ -59,15 +61,13 @@ TABLE
     PADDING-BOTTOM: 0px;
     MARGIN: 6px 0px 0px 5px;
     PADDING-TOP: 0px;
-    FONT-FAMILY: Arial, Helvetica;
     BACKGROUND-COLOR: #f7f7f7
 }
 .icon
 {
     MARGIN-TOP: 2px;
     MARGIN-BOTTOM: 2px;
-    MARGIN-RIGHT: 3px;
-    FONT-FAMILY: Arial, Helvetica
+    MARGIN-RIGHT: 3px
 }
 A:active
 {
@@ -83,7 +83,7 @@ INPUT
     FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #e2e9e2
 }
 .ainput
@@ -95,7 +95,7 @@ INPUT
     FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #e2e9e2
 }
 SELECT
@@ -105,7 +105,7 @@ SELECT
     FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #e2e9e2
 }
 TEXTAREA
@@ -115,7 +115,7 @@ TEXTAREA
     FONT-SIZE: 11px;
     BORDER-LEFT: #303130 1px solid;
     BORDER-BOTTOM: #303130 1px solid;
-    FONT-FAMILY: Arial, Helvetica;
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
     BACKGROUND-COLOR: #e2e9e2
 }
 BODY
@@ -132,8 +132,7 @@ BODY
     BORDER-RIGHT: #ff7300 1px solid;
     BORDER-TOP: #ff7300 1px solid;
     BORDER-LEFT: #ff7300 1px solid;
-    BORDER-BOTTOM: #ff7300 1px solid;
-    FONT-FAMILY: Arial, Helvetica
+    BORDER-BOTTOM: #ff7300 1px solid
 }
 IFRAME
 {
@@ -145,23 +144,20 @@ IFRAME
 }
 TD
 {
-    FONT-SIZE: 11px;
-    COLOR: #606260;
-    FONT-FAMILY: Arial, Helvetica
 }
 .site_name
 {
     FONT-WEIGHT: bold;
     FONT-SIZE: 12px;
     COLOR: #ffffff;
-    FONT-FAMILY: Arial, Helvetica
+    FONT-FAMILY: Arial
 }
 .authors
 {
     FONT-WEIGHT: normal;
     FONT-SIZE: 12px;
     COLOR: #ffffff;
-    FONT-FAMILY: Arial, Helvetica
+    FONT-FAMILY: Arial
 }
 .red_hr
 {
@@ -170,24 +166,34 @@ TD
     PADDING-BOTTOM: 0px;
     MARGIN: 0px;
     PADDING-TOP: 0px;
-    FONT-FAMILY: Arial, Helvetica;
     HEIGHT: 6pt;
     BACKGROUND-COLOR: #ff7300
 }
 .tdlr
 {
     PADDING-RIGHT: 15px;
-    PADDING-LEFT: 16px;
-    FONT-FAMILY: Arial, Helvetica
+    PADDING-LEFT: 16px
 }
 .winput
 {
-    WIDTH: 300px;
-    FONT-FAMILY: Arial, Helvetica
+    WIDTH: 300px
 }
-.ahref
+.microword_body
 {
-    FONT-SIZE: 11px;
-    FONT-FAMILY: Arial, Helvetica;
-    TEXT-DECORATION: none
+    FONT-SIZE: 10px;
+    FONT-FAMILY: Arial, 'Arial Cyr', 'Arial CYR'
+}
+.mes_table
+{
+    BORDER-RIGHT: #ff7300 2px solid;
+    PADDING-RIGHT: 12px;
+    BORDER-TOP: #ff7300 2px solid;
+    PADDING-LEFT: 12px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    PADDING-BOTTOM: 12px;
+    BORDER-LEFT: #ff7300 2px solid;
+    PADDING-TOP: 12px;
+    BORDER-BOTTOM: #ff7300 2px solid;
+    TEXT-ALIGN: center
 }

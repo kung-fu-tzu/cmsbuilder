@@ -25,24 +25,6 @@
 
 <?eml design::page(); ?>
 
-<?eml
-
-    my $ref = DBRef::new(1);
-    #$ref->{'ref_class'} = 'User';
-    #$ref->{'ref_id'}    = 2;
-    
-    $ref->ref_start();
-    
-    print '<br><br>';
-    
-    print $ref->des_name();
-    $ref->del();
-    
-    
-    
-
-?>
-
 </td>
 </tr>
 <tr> 

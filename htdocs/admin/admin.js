@@ -17,8 +17,6 @@ function ShowHide(obj,dot){
 
 function ShowMe(obj,dot){
 
-	//alert(obj);
-
 	if(obj){
 		
 		obj.style.display = "block";

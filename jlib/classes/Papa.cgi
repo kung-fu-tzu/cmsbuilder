@@ -22,7 +22,7 @@ sub new
 {
 	my $o = {};
 	bless($o);
-
+	
 	return $o->_construct(@_);
 }
 

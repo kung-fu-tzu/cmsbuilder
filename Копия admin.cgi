@@ -1,13 +1,29 @@
 package admin;
 use strict qw(subs vars);
 
+my $w;
+my $co;
+
+my $class;
+
 my %mods = (
 		'Сайт' => 'Dir1',
 		'Пользователи' => 'UserGroupDir1'
 	);
 my $def_mod = 'Сайт';
 
-my $do_list;
+sub init
+{
+	my ($cl);
+	
+	$cl = eml::param('class');
+	
+	if( !eml::classOK($cl) ){ $cl = $eml::dbos[0]; }
+	
+	if($w){ $w->clear(); }
+	$w = &{ $cl.'::new' };
+	$class = $cl;
+}
 
 sub move2
 {
@@ -23,22 +39,19 @@ sub move2
 		
 		my $to = DBObject::url($uto);
 		
-		$elem = $from->elem($enum);
-		if(!$to->elem_can_paste($elem)){ return; }
-		
 		if($ref){
 			$elem = $from->elem($enum);
 			$to->elem_paste_ref($elem,1);
 			
+			$eml::sess{'admin_refresh_left'} = 1;
 		}else{
 			$elem = $from->elem_cut($enum);
 			$to->elem_paste($elem);
+			
+			$eml::sess{'admin_refresh_left'} = 1;
 		}
 		
-		$eml::sess{'admin_refresh_left'} = 1;
-		
-		print '<script language="JavaScript">location.href = "right.ehtml?url=',$from->myurl(),'"</script>';
-		$do_list = 0;
+		print '<script language="JavaScript">location.href = "right.ehtml?ID=',$from->{'ID'},'&class=',ref($from),'"</script>';
 		return;
 	}
 	
@@ -52,7 +65,7 @@ sub move2
 	my $c;
 	for $c (@eml::dbos){
 		
-		if( index( ${$c.'::add'}, ' '.$eclass.' ') < 0 and ${$c.'::add'} ne '*' ){ next; }
+		if( index( ${$c.'::add'}, ' '.$eclass.' ') < 0 ){ next; }
 		if( $c eq 'UserGroupRoot' ){ next; }
 		
 		my $tdir = &{$c.'::new'};
@@ -77,6 +90,10 @@ sub page_hrefs
 	my $names = '';
 	my $hrefs = '';
 	
+	
+	
+	
+	
 	print 'config.PageNames   = "',$names,'";',"\n";
 	print 'config.PageValues  = "',$hrefs,'";',"\n";
 }
@@ -84,54 +101,90 @@ sub page_hrefs
 sub action
 {
 	my $act = eml::param('act');
-	my $url = eml::param('url');
+	my $id = eml::param('ID');
 	my $cn = eml::param('cname');
-	my $enum = eml::param('enum');
+	my $eid = eml::param('enum');
+	my $rid = eml::param('rid');
 	my $page = eml::param('page');
 	
-	my $w = DBObject::url($url);
-	
-	$do_list = 1;
+	my $prev = $ENV{'HTTP_REFERER'};
+	$prev =~ s/\?.*//g;
 	
 	if($act){ $eml::sess{'admin_refresh_left'} = 1; }
-	else{ return; }
-	
+	srand();
+	my $rnd = rand();
+	$rnd =~ s/\D//g;
 	
 	if($act eq 'edit'){
-		
+		$w->load( $id );
 		my $tname = $w->name();
+		
 		$w->admin_edit();
+		
 		if($tname eq $w->name()){ $eml::sess{'admin_refresh_left'} = 0; }
 	}
 	
-	if($act eq 'cre'){
+	if($act eq 'del'){
+		$w->load( $id );
+		$w->del();
 		
-		if(!eml::classOK($cn)){ return; }
-		
-		print STDERR 'BEGIN';
-		
-		my $to = &{$cn.'::new'}('cre');
-		$to->admin_edit();
-		
-		$w->elem_paste($to);
+		eml::unflush();
+		print "Location: ".$prev."?class=$class&page=$page&ac=$rnd\n";
+		print "\n";
+		exit();
 	}
 	
 	if($act eq 'adde'){
 		
-		if(!eml::classOK($cn)){ return; }
+		if($cn eq ''){ return; }
 		
-		$eml::sess{'admin_refresh_left'} = 0;
-		$do_list = 0;
+		my $to = &{$cn.'::new'}('cre');
 		
-		my $to = &{$cn.'::new'}();
-		$to->admin_cre($w);
+		$w->load( $id );
+		$w->elem_paste($to);
+		
+		if( ${ref($w).'::pages_direction'} ){ $page = $w->pages()-1; }else{ $page = 0; }
+		
+		eml::unflush();
+		#print 'Location: '.$prev.'?class='.$class.'&ID='.$w->{ID}.'&page='.$page.'&ac='.$rnd;
+		print 'Location: '.$prev.'?class='.$cn.'&ID='.$to->{ID}.'&ac='.$rnd;
+		print "\n\n";
+		exit();
 	}
 	
-	if($act eq 'dele'){ $w->elem_del($enum); }
-
-	if($act eq 'eup'){ $w->elem_moveup($enum); }
-
-	if($act eq 'edown'){ $w->elem_movedown($enum); }
+	if($act eq 'dele'){
+		
+		$w->load( $id );
+		$w->elem_del($eid);
+		
+		eml::unflush();
+		print 'Location: ',$prev,'?class=',$class,'&ID=',$w->{ID},'&page=',$page,'&ac=',$rnd;
+		print "\n\n";
+		exit();
+	}
+	
+	if($act eq 'eup'){
+		
+		$w->load( $id );
+		$w->elem_moveup($eid);
+		
+		eml::unflush();
+		print 'Location: ',$prev,'?class=',$class,'&ID=',$w->{ID},'&page=',$page,'&ac=',$rnd;
+		print "\n\n";
+		exit();
+	}
+	
+	if($act eq 'edown'){
+		
+		$w->load( $id );
+		$w->elem_movedown($eid);
+		
+		eml::unflush();
+		print 'Location: ',$prev,'?class=',$class,'&ID=',$w->{ID},'&page=',$page,'&ac=',$rnd;
+		print "\n\n";
+		exit();
+	}
+	
 	
 }
 
@@ -151,12 +204,13 @@ sub left_tree
 
 sub tree
 {
-	my $url = eml::param('url') | eml::param('from');
-	my $to;
+	my $id = eml::param('ID');
 	
-	$to = DBObject::url($url);
+	if(! $id){ return; }
+	if($id eq 'cre'){ return; }
 	
-	$to->admin_tree();
+	$w->load($id);
+	$w->admin_tree();
 }
 
 sub install
@@ -241,10 +295,12 @@ sub modules
 		print '<img src=bullet.gif align=absmiddle> <a onclick="" href="?mod=',$m,'">',$m,'</a><br>';
 	}
 	
+	my ($class,$id) = DBObject::url2classid($mods{$sel_mod});
+	
 	print '
 	<SCRIPT language="JavaScript">
 	parent.document.frames.admin_left.location.href = "left.ehtml?url=',$mods{$sel_mod},'";
-	parent.document.frames.admin_right.location.href = "right.ehtml?url=',$mods{$sel_mod},'";
+	parent.document.frames.admin_right.location.href = "right.ehtml?ID=',$id,'&class=',$class,'";
 	parent.document.all.module_div_it.innerHTML = "',$sel_mod,'";
 	parent.document.all.user_div_it.innerHTML = "',$eml::g_user->name(),'";
 	</SCRIPT>
@@ -254,14 +310,25 @@ sub modules
 
 sub list
 {
+	my $id = eml::param('ID');
 	my $page = eml::param('page');
-	my $url = eml::param('url');
-	my $act = eml::param('act');
 	
-	if(!$do_list){ return; }
-	
-	my $w = DBObject::url($url);
-	$w->admin_view($page);
+	if($id){
+		
+		$w->load($id);
+		$w->admin_view($page);
+		
+	}else{
+		
+		print '<br>';
+		$w->admin_list('',$page);
+		print '<br>';
+		
+		print '<hr>';
+		print "<a href=?class=".$class."&ID=cre>Создать</a>";
+	}
 }
+
+sub w { return $w; }
 
 return 1;

@@ -81,10 +81,10 @@ sub mymain
 	
 	my(@parts,$i,$co,$str,$str_time,$jlogin,$rdir,$file);
 
-	if($ENV{REDIRECT_STATUS} eq ""){ die('REDIRECT_STATUS'); }
+	if($ENV{'REDIRECT_STATUS'} eq ""){ die('REDIRECT_STATUS'); }
 	
 	
-	$rdir  = $ENV{SCRIPT_FILENAME};
+	$rdir  = $ENV{'SCRIPT_FILENAME'};
 	$rdir =~ s/\/[^\/]+$/\//;
 	chdir($rdir);
 	require $jlib.'/errors.cgi';
@@ -94,12 +94,11 @@ sub mymain
 	require $jlib.'/jsession.cgi';
 	require $jlib.'/dbobject.cgi';
 	require $jlib.'/dbarray.cgi';
-	require $jlib.'/dbref.cgi';
 	
 	%sess = ();
 	JSession::start();
 	
-	$file = $ENV{PATH_TRANSLATED};
+	$file = $ENV{'PATH_TRANSLATED'};
 	$file =~ s/\\/\//g;
 	
 	$file =~ s/\.ehtml(\/.*)//;
@@ -109,7 +108,7 @@ sub mymain
 	$dir = $file;
 	$dir =~ s/\/[^\/]+$/\//;
 	
-	if($file eq ""){ err404('$ENV{PATH_TRANSLATED} - empty file name'); }
+	if($file eq ""){ err404($ENV{'PATH_TRANSLATED'}.' - empty file name'); }
 	
 	if($buff){
 		#open(MEM,'>',\$out);
@@ -133,7 +132,7 @@ sub mymain
 	
 	require 'mysql_cfg.cgi'; 
 	$dbh = DBI->connect(ret_mysql(),{ RaiseError => 1 });
-	$dbh->{HandleError} = sub {err505($_[0]);};
+	$dbh->{'HandleError'} = sub {err505($_[0]);};
 	
 	my $f;
 	if(!opendir(CLS,$env_dir)){err505('Can`t open enveronments directory: '.$env_dir);}
@@ -160,26 +159,31 @@ sub mymain
 	}
 	closedir(DBO);
 	undef $file;
-	push @dbos, 'DBRef';
 	
 	
 	if($do_users){
-		$uid = -1;
-		$gid = -1;
 		($g_user,$g_group) = JLogin::verif();
+		$g_user = $g_user->no_cache();
+		$g_group = $g_group->no_cache();
+		
 		$g_user->{'_temp_object'} = 1;
 		$g_group->{'_temp_object'} = 1;
+		
 		$uid = $g_user->{'ID'};
 		$gid = $g_group->{'ID'};
-	}
-	else{
-		$uid = 1; $gid = 1;
+	}else{
 		$g_user = User::new();
-		$g_user->{'name'} = 'Монопольный режим';
 		$g_group = UserGroup::new();
+		
+		$g_user = $g_user->no_cache();
+		$g_group = $g_group->no_cache();
+		
+		$g_user->{'name'} = 'Монопольный режим';
 		$g_group->{'adminka'} = 1;
 		$g_user->{'_temp_object'} = 1;
 		$g_group->{'_temp_object'} = 1;
+		
+		$uid = 1; $gid = 1;
 	}
 	
 	

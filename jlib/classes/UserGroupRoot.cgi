@@ -30,6 +30,14 @@ sub new
 	return $o->_construct(@_);
 }
 
+sub new_nc
+{
+	my $o = {};
+	bless($o);
+	
+	return $o->_construct_no_cache(@_);
+}
+
 sub DESTROY
 {
 	my $o = shift;

@@ -2,7 +2,6 @@ package DBArray;
 use strict qw(subs vars);
 
 use vars '@ISA';
-use vars '$max_admin_left';
 
 @ISA = 'DBObject';
 
@@ -23,23 +22,24 @@ sub admin_left
 {
 	my $o = shift;
 	
-	if( ${$o->{'_class'}.'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
+	if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(); }
+	if( $o->{'_is_ref'} ){ return $o->SUPER::admin_left(); }
 	
-	my %node = $eml::cgi->cookie( 'dbi_'.$o->{'_class'}.$o->{'ID'} );
+	my %node = $eml::cgi->cookie( 'dbi_'.ref($o).$o->{'ID'} );
 	my $disp = $node{'s'} ? 'block' : 'none';
 	my $pic  = $node{'s'} ? 'minus' : 'plus';
 	
-	print '<nobr><img class="icon" align="absmiddle" id="dbdot_'.$o->{'_class'}.$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.$o->{'_class'}.$o->{'ID'}.',dbdot_'.$o->{'_class'}.$o->{'ID'}.')">',$o->admin_name(),'</nobr><br>',"\n";
+	print '<nobr><img class="icon" align="absmiddle" id="dbdot_'.ref($o).$o->{'ID'}.'" src="'.$pic.'.gif" onclick="ShowHide(dbi_'.ref($o).$o->{'ID'}.',dbdot_'.ref($o).$o->{'ID'}.')">',$o->admin_name(),'</nobr><br>',"\n";
 	
-	#print '<div id="id_'.$o->{'_class'}.$o->{'ID'}.'"
-	#onmouseover="return OnOver(id_'.$o->{'_class'}.$o->{'ID'}.')"
-	#onmouseout="return OnOut(id_'.$o->{'_class'}.$o->{'ID'}.')"
-	#onmouseup="return StopDrag(id_'.$o->{'_class'}.$o->{'ID'}.')"
-	#onmousedown="return StartDrag(id_'.$o->{'_class'}.$o->{'ID'}.')"
+	#print '<div id="id_'.ref($o).$o->{'ID'}.'"
+	#onmouseover="return OnOver(id_'.ref($o).$o->{'ID'}.')"
+	#onmouseout="return OnOut(id_'.ref($o).$o->{'ID'}.')"
+	#onmouseup="return StopDrag(id_'.ref($o).$o->{'ID'}.')"
+	#onmousedown="return StartDrag(id_'.ref($o).$o->{'ID'}.')"
 	#style="Z-INDEX: 250; WIDTH: 10px; HEIGHT: 10px; BACKGROUND-COLOR: black"
 	#></div>';
 	#print "\n";
-	print '<div id="dbi_'.$o->{'_class'}.$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
+	print '<div id="dbi_'.ref($o).$o->{'ID'}.'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
 	my $to;
 	for $to ($o->get_all($max_admin_left)){
 		
@@ -48,6 +48,15 @@ sub admin_left
 	}
 	if($o->len() > $max_admin_left){ print '<nobr><img class="icon" align="absmiddle" src="bullet.gif"><font color="#ff7300" size=1>Элементов слишком много...</font></nobr><br>',"\n"; }
 	print '</div>',"\n";
+}
+
+sub admin_cre
+{
+	my $o = shift;
+	my $w = shift;
+	
+	$o->{'_print'} = 'Создание элемента...';
+	return $o->SUPER::admin_view('cre',$w);
 }
 
 sub admin_view
@@ -65,21 +74,20 @@ sub admin_view
 	for $e ($o->get_page($page)){
 		
 		print '<br>';
-		print '<a onclick="return doDel()" href="?class='.$o->{'_class'}.'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=dele&page='.$page.'"><img border=0 src=x.gif></a>';
+		print '<a onclick="return doDel()" href="?url='.$o->myurl().'&act=dele&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0  alt="Удалить" src=x.gif></a>';
 		
-		if(${$o->{'_class'}.'::pages_direction'}){
-			if($e->{'_ENUM'} != 1){ print '<a href="?class='.$o->{'_class'}.'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=eup&page='.$page.'"><img border=0 src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
-			if($e->{'_ENUM'} != $len){ print '<a href="?class='.$o->{'_class'}.'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=edown&page='.$page.'"><img border=0 src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+		if(${ref($o).'::pages_direction'}){
+			if($e->{'_ENUM'} != 1){ print '<a href="?url='.$o->myurl().'&act=eup&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != $len){ print '<a href="?url='.$o->myurl().'&act=edown&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
 		}else{
-			if($e->{'_ENUM'} != $len){ print '<a href="?class='.$o->{'_class'}.'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=edown&page='.$page.'"><img border=0 src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
-			if($e->{'_ENUM'} != 1){ print '<a href="?class='.$o->{'_class'}.'&ID='.$o->{ID}.'&enum='.$e->{'_ENUM'}.'&act=eup&page='.$page.'"><img border=0 src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != $len){ print '<a href="?url='.$o->myurl().'&&act=edownenum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить выше" src=up.gif></a>'; }else{ print '<img src=nx.gif>' }
+			if($e->{'_ENUM'} != 1){ print '<a href="?url='.$o->myurl().'&act=eup&enum='.$e->{'_ENUM'}.'&page='.$page.'"><img border=0 alt="Переместить ниже" src=down.gif></a>'; }else{ print '<img src=nx.gif>' }
 		}
 		
-		print '<a href="move2.ehtml?from='.$o->{'_class'}.$o->{'ID'}.'&enum='.$e->{'_ENUM'}.'"><img border=0 src=move2.gif></a>';
+		print '<a href="move2.ehtml?from='.$o->myurl().'&enum='.$e->{'_ENUM'}.'"><img border=0 alt="Переместить в другой каталог..." src=move2.gif></a>';
 		
 		
 		print "\n",'&nbsp;&nbsp;',"\n";
-		#print '<a href="?class='.ref($e).'&ID='.$e->{'ID'}.'">',$e->name(),'</a>';
 		print $e->admin_name();
 		$i++;
 		print "\n";
@@ -96,7 +104,7 @@ sub admin_view
 		for($p=0;$p<$o->pages();$p++){
 			
 			if($p == $page){ print '<td width=20 align=center height=20 bgcolor="#ff7300"><b>'.($p+1).'</b></td>'; }
-			else{ print '<td width=20 align=center height=20><a href="?class='.$o->{'_class'}.'&ID='.$o->{'ID'}.'&page='.$p.'">'.($p+1).'</a><td>' }
+			else{ print '<td width=20 align=center height=20><a href="?url='.$o->myurl().'&page='.$p.'">'.($p+1).'</a><td>' }
 			
 		}
 		
@@ -108,17 +116,16 @@ sub admin_view
 	my $c;
 
 	print '<form action="?">';
-	print '<input type="hidden" name="ID" value="',$o->{ID},'">',"\n";
 	print '<input type="hidden" name="act" value="adde">',"\n";
-	print '<input type="hidden" name="class" value="',$o->{'_class'},'">',"\n";
+	print '<input type="hidden" name="url" value="',$o->myurl(),'">',"\n";
 
-	print '<select name=cname><OPTION selected></OPTION>';
+	print '<select name="cname"><OPTION selected></OPTION>';
 	for $c (@eml::dbos){
 		
-		if( index( ${$o->{'_class'}.'::add'}, ' '.$c.' ') < 0 ){ next; }
+		if( index( ${ref($o).'::add'}, ' '.$c.' ') < 0 ){ next; }
 		print "<OPTION value='$c'>${$c.'::name'}</OPTION>";
 	}
-	print '</select><input type=submit value="Добавить"></form>';
+	print '</select>&nbsp;&nbsp;<input type=submit value="Добавить"></form>';
 	print '<br><br>';
 }
 
@@ -148,7 +155,7 @@ sub get_page
 	my $page = shift;
 	my @ret;
 	
-	if( ${$o->{'_class'}.'::pages_direction'} )
+	if( ${ref($o).'::pages_direction'} )
 	    { @ret = $o->get_page_inc($page) }
 	else{ @ret = $o->get_page_dec($page) }
 	
@@ -165,7 +172,7 @@ sub get_all
 	if($mlen < 1){$mlen = $len}
 	if($len > $mlen){ $len = $mlen; }
 	
-	if( ${$o->{'_class'}.'::pages_direction'} )
+	if( ${ref($o).'::pages_direction'} )
 	    { @ret = $o->get_all_inc($len) }
 	else{ @ret = $o->get_all_dec($len) }
 	
@@ -178,7 +185,7 @@ sub get_all_class
 	my @classes = @_;
 	my @ret;
 	
-	if( ${$o->{'_class'}.'::pages_direction'} )
+	if( ${ref($o).'::pages_direction'} )
 	    { @ret = $o->get_all_class_inc(@classes) }
 	else{ @ret = $o->get_all_class_dec(@classes) }
 	
@@ -372,12 +379,12 @@ sub elem_paste
 	my $o = shift;
 	my $po = shift;
 	
-	if($o->{ID} < 0){ return; }
+	if($o->{'ID'} < 0){ return; }
 	
-	$o->elem_paste_line($po);
+	$o->elem_paste_ref($po);
 	
-	$po->{'PAPA_ID'} = $o->{ID};
-	$po->{'PAPA_CLASS'} = $o->{'_class'};
+	$po->{'PAPA_ID'} = $o->{'ID'};
+	$po->{'PAPA_CLASS'} = ref($o);
 	
 	$po->save();
 }
@@ -387,28 +394,30 @@ sub elem_paste
 # Методы для непосредственной работы с массивом
 ###################################################################################################
 
-sub elem_paste_line
+sub elem_paste_ref
 {
 	my $o = shift;
 	my $po = shift;
 	
-	if($o->{ID} < 0){ return; }
+	if($o->{'ID'} < 0){ return; }
 	if(!$o->is_array_table()){ $o->create_array_table();  }
 	
-	my $cname = $po->{'_class'};
+	if( !$o->elem_can_paste($po) ){ eml::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
 	
-	if( $po->{'_class'} eq 'DBRef' ){
-		my $rcname = $po->{'ref_class'};
-		if( $rcname eq '' ){ eml::err505('Trying to add DBRef with empty classname, to array "'.$o->{'_class'}.'"'); }
-		if( index( ${$o->{'_class'}.'::add'}, ' '.$rcname.' ') < 0 ){ eml::err505('Trying to add DBRef with classname "'.$rcname.'", to array "'.$o->{'_class'}.'"'); }
-	}else{
-		if( index( ${$o->{'_class'}.'::add'}, ' '.$cname.' ') < 0 ){ eml::err505('Trying to add element with classname "'.$cname.'", to array "'.$o->{'_class'}.'"'); }
-	}
-	
-	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.$o->{'_class'}.'_'.$o->{ID}.'` (ID,CLASS) VALUES (?,?)');
-	$str->execute($po->{ID},$cname);
+	my $str = $eml::dbh->prepare('INSERT INTO `arr_'.ref($o).'_'.$o->{'ID'}.'` (ID,CLASS) VALUES (?,?)');
+	$str->execute($po->{'ID'},ref($po));
 	
 	$o->sortT();
+}
+
+sub elem_can_paste
+{
+	my $o = shift;
+	my $po = shift;
+	
+	if( ${ref($o).'::add'} eq '*' ){ return 1 }
+	if( index( ${ref($o).'::add'}, ' '.ref($po).' ') < 0 ){ return 0 }
+	return 1;
 }
 
 sub elem
@@ -416,17 +425,17 @@ sub elem
 	my $o = shift;
 	my $eid = shift;
 	
-	if($o->{ID} < 0){ return undef; }
+	if($o->{'ID'} < 0){ return undef; }
 	if(!$o->is_array_table()){ return undef; }
 	
-	my $str = $eml::dbh->prepare('SELECT * FROM `arr_'.$o->{'_class'}.'_'.$o->{ID}.'` WHERE num = ? LIMIT 1');
+	my $str = $eml::dbh->prepare('SELECT * FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
 	
 	my $res = $str->fetchrow_hashref('NAME_uc');
 	
 	if(!$res->{'CLASS'}){ return undef; }
 	
-	return &{ $res->{'CLASS'}.'::new' }($res->{ID});
+	return &{ $res->{'CLASS'}.'::new' }($res->{'ID'});
 }
 
 sub elem_cut
@@ -434,7 +443,7 @@ sub elem_cut
 	my $o = shift;
 	my $eid = shift;
 	
-	if($o->{ID} < 0){ return; }
+	if($o->{'ID'} < 0){ return; }
 	
 	my $to = $o->elem($eid);
 	if(!$to){ return undef; }
@@ -443,7 +452,7 @@ sub elem_cut
 	$to->{'PAPA_ID'} = -1;
 	$to->save();
 	
-	my $str = $eml::dbh->prepare('DELETE FROM `arr_'.$o->{'_class'}.'_'.$o->{ID}.'` WHERE num = ? LIMIT 1');
+	my $str = $eml::dbh->prepare('DELETE FROM `arr_'.ref($o).'_'.$o->{'ID'}.'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
 	
 	$o->sortT();
@@ -457,7 +466,7 @@ sub elem_moveto
 	my $enum = shift;
 	my $place = shift;
 	
-	if($o->{ID} < 0){ return; }
+	if($o->{'ID'} < 0){ return; }
 	
 	if($place eq ''){ eml::err505('elem_moveto: Новая позиция пуста'); }
 	if($place < 0){ eml::err505('elem_moveto: Новая позиция меньше 1'); }
@@ -468,10 +477,10 @@ sub elem_moveto
 	
 	$o->sortT();
 	
-	my $str = $eml::dbh->prepare( 'UPDATE `arr_'.$o->{'_class'}.'_'.$o->{ID}.'` SET num = num+1 WHERE num > '.$place );
+	my $str = $eml::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET num = num+1 WHERE num > '.$place );
 	$str->execute();
 	
-	$str = $eml::dbh->prepare( 'UPDATE `arr_'.$o->{'_class'}.'_'.$o->{ID}.'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
+	$str = $eml::dbh->prepare( 'UPDATE `arr_'.ref($o).'_'.$o->{'ID'}.'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
 	
 	if($enum > $place){
 		$str->execute($place+1,$enum+1);
@@ -491,7 +500,7 @@ sub create_array_table
 {
 	my $o = shift;
 	
-	my $sql = 'CREATE TABLE `arr_'.$o->{'_class'}.'_'.$o->{'ID'}.'` ( '."\n";# IF NOT EXISTS
+	my $sql = 'CREATE TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'` ( '."\n";# IF NOT EXISTS
 	$sql .= '`num` INT NOT NULL AUTO_INCREMENT , ';
 	$sql .= '`ID` INT DEFAULT \'-1\' NOT NULL, ';
 	$sql .= '`CLASS` VARCHAR(20) NOT NULL, ';
@@ -507,7 +516,7 @@ sub is_array_table
 {
 	my $o = shift;
 	
-	if($o->{ID} < 0){ return 0; }
+	if($o->{'ID'} < 0){ return 0; }
 	
 	if($o->{'_isatable'} eq 'yes'){ return 1; }
 	if($o->{'_isatable'} eq 'no'){ return 0; }
@@ -517,8 +526,8 @@ sub is_array_table
 	
 	for $t ($eml::dbh->tables()){
 		
-		if( lc('`arr_'.$o->{'_class'}.'_'.$o->{'ID'}.'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
-		if( lc('arr_'.$o->{'_class'}.'_'.$o->{'ID'}) eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
+		if( lc('`arr_'.ref($o).'_'.$o->{'ID'}.'`') eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
+		if( lc('arr_'.ref($o).'_'.$o->{'ID'}) eq lc($t) ){ $o->{'_isatable'} = 'yes'; return 1; }
 	}
 	
 	$o->{'_isatable'} = 'no';
@@ -534,10 +543,10 @@ sub len
 {
 	my $o = shift;
 
-	if($o->{ID} < 0){ return 0; }
+	if($o->{'ID'} < 0){ return 0; }
 	if(!$o->is_array_table()){ return 0; }
 
-	my $str = $eml::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.$o->{'_class'}.'_'.$o->{ID}.'`');
+	my $str = $eml::dbh->prepare('SELECT COUNT(*) AS LEN FROM `arr_'.ref($o).'_'.$o->{'ID'}.'`');
 	$str->execute();
 	
 	my $res = $str->fetchrow_hashref('NAME_uc');
@@ -550,7 +559,7 @@ sub del
 	my $o = shift;
 	my $i;
 	
-	if($o->{ID} < 0){ return; }
+	if($o->{'ID'} < 0){ return; }
 	
 	my $len = $o->len();
 
@@ -562,7 +571,7 @@ sub del
 	
 	if(!$o->is_array_table()){ $o->SUPER::del(); return; }
 	
-	my $str = $eml::dbh->prepare('DROP TABLE `arr_'.$o->{'_class'}.'_'.$o->{ID}.'`');
+	my $str = $eml::dbh->prepare('DROP TABLE `arr_'.ref($o).'_'.$o->{'ID'}.'`');
 	$str->execute();
 	
 	$o->SUPER::del();
@@ -573,10 +582,10 @@ sub sortT
 	my $o = shift;
 	my($i,$str,$str2,$num,$table);
 	
-	if($o->{ID} < 0){ return; }
+	if($o->{'ID'} < 0){ return; }
 	if(!$o->is_array_table()){ return; }
 	
-	$table = 'arr_'.$o->{'_class'}.'_'.$o->{ID};
+	$table = 'arr_'.ref($o).'_'.$o->{'ID'};
 	
 	$str = $eml::dbh->prepare( "ALTER TABLE `$table` ORDER BY `num`" );
 	$str->execute();
