@@ -82,7 +82,7 @@ sub admin_view
 			
 			if($p == $page){ print '<td width=20 align=center height=20 bgcolor="#ff7300"><b>'.($p+1).'</b></td>'; }
 			else{ print '<td width=20 align=center height=20><a href="?class='.ref($o).'&ID='.$o->{'ID'}.'&page='.$p.'">'.($p+1).'</a><td>' }
-				
+			
 		}
 		
 		print '</tr></table>';

@@ -203,7 +203,7 @@ sub list
 		print '<br>';
 		
 		print '<hr>';
-		print "<a href=?class=".$class."&ID=cre>Создать</a><br><br>";
+		print "<a href=?class=".$class."&ID=cre>Создать</a>";
 	}
 }
 

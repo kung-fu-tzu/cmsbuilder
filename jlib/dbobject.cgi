@@ -12,20 +12,19 @@ my $page = '/page.ehtml';
 sub des_tree
 {
 	my $o = shift;
-
+	
 	my @all;
 	my $count = 0;
-
+	
 	unshift(@all,$o->name());
-
+	
 	while($o = $o->papa() and $count < 50){
 		$count++;
 		unshift(@all, $o->des_name());
-
+		
 	}
-
+	
 	print join(' :: ',@all);
-
 }
 
 
@@ -89,19 +88,19 @@ sub sel_one
 {
 	my $o = shift;
 	my $wh = shift;
-
+	
 	my $id;
-
+	
 	$o->save();
 	$o->clear();
-
+	
 	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
 	$str->execute(@_);
-
+	
 	($id) = $str->fetchrow_array();
-
+	
 	if(! $id){ return; }
-
+	
 	$o->{ID} = $id;
 	$o->reload();
 }
@@ -110,19 +109,19 @@ sub sel_where
 {
 	my $o = shift;
 	my $wh = shift;
-
+	
 	my $id;
 	my @oar;
-
+	
 	my $str = $eml::dbh->prepare('SELECT ID FROM `dbo_'.ref($o).'` WHERE '.$wh);
 	$str->execute(@_);
-
+	
 	while( ($id) = $str->fetchrow_array() ){
 		
 		push(@oar,&{ref($o).'::new'}($id));
 		
 	}
-
+	
 	return @oar;
 }
 
@@ -130,19 +129,19 @@ sub o_sql
 {
 	my $o = shift;
 	my $wh = shift;
-
+	
 	my $id;
 	my @oar;
-
+	
 	my $str = $eml::dbh->prepare($wh);
 	$str->execute(@_);
-
+	
 	while( ($id) = $str->fetchrow_hashref('NAME_lc') ){
 		
 		push(@oar,&{ref($o).'::new'}($id->{'id'}));
 		
 	}
-
+	
 	return @oar;
 }
 
@@ -155,7 +154,6 @@ sub admin_left
 	my $o = shift;
 	
 	print '<img class="icon" align="absmiddle" src="dot.gif">',$o->admin_name(),'<br>',"\n";
-	
 }
 
 sub admin_name
@@ -171,12 +169,12 @@ sub admin_name
 	
 	#$ret =~ s/\s/\&nbsp;/g;
 	return '<a id="id_'.ref($o).$o->{'ID'}.'" target="admin_right" href="right.ehtml?class='.ref($o).'&ID='.$o->{'ID'}.'">'.$ret.'</a>';
-
 }
 
 sub admin_tree
 {
 	my $o = shift;
+	my $me = $o;
 	
 	my @all;
 	my $count = 0;
@@ -190,6 +188,8 @@ sub admin_tree
 		print 'ShowMe(parent.frames.admin_left.document.all.dbi_'.ref($o).$o->{'ID'}.',parent.frames.admin_left.document.all.dbdot_'.ref($o).$o->{'ID'}.'); ';
 		
 	}while( $o = $o->papa() and $count < 50 );
+	
+	print 'SelectLeft(parent.frames.admin_left.document.all.id_'.ref($me).$me->{'ID'}.');';
 	
 	print '</script>';
 	
@@ -216,13 +216,13 @@ sub admin_list
 	if($page >= $pages){ $page = $pages - 1; }
 	
 	$col =~ s/\W//g;
-
+	
 	my $lim = ($page * $onp) . ',' . $onp;
-
+	
 	print '<table border=0 cellspacing=0 cellpadding=0>';
-
+	
 	for $i ( $o->IDs($col,$lim) ){
-
+		
 		$o->loadr($i);
 		
 		print '<tr><td height=15>';
@@ -236,17 +236,16 @@ sub admin_list
 		
 		print '</td></tr>';
 	}
-
-	print '</table><br><center>';
-
-	for(my $p=0;$p<$pages;$p++){
 	
+	print '</table><br><center>';
+	
+	for(my $p=0;$p<$pages;$p++){
+		
 		if($p == $page){ print ' <b>'.($p+1).'</b> '; }
 		else{ print ' <a href="?class='.ref($o).'&page='.$p.'">'.($p+1).'</a> '; }
 	}
 	
 	print '</center>';
-
 }
 
 sub admin_edit
@@ -255,20 +254,20 @@ sub admin_edit
 	my ($key,$val);
 	my %p = $o->props();
 	if($eml::gid != 0){ eml::err403("DBO: EDIT with gid != 0,".ref($o).", ".$o->{ID}); }
-
+	
 	if($o->{ID} < 1){ $o->{'_print'} = "<font color=red>Ошибка: ID < 1.</font><br>\n"; return; }
-
+	
 	for $key (keys( %p )){
-
+		
 		$val = eml::param($key);
-
+		
 		if( $DBObject::vtypes{ $p{$key}{type} }{aedit} ){
 			$val = $DBObject::vtypes{ $p{$key}{type} }{aedit}->($key,$val,$o);
 		}
-
+		
 		$o->{$key} = $val;
 	}
-
+	
 	$o->{'_print'} = "Успешно сохранено.<br>\n";
 }
 
@@ -276,40 +275,36 @@ sub admin_view
 {
 	my $o = shift;
 	my $key;
+	my @keys;
 	my %p = $o->props();
 	if($eml::gid != 0){ eml::err403("DBO: VIEW with gid != 0,".ref($o).", ".$o->{ID}); }
-
+	
 	print "\n\n";
 	print '<table width="100%" border=0><tr><td align=center>';
 	print "<!-- VIEW '".ref($o)."' WHERE ID = $o->{ID} -->\n";
 	if($o->{'_print'}){ print $o->{'_print'}; $o->{'_print'} = ''; }
 	print '<form action="?" method="POST" enctype="multipart/form-data">',"\n";
-
 	print '<input type="hidden" name="ID" value="',$o->{ID},'">',"\n";
 	print '<input type="hidden" name="act" value="edit">',"\n";
 	print '<input type="hidden" name="class" value="'.ref($o).'">',"\n";
 	
-	print '<table width="100%>',"\n";
-	my @keys;
-
+	print '<table width="100%">',"\n";
+	
 	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %p ); }
-
-
 	for $key (@keys){
 		
 		print "<tr><td valign=center><b>".$p{$key}{name}.":</b></td><td>\n";
 		print $DBObject::vtypes{ $p{$key}{type} }{aview}->( $key, $o->{$key}, $o );
 		print "\n</td>\n</tr>\n";
 	}
-
+	
 	print "<tr>\n  <td>\n  </td>\n  <td align=right>\n";
 	print "    <input type=submit value=Сохранить>\n";
 	print "  </td>\n</tr>\n";
-
+	
 	print "</table>\n";
 	print "</form>\n\n";
 	print "  </td>\n</tr>\n</table>";
-
 }
 
 ###################################################################################################
@@ -368,11 +363,10 @@ sub load
 sub clear
 {
 	my $o = shift;
-
 	my $key;
-
+	
 	for $key (keys( %$o )){
-
+		
 		$o->{$key} = '';
 	}
 	
@@ -443,7 +437,6 @@ sub del
 	$str->execute($o->{ID});
 	
 	$o->clear();
-	
 }
 
 sub reload
@@ -488,11 +481,11 @@ sub reload
 	$o->{'OID'} = $res->{'oid'};
 	
 	if($have_o == 1){ $o->save() }
-	
 }
 
 
-sub save {
+sub save
+{
 	my $o = shift;
 	my $key;
 	my %p = $o->props();
@@ -527,28 +520,26 @@ sub save {
 	chop($sql);
 	
 	$sql .=  "\n".' WHERE ID = ? LIMIT 1';
-
+	
 	my $str = $eml::dbh->prepare($sql);
 	$str->execute($o->{OID},$o->{PAPA_ID},$o->{PAPA_CLASS},@vals,$o->{ID});
-	
 }
 
 sub insert
 {
-	my $o = shift;	
+	my $o = shift;
 	my $str;
-
+	
 	$str = $eml::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID) VALUES (?)');
 	$str->execute($eml::uid);
-
+	
 	$str = $eml::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
 	$str->execute();
 	my $id;
-
+	
 	($id) = $str->fetchrow_array();
-
+	
 	return $id;
-
 }
 
 
