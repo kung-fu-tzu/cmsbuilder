@@ -2,6 +2,8 @@ package DBObject;
 use strict qw(subs vars);
 my %vtypes;
 my $page = '/page.ehtml';
+my %cache = ();
+
 
 
 ###################################################################################################
@@ -633,8 +635,13 @@ sub _construct
 	
 	if($n eq ''){ $n = -1; }
 	
+	if($cache{ref($o).$n}){ return $cache{ref($o).$n} };
+	
 	$o->{ID} = $n;
 	$o->reload();
+	
+	$cache{ref($o).$o->{ID}} = $o;
+	return $o;
 }
 
 

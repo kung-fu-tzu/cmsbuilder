@@ -17,9 +17,7 @@ sub new
 	my $o = {};
 	bless($o);
 
-	$o->_construct(@_);
-
-	return $o;
+	return $o->_construct(@_);
 }
 
 sub DESTROY

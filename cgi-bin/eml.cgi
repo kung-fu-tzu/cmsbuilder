@@ -87,7 +87,6 @@ sub mymain
 	require $jlib.'/jsession.cgi';
 	require $jlib.'/dbobject.cgi';
 	require $jlib.'/dbarray.cgi';
-	#require $jlib.'/miniword.cgi';
 	
 	%sess = ();
 	JSession::start();
