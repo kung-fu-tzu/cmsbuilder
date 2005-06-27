@@ -47,8 +47,8 @@
 <preference-set id="">
   <string id="import_type">makeFlat</string>
   <string id="import_dirname">E:\home\engine\jlib\JDBI\vtypes</string>
-  <string id="import_include_matches">*.pm</string>
   <boolean id="import_recursive">0</boolean>
+  <string id="import_include_matches">*.pm</string>
 </preference-set>
 <file url="jlib/JDBI/vtypes/file.pm" id="9EBD8BF9-55D7-48C7-BF95-E41A9152163F" name="file.pm">
 </file>
@@ -93,8 +93,6 @@
 <file url="jlib/Packages/design.pm" id="95121712-5532-4BC7-99E2-BD4723C1A1B5" name="design.pm">
 </file>
 <file url="jlib/Packages/login.pm" id="B7D1A7FA-A060-471F-BA05-4054D8551D0E" name="login.pm">
-</file>
-<file url="jlib/Packages/register.pm" id="ED301869-D6B9-4C15-A3EF-E52C7D2A247C" name="register.pm">
 </file>
 </folder>
 <folder id="7463D6E4-DE8B-4B3B-86C6-69F827466DAB" name="Classes">
@@ -149,6 +147,8 @@
 <file url="jlib/Modules/ModUsers.pm" id="07244731-E5E2-4497-B745-C2EDFF6C4D4C" name="ModUsers.pm">
 </file>
 <file url="jlib/Modules/ModControlPanel.pm" id="2EA0AE1A-58D1-4B95-A1A3-FDD9FA3CCBFC" name="ModControlPanel.pm">
+</file>
+<file url="jlib/Modules/ModRecycleBin.pm" id="22FDB39A-18C9-4519-B2C5-BDF592E4D8FF" name="ModRecycleBin.pm">
 </file>
 </folder>
 <file url="jlib/ModRoot.pm" id="0D3813A4-466E-43B6-AA8B-9381B1EC1FF4" name="ModRoot.pm">

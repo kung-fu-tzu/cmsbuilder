@@ -38,7 +38,7 @@ sub init
 # Разное
 
 	our $debug						= 1;
-	our $version					= '2.0.2.11'; #alpha
+	our $version					= '2.0.2.15'; #alpha
 	our $print_timemeter			= 0;
 
 # MySQL

@@ -95,19 +95,21 @@ sub my_context
 	my $o = shift;
 	
 	unless($o->papa()){ return; }
+	if($o->papa()->type() eq 'Object'){ return; }
+	unless($o->papa()->elem_tell_enum($o)){ return; }
 	
 	if(ref($o->papaN(0)) eq 'ModRecycleBin')
 	{
 		if(ref($o->papa()) eq 'ModRecycleBin')
 		{
 			print 'elem_add(JHR());';
-			print 'elem_add(JMIHref("Восстановить","right.ehtml?url=',$o->papa(),'&act=cms_restore_from_recyclebin&enum=',$o->enum(),'&page=0"));';
+			print 'elem_add(JMIHref("Восстановить","right.ehtml?url=',$o->papa(),'&act=cms_restore_from_recyclebin&enum=',$o->enum(),'"));';
 		}
 	}
 	else
 	{
 		print 'elem_add(JHR());';
-		print 'elem_add(JMIHref("В корзину","right.ehtml?url=',$o->papa(),'&act=cms_move_to_recyclebin&enum=',$o->enum(),'&page=0"));';
+		print 'elem_add(JMIHref("В корзину","right.ehtml?url=',$o->papa(),'&act=cms_move_to_recyclebin&enum=',$o->enum(),'"));';
 	}
 }
 
@@ -127,7 +129,7 @@ sub cms_restore_from_recyclebin
 	unless($rp)
 	{
 		$o->elem_paste($e);
-		$o->err_add('Неизвестно исходное местоположение объекта');
+		$o->err_add('Неизвестно исходное местоположение объекта.');
 		return;
 	}
 	

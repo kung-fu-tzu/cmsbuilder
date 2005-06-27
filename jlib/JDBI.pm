@@ -1,7 +1,12 @@
 # (с) Леонов П.А., 2005
 
+package JDBI;
+use strict qw(subs vars);
+
+#use Exporter;
 use DBI;
 use CGI 'param';
+
 use JDBI::VType;
 use JDBI::Access;
 use JDBI::Tree;
@@ -20,17 +25,15 @@ use JDBI::SimpleModule;
 use JDBI::TreeModule;
 use ModRoot;
 
-package JDBI;
-use strict qw(subs vars);
-use Exporter;
-
 
 ###################################################################################################
 # Базовые переменные интерфейса
 ###################################################################################################
 
 our @EXPORT = ('url');
+our @EXPORT_OK = @EXPORT;
 our @ISA = 'Exporter';
+our $AUTOLOAD;
 
 our $dbh;
 our %dbo_cache;
@@ -44,7 +47,6 @@ our %cmenus;
 
 our $user;
 our $group;
-
 
 ###################################################################################################
 # Конфигурационные функции интерфейса
@@ -259,10 +261,12 @@ sub url2classid
 	
 	my ($class,$id) = ('','');
 	
-	if( $url !~ m/^([A-Za-z]+)(\d+)$/ ){ JIO::err505('Invalid object requested: '.$url); }
+	if( $url !~ m/^([A-Za-z\.]+)(\d+)$/ ){ JIO::err505('Invalid url requested: '.$url); }
 	
 	$class = $1;
 	$id = $2;
+	
+	$class =~ s/\./\:\:/;
 	
 	unless( JDBI::classOK($class) ){ JIO::err505('Invalid class name requested: '.$class); }
 	
@@ -367,6 +371,24 @@ sub MD5
 	my ($res) = $str->fetchrow_array();
 	return $res;
 }
+
+sub len2size
+{
+	my $len = shift;
+	
+	my $kb = 1024;
+	my $mb = $kb*1024;
+	my $gb = $mb*1024;
+	my $tb = $gb*1024;
+	
+	if($len >= $tb){ return round($len/$tb).'ТБ'; }
+	if($len >= $gb){ return round($len/$gb).'ГБ'; }
+	if($len >= $mb){ return round($len/$mb).'МБ'; }
+	if($len >= $kb){ return round($len/$kb).'КБ'; }
+	return $len.' байт';
+}
+
+sub round { return (int($_[0]*10)/10); }
 
 ###################################################################################################
 

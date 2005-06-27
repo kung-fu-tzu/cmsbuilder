@@ -24,7 +24,7 @@ sub cread
 	my $fname = shift;
 	my($f,$str,$var,$val);
 	
-	open($f,$fname) or print STDERR 'JIO::Ini::cread open(<) != 1, $fname = '.$fname;
+	open($f,$fname); # or print STDERR 'JIO::Ini::cread open(<) != 1, $fname = '.$fname;
 	while($str = <$f>)
 	{
 		($var,$val) = split(/=/,$str,2);

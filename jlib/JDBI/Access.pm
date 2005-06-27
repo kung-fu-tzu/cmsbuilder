@@ -5,10 +5,10 @@ use strict qw(subs vars);
 use JDBI;
 use CGI ('param');
 
-our %rpcs =
-(
+sub _rpcs
+{
 	'access_chmod'	=> [],
-);
+}
 
 our ($AC_READ,$AC_WRITE,$AC_ADD,$AC_CHMOD,$AC_EXEC) = (1,2,4,8,16);
 our $_2BYTE = 65535;
@@ -389,8 +389,8 @@ sub ochown
 	my $o = shift;
 	my $uid = shift;
 	
-	if(!$JDBI::group->{'root'}){ return 0; }
-	if($uid < 1){ return 0; }
+	unless($JDBI::group->{'root'}){ return 0; }
+	unless($uid){ return 0; }
 	$o->{'OID'} = $uid;
 	
 	return $uid;

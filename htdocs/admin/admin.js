@@ -217,14 +217,16 @@ var drag_href_url;
 
 function DnD_Line_OnMouseOver(num,obj)
 {
-	if(obj.className != "drag_line_droped") obj.className = "drag_line_on";
+	if(!drag_obj) return;
+	if(obj.className != "drag_line_droped") obj.className = "drag_line";
 	drag_num = num;
 }
 
 function DnD_Line_OnMouseOut(num,obj)
 {
-	if(obj.className != "drag_line_droped") obj.className = "drag_line";
-	drag_num = 0;
+	if(!drag_obj) return;
+	if(obj.className != "drag_line_droped") obj.className = "";
+	drag_num = -1;
 }
 
 
@@ -233,18 +235,14 @@ function DnD_OnMouseUp()
 	document.onmouseup = f_drag_mouse_up;
 	document.onmousemove = f_drag_mouse_move;
 	
-	if(!drag_num)
+	if(drag_num < 0)
 	{
-		for(i=drag_line_n1;i<=drag_line_n2;i++)
-			document.all['drag_line_'+i].style.display = 'none';
 		drag_obj.style.position = "";
 	}
 	
-	if(drag_num)
+	if(drag_num >= 0)
 	{
-		document.all['drag_line_'+drag_num].className = "drag_line_droped";
 		new_href = 'right.ehtml?url=' + drag_href_url + '&act=cms_array_elem_moveto&enum=' + drag_start_num + '&nnum=' + drag_num;
-		//alert(new_href);
 		document.location.href = new_href;
 	}
 	
@@ -276,9 +274,6 @@ function OnDragStart(obj)
 	document.onmousemove = DnD_OnMouseMove;
 	
 	DnD_OnMouseMove();
-	
-	for(i=drag_line_n1;i<=drag_line_n2;i++)
-		document.all['drag_line_'+i].style.display = 'block';
 	
 	return false;
 }

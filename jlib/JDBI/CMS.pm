@@ -46,7 +46,7 @@ sub cms_chown
 		
 		$tu = User->new($uid);
 		
-		if($tu->{'ID'} < 1){ $o->err_add('”казанный пользователь не существует.'); return; }
+		unless($tu->{'ID'}){ $o->err_add('”казанный пользователь не существует.'); return; }
 		
 		$o->ochown($uid);
 		$o->save();

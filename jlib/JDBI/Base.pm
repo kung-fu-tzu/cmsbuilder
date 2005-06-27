@@ -10,12 +10,12 @@ use strict qw(subs vars);
 our %sys_cols =
 (
 	'ID'			=> 'INT NOT NULL AUTO_INCREMENT PRIMARY KEY',
-	'OID'			=> 'INT DEFAULT \'-1\' NOT NULL',
+	'OID'			=> 'INT DEFAULT \'0\' NOT NULL',
 	'ATS'			=> 'TIMESTAMP NOT NULL',
 	'CTS'			=> 'TIMESTAMP NOT NULL',
 	#'SHCUT'			=> 'INT DEFAULT \'0\' NOT NULL',
 	'PAPA_ID'		=> 'INT DEFAULT \'0\' NOT NULL',
-	'PAPA_CLASS'	=> 'VARCHAR(20) NOT NULL'
+	'PAPA_CLASS'	=> 'CHAR(40) NOT NULL'
 );
 
 
@@ -117,7 +117,7 @@ sub del
 	my $key;
 	my $p = $o->props();
 	
-	if($o->{'ID'} < 1){ $o->clear(); return; }
+	unless($o->{'ID'}){ $o->clear(); return; }
 	if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{'ID'}); }
 	
 	my $papa = $o->papa();
@@ -145,10 +145,9 @@ sub del
 sub reload
 {
 	my $o = shift;
-	my $key;
 	my $p = $o->props();
 	
-	if($o->{'ID'} < 1){ return; }
+	unless($o->{'ID'}){ return; }
 	if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
 	
 	my $str = $JDBI::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
@@ -173,48 +172,35 @@ sub reload
 	
 	unless($o->access('r')){ return; }
 	
-	my $id = 0;
-	my $have_o = 0;
-	
-	for $key (keys( %$p ))
+	my $vt;
+	for my $key (keys( %$p ))
 	{
-		if(${'JDBI::vtypes::'.$p->{$key}{'type'}.'::virtual'}){ next }
+		$vt = 'JDBI::vtypes::'.$p->{$key}{'type'};
 		
-		$o->{$key} = $res->{$key};
+		if(${$vt.'::virtual'}){ next }
 		
-		if( $p->{$key}{'type'} eq 'object' )
+		if(${$vt.'::filter'})
 		{
-			$id = $o->{$key};
-			if($id < 1)
-			{
-				$o->{$key} = $p->{$key}{'class'}->cre();
-				$o->{$key}->{'PAPA_ID'} = $o->{'ID'};
-				$o->{$key}->{'PAPA_CLASS'} = ref($o);
-				$o->{$key}->save();
-				$have_o = 1;
-			}
-			else
-			{
-				$o->{$key} = $p->{$key}{'class'}->new($id);
-			}
-			
-			$o->{$key}->{'_is_property'} = 1;
+			$o->{$key} = $vt->filter_load($key,$res->{$key},$o);
+		}
+		else
+		{
+			$o->{$key} = $res->{$key};
 		}
 	}
 	
-	if($have_o == 1){ $o->save() }
+	if($o->{'_save_after_reload'}){ $o->save() }
 }
 
 sub save
 {
 	my $o = shift;
-	my $key;
 	my $p = $o->props();
 	my @vals = ();
 	my $val;
 	
-	if(!exists $o->{'ID'} or $o->{'ID'} < 1){ return; }
-	if(!$o->access('w')){ return; }
+	unless($o->{'ID'}){ return; }
+	unless($o->access('w')){ return; }
 	if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
 	
 	#print 'Saving: ',$o->myurl(),'<br>';
@@ -222,25 +208,18 @@ sub save
 	my $sql = 'UPDATE `dbo_'.ref($o).'` SET ';
 	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?';#SHCUT = ?, 
 	
-	for $key (keys( %$p ))
+	my $vt;
+	for my $key (keys( %$p ))
 	{
-		if(${'JDBI::vtypes::'.$p->{$key}{'type'}.'::virtual'}){ next }
+		$vt = 'JDBI::vtypes::'.$p->{$key}{'type'};
+		
+		if(${$vt.'::virtual'}){ next }
 		
 		$sql .= ",\n $key = ? ";
 		
-		#if( ${ 'JDBI::vtypes::'.$p->{$key}{'type'}.'::filter' }){ 1; }
-		
-		if( $p->{$key}{'type'} eq 'object' )
+		if(${$vt.'::filter'})
 		{
-			if($o->{$key})
-			{
-				$o->{$key}->save();
-				$val = $o->{$key}->{'ID'};
-			}
-			else
-			{
-				$val = 0;
-			}
+			$val = $vt->filter_save($key,$o->{$key},$o);
 		}
 		else
 		{

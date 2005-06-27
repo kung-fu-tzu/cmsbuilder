@@ -201,7 +201,7 @@ sub cpanel_backup
 		$zfname = $JConfig::mysql_base.'.'.strftime('%Y-%m-%d.%H-%M-%S',localtime()).'.zip';
 		if($zip->writeToFileNamed($JConfig::path_backup.'/'.$zfname) == AZ_OK)
 		{
-			print '<br>Архив успешно создан (<b>'.$zfname.'</b>).';
+			print '<br>Архив успешно создан: <b>'.$zfname.'</b> ('.JDBI::len2size((stat($JConfig::path_backup.'/'.$zfname))[7]).').';
 			if($r->{'send'}){ print '<iframe height="0" width="0" src="?act=backup&sact=send&fname=',$zfname,'"></iframe>'; }
 		}
 		else{ print 'Не удалось сохранить файл архива!'; }

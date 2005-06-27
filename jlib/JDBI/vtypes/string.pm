@@ -9,7 +9,7 @@ sub table_cre
 	my $class = shift;
 	my %elem = %{$_[0]};
 	
-	return ' VARCHAR( '.$elem{length}.' ) ';
+	return ' CHAR( '.$elem{length}.' ) ';
 }
 
 sub aview

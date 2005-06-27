@@ -239,9 +239,8 @@ IMG
     BORDER-LEFT: medium none;
     WIDTH: 50%;
     PADDING-TOP: 0px;
-    BORDER-BOTTOM: medium none;
+    BORDER-BOTTOM: #fbb57b 2px solid;
     HEIGHT: 5px;
-    BACKGROUND-COLOR: #fbb57b;
     TEXT-ALIGN: left
 }
 .drag_line_on

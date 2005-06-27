@@ -143,7 +143,7 @@ sub papa
 {
 	my $o = shift;
 
-	if($o->{'PAPA_CLASS'} eq '' or $o->{'PAPA_ID'} < 1){ return undef; }
+	unless($o->{'PAPA_CLASS'} && $o->{'PAPA_ID'}){ return undef; }
 	return( $o->{'PAPA_CLASS'}->new($o->{'PAPA_ID'}) );
 }
 

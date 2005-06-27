@@ -13,7 +13,7 @@ sub name
 	my $ret;
 	
 	if($o->{'name'}){ return $o->{'name'} }
-	if($o->{'ID'} < 1){ return 'Объект не найден: '.$o->cname().' '.$o->{'ID'} }
+	unless($o->{'ID'}){ return 'Объект не найден: '.$o->cname().' '.$o->{'ID'} }
 	
 	return $o->cname().' '.$o->{'ID'};
 }

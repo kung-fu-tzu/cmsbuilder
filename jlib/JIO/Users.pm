@@ -103,7 +103,7 @@ sub login
 	
 	acs_off { $tu = User->sel_one(' login = ? ',$l); };
 	
-	if($tu->{'ID'} < 1){ return err("Неверное имя пользователя."); }
+	unless($tu->{'ID'}){ return err("Неверное имя пользователя."); }
 	
 	unless($JConfig::users_pasoff)
 	{
@@ -138,7 +138,7 @@ sub logout
 	
 	$tu = User->sel_one(' sid = ? ',"$sid");
 	
-	if($tu->{'ID'} < 1){ return( err("Ваш ключ устарел. Войдите в систему повторно.") ); }
+	unless($tu->{'ID'}){ return( err("Ваш ключ устарел. Войдите в систему повторно.") ); }
 	
 	$tu->{'sid'} = 0;
 	
@@ -159,7 +159,7 @@ sub verif
 	
 	acs_off { $tu = User->sel_one(' sid = ? ',"$sid"); };
 	
-	if($tu->{'ID'} < 1){ return 0; }
+	unless($tu->{'ID'}){ return 0; }
 	
 	acs_off { $tg = $tu->papa(); };
 	

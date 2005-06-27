@@ -108,7 +108,7 @@ sub admin_cmenu_for_son
 	if($o->access('w'))
 	{
 		print 'elem_add(JHR());';
-		print 'elem_add(JMIDelete("Удалить","right.ehtml?url=',$o->myurl(),'&act=cms_array_elem_delete&enum=',$son->enum(),'&page=0"));';
+		print 'elem_add(JMIDelete("Удалить","right.ehtml?url=',$o->myurl(),'&act=cms_array_elem_delete&enum=',$son->enum(),'"));';
 		print 'elem_add(JMIHref("Ярлык...","right.ehtml?url=',$o->myurl(),'&act=cms_array_elem_mkshcut&enum=',$son->enum(),'"));';
 		print 'elem_add(JMIHref("Переместить...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_move2&enum='.$son->enum().'"));';
 	}
@@ -158,7 +158,7 @@ sub admin_left_tree
 	my $to;
 	for $to ($o->get_interval(1,$JConfig::admin_max_left)){ $to->admin_left_tree() }
 	
-	if($o->len() > $JConfig::admin_max_left){ print '<nobr><font style="CURSOR: default" title="Количество элементов, отображаемых в левой панели, ограничено. Вы можете продолжать добавлять элементы, они будут доступны в правой панели - постранично." color="#ff7300" size=1>Элементов слишком много...</font></nobr><br>',"\n"; }
+	if($o->len() > $JConfig::admin_max_left){ print '<nobr><font style="CURSOR: default" title="Количество элементов, отображаемых в левой панели, ограничено. Вы можете продолжать добавлять элементы, они будут доступны в правой панели - по ',($o->{'onpage'}||$JConfig::array_def_on_page),' на странице." color="#ff7300" size=1>Элементы перечислены не полностью...</font></nobr><br>',"\n"; }
 	print '</div>',"\n";
 }
 
@@ -180,25 +180,37 @@ sub admin_array_view
 	
 	unless($o->access('r')){ return; }
 	
-	print '<p class="hr">';
+	unless(defined $page){ $page = JIO::sess()->{$o->myurl().'.page'} || 0; }
+	else{ JIO::sess()->{$o->myurl().'.page'} = $page; }
+	
 	print '
+	<div class="hr">
 	<script language="JavaScript">
 	if(CMS_HaveParent()) document.write(\'',$o->admin_name(),' - \');
 	</script>
-	';
-	print ' Список вложенных элементов:</p>';
+	 Список вложенных элементов:</div>';
+	
+	print '<table width="100%" border="0" cellspacing="0" cellpadding="0">';
 	
 	my $len = $o->len();
-	if(!$page){ $page = 0; }
 	
 	for $e ($o->get_page($page))
 	{
-		unless($n1){ $n1 = $e->enum(); }
+		unless($o->access('r')){ next; }
+		
+		unless($n1)
+		{
+			$n1 = $e->enum();
+			print '<tr><td onmouseover="DnD_Line_OnMouseOver(',$e->enum()-1,',this)" onmouseout="DnD_Line_OnMouseOut(',$e->enum()-1,',this)">&nbsp;</td></tr>';
+		}
+		
 		$n2 = $e->enum();
+		
+		print '<tr><td onmouseover="DnD_Line_OnMouseOver(',$e->enum(),',this)" onmouseout="DnD_Line_OnMouseOut(',$e->enum(),',this)">';
 		
 		if($o->access('w'))
 		{
-			$e->admin_arrayline($o,$page);
+			$e->admin_arrayline($o);
 		}
 		else
 		{
@@ -207,10 +219,13 @@ sub admin_array_view
 		
 		print '<img align="absmiddle" src="img/nx.gif">';
 		print $e->admin_name(),'<br>';
-		print '<hr id="drag_line_',$e->enum(),'" onmouseover="DnD_Line_OnMouseOver(',$e->enum(),',this)" onmouseout="DnD_Line_OnMouseOut(',$e->enum(),',this)" style="DISPLAY: none" class="drag_line">';
+		
+		print '</td></tr>';
 		print "\n";
 		$i++;
 	}
+	
+	print '</table>';
 	
 	print '
 	<script language="JavaScript">
@@ -220,18 +235,19 @@ sub admin_array_view
 	</script>
 	';
 	
-	if(!$i){ print '<center>Нет элементов.</center>'; }
+	unless($i){ print '<center>Нет элементов.</center>'; }
 	
 	if($o->pages() > 1)
 	{
 		print '<br><br><center>';	
 		print '<table class="pages_table" cellspacing="0" cellpadding="0"><tr>';
 		
-		my $p;
+		my($p,$dest);
 		for($p=0;$p<$o->pages();$p++)
 		{
+			$dest = $p*$o->{'onpage'}+($p>$page?1:0);
 			if($p == $page){ print '<td width=20 align=center height=20 bgcolor="#ff7300"><b>'.($p+1).'</b></td>'; }
-			else{ print '<td width=20 align=center height=20><a href="?url='.$o->myurl().'&page='.$p.'">'.($p+1).'</a><td>' }
+			else{ print '<td width=20 align=center height=20><a onmouseover="DnD_Line_OnMouseOver(',$dest,',this)" onmouseout="DnD_Line_OnMouseOut(',$dest,',this)" href="?url='.$o->myurl().'&page='.$p.'">'.($p+1).'</a><td>' }
 		}
 		
 		print '</tr></table>';
@@ -387,10 +403,10 @@ sub elem_paste
 {
 	my $o = shift;
 	my $po = shift;
-	if(!$o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
-	if(!$po->access('w')){ $o->err_add('У Вас нет разрешения изменять вставляемый элемент.'); return; }
+	unless($o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+	unless($po->access('w')){ $o->err_add('У Вас нет разрешения изменять вставляемый элемент.'); return; }
 	
-	if($o->{'ID'} < 1){ return; }
+	unless($o->{'ID'}){ return; }
 	
 	$o->elem_paste_ref($po);
 	
@@ -522,7 +538,7 @@ sub elem_tell_enum
 	
 	unless($o->access('x')){ $o->err_add('У Вас нет разрешения просматривать этот элемент.'); return 0; }
 	
-	if($o->{'ID'} < 1){ return 0; }
+	unless($o->{'ID'}){ return 0; }
 	unless($o->is_array_table()){ return 0; }
 	
 	my $str = $JDBI::dbh->prepare('SELECT num FROM `arr_'.$o->myurl().'` WHERE CLASS = ? AND ID = ? LIMIT 1');
@@ -530,7 +546,7 @@ sub elem_tell_enum
 	
 	my ($res) = $str->fetchrow_array();
 	
-	return $res;
+	return $res || 0;
 }
 
 sub elem
@@ -549,7 +565,7 @@ sub elem_cut
 	my $eid = shift;
 	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
-	if($o->{'ID'} < 1){ return; }
+	unless($o->{'ID'}){ return; }
 	
 	my $to = $o->elem($eid);
 	unless($to){ return undef; }
@@ -572,11 +588,11 @@ sub elem_moveto
 	my $place = shift;
 	if(!$o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	
-	if($o->{'ID'} < 1){ return; }
+	unless($o->{'ID'}){ return; }
 	
 	if($place eq ''){ $o->err_add('Новая позиция пуста.'); return; }
 	if($place < 0){ $o->err_add('Новая позиция меньше 1.'); return; }
-	if($place == $enum){ $o->err_add('Новая позиция равна старой.'); return; }
+	#if($place == $enum){ $o->err_add('Новая позиция равна старой.'); return; }
 	if($place > $o->len()){ $o->err_add('Новая позиция больше или равна количеству элементов ('.$place.').'); return; }
 	
 	my $elem = $o->elem($enum);
@@ -631,7 +647,7 @@ sub is_array_table
 {
 	my $o = shift;
 	
-	if($o->{'ID'} < 1){ return 0; }
+	unless($o->{'ID'}){ return 0; }
 	if(exists $o->{'_isatable'}){ return $o->{'_isatable'}; }
 	
 	my $t;
@@ -654,7 +670,7 @@ sub len
 	my $o = shift;
 	my $where = shift;
 	
-	if($o->{'ID'} < 1){ return 0; }
+	unless($o->{'ID'}){ return 0; }
 	unless($o->is_array_table()){ return 0; }
 	unless($o->access('x') and $o->access('r')){ return 0; }
 	
@@ -685,7 +701,7 @@ sub del
 	{
 		unless($papa->access('x') and $papa->access('w')){ $o->err_add('У Вас нет разрешения изменять родителя этого элемента.'); return; }
 	}
-	if($o->{'ID'} < 1){ return; }
+	unless($o->{'ID'}){ return; }
 	
 	my $len = $o->len();
 	

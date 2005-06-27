@@ -62,12 +62,11 @@ sub admin_arrayline
 {
 	my $o = shift;
 	my $a = shift;
-	my $page = shift;
 	
 	my $enum = $o->enum();
 	
-	print( ($enum != $a->len())?'<a href="?url='.$a->myurl().'&act=cms_array_elem_down&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
-	print( ($enum != 1)?'<a href="?url='.$a->myurl().'&act=cms_array_elem_up&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
+	print( ($enum != $a->len())?'<a href="?url='.$a->myurl().'&act=cms_array_elem_down&enum='.$enum.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
+	print( ($enum != 1)?'<a href="?url='.$a->myurl().'&act=cms_array_elem_up&enum='.$enum.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
 }
 
 sub admin_hicon {}
@@ -240,7 +239,7 @@ sub admin_edit
 	my ($key,$val,$vtype);
 	my $p = $o->props();
 	
-	if($o->{'ID'} < 1){ $o->err_add('Объект не существует.'); return; }
+	unless($o->{'ID'}){ $o->err_add('Объект не существует.'); return; }
 	
 	for $key ($o->aview())
 	{
@@ -286,7 +285,7 @@ sub admin_view
 {
 	my $o = shift;
 	
-	print '<p class="hr">Данные элемента<span id="',$o->myurl(),'_changed"></span>:</p>';
+	print '<div class="hr">Данные элемента<span id="',$o->myurl(),'_changed"></span>:</div><br>';
 	print '<table width="100%" border=0><tr><td align=center>';
 	print '<form id="',$o->myurl(),'_edit_form" action="?" ',($o->access('w')?'':'disabled'),' method="post" enctype="multipart/form-data">',"\n";
 	print '<input type="hidden" name="act" value="cms_admin_edit">',"\n";
