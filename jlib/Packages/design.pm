@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package design;
 use strict qw(subs vars);
 
@@ -19,4 +21,4 @@ sub page
 	$w->des_page();
 }
 
-return 1;
+1;

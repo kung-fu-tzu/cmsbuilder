@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JIO::Users;
 use strict qw(subs vars);
 
@@ -22,39 +24,39 @@ sub clear
 	@udo_s = ();
 }
 
-sub users_do_off
+sub access_off
 {
-	push @udo_s, $JConfig::users_do_e;
-	$JConfig::users_do_e = 0;
+	push @udo_s, $JConfig::access_on_e;
+	$JConfig::access_on_e = 0;
 }
 
-sub users_do_on
+sub access_on
 {
-	push @udo_s, $JConfig::users_do_e;
-	$JConfig::users_do_e = 1;
+	push @udo_s, $JConfig::access_on_e;
+	$JConfig::access_on_e = 1;
 }
 
-sub users_do_ret
+sub access_ret
 {
 	unless(@udo_s){ return; }
-	$JConfig::users_do_e = pop @udo_s;
+	$JConfig::access_on_e = pop @udo_s;
 }
 
-sub usr_off(&)
+sub acs_off(&)
 {
 	my $code = shift;
-	users_do_off();
+	access_off();
 	my $ret = &$code;
-	users_do_ret();
+	access_ret();
 	return $ret;
 }
 
-sub usr_on(&)
+sub acs_on(&)
 {
 	my $code = shift;
-	users_do_on();
+	access_on();
 	my $ret = &$code;
-	users_do_ret();
+	access_ret();
 	return $ret;
 }
 
@@ -71,10 +73,10 @@ sub su_start
 		push @groups_s, $JDBI::group;
 	}
 	
-	users_do_off();
+	access_off();
 	my $tu = User->new($uid);
 	my $tg = $tu->papa();
-	users_do_ret();
+	access_ret();
 	
 	$JDBI::user  = $tu;
 	$JDBI::group = $tg;
@@ -99,16 +101,18 @@ sub login
 	
 	if($l eq '' or $p eq ''){ return err('Пустое имя пользователя или пароль.'); }
 	
-	usr_off { $tu = User->sel_one(' login = ? ',$l); };
+	acs_off { $tu = User->sel_one(' login = ? ',$l); };
 	
-	if($tu->{'ID'} < 1){return err("Неверное имя пользователя.");}
-		unless($JConfig::users_pasoff){
+	if($tu->{'ID'} < 1){ return err("Неверное имя пользователя."); }
+	
+	unless($JConfig::users_pasoff)
+	{
 		$p = JDBI::MD5($p);
-		if($tu->{'pas'} ne $p){return err("Неверный пароль.");}
+		if($tu->{'pas'} ne $p){ return err("Неверный пароль."); }
 	}
 	
-	usr_off { $tg = $tu->papa(); };
-	unless($tg){return err("Вы не состоите ни в одной группе.");}
+	acs_off { $tg = $tu->papa(); };
+	unless($tg){ return err("Вы не состоите ни в одной группе."); }
 	
 	# login and password OK
 	
@@ -117,7 +121,7 @@ sub login
 	
 	$tu->{'sid'} = $rnd;
 	
-	usr_off { $tu->save(); };
+	acs_off { $tu->save(); };
 	
 	JIO::sess()->{'JIO::Users.sid'} = $rnd;
 	
@@ -138,7 +142,7 @@ sub logout
 	
 	$tu->{'sid'} = 0;
 	
-	usr_off { $tu->save(); };
+	acs_off { $tu->save(); };
 	
 	delete( JIO::sess()->{'JIO::Users.sid'} );
 	
@@ -153,11 +157,11 @@ sub verif
 	
 	if(length($sid) < 30){ return 0; }
 	
-	usr_off { $tu = User->sel_one(' sid = ? ',"$sid"); };
+	acs_off { $tu = User->sel_one(' sid = ? ',"$sid"); };
 	
 	if($tu->{'ID'} < 1){ return 0; }
 	
-	usr_off { $tg = $tu->papa(); };
+	acs_off { $tg = $tu->papa(); };
 	
 	unless($tg){ return 0; }
 	

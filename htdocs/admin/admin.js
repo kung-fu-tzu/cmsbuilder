@@ -1,4 +1,77 @@
 
+function IE_DragStart(obj)
+{
+	drag_obj = obj;
+	event.dataTransfer.setData("text",obj.ourl);
+	
+	event.dataTransfer.effectAllowed = "all";
+	event.dataTransfer.dropEffect = "move";
+}
+
+function IE_DragOver(obj)
+{
+	window.status = event.dataTransfer.getData("text");
+	
+	if(event.dataTransfer.getData("text") == "01.jpg") return false;
+	
+	if(event.ctrlKey) event.dataTransfer.dropEffect = "copy";
+	else event.dataTransfer.dropEffect = "move";
+	
+	event.returnValue = false;
+	event.cancelBubble = true;
+}
+
+function SetOnChange(obj)
+{
+	var i,alla;
+	//if(obj.all == undefined) return;
+	
+	obj.onchange = function () { this.parentElement.onchange(); };
+	
+	alla = obj.all;
+	for(i=0;i<alla.length;i++)
+	{
+		//document.write("<img src=\"img/null.gif\" height=\"1\" width=\"",u*10,"\">[",alla[i].tagName,"]<br>");
+		SetOnChange(alla[i]);
+	}
+}
+	
+function CMS_FMTogleE(){
+	
+	if(files_list.contentEditable == 'inherit')
+		files_list.contentEditable = 'true', files_list.className = 'fileman_fs_div';
+	else
+		files_list.contentEditable = 'inherit', files_list.className = '';
+}
+
+var now_left_iframe;
+
+function CMS_Set_Left(w){
+	
+	if(!now_left_iframe) now_left_iframe = 'left';
+	if(now_left_iframe == w) return;
+	
+	if(w == 'left'){
+		module_div_it.innerText = admin_modules.CMS_TellModName();
+		tree_btn.className = 'hover';
+		mydocs_btn.className = '';
+	}
+	
+	if(w == 'fileman'){
+		module_div_it.innerText = 'Мои документы';
+		fileman_edit_bar.style.display = 'inline';
+		mydocs_btn.className = 'hover';
+		tree_btn.className = '';
+	}else{
+		fileman_edit_bar.style.display = 'none';
+	}
+	
+	document.all['admin_'+w+'_tr'].style.display = 'block';
+	document.all['admin_'+now_left_iframe+'_tr'].style.display = 'none';
+	
+	now_left_iframe = w;
+}
+
 function Tree_div_it(){
 	
 	if(!CMS_HaveParent()){
@@ -114,6 +187,10 @@ function ShowDetails(){
 	
 	hide1.style.display = 'none';
 	
+	//for(i=1;i<=20;i++)
+	//	if(document['show'+i]) document['show'+i].style.display = 'block';
+	//	else i=21;
+
 	show1.style.display = 'block';
 	show2.style.display = 'block';
 	show3.style.display = 'block';
@@ -138,31 +215,35 @@ var drag_start_num;
 var drag_href_url;
 
 
-function DnD_Line_OnMouseOver(num,obj){
+function DnD_Line_OnMouseOver(num,obj)
+{
 	if(obj.className != "drag_line_droped") obj.className = "drag_line_on";
 	drag_num = num;
 }
 
-function DnD_Line_OnMouseOut(num,obj){
+function DnD_Line_OnMouseOut(num,obj)
+{
 	if(obj.className != "drag_line_droped") obj.className = "drag_line";
 	drag_num = 0;
 }
 
 
-function DnD_OnMouseUp(){
-	
+function DnD_OnMouseUp()
+{
 	document.onmouseup = f_drag_mouse_up;
 	document.onmousemove = f_drag_mouse_move;
 	
-	if(!drag_num){
+	if(!drag_num)
+	{
 		for(i=drag_line_n1;i<=drag_line_n2;i++)
 			document.all['drag_line_'+i].style.display = 'none';
 		drag_obj.style.position = "";
 	}
 	
-	if(drag_num){
+	if(drag_num)
+	{
 		document.all['drag_line_'+drag_num].className = "drag_line_droped";
-		new_href = 'right.ehtml?url=' + drag_href_url + '&act=move&enum=' + drag_start_num + '&nnum=' + drag_num;
+		new_href = 'right.ehtml?url=' + drag_href_url + '&act=cms_array_elem_moveto&enum=' + drag_start_num + '&nnum=' + drag_num;
 		//alert(new_href);
 		document.location.href = new_href;
 	}
@@ -170,8 +251,8 @@ function DnD_OnMouseUp(){
 	drag_obj = null;
 }
 
-function DnD_OnMouseMove(){
-	
+function DnD_OnMouseMove()
+{
 	if(!drag_obj) return;
 	
 	x = event.x + document.body.scrollLeft + 20;
@@ -181,8 +262,8 @@ function DnD_OnMouseMove(){
 	drag_obj.style.posTop = y;
 }
 
-function OnDragStart(obj){
-	
+function OnDragStart(obj)
+{
 	drag_obj = obj;
 	
 	drag_obj.style.position = "absolute";

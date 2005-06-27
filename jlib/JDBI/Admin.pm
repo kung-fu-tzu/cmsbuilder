@@ -1,17 +1,60 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::Admin;
+
+use strict qw(subs vars);
+our @ISA = 'JDBI::CMS';
+
 use CGI ('param');
 use JDBI;
-use strict qw(subs vars);
+
+sub _rpcs
+{
+	'admin_edit' => ['',''],
+}
+
+#-------------------------------------------------------------------------------
 
 
 ###################################################################################################
 # Методы автоматизации администрирования
 ###################################################################################################
 
-sub admin_left
+sub admin_view_right
+{
+	my $o = shift;
+	my $c = ref($o) || $o;
+	
+	my $act = CGI::param('act') || 'default';
+	
+	if($act ne 'default'){ JIO::sess()->{'admin_refresh_left'} = 1; }
+	
+	my $r = {CGI->Vars()};
+	$o->rpc_exec($act,$r);
+	
+	$o->save();
+	
+	$o->admin_err_print();
+	
+	if($o->{'_do_list'}){ $o->admin_view($r->{'page'}); }
+}
+
+sub admin_view_left
 {
 	my $o = shift;
 	
+	unless($JConfig::have_left_tree)
+	{
+		print '<br><br><br><center>Дерево елементов отключено.</center>';
+		return;
+	}
+	
+	$o->admin_left_tree();
+}
+
+sub admin_left_tree
+{
+	my $o = shift;
 	print '<nobr><img align="absmiddle" src="img/nx.gif">',$o->admin_name(),'</nobr><br>',"\n";
 }
 
@@ -23,8 +66,8 @@ sub admin_arrayline
 	
 	my $enum = $o->enum();
 	
-	print( ($enum != $a->len())?'<a href="?url='.$a->myurl().'&act=edown&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
-	print( ($enum != 1)?'<a href="?url='.$a->myurl().'&act=eup&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
+	print( ($enum != $a->len())?'<a href="?url='.$a->myurl().'&act=cms_array_elem_down&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить ниже" src="img/down.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
+	print( ($enum != 1)?'<a href="?url='.$a->myurl().'&act=cms_array_elem_up&enum='.$enum.'&page='.$page.'"><img border=0 align="absmiddle" alt="Переместить выше" src="img/up.gif"></a>':'<img align="absmiddle" src="img/nx.gif">' );
 }
 
 sub admin_hicon {}
@@ -37,9 +80,9 @@ sub admin_name
 	my ($ret,$icon,$myurl);
 	
 	$ret = $o->name();
-	$ret =~ s/\<(?:.|\n)+?\>//g;
-	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
-	if(length($ret) > $JConfig::admin_max_left_name_len){ $ret = substr($ret,0,$JConfig::admin_max_left_name_len-1).'...' }
+	$ret =~ s/\<.+?\>//sg;
+	if(!$ret){ $ret = $o->cname().' без имени' }
+	if(length($ret) > $JConfig::admin_max_view_name_len){ $ret = substr($ret,0,$JConfig::admin_max_view_name_len-1).'...' }
 	
 	$icon = $o->admin_hicon().'<img align="absmiddle" src="'.$o->admin_icon().'">';
 	$myurl = $o->myurl();
@@ -49,24 +92,38 @@ sub admin_name
 sub admin_cname
 {
 	my $c = shift;
-	my $name = shift || ${$c.'::name'};
+	my $name = shift || $c->cname();
 	my $href = shift;
-	return '<nobr style="CURSOR: default"><img align="absmiddle" src="'.$c->admin_icon().'">&nbsp;&nbsp;'.($href?'<a href="'.$href.'">':'').$name.($href?'</a>':'').'</nobr>'
+	my $targ = shift;
+	my $icon = shift;
+	return '<nobr style="CURSOR: default"><img align="absmiddle" src="'.($icon?$icon:$c->admin_icon()).'">&nbsp;&nbsp;'.($href?'<a '.($targ?'target="'.$targ.'"':'').' href="'.$href.'">':'').$name.($href?'</a>':'').'</nobr>'
 }
 
 sub admin_pname
 {
+	# То же, что и admin_name, но без вып. менюхи и ссылки.
+	# Это результат плохого проектирования UI.
 	my $o = shift;
 	my ($ret,$icon,$myurl);
 	
 	$ret = $o->name();
-	$ret =~ s/\<(?:.|\n)+?\>//g;
-	if(!$ret){ $ret = ${ref($o).'::name'}.' без имени' }
-	if(length($ret) > $JConfig::admin_max_left_name_len){ $ret = substr($ret,0,$JConfig::admin_max_left_name_len-1).'...' }
+	$ret =~ s/\<.+?\>//sg;
+	if(!$ret){ $ret = $o->cname().' без имени' }
+	if(length($ret) > $JConfig::admin_max_left_view_len){ $ret = substr($ret,0,$JConfig::admin_max_view_name_len-1).'...' }
 	
 	$icon = $o->admin_hicon().'<img align="absmiddle" src="'.$o->admin_icon().'">';
 	$myurl = $o->myurl();
 	return '<nobr style="CURSOR: default">'.$icon.'&nbsp;&nbsp;'.$ret.'&nbsp;</nobr>';
+}
+
+sub admin_iname_ex
+{
+	my $c = shift;
+	my %opt = @_;
+	
+	if(length($opt{'name'}) > $JConfig::admin_max_left_view_len){ $opt{'name'} = substr($opt{'name'},0,$JConfig::admin_max_view_name_len-1).'...' }
+	
+	return '<nobr '.$opt{'js'}.' style="CURSOR: default"><img align="absmiddle" src="'.($opt{'icon'}||'icons/default.gif').'">&nbsp;&nbsp;'.($opt{'href'}?'<a '.($opt{'targ'}?'target="'.$opt{'targ'}.'"':'').' href="'.$opt{'href'}.'">':'').($opt{'name'}||'Без имени').($opt{'href'}?'</a>':'').'</nobr>'
 }
 
 sub admin_icon
@@ -74,7 +131,7 @@ sub admin_icon
 	my $o = shift;
 	my $class = ref($o) || $o;
 	
-	if( ${$class.'::icon'} ){ return 'icons/'.$class.'.gif'; }
+	if( $class->have_icon() ){ return 'icons/'.$class.'.gif'; }
 	return 'icons/default.gif';
 }
 
@@ -82,6 +139,12 @@ sub admin_right_href
 {
 	my $o = shift;
 	return 'right.ehtml?url='.$o->myurl();
+}
+
+sub admin_left_href
+{
+	my $o = shift;
+	return 'left.ehtml?url='.$o->myurl();
 }
 
 sub admin_cmenu
@@ -103,6 +166,11 @@ sub admin_cmenu
 	my $papa = $o->papa();
 	if($papa){ $papa->admin_cmenu_for_son($o); }
 	
+	for my $sub (@{$JDBI::cmenus{ref($o)}},@{$JDBI::cmenus{'*'}})
+	{
+		&$sub($o);
+	}
+	
 	print '}\';';
 }
 
@@ -110,18 +178,20 @@ sub admin_cmenu_for_self
 {
 	my $o = shift;
 	
-	if($o->access('r')){
+	if($o->access('r'))
+	{
 		print 'elem_add(JMIHref("Открыть","',$o->admin_right_href(),'"));';
 	}
 	
-	if($o->access('c')){
-		print 'elem_add(JMIHref("Разрешения...","right.ehtml?url=',$o->myurl(),'&act=chmod"));';
+	if($o->access('c'))
+	{
+		print 'elem_add(JMIHref("Разрешения...","right.ehtml?url=',$o->myurl(),'&act=access_chmod"));';
 	}
 }
 
 sub admin_cmenu_for_son { }
 
-sub admin_tree
+sub admin_path
 {
 	my $o = shift;
 	my $to;
@@ -132,25 +202,32 @@ sub admin_tree
 	my $count = 0;
 	
 	print '<script>
-	if(CMS_HaveParent()){
+	function CMS_admin_path()
+	{
+		if(CMS_HaveParent() && parent.frames.admin_left.CMS_SelectLO)
+		{
 	
 	';
 	
-	do{
+	do
+	{
 		$count++;
 		push(@tree, $to);
-		
-	}while( $to = $to->papa() and $count < 50 );
+	}
+	while( $to = $to->papa() and $count < 50 );
 	
 	
-	for $to (reverse @tree){
+	for $to (reverse @tree)
+	{
 		push(@names, $to->admin_name());
 		print 'parent.frames.admin_left.CMS_SelectLO("id_'.$to->myurl().'");';
 		print 'parent.frames.admin_left.CMS_ShowMe("'.$to->myurl().'");';
 	}
 	
 	print '
+		}
 	}
+	CMS_admin_path();
 	</script>';
 	
 	print '<textarea style="DISPLAY: none" id="tree_div">',join(' / ',@names),'</textarea>';
@@ -159,16 +236,15 @@ sub admin_tree
 sub admin_edit
 {
 	my $o = shift;
-	my ($key,$val,@keys,$vtype);
-	my $p = \%{ ref($o).'::props' };
+	my $r = shift;
+	my ($key,$val,$vtype);
+	my $p = $o->props();
 	
 	if($o->{'ID'} < 1){ $o->err_add('Объект не существует.'); return; }
 	
-	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %$p ); }
-	
-	for $key (@keys){
-		
-		$val = param($key);
+	for $key ($o->aview())
+	{
+		$val = $r->{$key};
 		$vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
 		
 		if(!$JDBI::group->{'html'} and !${$vtype.'::dont_html_filter'}){ $val = JDBI::HTMLfilter($val); }
@@ -193,7 +269,7 @@ sub admin_cre
 	print '<p class="hr">Данные элемента:</p>';
 	print '<table width="100%" border=0><tr><td align=center>';
 	print '<form action="?" method="POST" enctype="multipart/form-data">',"\n";
-	print '<input type="hidden" name="act" value="cre">',"\n";
+	print '<input type="hidden" name="act" value="cms_admin_cre">',"\n";
 	print '<input type="hidden" name="cname" value="',ref($o),'">',"\n";
 	
 	print '<input type="hidden" name="url" value="',$where->myurl(),'">',"\n";
@@ -210,13 +286,10 @@ sub admin_view
 {
 	my $o = shift;
 	
-	$o->admin_err_print();
-
-	
-	print '<p class="hr">Данные элемента:</p>';
+	print '<p class="hr">Данные элемента<span id="',$o->myurl(),'_changed"></span>:</p>';
 	print '<table width="100%" border=0><tr><td align=center>';
-	print '<form action="?" ',($o->access('w')?'':'disabled'),' method="POST" enctype="multipart/form-data">',"\n";
-	print '<input type="hidden" name="act" value="edit">',"\n";
+	print '<form id="',$o->myurl(),'_edit_form" action="?" ',($o->access('w')?'':'disabled'),' method="post" enctype="multipart/form-data">',"\n";
+	print '<input type="hidden" name="act" value="cms_admin_edit">',"\n";
 	
 	print '<input type="hidden" name="url" value="',$o->myurl(),'">';
 	
@@ -228,13 +301,13 @@ sub admin_view
 	print '<tr style="DISPLAY: none" id="show1"><td valign=top>Создан:</td><td>',JDBI::fromTIMESTAMP($o->{'CTS'}),'</td></tr>';
 	print '<tr style="DISPLAY: none" id="show2"><td valign=top>Изменён:</td><td>',JDBI::fromTIMESTAMP($o->{'ATS'}),'</td></tr>';
 	
-	my $chown = ($JDBI::group->{'root'})?'<a href="?act=chown&url='.$o->myurl().'"><u>':'';
+	my $chown = ($JDBI::group->{'root'})?'<a href="?url='.$o->myurl().'&act=cms_chown"><u>':'';
 	my $tu = User->new();
 	$tu->load($o->{'OID'});
 	print '<tr style="DISPLAY: none" id="show3"><td valign=top>',$chown,'Владелец</u></a>:</td><td>',$tu->name(),'</td></tr>';
 	$tu->clear();
 	
-	my $chmod = $o->access('c')?'<a href="?act=chmod&url='.$o->myurl().'"><u>':'';
+	my $chmod = $o->access('c')?'<a href="?url='.$o->myurl().'&act=access_chmod"><u>':'';
 	print '<tr style="DISPLAY: none" id="show4"><td valign=top>',$chmod,'Разрешения:</u></a></td><td>',$o->access_print(),'.</td></tr>';
 	print '<tr style="DISPLAY: none" id="show5"><td valign=top>HTTP адрес:</td><td>',$o->des_href(),'</td></tr>';
 	
@@ -243,6 +316,14 @@ sub admin_view
 	if($o->access('w')){ print '<center><br><input type="submit" value="Сохранить"></center>'; }
 	
 	print '</form></td></tr></table>';
+	
+	1 || print '
+	<script>
+	SetOnChange(',$o->myurl(),'_edit_form);
+	',$o->myurl(),'_edit_form.onchange = function () { ',$o->myurl(),'_changed.innerText = "[*]"; }
+	</script>
+	';
+	
 }
 
 sub admin_props
@@ -250,14 +331,19 @@ sub admin_props
 	my $o = shift;
 	my ($key,@keys,$vtype);
 	
-	my $p = \%{ ref($o).'::props' };
+	my $p = $o->props();
 	
-	if( $#{ ref($o).'::aview' } > -1 ){ @keys = @{ ref($o).'::aview' }; }else{ @keys = keys( %$p ); }
-	for $key (@keys){
+	@keys = $o->aview();
+	unless( @keys ){ print '<tr><td colspan="2"><center>У элемента нет свойств для отображения.</center><br></td></tr>'; return; }
+	for $key (@keys)
+	{
 		$vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
-		if(${ $vtype.'::admin_own_html' }){
+		if(${ $vtype.'::admin_own_html' })
+		{
 			print $vtype->aview( $key, $o->{$key}, $o );
-		}else{
+		}
+		else
+		{
 			print '<tr><td valign=top width="20%" valign="center"><label for="',$key,'">',$p->{$key}{'name'},':</td><td width="80%" align="left" valign="middle">';
 			print $vtype->aview( $key, $o->{$key}, $o );
 			print '</td></tr>';
@@ -269,18 +355,18 @@ sub admin_err_print
 {
 	my $o = shift;
 	
-	if($o->err_is()){
-		
-		print '<table align="center"><tr><td class="mes_table"><font color="red">Возникла ошибка!</font><br><br>';
+	if($o->err_is())
+	{
+		print '<table align="center"><tr><td class="err_table"><font color="red">Возникла ошибка!</font><br><br>';
 		$o->err_print();
 		print '</td></tr></table><br>';
 	}
 	
-	if($o->{'_print'}){
-		
+	if($o->{'_print'})
+	{
 		print '<table align="center"><tr><td class="mes_table">',$o->{'_print'},'</td></tr></table><br>';
 		$o->{'_print'} = '';
 	}
 }
 
-return 1;
+1;

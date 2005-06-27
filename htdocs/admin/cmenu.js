@@ -12,14 +12,15 @@ var doc = document;
 
 //------------------------------ Вспомогательные функции ------------------------
 
-function OnContext(o){
-	
+function OnContext(o)
+{
 	if(o == undefined) return true;
 	
 	var name = o.id;
 	name = name.replace('cmenu_','');
 	
-	if(all_menus_code[name] != undefined){
+	if(all_menus_code[name] != undefined)
+	{
 		eval(all_menus_code[name]);
 		all_menus_code[name] = undefined;
 	}
@@ -41,8 +42,8 @@ function OnContext(o){
 	return false;
 }
 
-function OnClickAfterContext(){
-	
+function OnClickAfterContext()
+{
 	if(now_menu == undefined) return true;
 	
 	document.body.onclick = last_onclick;
@@ -52,8 +53,8 @@ function OnClickAfterContext(){
 	return false;
 }
 
-document.onkeypress = function(){
-	
+document.onkeypress = function()
+{
 	if(event.keyCode != 27) return true;
 	
 	OnClickAfterContext();
@@ -64,8 +65,8 @@ document.onkeypress = function(){
 
 
 // Базовый класс замороченных боксов
-function JBox(tag){
-	
+function JBox(tag)
+{
 	var nobj;
 	nobj = document.createElement(tag || "DIV");
 	nobj.className = 'cmenu_menu';
@@ -76,16 +77,16 @@ function JBox(tag){
 	nobj.temp_x = 0;
 	nobj.temp_y = 0;
 	
-	nobj.show = function(nx,ny){
-		
+	nobj.show = function(nx,ny)
+	{
 		if(this.visible) return;
 		this.moveto(nx || 0, ny || 0);
 		this.visible = 1;
 		this.papa.appendChild(this);
 	}
 	
-	nobj.hide = function(){
-		
+	nobj.hide = function()
+	{
 		if(!this.visible) return;
 		if(this.son){ this.son.hide(); }
 		
@@ -93,13 +94,14 @@ function JBox(tag){
 		this.papa.removeChild(this);
 	}
 	
-	nobj.togle = function(){
+	nobj.togle = function()
+	{
 		if(this.visible) this.hide();
 		else this.show();
 	}
 	
-	nobj.moveto = function(nx,ny){
-		
+	nobj.moveto = function(nx,ny)
+	{
 		this.style.posLeft = nx || this.temp_x;
 		this.style.posTop = ny || this.temp_y;
 		
@@ -111,28 +113,29 @@ function JBox(tag){
 	
 	nobj.onmouseout = function(){ this.ismouseon = 0; }
 	
-	nobj.elem_add = function(elem){
-		
-		if(elem.papa != this){
-			
+	nobj.elem_add = function(elem)
+	{
+		if(elem.papa != this)
+		{
 			elem.papa.elem_del(elem);
 			elem.papa = this;
 		}
 		
 		elem.show();
-	
-	return elem;
+		
+		return elem;
 	}
 	
-	nobj.elem_del = function(elem){
-		
+	nobj.elem_del = function(elem)
+	{
 		if(elem.papa != this) return;
 		
 		elem.hide();
 		elem.papa = document.body;
 	}
 	
-	nobj.oncontextmenu = function(){
+	nobj.oncontextmenu = function()
+	{
 		return false;
 	}
 	
@@ -140,8 +143,8 @@ function JBox(tag){
 }
 
 // Класс меню. Основан на: JBox.
-function JMenu(){
-	
+function JMenu()
+{
 	var nobj;
 	nobj = JBox("TABLE");
 	
@@ -161,29 +164,29 @@ function JMenu(){
 	nobj.old_onmouseover = nobj.onmouseover;
 	nobj.old_hide  = nobj.hide;
 	
-	nobj.onmouseover = function(){
-		
+	nobj.onmouseover = function()
+	{
 		if(this.my_JMISubMenu)
 			this.my_JMISubMenu.select();
 		
 		return this.old_onmouseover();
 	}
 	
-	nobj.hide = function(){
-		
+	nobj.hide = function()
+	{
 		if(this.my_JMISubMenu)
 			this.my_JMISubMenu.deselect();
 		
 		return this.old_hide();
 	}
 	
-	nobj.appendChild = function(chld){
-		
+	nobj.appendChild = function(chld)
+	{
 		return nobj.td.appendChild(chld);
 	}
 	
-	nobj.onclick = function(){
-		
+	nobj.onclick = function()
+	{
 		window.event.cancelBubble = true;
 		if(this.sel)
 			this.sel.onmouseout();
@@ -196,8 +199,8 @@ function JMenu(){
 }
 
 // Класс элемента меню. Основан на JBox.
-function JMenuItem(itext){
-	
+function JMenuItem(itext)
+{
 	var nobj;
 	nobj = JBox("DIV");
 	
@@ -205,38 +208,38 @@ function JMenuItem(itext){
 	nobj.className = "cmenu_item_out";
 	nobj.innerHTML = itext;
 	
-	nobj.onmouseover = function(){
-		
+	nobj.onmouseover = function()
+	{
 		if(this.papa.son) this.papa.son.hide();
 			this.ismouseon = 1;
 		
 		this.select();
 	}
 	
-	nobj.onmouseout = function(){
-		
+	nobj.onmouseout = function()
+	{
 		this.ismouseon = 0;
 		this.deselect();
 	}
 	
-	nobj.deselect = function(){
-		
+	nobj.deselect = function()
+	{
 		if(this.papa)
 			this.papa.sel = undefined;
 		
 		this.className = "cmenu_item_out";
 	}
 	
-	nobj.select = function(){
-		
+	nobj.select = function()
+	{
 		if(this.papa)
 			this.papa.sel = this;
 		
 		this.className = "cmenu_item_on";
 	}
 	
-	nobj.onmousedown = function(){
-		
+	nobj.onmousedown = function()
+	{
 		this.className = "cmenu_item_down";
 		//this.onmouseout();
 	}
@@ -245,8 +248,8 @@ function JMenuItem(itext){
 }
 
 
-function JMISubMenu(itext,smenu){
-	
+function JMISubMenu(itext,smenu)
+{
 	var nobj;
 	nobj = JMenuItem('<table width="100%" class="cmenu_JMISubMenu" cellPadding="0" cellSpacing="0"><tr><td>'+itext+'</td><td>&nbsp;</td><td><div class="cmenu_4">&#9658;</div></td></tr></table>');
 	
@@ -255,7 +258,8 @@ function JMISubMenu(itext,smenu){
 	nobj.old_onmouseover = nobj.onmouseover;
 	nobj.old_onmouseout  = nobj.onmouseout;
 	
-	nobj.onmouseover = function(){
+	nobj.onmouseover = function()
+	{
 		var ret = nobj.old_onmouseover();
 		this.papa.son = smenu;
 		
@@ -271,8 +275,8 @@ function JMISubMenu(itext,smenu){
 		return ret;
 	}
 	
-	nobj.onclick = function(){
-		
+	nobj.onclick = function()
+	{
 		window.event.cancelBubble = true;
 	}
 	
@@ -281,42 +285,48 @@ function JMISubMenu(itext,smenu){
 	return nobj;
 }
 
-function JMIHref(itext,ihref,targ){
-	
+function JMIHref(itext,ihref,targ)
+{
 	var nobj;
 	nobj = JMenuItem(itext);
 	nobj.href = ihref;
 	nobj.target = targ;
 	
-	nobj.onclick = function(){
-		
-		if(this.target){
+	nobj.onclick = function()
+	{
+		if(this.target)
+		{
 			this.target.location.href = this.href;
-		}else{
+		}
+		else
+		{
 			if(CMS_HaveParent()) parent.frames.admin_right.location.href = this.href;
-		else document.location.href = this.href;
+			else document.location.href = this.href;
 		}
 	}
 	
 	return nobj;
 }
 
-function JMIDelete(itext,ihref,targ){
-	
+function JMIDelete(itext,ihref,targ)
+{
 	var nobj;
 	nobj = JMenuItem(itext);
 	nobj.href = ihref;
 	nobj.target = targ;
 	
-	nobj.onclick = function(){
-		
+	nobj.onclick = function()
+	{
 		var dodel = doDel();
 		OnClickAfterContext();
 		if(!dodel) return;
 		
-		if(this.target){
+		if(this.target)
+		{
 			this.target.location.href = this.href;
-		}else{
+		}
+		else
+		{
 			parent.frames.admin_right.location.href = this.href;
 		}
 	}
@@ -324,14 +334,14 @@ function JMIDelete(itext,ihref,targ){
 	return nobj;
 }
 
-function JHR(){
-	
+function JHR()
+{
 	var nobj;
 	nobj = JBox('DIV');
 	nobj.className = 'cmenu_hr';
 	
-	nobj.onclick = function(){
-		
+	nobj.onclick = function()
+	{
 		window.event.cancelBubble = true;
 		return false;
 	}
@@ -339,15 +349,15 @@ function JHR(){
 	return nobj;
 }
 
-function JTitle(str){
-	
+function JTitle(str)
+{
 	var nobj;
 	nobj = JBox('DIV');
 	nobj.className = 'cmenu_title';
 	nobj.innerHTML = str;
 	
-	nobj.onclick = function(){
-		
+	nobj.onclick = function()
+	{
 		window.event.cancelBubble = true;
 		return false;
 	}

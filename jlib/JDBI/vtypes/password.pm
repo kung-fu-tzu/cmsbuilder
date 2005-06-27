@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::vtypes::password;
 our @ISA = 'JDBI::VType';
 use CGI 'param';
@@ -18,10 +20,13 @@ sub aview
 	my $val = shift;
 	my ($ret,$do);
 	
-	if($val){
+	if($val)
+	{
 		$ret = 'Установлен.';
 		$do = 'Изменить...';
-	}else{
+	}
+	else
+	{
 		$ret = '<font color="#FF0000">НЕ УСТАНОВЛЕН.</font>';
 		$do = 'Установить...';
 	}
@@ -57,7 +62,8 @@ sub aedit
 	
 	if(!$do){ return $obj->{$name} }
 	
-	if($val ne $verif){
+	if($val ne $verif)
+	{
 		$obj->err_add('Введённые пароли не совпадают. Пароль не изменён.');
 		return $obj->{$name};
 	}

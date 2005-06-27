@@ -1,4 +1,4 @@
-<?eml CMS::cms(); ?><html>
+<?eml Front::access(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css">
 <link href="style.css" rel="stylesheet" type="text/css">
@@ -8,33 +8,28 @@
 <body bgcolor="#f0f4f0">
 <script language="JavaScript" src="cmenu.js"></script>
 
-
-<?eml CMS::user_shtoolbox() ?>
+<?eml Front::user_xinfo('shtoolbox') ?>
 <script language="JavaScript">
 Tree_div_it();
 </script>
+
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td width=10></td><td>
 
 <br>
 
-<?eml CMS::action() ?>
-<?eml CMS::list() ?>
-
-<?eml CMS::tree() ?>
+<?eml Front::right() ?>
 
 </td></tr>
 </table>
 
+<?eml Front::path() ?>
 
 <script language="JavaScript">
-	<?eml CMS::jscript(); ?>
-</script>
 
+<?eml Front::jscript(); ?>
 
-<script language="JavaScript">
-Status_div_it();
 </script>
 
 </body>

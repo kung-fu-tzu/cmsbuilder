@@ -1,22 +1,16 @@
+# (с) Леонов П.А., 2005
+
 package ModRoot;
 use strict qw(subs vars);
-
-our $name = 'Раздел модулей';
-our $page = '/page';
-our $pages_direction = 1;
-our $add = '*';
 our @ISA = 'JDBI::Array';
-our $icon = 1;
 
-our %props = (
-	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
-);
+sub _cname {'Раздел модулей'}
+sub _add_classes {'*'}
 
-sub DESTROY
-{
-	my $o = shift;
-	$o->SUPER::DESTROY(@_);
-}
+#-------------------------------------------------------------------------------
+
+
+sub name { return $_[0]->_cname(@_); }
 
 sub elem_paste
 {
@@ -42,9 +36,10 @@ sub admin_add
 	<table><tr>
 	<td valign="top">Добавить:</td><td>';
 	
-	if($o->access('a')){
-		
-		for $c (@JDBI::modules){
+	if($o->access('a'))
+	{
+		for $c (@JDBI::modules)
+		{
 			if(${$c.'::one_instance'}){ next }
 			print $c->admin_cname('','right.ehtml?url='.$o->myurl().'&act=adde&cname='.$c),'<br>';
 		}
@@ -62,4 +57,4 @@ sub access
 
 sub type { return 'ModRoot'; }
 
-return 1;
+1;

@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::OnEvents;
 use strict qw(subs vars);
 
@@ -27,4 +29,4 @@ sub on_Array_elem_cut
 # После того, как элемент вставили в $to
 sub on_Array_elem_paste {}
 
-return 1;
+1;

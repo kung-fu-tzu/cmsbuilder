@@ -1,13 +1,61 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::Array;
 use strict qw(subs vars);
 our @ISA = 'JDBI::Object';
+
 use JIO;
 use CGI 'param';
+
+sub _add_classes {}
+sub _cname {'Массив'}
+sub _pages_direction {1}
+sub _dont_list_me {0};
+sub _props {'onpage'	=> { 'type' => 'int', 'name' => 'Элементов на странице' }}
+
+#-------------------------------------------------------------------------------
 
 
 ###################################################################################################
 # Следующие методы находятся в разработке
 ###################################################################################################
+
+sub pages_direction { return $_[0]->_pages_direction(@_); }
+sub dont_list_me { return $_[0]->_dont_list_me(@_); }
+
+sub add_classes
+{
+	my $c = ref($_[0]) || $_[0];
+	my $buff = $c.'::_add_classes_buff';
+	
+	if($$buff){ return @$$buff; }
+	
+	my @t = JDBI::Object::varr($c,'_add_classes');
+	my @res;
+	
+	for my $v (reverse @t)
+	{
+		if($v eq '-'){ last; }
+		unshift(@res,$v)
+	}
+	
+	$$buff = [@res];
+	return @$$buff;
+}
+
+sub update_name
+{
+	my $o = shift;
+	my($i,$to);
+	
+	my $sth = $JDBI::dbh->prepare('UPDATE `arr_'.$o->myurl().'` SET NAME = ? WHERE num = ?');
+	
+	for($i=1;$i<=$o->len();$i++)
+	{
+		$to = $o->elem($i);
+		$sth->execute(substr($to->name(),0,10),$i);
+	}
+}
 
 sub update_ats_cts
 {
@@ -29,8 +77,8 @@ sub update_ats_cts
 	
 	while(($r) = $str->fetchrow_array()){ push(@cls,$r); }
 	
-	for $c (@cls){
-		
+	for $c (@cls)
+	{
 		$sql = '
 		INSERT  INTO arr_'.$tblc.'( CLASS, ID, ATS, CTS ) 
 		SELECT  "'.$c.'" AS CLASS, dbo_'.$c.'.ID, dbo_'.$c.'.ATS, dbo_'.$c.'.CTS
@@ -57,13 +105,12 @@ sub admin_cmenu_for_son
 	my $son = shift;
 	
 	
-	if($o->access('w')){
-		
+	if($o->access('w'))
+	{
 		print 'elem_add(JHR());';
-		print 'elem_add(JMIDelete("Удалить","right.ehtml?url=',$o->myurl(),'&act=dele&enum=',$son->enum(),'&page=0"));';
-		print 'elem_add(JMIHref("Ярлык...","right.ehtml?url=',$o->myurl(),'&act=mkshcut&enum=',$son->enum(),'"));';
-		print 'elem_add(JMIHref("Переместить...","right.ehtml?url='.$o->myurl().'&act=move2&enum='.$son->enum().'"));';
-		
+		print 'elem_add(JMIDelete("Удалить","right.ehtml?url=',$o->myurl(),'&act=cms_array_elem_delete&enum=',$son->enum(),'&page=0"));';
+		print 'elem_add(JMIHref("Ярлык...","right.ehtml?url=',$o->myurl(),'&act=cms_array_elem_mkshcut&enum=',$son->enum(),'"));';
+		print 'elem_add(JMIHref("Переместить...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_move2&enum='.$son->enum().'"));';
 	}
 }
 
@@ -77,27 +124,28 @@ sub admin_cmenu_for_self
 	print 'smenu = JMenu();';
 	print 'with( smenu ){';
 	print 'elem_add(JTitle("Сортировать"));';
-	if($o->len()){
-		print 'elem_add(JMIHref("Обратить","right.ehtml?url=',$o->myurl(),'&act=arr_sort&by=reverse"));';
-		print 'elem_add(JMIHref("По типу","right.ehtml?url=',$o->myurl(),'&act=arr_sort&by=class"));';
-		print 'elem_add(JMIHref("Создан","right.ehtml?url=',$o->myurl(),'&act=arr_sort&by=cts"));';
-		print 'elem_add(JMIHref("Изменён","right.ehtml?url=',$o->myurl(),'&act=arr_sort&by=ats"));';
+	if($o->len())
+	{
+		print 'elem_add(JMIHref("По имени","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=name"));';
+		print 'elem_add(JMIHref("Обратить","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=reverse"));';
+		print 'elem_add(JMIHref("По типу","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=class"));';
+		print 'elem_add(JMIHref("Создан","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=cts"));';
+		print 'elem_add(JMIHref("Изменён","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=ats"));';
 		print 'elem_add(JHR());';
 	}
-	print 'elem_add(JMIHref("По ID","right.ehtml?url=',$o->myurl(),'&act=arr_sort&by=id"));';
-	print 'elem_add(JMIHref("Починить","right.ehtml?url=',$o->myurl(),'&act=arr_sort&by=num"));';
+	print 'elem_add(JMIHref("По ID","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=id"));';
+	print 'elem_add(JMIHref("Починить","right.ehtml?url=',$o->myurl(),'&act=cms_array_sort&by=num"));';
 	print '}';
 	print 'smenu_i = elem_add(JMISubMenu("Сортировать",smenu));';
 	
 	return $ret;
 }
 
-sub admin_left
+sub admin_left_tree
 {
 	my $o = shift;
 	
-	if( ${ref($o).'::dont_list_me'} ){ return $o->SUPER::admin_left(@_); }
-	if( $o->{'_is_shcut'} ){ return $o->SUPER::admin_left(@_); }
+	if( $o->dont_list_me() ){ return $o->SUPER::admin_left(@_); }
 	
 	my %node = $JDBI::cgi->cookie( 'dbi_'.$o->myurl() );
 	my $disp = $node{'s'} ? 'block' : 'none';
@@ -108,7 +156,7 @@ sub admin_left
 	print '<div id="dbi_'.$o->myurl().'" class="left_dir" style="DISPLAY: '.$disp.';">',"\n";
 	
 	my $to;
-	for $to ($o->get_interval(1,$JConfig::admin_max_left)){ $to->admin_left() }
+	for $to ($o->get_interval(1,$JConfig::admin_max_left)){ $to->admin_left_tree() }
 	
 	if($o->len() > $JConfig::admin_max_left){ print '<nobr><font style="CURSOR: default" title="Количество элементов, отображаемых в левой панели, ограничено. Вы можете продолжать добавлять элементы, они будут доступны в правой панели - постранично." color="#ff7300" size=1>Элементов слишком много...</font></nobr><br>',"\n"; }
 	print '</div>',"\n";
@@ -117,14 +165,20 @@ sub admin_left
 sub admin_view
 {
 	my $o = shift;
+	
+	$o->SUPER::admin_view(@_);
+	$o->admin_array_view(@_);
+}
+
+sub admin_array_view
+{
+	my $o = shift;
 	my $page = shift;
 	my($n1,$n2) = (0,0);
 	my $i = 0;
 	my($e,$up,$down);
 	
-	$o->SUPER::admin_view();
-	
-	if(!$o->access('r')){ return; }
+	unless($o->access('r')){ return; }
 	
 	print '<p class="hr">';
 	print '
@@ -137,14 +191,17 @@ sub admin_view
 	my $len = $o->len();
 	if(!$page){ $page = 0; }
 	
-	for $e ($o->get_page($page)){
-		
+	for $e ($o->get_page($page))
+	{
 		unless($n1){ $n1 = $e->enum(); }
 		$n2 = $e->enum();
 		
-		if($o->access('w')){
+		if($o->access('w'))
+		{
 			$e->admin_arrayline($o,$page);
-		}else{
+		}
+		else
+		{
 			print '<img align="absmiddle" src="img/nx.gif">' x 2;
 		}
 		
@@ -165,14 +222,14 @@ sub admin_view
 	
 	if(!$i){ print '<center>Нет элементов.</center>'; }
 	
-	if($o->pages() > 1){
-		
+	if($o->pages() > 1)
+	{
 		print '<br><br><center>';	
 		print '<table class="pages_table" cellspacing="0" cellpadding="0"><tr>';
 		
 		my $p;
-		for($p=0;$p<$o->pages();$p++){
-			
+		for($p=0;$p<$o->pages();$p++)
+		{
 			if($p == $page){ print '<td width=20 align=center height=20 bgcolor="#ff7300"><b>'.($p+1).'</b></td>'; }
 			else{ print '<td width=20 align=center height=20><a href="?url='.$o->myurl().'&page='.$p.'">'.($p+1).'</a><td>' }
 		}
@@ -181,15 +238,15 @@ sub admin_view
 		print '</center>';
 	}
 	
-	$o->admin_add();
+	$o->admin_add_list();
 	
 	print '<br><br>';
 }
 
-sub admin_add
+sub admin_add_list
 {
 	my $o = shift;
-	my($c,$count);
+	my($cn,$cnt);
 	
 	unless($o->access('a')){ return; }
 	
@@ -198,15 +255,15 @@ sub admin_add
 	<table><tr>
 	<td valign="top">Добавить:</td><td>';
 	
-	for $c (@JDBI::classes){
-		
-		unless($o->elem_can_add($c)){ next; }
-		if($c eq 'ShortCut'){ next; }
-		print $c->admin_cname('','right.ehtml?url='.$o->myurl().'&act=adde&cname='.$c),'<br>';
-		$count++;
+	for $cn (@JDBI::classes)
+	{
+		unless($o->elem_can_add($cn)){ next; }
+		if($cn eq 'ShortCut'){ next; }
+		print $cn->admin_cname('','right.ehtml?url='.$o->myurl().'&act=cms_array_add&cname='.$cn),'<br>';
+		$cnt++;
 	}
 	
-	unless($count){ print 'Нет классов'; };
+	unless($cnt){ print 'Нет классов'; };
 	
 	print '</td></tr></table><br>';
 }
@@ -274,12 +331,14 @@ sub get_class_wheresql
 {
 	my($where,$cl);
 	
-	for $cl (@_){
+	for $cl (@_)
+	{
 		unless(JDBI::classOK($cl)){ next; }
 		$where .= ' CLASS = "'.$cl.'" OR';
 	}
 	
-	if($where){
+	if($where)
+	{
 		$where =~ s/OR$//;
 		$where = ' ( '.$where.' ) ';
 	}
@@ -297,7 +356,7 @@ sub elem_del
 	my $eid = shift;
 	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
 	my $obj = $o->elem($eid);
-	unless($obj){ $o->err_add($eid.$o->myurl()); return; }
+	unless($obj){ $o->err_add('Элемент номер '.$eid.' в '.$o->myurl().' не существует.'); return; }
 	unless($obj->access('w')){ $o->err_add('У Вас нет разрешения изменять удаляемый элемент.'); return; }
 	
 	$obj = $o->elem_cut($eid);
@@ -342,6 +401,45 @@ sub elem_paste
 	$po->on_Array_elem_paste($o);
 }
 
+sub elem_can_paste
+{
+	my $o = shift;
+	my $po = shift;
+	unless($o->access('a')){ return 0; }
+	if($o->myurl() eq $po->myurl()){ return 0; }
+	#if($po->papa() && $po->papa()->myurl() eq $o->myurl()){ return 0; }
+	
+	my $papa = $o;
+	my $i;
+	while($papa = $papa->papa())
+	{
+		if($papa->myurl() eq $po->myurl()){ return 0; }
+		$i++;
+		if($i > 50){ return 0; } # Есть залупленные объекты
+	}
+	
+	if($o->elem_can_add(ref($po)))
+	{
+		if(ref($po) eq 'ShortCut'){ return $o->elem_can_add( ref($po->shcut_obj()) ); }
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+sub elem_can_add
+{
+	my $o = shift;
+	my $cn = shift;
+	
+	if( JDBI::indexA($cn,$o->add_classes()) >= 0 ){ return 1; }
+	if( JDBI::indexA('*',$o->add_classes()) >= 0 ){ return 1; }
+	
+	return 0;
+}
+
 
 ###################################################################################################
 # Основные методы для работы с элементами массива
@@ -365,15 +463,15 @@ sub get_interval
 	$str = $JDBI::dbh->prepare($sql);
 	$str->execute($beg,@_);
 	
-	while($ref = $str->fetchrow_arrayref()){
-		
+	while($ref = $str->fetchrow_arrayref())
+	{
 		$to = $ref->[0]->new($ref->[1]);
 		
 		$to->{'_ENUM'} = $ref->[2];
 		$to->{'_ARRAY'} = ref($o);
 		
-		if(!$to->{'ID'}){
-			
+		if(!$to->{'ID'})
+		{
 			#print '[hello',$to->{'ID'},'-',$o->myurl(),']';
 			$JDBI::dbh->do('DELETE FROM `arr_'.$o->myurl().'` WHERE num = ? LIMIT 1',undef,$ref->[2]);
 			sess()->{'admin_refresh_left'} = 1;
@@ -392,61 +490,29 @@ sub elem_paste_ref
 {
 	my $o = shift;
 	my $po = shift;
-	if(!$o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+	unless($o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
 	
-	if($o->{'ID'} < 1){ return; }
-	if($po->{'ID'} < 1){ return; }
+	unless($o->{'ID'} > 0){ return; }
+	unless($po->{'ID'} > 0){ return; }
 	unless($o->is_array_table()){ $o->create_array_table();  }
 	
 	unless($o->elem_can_paste($po)){ JIO::err505('Trying to add element with classname "'.ref($po).'", to array "'.ref($o).'"'); }
 	
 	my $str;
 	
-	if( ${ref($o).'::pages_direction'} ){
-		$JDBI::dbh->do('INSERT INTO `arr_'.$o->myurl().'` (ID,CLASS) VALUES (?,?)',undef,$po->{'ID'},ref($po));
-	}else{
-		$JDBI::dbh->do('UPDATE `arr_'.$o->myurl().'` SET num = num + 1');
-		$JDBI::dbh->do('INSERT INTO `arr_'.$o->myurl().'` (num,ID,CLASS) VALUES (1,?,?)',undef,$po->{'ID'},ref($po));
+	if($o->pages_direction())
+	{
+		$str = $JDBI::dbh->prepare('INSERT INTO `arr_'.$o->myurl().'` (ID,CLASS) VALUES (?,?)');
 	}
+	else
+	{
+		$JDBI::dbh->do('UPDATE `arr_'.$o->myurl().'` SET num = num + 1');
+		$str = $JDBI::dbh->prepare('INSERT INTO `arr_'.$o->myurl().'` (num,ID,CLASS) VALUES (1,?,?)');
+	}
+	
+	$str->execute($po->{'ID'},ref($po));
 	
 	$o->sortT();
-}
-
-sub elem_can_paste
-{
-	my $o = shift;
-	my $po = shift;
-	if(!$o->access('a')){ return 0; }
-	if($o->myurl() eq $po->myurl()){ return 0; }
-	if($po->papa() and $po->papa()->myurl() eq $o->myurl()){ return 0; }
-	
-	my $papa = $o;
-	my $i;
-	while($papa = $papa->papa()){
-		if($papa->myurl() eq $po->myurl()){ return 0; }
-		$i++;
-		if($i > 50){ return 0; } # Есть залупленные объекты
-	}
-	
-	
-	if($o->elem_can_add(ref($po))){
-		if(ref($po) eq 'ShortCut'){ return $o->elem_can_add( ref($po->shcut_obj()) ); }
-		return 1;
-	}else{
-		return 0;
-	}
-}
-
-sub elem_can_add
-{
-	my $o = shift;
-	my $c = shift;
-	my $myc = ref($o)?ref($o):$o;
-	
-	if( ${$myc.'::add'} eq '*' ){ return 1; }
-	if( index( ${$myc.'::add'}, ' '.$c.' ') >= 0 ){ return 1; }
-	
-	return 0;
 }
 
 sub elem_tell_enum
@@ -454,7 +520,7 @@ sub elem_tell_enum
 	my $o = shift;
 	my $to = shift;
 	
-	if(!$o->access('x')){ $o->err_add('У Вас нет разрешения просматривать этот элемент.'); return 0; }
+	unless($o->access('x')){ $o->err_add('У Вас нет разрешения просматривать этот элемент.'); return 0; }
 	
 	if($o->{'ID'} < 1){ return 0; }
 	unless($o->is_array_table()){ return 0; }
@@ -486,15 +552,9 @@ sub elem_cut
 	if($o->{'ID'} < 1){ return; }
 	
 	my $to = $o->elem($eid);
-	if(!$to){ return undef; }
+	unless($to){ return undef; }
 	
-	if(!$to->access('w')){ $o->err_add('У Вас нет разрешения изменять вырезаемый элемент.'); return; }
-	
-	if(!$to->{'_is_shcut'}){
-		$to->{'PAPA_CLASS'} = '';
-		$to->{'PAPA_ID'} = -1;
-		$to->save();
-	}
+	unless($to->access('w')){ $o->err_add('У Вас нет разрешения изменять вырезаемый элемент.'); return; }
 	
 	my $str = $JDBI::dbh->prepare('DELETE FROM `arr_'.$o->myurl().'` WHERE num = ? LIMIT 1');
 	$str->execute($eid);
@@ -529,9 +589,12 @@ sub elem_moveto
 	
 	$str = $JDBI::dbh->prepare( 'UPDATE `arr_'.$o->myurl().'` SET `num` = ? WHERE `num` = ? LIMIT 1' );
 	
-	if($enum > $place){
+	if($enum > $place)
+	{
 		$str->execute($place+1,$enum+1);
-	}else{
+	}
+	else
+	{
 		$str->execute($place+1,$enum);
 	}
 	
@@ -552,11 +615,11 @@ sub create_array_table
 	my $sql = 'CREATE TABLE `arr_'.$o->myurl().'` ( '
 	. '`num` INT NOT NULL AUTO_INCREMENT , '
 	. '`ID` INT DEFAULT \'-1\' NOT NULL, '
-	. '`CLASS` VARCHAR(20) NOT NULL, '
-	#. '`SHCUT` SMALLINT DEFAULT \'0\' NOT NULL, '
+	. '`CLASS` CHAR(40) NOT NULL, '
 	. '`ATS` DATETIME NOT NULL, '
 	. '`CTS` DATETIME NOT NULL, '
-	. 'INDEX ( `num` ) )';
+	. '`NAME` CHAR(10) NOT NULL, '
+	. 'INDEX ( `num` ),INDEX ( `ID` ),INDEX ( `CLASS` ) )';
 	
 	my $str = $JDBI::dbh->prepare($sql);
 	$str->execute();
@@ -572,8 +635,8 @@ sub is_array_table
 	if(exists $o->{'_isatable'}){ return $o->{'_isatable'}; }
 	
 	my $t;
-	for $t ($JDBI::dbh->tables()){
-		
+	for $t ($JDBI::dbh->tables())
+	{
 		if( index($t,'arr_'.$o->myurl()) >= 0){ $o->{'_isatable'} = 1; return 1; }
 	}
 	
@@ -614,9 +677,12 @@ sub del
 	my $o = shift;
 	my $i;
 	my $papa = $o->papa();
-	if(!$papa){
+	if(!$papa)
+	{
 		unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
-	}else{
+	}
+	else
+	{
 		unless($papa->access('x') and $papa->access('w')){ $o->err_add('У Вас нет разрешения изменять родителя этого элемента.'); return; }
 	}
 	if($o->{'ID'} < 1){ return; }
@@ -625,8 +691,8 @@ sub del
 	
 	for($i=1;$i<=$len;$i++){ $o->elem_del(1); }
 	
-	if($o->is_array_table()){
-		
+	if($o->is_array_table())
+	{
 		my $str = $JDBI::dbh->prepare('DROP TABLE `arr_'.$o->myurl().'`');
 		$str->execute();
 	}
@@ -640,8 +706,8 @@ sub sortT
 	my $by = shift;
 	my($i,$table);
 	
-	if($o->{'ID'} < 1){ return; }
-	if(!$o->is_array_table()){ return; }
+	unless($o->{'ID'} > 0){ return; }
+	unless($o->is_array_table()){ return; }
 	$by =~ s/\W//;
 	unless($by){ $by = 'num'; }
 	
@@ -670,5 +736,4 @@ sub reverse
 sub type { return 'Array'; }
 
 
-
-return 1;
+1;

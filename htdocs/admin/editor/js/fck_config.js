@@ -12,8 +12,8 @@ config.ToolbarImagesPath = config.BasePath + "images/toolbar/" ;
 config.ToolbarSets = new Object();
 
 config.ToolbarSets["JLite"] = [
-	['EditSource','-','Cut','Copy','Paste','PasteWord', '-', 'Undo','Redo', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull', '-', 'InsertOrderedList','InsertUnorderedList'],
-        ['Outdent','Indent','Link','Subscript','Superscript','-', 'Bold','Italic','Underline','RemoveFormat','FontSize','-', 'TextColor','BGColor','-','Image','Table', 'Rule', 'SpecialChar']
+	['EditSource','-','Cut','Copy','Paste','PasteWord', '-', 'Undo','Redo', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull', '-', 'InsertOrderedList','InsertUnorderedList','BreakLine','Outdent','Indent'],
+        ['Link','Subscript','Superscript','-', 'Bold','Italic','Underline','RemoveFormat','FontSize','-', 'TextColor','BGColor','-','Image','Table', 'Rule', 'SpecialChar']
 ];
 
 config.ToolbarSets["Source"] = [

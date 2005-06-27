@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 # 
 # Модуль управляет буферизацией вывода
 # и определяет функции стандартных ошибок.
@@ -15,10 +17,12 @@ use POSIX ('strftime');
 our @EXPORT = ('err505','err404','err403','err402','sess');
 our @ISA = 'Exporter';
 
+our %headers;
 our $out;
 our $cgi;
 our $system_ini;
 our $modules_ini;
+our $sts;
 
 local *MEM;
 
@@ -27,48 +31,36 @@ local *MEM;
 # Рабочие функции интерфейса
 ###################################################################################################
 
-sub err505
+sub errany
 {
+	my $en = shift;
 	clear();
+	$JIO::headers{'Location'} = $JConfig::http_errors.'/err'.$en.($en==402?'.ehtml':'.html');
 	stop();
-	print 'Location: '.$JConfig::http_errors.'/err505.html',"\n\n";
-	croak 'Error 505: '.join('',@_);
+	croak 'Error '.$en.': '.join('',@_);
 }
 
-sub err404
-{
-	clear();
-	stop();
-	print 'Location: '.$JConfig::http_errors.'/err404.html',"\n\n";
-	croak 'Error 404: '.join('',@_);
-}
-
-sub err403
-{
-	clear();
-	stop();
-	print 'Location: '.$JConfig::http_errors.'/err403.html',"\n\n";
-	croak 'Error 403: '.join('',@_);
-}
-
-sub err402
-{
-	clear();
-	stop();
-	print 'Location: '.$JConfig::http_eroot.'/login.ehtml',"\n\n";
-	croak 'Error 402: '.join('',@_);
-}
+sub err505{ errany(505,@_); }
+sub err404{ errany(404,@_); }
+sub err403{ errany(403,@_); }
+sub err402{ errany(402,@_); }
 
 sub start
 {
+	if($sts){ return; }
+	$sts = 1;
+	
 	$system_ini = JIO::Ini->new($JConfig::path_etc.'/system.ini');
 	$modules_ini = JIO::Ini->new($JConfig::path_etc.'/modules.ini');
 	
-	
-	if($JConfig::buff_do){
-		if($JConfig::buff_mem){
+	if($JConfig::buff_do)
+	{
+		if($JConfig::buff_mem)
+		{
 			open(MEM,'>',\$out);
-		}else{
+		}
+		else
+		{
 			open(MEM,'>'.$JConfig::path_tmp.'/out'.$$.'.tmp');
 		}
 		
@@ -78,18 +70,22 @@ sub start
 	# Заголовки
 	my $str_time = strftime('%a, %d %b %Y %T %H:00:00 GMT',gmtime( time()+200 ));
 	
-	print "Content-type: text/html; charset=windows-1251\n";
-	print "Pragma: no-cache\n";
-	print "Cache-control: max-age=0\n";
-	print "Last-Modified: $str_time\n";
-	print "Expires: 0\n";
+	%headers =
+	(
+		'Content-type' => 'text/html; charset=windows-1251',
+		'Pragma' => 'no-cache',
+		'Cache-control' => 'max-age=0',
+		'Expires' => '0',
+		'Last-Modified' => $str_time
+	);
+	
+	$out = '';
 	
 	$cgi = CGI->new();
 	
 	JIO::Session->start();
 	
 	print "\n\n";
-
 	
 	JIO::Users->init();
 }
@@ -98,15 +94,18 @@ sub sess { return \%JIO::Session::sess; }
 
 sub clear
 {
-	if($JConfig::buff_do){
-		
+	if($JConfig::buff_do)
+	{
 		select STDOUT;
 		close MEM;
 		
-		if($JConfig::buff_mem){
+		if($JConfig::buff_mem)
+		{
 			$out = '';
 			open(MEM,'>',\$out);
-		}else{
+		}
+		else
+		{
 			open(MEM,'>out'.$$.'.tmp');
 		}
 		
@@ -116,19 +115,22 @@ sub clear
 
 sub stop
 {
+	unless($sts){ return; }
+	$sts = 0;
+	
 	JIO::Users->clear();
 	JIO::Session->stop();
 	
 	$system_ini = '';
 	$modules_ini = '';
 	
-	if($JConfig::buff_do){
-		
+	if($JConfig::buff_do)
+	{
 		select(STDOUT);
 		close MEM;
 		
-		unless($JConfig::buff_mem){
-			
+		unless($JConfig::buff_mem)
+		{
 			open(MEM,'<'.$JConfig::path_tmp.'/out'.$$.'.tmp');
 			$out = join('',<MEM>);
 			close MEM;
@@ -137,12 +139,24 @@ sub stop
 		}
 		
 		#$out =~ s/\n/\r\n/g;
+		print_headers();
 		print $out;
-		$out = '';
 	}
 }
 
-return 1;
+sub closeio
+{
+	close(select());
+}
 
+sub print_headers
+{
+	my $hdr;
+	for $hdr (keys %headers)
+	{
+		print $hdr,': ',$headers{$hdr},"\n";
+	}
+	print "\n";
+}
 
-
+1;

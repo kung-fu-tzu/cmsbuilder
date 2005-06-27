@@ -1,60 +1,44 @@
+# (с) Леонов П.А., 2005
+
 package ModSysInfo;
 use strict qw(subs vars);
-use CGI 'param';
-our @ISA = 'StdModule';
+our @ISA = 'JDBI::SimpleModule';
 
-our $name = 'Системная информация';
-our @classes = ();
+sub _cname {'Системная информация'}
+sub _one_instance {1}
+sub _have_icon {0}
 
-our $page = '/page';
-our $add  = ' ';
-our @aview = qw/name/;
-our $one_instance = 1;
-our $simple = 1;
+sub _rpcs
+{
+	'list_dbocache' => ['Кеш объектов',''],
+	'tree' => ['Дерево','Page.gif'],
+}
 
-our %props = (
+sub _props
+{
 	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
-);
+}
 
-sub admin_modr
+#-------------------------------------------------------------------------------
+
+
+sub tree
 {
 	my $o = shift;
-	my $act = param('act');
-	
-	unless($act){ print 'Привет, привет :) ...'; }
-	
-	if($act eq 'list_dbocache'){
-		
-		my $t;
-		for $t (keys(%JDBI::dbo_cache)){
-			
-			print $JDBI::dbo_cache{$t},' -> ',$JDBI::dbo_cache{$t}->name(),'<br>';
-			
-		}
-	}
-	
+	$o->admin_view();
 }
 
-sub admin_modl
+sub list_dbocache
 {
-	my $o = shift;
-	
-	print 'Такой чудесный и замечательный модуль ',$o->name(),'.<br>';
-	
-	print '<a href="modr.ehtml?url=',$o->myurl(),'&act=list_dbocache" target="admin_right">List DBO Cache</a><br>';
+	for my $t (keys(%JDBI::dbo_cache))
+	{
+		print $JDBI::dbo_cache{$t},' -> ',$JDBI::dbo_cache{$t}->name(),'<br>';
+	}	
 }
 
-sub install_code
+sub default
 {
-	my $mod = shift;
-	
-	my $mr = ModRoot->new(1);
-	
-	my $to = $mod->cre();
-	$to->{'name'} = 'Информация';
-	$to->save();
-	
-	$mr->elem_paste($to);
+	print 'Страница приветствия простого модуля.';
 }
 
-return 1;
+1;

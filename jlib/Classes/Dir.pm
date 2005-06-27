@@ -1,18 +1,21 @@
+# (с) Леонов П.А., 2005
+
 package Dir;
 use strict qw(subs vars);
-
-our $name = 'Директория';
-our $page = '/page';
-our $pages_direction = 1;
-#our @aview = qw/name onpage/;
-our $add  = ' Elem Dir Papa ShortCut ';
 our @ISA = 'JDBI::Array';
-our $dont_list_me = 0;
-our $icon = 1;
 
-our %props = (
+sub _cname {'Директория'}
+sub _aview {keys %{{_props()}}}
+#sub _aview {qw/- name onpage/}
+sub _add_classes {qw/Elem Dir Papa ShortCut/}
+
+sub _props
+{
 	'name'	=> { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-	'onpage'  => { 'type' => 'int', 'name' => 'Элементов на странице' }
-);
+	'descr'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Описание' }
+}
 
-return 1;
+#-------------------------------------------------------------------------------
+
+
+1;

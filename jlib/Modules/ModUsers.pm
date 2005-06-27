@@ -1,20 +1,21 @@
+# (с) Леонов П.А., 2005
+
 package ModUsers;
 use strict qw(subs vars);
-our @ISA = 'StdModule';
+our @ISA = 'JDBI::TreeModule';
 
-our $name = 'Пользователи';
-our @classes = qw/UserGroup User/;
+sub _cname {'Пользователи'}
+sub _classes {qw/UserGroup User/}
+sub _add_classes {qw/UserGroup/}
+sub _one_instance {1}
 
-our $page = '/page';
-our $pages_direction = 1;
-our $add  = ' UserGroup ';
-our @aview = qw/name/;
-our $icon = 1;
-our $one_instance = 1;
+sub _props
+{
+	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
+}
 
-our %props = (
-	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
-);
+#-------------------------------------------------------------------------------
+
 
 sub install_code
 {
@@ -57,7 +58,6 @@ sub install_code
 	$tu->save();
 	
 	$tg->elem_paste($tu);
-	
 }
 
-return 1;
+1;

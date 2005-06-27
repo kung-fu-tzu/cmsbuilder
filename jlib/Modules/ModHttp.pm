@@ -1,19 +1,20 @@
+# (с) Леонов П.А., 2005
+
 package ModHttp;
 use strict qw(subs vars);
-our @ISA = 'StdModule';
+our @ISA = 'JDBI::TreeModule';
 
-our $name = 'Сайт';
-our @classes = qw/Elem Papa Dir/;
+sub _cname {'Сайт'}
+sub _classes {qw/Elem Papa Dir/}
+sub _add_classes {qw/Elem Dir Papa ShortCut/}
 
-our $page = '/page';
-our $pages_direction = 1;
-our $add  = ' Elem Dir Papa ShortCut ';
-our @aview = qw/name/;
-our $icon = 1;
+sub _props
+{
+	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
+}
 
-our %props = (
-	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
-);
+#-------------------------------------------------------------------------------
+
 
 sub install_code
 {
@@ -22,10 +23,10 @@ sub install_code
 	my $mr = ModRoot->new(1);
 	
 	my $to = $mod->cre();
-	$to->{'name'} = 'Сайт';
+	$to->{'name'} = $mod->cname();
 	$to->save();
 	
 	$mr->elem_paste($to);
 }
 
-return 1;
+1;

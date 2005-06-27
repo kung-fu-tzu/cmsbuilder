@@ -149,7 +149,7 @@ function showContextMenu()
 		else
 			menuStates[i] = OLE_TRISTATE_CHECKED ;
 	}
-  
+
 	// Set the context menu
 	objContent.SetContextMenu(menuStrings, menuStates);
 }

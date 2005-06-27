@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JEML;
 use strict qw(subs vars);
 
@@ -90,7 +92,8 @@ sub construct
 	my $o = shift;
 	my $i;
 	$o->{'parts'}[$#{ $o->{'parts'} }+1] = '';
-	for($i=0;$i<=$#{ $o->{'parts'} };$i+=2){
+	for($i=0;$i<=$#{ $o->{'parts'} };$i+=2)
+	{
 		$o->{'code'} .= 'print parser()->{\'parts\'}['.$i.']; $JEML::part_num = '.($i+1).'; '.$o->{'parts'}[$i+1].';';
 	}
 }
@@ -141,7 +144,4 @@ sub SSI
 	return '';
 }
 
-return 1;
-
-
-
+1;

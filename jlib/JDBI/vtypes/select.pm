@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::vtypes::select;
 our @ISA = 'JDBI::VType';
 # Список ####################################################
@@ -18,18 +20,18 @@ sub aview
 	my $val = shift;
 	my $obj = shift;
 	
-	%props = $obj->props();
-	%elem = %{ $props{$name} };
+	my $p = $obj->props();
+	%elem = %{ $p->{$name} };
 	
 	my %vars = %{ $elem{'variants'} };
 	my $var;
 	my $ret = '<SELECT name="'.$name.'">';
 	my $chkd = '';
 	
-	for $var (sort(keys(%vars))){
-	
-	if($var eq $val){ $chkd = ' selected '; }else{ $chkd = ' '; }
-	$ret .= '<OPTION '.$chkd.' value="'.$var.'">'.$vars{$var}.'</OPTION>';
+	for $var (sort(keys(%vars)))
+	{
+		if($var eq $val){ $chkd = ' selected '; }else{ $chkd = ' '; }
+		$ret .= '<OPTION '.$chkd.' value="'.$var.'">'.$vars{$var}.'</OPTION>';
 	}
 	
 	$ret .= '</SELECT>';

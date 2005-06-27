@@ -1,21 +1,21 @@
-<?eml CMS::cms(); ?><html>
+<?eml Front::access(); ?><html>
 <head>
 <title>Система администрирования</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
 <link href="style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" src="admin.js"></script>
 </head>
-<body id="id_body" bgcolor="#ffffff">
+<body bgcolor="#ffffff">
 <script language="JavaScript" src="cmenu.js"></script>
 
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
 <tr height="40" bgColor="#ff7300"><td align="center">
 	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
 	<tr>
-		<td width="10%" class="tdlr" align="left"><a href="/"><font class="site_name">На сайт...</font></a></td>
-		<td width="80%" align="center"><?eml CMS::main_menu() ?></td>
+		<td width="10%" class="tdlr" align="left"><a href="/"><font class="site_name">На&nbsp;сайт...</font></a></td>
+		<td width="80%" align="center"><?eml Front::user_xinfo('main_menu') ?></td>
 		<td width="10%" class="tdlr" align="right">
-		<?eml CMS::user_exit() ?>
+		<?eml Front::user_xinfo('exit') ?>
 		</td>
 	</tr>
 	</table>
@@ -28,21 +28,29 @@
 	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0" align="center">
 	<tr>
 		<?eml if($JConfig::have_left_frame){ ?>
-		<td width="3" id="id_left_border" bgcolor="#9AABB5"></td>
+		<td width="3" id="id_left_border" bgcolor="#9AABB5">&nbsp;</td>
 		<td width="30%" id="id_left_td" valign="top" bgcolor="#F7F7F7">
 		
 		<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
 			<tr height="40"><td>
 			<table cellSpacing="0" cellPadding="0" width="100%"  border="0" bgcolor="#F0F4F0">
-				<tr><td height="34" width="1"><img src="img/null.gif" width="14"></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td><td width="1"><img alt="Скрыть дерево" src="img/left_hide.gif" onclick="HideLeft()"></td></tr>
+				<tr><td height="34" width="1"><img src="img/null.gif" width="14"></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td><td width="1"><nobr><?eml Front::user_xinfo('fileman_btn'); ?><img alt="Скрыть дерево" src="img/left_hide.gif" onclick="HideLeft()"></nobr></td></tr>
 				<tr><td colspan="3" class="red_hr"></td></tr>
 			</table>
 			</td></tr>
-			<tr><td>
 			
+			<!-- left -->
+			<tr id="admin_left_tr"><td>
 			<iframe name="admin_left" frameBorder="0" width="100%" height="100%"></iframe>
-			
 			</td></tr>
+			<!-- /left -->
+			
+			<!-- fileman -->
+			<tr id="admin_fileman_tr" class="hidden"><td>
+			<iframe name="admin_fileman" src="fileman.ehtml" frameBorder="0" width="100%" height="100%"></iframe>
+			</td></tr>
+			<!-- /fileman -->
+			
 			<tr height="150"><td bgcolor="#F7F7F7" valign="top">
 			
 			<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
@@ -58,7 +66,7 @@
 		
 		</td>
 		<?eml } ?>
-		<td width="3" bgcolor="#9AABB5"></td>
+		<td width="3" bgcolor="#9AABB5">&nbsp;</td>
 		<td align="left">
 		
 		<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
@@ -78,7 +86,7 @@
 		</table>
 		
 		</td>
-		<td width="3" bgcolor="#9AABB5"></td>
+		<td width="3" bgcolor="#9AABB5">&nbsp;</td>
 	</TR>
 	</table>
 	
@@ -91,8 +99,8 @@
 <tr height="24" bgColor=#ff7300><td align="center">
 	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
 	<tr>
-		<td class="tdlr" align="left"><a target="admin_right" href="credits.html"><font class="authors">О системе администрирования...</font></a></td>
-		<td class="tdlr" align="right"><font class="authors"><b><nobr><?eml CMS::user_name() ?></nobr></b></font></td>
+		<td class="tdlr" align="left"><a target="admin_right" href="about.html"><font class="authors">О системе администрирования...</font></a></td>
+		<td class="tdlr" align="right"><font class="authors"><b><nobr><?eml Front::user_xinfo('name') ?></nobr></b></font></td>
 	</tr>
 	</table>
 </td></tr>

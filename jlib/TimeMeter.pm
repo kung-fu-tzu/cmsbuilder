@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package TimeMeter;
 use strict qw(subs vars);
 use Time::HiRes 'gettimeofday';
@@ -15,8 +17,8 @@ sub end
 	$end = gettimeofday();
 	$dif = $end - $beg;
 	
-	if($JConfig::print_timemeter){
-		
+	if($JConfig::print_timemeter)
+	{
 		print '<div style="POSITION:absolute; WIDTH:100%; LEFT:0px; TOP:5px" align="right"><b>',(int($dif*1000)/1000),'</b></div>';
 		return $dif;
 	}
@@ -30,4 +32,4 @@ sub telltime(&)
 	print int((gettimeofday() - $b)*1000)/1000;
 }
 
-return 1;
+1;

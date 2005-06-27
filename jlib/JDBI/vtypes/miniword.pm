@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::vtypes::miniword;
 our @ISA = 'JDBI::VType';
 # Миниворд #####################################################
@@ -16,7 +18,7 @@ sub aview
 	my $val = shift;
 	my $obj = shift;
 	
-	my $p = \%{ ref($obj).'::props' };
+	my $p = $obj->props();
 	
 	$val =~ s/\&/\&amp;/g;
 	$val =~ s/\"/\&quot;/g;

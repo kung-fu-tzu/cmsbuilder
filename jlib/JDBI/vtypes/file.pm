@@ -1,7 +1,8 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::vtypes::file;
-use CGI 'param';
 our @ISA = 'JDBI::VType';
-use JDBI;
+import JDBI;
 our $dont_html_filter = 1;
 # Содержимое файла и так не фильтруется - $val содержит имя файла.
 # А данные читаются из потока.
@@ -21,14 +22,15 @@ sub aview
 	my $obj = shift;
 	my ($file_href,$file_del,$not_perm,$block);
 	
-	my $props = \%{ ref($obj).'::props' };
+	my $props = $obj->props();
 	
 	if( $obj->{$name} ){ $file_href = '<a target="_new" href="'.$obj->file_href($name).'">Скачать...</a>'; }
 	if( $obj->{$name} and $JDBI::group->{'files'} ){ $file_del = 'Удалить - <input type=checkbox name="'.$name.'_todel">'; }
 	
-	if(!$JDBI::group->{'files'}){
-	$not_perm = '\n\nЗапись файлов для Вашей группы не разрешена!';
-	$block = 'disabled';
+	if(!$JDBI::group->{'files'})
+	{
+		$not_perm = '\n\nЗапись файлов для Вашей группы не разрешена!';
+		$block = 'disabled';
 	}
 	
 	my @exts = split(/\s+/,$props->{$name}{'ext'});
@@ -46,69 +48,73 @@ sub aedit
 {
 	my $class = shift;
 	my $name = shift;
-	my $val = shift;
+	my $val = CGI::param($name);+shift;
 	my $obj = shift;
 	
-	if(!$JDBI::group->{'files'}){
-	if($val){ $obj->err_add('Запись файлов для Вашей группы не разрешена.') }
-	return $obj->{$name};
+	if(!$JDBI::group->{'files'})
+	{
+		if($val){ $obj->err_add('Запись файлов для Вашей группы не разрешена.') }
+		return $obj->{$name};
 	}
 	
-	my $props = \%{ ref($obj).'::props' };
+	my $props = $obj->props();
 	my $id = $obj->{ID};
 	my ($buff,$len,$todel);
 	if($id =~ m/\D/){ return 0; }
 	
 	my $fdir = $JConfig::path_wwfiles.'/';
 	
-	if($val){
-	
-	unlink( $fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
-	
-	$val =~ m/(\.\w+$)/;
-	my $ext = $1;
-	
-	$ext =~ s/\W//g;
-	
-	if( index( $props->{$name}{'ext'}, ' '.lc($ext).' ') < 0 and $props->{$name}{'ext'} ne '*' ){
+	if($val)
+	{
+		unlink( $fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
 		
-		$obj->err_add('Расширение файла, '.$ext.', недопустимо.');
-		return;
-	}
-	
-	$obj->{$name} = $ext;
-	
-	my $ores;
-	$ores = open(DBO_FILE, "> $fdir".$obj->myurl().'_'.$name.'.'.$obj->{$name});
-	
-	if( !$ores ){
-		$obj->err_add('Невозможно открыть файл: '.$fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name}.'.');
-		return;
-	}
-	
-	binmode DBO_FILE;
-	while ( read($val,$buff,2048) ) {
-		print DBO_FILE $buff;
-		$len += 2048;
+		$val =~ m/(\.\w+$)/;
+		my $ext = $1;
 		
-		if( $len > ($props->{$name}{msize}*1024) ){
-			$obj->err_add('Файл слишком велик.');
+		$ext =~ s/\W//g;
+		
+		if( index( $props->{$name}{'ext'}, ' '.lc($ext).' ') < 0 and $props->{$name}{'ext'} ne '*' )
+		{
+			$obj->err_add('Расширение файла, '.$ext.', недопустимо.');
 			return;
 		}
 		
+		$obj->{$name} = $ext;
+		
+		my $ores;
+		$ores = open(DBO_FILE, "> $fdir".$obj->myurl().'_'.$name.'.'.$obj->{$name});
+		
+		if( !$ores )
+		{
+			$obj->err_add('Невозможно открыть файл: '.$fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name}.'.');
+			return;
+		}
+		
+		binmode DBO_FILE;
+		while ( read($val,$buff,2048) )
+		{
+			print DBO_FILE $buff;
+			$len += 2048;
+			
+			if( $len > ($props->{$name}{msize}*1024) )
+			{
+				$obj->err_add('Файл слишком велик.');
+				return;
+			}
+		}
+		close DBO_FILE;
+		
+		return $ext;
 	}
-	close DBO_FILE;
-	
-	return $ext;
-	
-	}else{
-	
-	$todel = param($name.'_todel');
-	
-	if($todel) {
-		unlink( $fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
-		return '';
-	}
+	else
+	{
+		$todel = CGI::param($name.'_todel');
+		
+		if($todel)
+		{
+			unlink( $fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
+			return '';
+		}
 	}
 	
 	return $obj->{$name};

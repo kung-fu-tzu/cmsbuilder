@@ -1,0 +1,10 @@
+<?eml Front::access(); ?><html>
+<head>
+<script language="JavaScript" src="admin.js"></script>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body class="left_body">
+<?eml CMS::fileman->action(); ?>
+<br>
+</body>
+</html>

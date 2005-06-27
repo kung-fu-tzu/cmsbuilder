@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict qw(subs vars);
 #use warnings;
+
 use lib '/home/engine/jlib';
 
 use TimeMeter;
@@ -11,7 +12,7 @@ JConfig::init();
 use JIO;
 use JEML;
 use JDBI;
-use CMS;
+use Front;
 
 ###################################################################################################
 # ƒополнительные пакеты (не составл€ющие €дро)
@@ -29,7 +30,7 @@ JIO->start();
 
 JDBI->init();
 JDBI->connect();
-JDBI->dousers();
+JDBI->doaccess();
 
 JEML->init();
 

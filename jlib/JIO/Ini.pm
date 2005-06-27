@@ -1,5 +1,9 @@
+# (с) Леонов П.А., 2005
+
 package JIO::Ini;
 use strict qw(subs vars);
+
+our %fnames;
 
 sub new
 {
@@ -21,14 +25,15 @@ sub cread
 	my($f,$str,$var,$val);
 	
 	open($f,$fname) or print STDERR 'JIO::Ini::cread open(<) != 1, $fname = '.$fname;
-	while($str = <$f>){
+	while($str = <$f>)
+	{
 		($var,$val) = split(/=/,$str,2);
 		chomp($val);
 		$o->{$var} = $val;
 	}
 	close($f);
 	
-	$o->{'_file_name'} = $fname;
+	$fnames{$o} = $fname;
 	
 	return 1;
 }
@@ -38,16 +43,16 @@ sub cwrite
 	my $o = shift;
 	my($fname,$f,$key);
 	
-	$fname = $o->{'_file_name'};
-	delete $$o{'_file_name'};
+	$fname = $fnames{$o};
+	
+	unless(keys %$o){ unlink($fname); return; }
 	
 	open($f,'> '.$fname) or print STDERR 'JIO::Ini::cwrite open(>) != 1, $fname = '.$fname;
-	for $key (keys(%$o)){
+	for $key (keys(%$o))
+	{
 		print $f $key,'=',$o->{$key},"\n";
 	}
 	close($f);
-	
-	$o->{'_file_name'} = $fname;
 }
 
 sub DESTROY

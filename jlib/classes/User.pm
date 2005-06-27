@@ -1,13 +1,14 @@
+# (с) Леонов П.А., 2005
+
 package User;
 use strict qw(subs vars);
-
-our $name = 'Пользователь';
 our @ISA = 'JDBI::Object';
-our @aview = qw/name login pas icq email city/;
-our $page = '/page';
-our $icon = 1;
 
-our %props = (
+sub _cname {'Пользователь'}
+sub _aview {qw/name login pas icq email city/}
+
+sub _props
+{
 	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Имя' },
 	'login'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Логин' },
 	'pas'		=> { 'type' => 'password', 'length' => 50, 'name' => 'Пароль' },
@@ -15,14 +16,17 @@ our %props = (
 	'icq'		=> { 'type' => 'int', 'name' => '#ICQ' },
 	'email'		=> { 'type' => 'string', 'length' => 50, 'name' => 'E-Mail' },
 	'city'		=> { 'type' => 'string', 'length' => 30, 'name' => 'Город' }
-);
+}
 
-sub setup_fix_table
+#-------------------------------------------------------------------------------
+
+
+sub table_cre
 {
 	my $class = shift;
 	my $ret;
 	
-	$ret = $class->SUPER::setup_fix_table(@_);
+	$ret = $class->SUPER::table_cre(@_);
 	
 	$JDBI::dbh->do('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `sid` )');
 	$JDBI::dbh->do('ALTER TABLE `dbo_'.$class.'` ADD INDEX ( `login` )');
@@ -44,4 +48,4 @@ sub save
 	return $ret;
 }
 
-return 1;
+1;

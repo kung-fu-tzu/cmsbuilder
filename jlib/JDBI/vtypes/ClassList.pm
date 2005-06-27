@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package JDBI::vtypes::ClassList;
 our @ISA = 'JDBI::VType';
 # Список ####################################################
@@ -24,10 +26,10 @@ sub aview
 	
 	my $tc = $cn->new();
 	
-	for $to ($tc->sel_where(' 1 ')){
-	
-	if($to->{'ID'} eq $val){ $chkd = ' selected '; }else{ $chkd = ' '; }
-	$ret .= '<OPTION '.$chkd.' value="'.$to->{'ID'}.'">'.$to->name().'</OPTION>';
+	for $to ($tc->sel_where(' 1 '))
+	{
+		if($to->{'ID'} eq $val){ $chkd = ' selected '; }else{ $chkd = ' '; }
+		$ret .= '<OPTION '.$chkd.' value="'.$to->{'ID'}.'">'.$to->name().'</OPTION>';
 	}
 	
 	$ret .= '</SELECT>';

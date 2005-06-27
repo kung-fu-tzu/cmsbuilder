@@ -1,24 +1,5 @@
-<!--
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003 Frederico Caldeira Knabben
- *
- * Licensed under the terms of the GNU Lesser General Public License
- * (http://www.opensource.org/licenses/lgpl-license.php)
- *
- * For further information go to http://www.fredck.com/FCKeditor/ 
- * or contact fckeditor@fredck.com.
- *
- * fck_image.html: Image dialog box.
- *
- * Authors:
- *   Frederico Caldeira Knabben (fckeditor@fredck.com)
--->
-<HTML>
-	<HEAD>
-		<TITLE>Вставка изображения</TITLE>
-		<META name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
-		<LINK rel="stylesheet" type="text/css" href="../css/fck_dialog.css">
-		<SCRIPT language="JavaScript">
+<!-- * FCKeditor - The text editor for internet * Copyright (C) 2003 Frederico Caldeira Knabben * * Licensed under the terms of the GNU Lesser General Public License * (http://www.opensource.org/licenses/lgpl-license.php) * * For further information go to http://www.fredck.com/FCKeditor/  * or contact fckeditor@fredck.com. * * fck_image.html: Image dialog box. * * Authors: *   Frederico Caldeira Knabben (fckeditor@fredck.com)-->
+<HTML>	<HEAD>		<TITLE>Вставка изображения</TITLE>		<META name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">		<LINK rel="stylesheet" type="text/css" href="../css/fck_dialog.css">		<SCRIPT language="JavaScript">
 // Get browsing configuration
 var bCanBrowse = dialogArguments.config.ImageBrowser ;
 var sBrowseURL = dialogArguments.config.ImageBrowserURL ;
@@ -306,153 +287,25 @@ function setImage(sImageURL)
 	txtURL.value = sImageURL ;
 	updatePreview() ;
 }
-		</SCRIPT>
-	</HEAD>
-	<BODY bottommargin="5" leftmargin="5" topmargin="5" rightmargin="5" onload="setDefaults()">
-		<TABLE cellspacing="1" cellpadding="1" border="0" width="100%" class="dlg" height="100%">
-			<TR>
-				<TD>
-					<TABLE cellspacing="0" cellpadding="0" width="100%" border="0">
-						<TR>
-							<TD valign="top">URL-Адрес:<BR>
-								<INPUT style="WIDTH: 100%" type="text" id="txtURL" onblur="updatePreview();">
-								<!--TABLE cellspacing="0" cellpadding="0" width="100%" border="0" style="DISPLAY: none" id="tableUpload"-->
-								<TABLE cellspacing="0" style="DISPLAY: none" cellpadding="0" width="100%" border="0" id="tableUpload">
-									<TR>
-										<FORM id="frmUpload" enctype="multipart/form-data" method="post" target="UploadWindow">
-											<TD>Загрузить с моего компьютера:<BR>
-												<INPUT style="WIDTH: 100%" type="file" name="FCKeditor_File" id="FCKeditor_File">
-											</TD>
-									</TR>
-									<TR>
-										<TD align="right">
-											<INPUT id="btnUpload" type="button" value="Сохранить на сервере" onclick="uploadFile();">
-										</TD>
-										</FORM>
-									</TR>
-								</TABLE>
-							</TD>
-							<TD width="10">&nbsp;&nbsp;&nbsp;
-							</TD>
-							<TD valign="top" width="100">
-								<INPUT type="button" style="WIDTH: 100%" value="Ok" onclick="ok();">
-								<BR>
-								<INPUT type="button" style="WIDTH: 100%" value="Cancel" onclick="cancel();">
-								<BR>
-								<INPUT type="button" style="DISPLAY: none; WIDTH: 100%" value="Обзор сервера" onclick="browserServer();" id="btnBrowse">
-							</TD>
-						</TR>
-					</TABLE>
-				</TD>
-			</TR>
-			<TR>
-				<TD>Текст для замены:<BR>
-					<INPUT style="WIDTH: 100%" type="text" id="txtAlt" onkeyup="updatePreview();">
-				</TD>
-			</TR>
-			<TR height="100%">
-				<TD>
-					<TABLE cellspacing="0" cellpadding="0" width="100%" border="0" height="100%">
-						<TR>
-							<TD width="100" valign="top">
-								<br>
-								<TABLE cellspacing="0" cellpadding="0" border="0">
-									<TR>
-										<TD>Ширина&nbsp;</TD>
-										<TD>
-											<INPUT type="text" size="3" id="txtWidth" onkeyup="sizeChanged('Width');"></TD>
-									</TR>
-									<TR>
-										<TD>Высота&nbsp;</TD>
-										<TD>
-											<INPUT type="text" size="3" id="txtHeight" onkeyup="sizeChanged('Height');"></TD>
-									</TR>
-								</TABLE>
-								<INPUT type="checkbox" class="CheckBox" checked id="chkLockRatio" onclick="onLockRationClick();">
-								Пропорции
-								<BR>
-								<INPUT type="button" value="Исходный размер" onclick="resetSize();">
-								<TABLE cellspacing="0" cellpadding="0" border="0">
-									<TR height=30>
-										<TD colspan=2><nobr>Граница&nbsp;</nobr></TD>
-										<TD colspan=2>
-											<INPUT type="text" size="2" value="0" id="txtBorder" onkeyup="updatePreview();"></TD>
-									</TR>
-									<!--TR>
-										<TD><nobr>Отступ по&nbsp;<br>горизонтали&nbsp;</nobr></TD>
-										<TD>
-											<INPUT type="text" size="2" id="txtHSpace" onkeyup="updatePreview();"></TD>
-									</TR>
-									<TR>
-										<TD><nobr>Отступ по&nbsp;<br>вертикали&nbsp;</nobr></TD>
-										<TD>
-											<INPUT type="text" size="2" id="txtVSpace" onkeyup="updatePreview();"></TD>
-									</TR-->
-								</TABLE>
-
-								<TABLE cellspacing="0" cellpadding="0" border="0">
-
-									<TR>
-										<TD><nobr>Сверху&nbsp;</nobr></TD>
-										<TD>
-											<INPUT type="text" size="2" id="txtMarginTop" onkeyup="updatePreview();"></TD>
-										<TD><nobr>Снизу&nbsp;</nobr></TD>
-										<TD>
-											<INPUT type="text" size="2" id="txtMarginBottom" onkeyup="updatePreview();"></TD>
-									</TR>
-									<TR>
-										<TD><nobr>Слева&nbsp;</nobr></TD>
-										<TD>
-											<INPUT type="text" size="2" id="txtMarginLeft" onkeyup="updatePreview();"></TD>
-										<TD><nobr>Справа&nbsp;</nobr></TD>
-										<TD>
-											<INPUT type="text" size="2" id="txtMarginRight" onkeyup="updatePreview();"></TD>
-									</TR>
-								</TABLE>
-
-								<TABLE cellspacing="0" cellpadding="0" border="0">
-									<TR>
-										<TD colspan=2>Положение</TD>
-										<TD colspan=2><SELECT id="cmbAlign" onchange="updatePreview();">
-												<OPTION value="" selected></OPTION>
-												<OPTION value="left">Left</OPTION>
-												<OPTION value="absBottom">Abs Bottom</OPTION>
-												<OPTION value="absMiddle">Abs Middle</OPTION>
-												<OPTION value="baseline">Baseline</OPTION>
-												<OPTION value="bottom">Bottom</OPTION>
-												<OPTION value="middle">Middle</OPTION>
-												<OPTION value="right">Right</OPTION>
-												<OPTION value="textTop">Text Top</OPTION>
-												<OPTION value="top">Top</OPTION>
-											</SELECT></TD>
-									</TR>
-								</TABLE>
-							</TD>
-							<TD>&nbsp;&nbsp;&nbsp;</TD>
-							<TD width="100%">
-								<table cellpadding="0" cellspacing="0" height="100%" width=100%>
-									<tr>
-										<td>Предпросмотр</td>
-									</tr>
-									<tr height="100%">
-										<td width=100%>
-											<DIV class="ImagePreviewArea" width=100% height=100%>
-												<IMG id="imgPreview" border=0>
-Согласно мнению известных философов боль индуктивно осмысляет мир, условно. Общество фокусирует закон внешнего мира. Современная ситуация иллюзорна. Структурализм создает интеллект, несмотря на мнение авторитетов. Частное принимает во внимание неоднозначный конфликт. Отношение к современности, следовательно, профанирует принцип восприятия. Постмодернизм не так уж очевиден. Объект деятельности непредвзято транспонирует структурализм 
-
-Объект деятельности контролирует интеллект. Напряжение трогательно наивно. Отсюда естественно следует, что визуальность принимает во внимание паллиативный принцип восприятия. Надо сказать, что освобождение создает типичный класс эквивалентности, изменяя привычную реальность. Представление, пренебрегая деталями, оспособляет субъективный смысл жизни. Объект деятельности порождает и обеспечивает конфликт. Принцип восприятия нетривиален. Ощущение мира нетривиально. 
-
-											</DIV>
-										</td>
-									</tr>
-								</table>
-							</TD>
-						</TR>
-					</TABLE>
-				</TD>
-			</TR>
-		</TABLE>
-		<SCRIPT language="javascript">
+		</SCRIPT>	</HEAD>	<BODY bottommargin="5" leftmargin="5" topmargin="5" rightmargin="5" onload="setDefaults()">		<TABLE cellspacing="1" cellpadding="1" border="0" width="100%" class="dlg" height="100%">			<TR>				<TD>					<TABLE cellspacing="0" cellpadding="0" width="100%" border="0">						<TR>							<TD valign="top">URL-Адрес:<BR>								<INPUT style="WIDTH: 100%" type="text" id="txtURL" onblur="updatePreview();">								<!--TABLE cellspacing="0" cellpadding="0" width="100%" border="0" style="DISPLAY: none" id="tableUpload"-->								<TABLE cellspacing="0" style="DISPLAY: none" cellpadding="0" width="100%" border="0" id="tableUpload">									<TR>										<FORM id="frmUpload" enctype="multipart/form-data" method="post" target="UploadWindow">											<TD>Загрузить с моего компьютера:<BR>												<INPUT style="WIDTH: 100%" type="file" name="FCKeditor_File" id="FCKeditor_File">											</TD>									</TR>									<TR>										<TD align="right">											<INPUT id="btnUpload" type="button" value="Сохранить на сервере" onclick="uploadFile();">										</TD>										</FORM>									</TR>								</TABLE>							</TD>							<TD width="10">&nbsp;&nbsp;&nbsp;							</TD>							<TD valign="top" width="100">								<INPUT type="button" style="WIDTH: 100%" value="Ok" onclick="ok();">								<BR>								<INPUT type="button" style="WIDTH: 100%" value="Cancel" onclick="cancel();">								<BR>								<INPUT type="button" style="DISPLAY: none; WIDTH: 100%" value="Обзор сервера" onclick="browserServer();" id="btnBrowse">							</TD>						</TR>					</TABLE>				</TD>			</TR>			<TR>				<TD>Текст для замены:<BR>					<INPUT style="WIDTH: 100%" type="text" id="txtAlt" onkeyup="updatePreview();">				</TD>			</TR>			<TR height="100%">				<TD>					<TABLE cellspacing="0" cellpadding="0" width="100%" border="0" height="100%">						<TR>							<TD width="100" valign="top">								<br>								<TABLE cellspacing="0" cellpadding="0" border="0">									<TR>										<TD>Ширина&nbsp;</TD>										<TD>											<INPUT type="text" size="3" id="txtWidth" onkeyup="sizeChanged('Width');"></TD>									</TR>									<TR>										<TD>Высота&nbsp;</TD>										<TD>											<INPUT type="text" size="3" id="txtHeight" onkeyup="sizeChanged('Height');"></TD>									</TR>								</TABLE>								<INPUT type="checkbox" class="CheckBox" checked id="chkLockRatio" onclick="onLockRationClick();">								Пропорции								<BR>								<INPUT type="button" value="Исходный размер" onclick="resetSize();">								<TABLE cellspacing="0" cellpadding="0" border="0">									<TR height=30>										<TD colspan=2><nobr>Граница&nbsp;</nobr></TD>										<TD colspan=2>											<INPUT type="text" size="2" value="0" id="txtBorder" onkeyup="updatePreview();"></TD>									</TR>									<!--TR>										<TD><nobr>Отступ по&nbsp;<br>горизонтали&nbsp;</nobr></TD>										<TD>											<INPUT type="text" size="2" id="txtHSpace" onkeyup="updatePreview();"></TD>									</TR>									<TR>										<TD><nobr>Отступ по&nbsp;<br>вертикали&nbsp;</nobr></TD>										<TD>											<INPUT type="text" size="2" id="txtVSpace" onkeyup="updatePreview();"></TD>									</TR-->								</TABLE>								<TABLE cellspacing="0" cellpadding="0" border="0">									<TR>										<TD><nobr>Сверху&nbsp;</nobr></TD>										<TD>											<INPUT type="text" size="2" id="txtMarginTop" onkeyup="updatePreview();"></TD>										<TD><nobr>Снизу&nbsp;</nobr></TD>										<TD>											<INPUT type="text" size="2" id="txtMarginBottom" onkeyup="updatePreview();"></TD>									</TR>									<TR>										<TD><nobr>Слева&nbsp;</nobr></TD>										<TD>											<INPUT type="text" size="2" id="txtMarginLeft" onkeyup="updatePreview();"></TD>										<TD><nobr>Справа&nbsp;</nobr></TD>										<TD>											<INPUT type="text" size="2" id="txtMarginRight" onkeyup="updatePreview();"></TD>									</TR>								</TABLE>								<TABLE cellspacing="0" cellpadding="0" border="0">									<TR>										<TD colspan=2>Положение</TD>										<TD colspan=2><SELECT id="cmbAlign" onchange="updatePreview();">												<OPTION value="" selected></OPTION>												<OPTION value="left">Left</OPTION>												<OPTION value="absBottom">Abs Bottom</OPTION>												<OPTION value="absMiddle">Abs Middle</OPTION>												<OPTION value="baseline">Baseline</OPTION>												<OPTION value="bottom">Bottom</OPTION>												<OPTION value="middle">Middle</OPTION>												<OPTION value="right">Right</OPTION>												<OPTION value="textTop">Text Top</OPTION>												<OPTION value="top">Top</OPTION>											</SELECT></TD>									</TR>								</TABLE>							</TD>							<TD>&nbsp;&nbsp;&nbsp;</TD>							<TD width="100%">								<table cellpadding="0" cellspacing="0" height="100%" width=100%>									<tr>										<td>Предпросмотр</td>									</tr>									<tr height="100%">										<td width=100%>											<DIV class="ImagePreviewArea" width=100% height=100%>												<IMG id="imgPreview" border=0>
+Общие сведения о протоколе TCP/IP — самый популярный сетевой протокол, служащий основой Интернета. Предлагаемые им средства маршрутизации обеспечивают максимальную гибкость функционирования сетей предприятий. В Windows XP протокол TCP/IP устанавливается автоматически.
+
+В сетях TCP/IP клиентам должны быть назначены IP-адреса. Кроме того, клиентам может потребоваться служба имен или алгоритм разрешения имен. В этом разделе рассказывается о том, какие методы IP-адресации и разрешения имен в сетях TCP/IP поддерживает компонент «Сетевые подключения». Здесь также описаны служебные программы FTP и Telnet, входящие в комплект протокола TCP/IP.
+
+Назначение IP-адресов подключениям удаленного доступа и подключениям виртуальных частных сетей (VPN)
+Каждому удаленному компьютеру, подключающемуся к серверу удаленного доступа в сети TCP/IP системы Windows, этот сервер присваивает IP-адрес.
+
+Если нужно использовать фиксированный IP-адрес, сервер удаленного доступа должен быть настроен таким образом, чтобы разрешать пользователям запрашивать конкретный адрес.
+
+Разрешение имен для сетевых подключений и подключений удаленного доступа
+Помимо IP-адреса, для сетевых подключений и подключений удаленного доступа в сети TCP/IP может потребоваться средство сопоставления имен компьютеров с IP-адресами. Существует четыре механизма разрешения имен: служба DNS, служба WINS, широковещательное разрешение имен и использование файлов Hosts и Lmhosts. 
+
+В небольших сетях, где IP-адреса не изменяются, сетевые подключения и подключения удаленного доступа могут пользоваться для разрешения имен файлами Hosts и Lmhosts. Эти файлы находятся на локальном диске, так что в этом случае не требуется передавать серверу WINS или DNS запросы на разрешение имен и ожидать от него ответа.
+
+Служебные программы Интернета
+В комплект протокола TCP/IP входят служебные программы FTP (File Transfer Protocol) и Telnet. FTP — это приложение с текстовым интерфейсом, позволяющее подключаться к FTP-серверам и передавать файлы. Telnet обладает графическим интерфейсом и позволяет входить на удаленный компьютер и выполнять команды так же, как если бы пользователь находился за клавиатурой этого компьютера. В Интернете можно найти различные версии FTP, Telnet и других программ, основанных на более ранних стандартах Интернета; они также имеются в продаже.
+
+											</DIV>										</td>									</tr>								</table>							</TD>						</TR>					</TABLE>				</TD>			</TR>		</TABLE>		<SCRIPT language="javascript">
 <!--
 	if (bCanUpload)
 	{

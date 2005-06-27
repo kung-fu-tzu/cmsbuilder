@@ -1,18 +1,23 @@
-<?eml CMS::cms(); ?><html>
+<?eml Front::access(); ?><html>
 <head>
-<link href="style.css" rel="stylesheet" type="text/css">
 <link href="cmenu.css" rel="stylesheet" type="text/css">
+<link href="style.css" rel="stylesheet" type="text/css">
 <script language="JavaScript" src="admin.js"></script>
+<script language="JavaScript" src="editor/fckeditor.js"></script>
 </head>
-<body class="left_body">
+<body  class="left_body">
 <script language="JavaScript" src="cmenu.js"></script>
-<?eml CMS::left_tree() ?>
-<br>
-	
+
+<?eml Front::left() ?>
+
+</td></tr>
+</table>
+
+
 <script language="JavaScript">
-	
-	<?eml CMS::cmenus(); ?>
-	
+<?eml Front::cmenus(); ?>
+if(parent.admin_right.CMS_admin_path)
+	parent.admin_right.CMS_admin_path();
 </script>
 
 </body>

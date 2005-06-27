@@ -1,3 +1,5 @@
+# (с) Леонов П.А., 2005
+
 package login;
 use strict qw(subs vars);
 use CGI 'param';
@@ -16,31 +18,33 @@ sub act
 	
 	srand();
 	
-	unless($act){
+	unless($act)
+	{
 		print 'Вы не вошли в систему или у Вас нет разрешений<br>для доступа к этому разделу или элементу.<br>';
 	}
 	
-	if($act eq 'in'){
-		
-		if(!JIO::Users->login($login,$pas)){
-			
+	if($act eq 'in')
+	{
+		if(!JIO::Users->login($login,$pas))
+		{
 			print '<font color="#FF0000">Ошибка:</font> ',$JIO::Users::errstr;
-			
-		}else{
+		}
+		else
+		{
 			print '<script>location.href = "',$href,'?',rand(),'"</script>';
 		}
 	}
 	
-	if($act eq 'out'){
-		
-		if(!JIO::Users->logout()){
-			
+	if($act eq 'out')
+	{
+		if(!JIO::Users->logout())
+		{
 			print '<center><font color=red>Ошибка:</font> ',$JLogin::errstr,'';
-			
-		}else{
+		}
+		else
+		{
 			print '<script>location.href = "/?'.rand().'"</script>';
 		}
-		
 	}
 	
 }
@@ -51,8 +55,8 @@ sub list
 	
 	my(@ga,@ua,$u,$g,$modu);
 	
-	JIO::Users::usr_off {
-		
+	JIO::Users::acs_off
+	{
 		print '<table><tr><td><p align="left">Система находится в тестовом режиме.<br> Выберите пользователя:</p>';
 		
 		$modu = url('ModUsers1');
@@ -60,11 +64,12 @@ sub list
 		
 		print $modu->name(),':<br><div class="left_dir"><div class="left_dir">';
 		
-		for $g (@ga){
-			
+		for $g (@ga)
+		{
 			print '<b>',$g->name(),'</b><br><div class="left_dir">';
 			
-			for $u ($g->get_all()){
+			for $u ($g->get_all())
+			{
 				if($u->{'ID'} == $JConfig::user_guest){next;}
 				print '<a href="?act=in&login=',$u->{'login'},'&pas=*">',$u->name(),'</a><br>';
 			}
@@ -73,10 +78,8 @@ sub list
 		}
 		
 		print '</div></div></td></tr></table>';
-		
 	}
-	
 }
 
 
-return 1;
+1;

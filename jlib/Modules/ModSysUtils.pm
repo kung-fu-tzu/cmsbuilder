@@ -1,19 +1,17 @@
+# (с) Леонов П.А., 2005
+
 package ModSysUtils;
 use strict qw(subs vars);
-our @ISA = 'StdModule';
+our @ISA = 'JDBI::SimpleModule';
 
-our $name = 'Системные Утилиты';
-our @classes = qw/ShortCut/;
+sub _cname {'Системные Утилиты'}
+# Смысл модуля в слудующей строке. Единственное, что он делает - это устанавливает свои классы
+sub _classes {qw/ShortCut/}
+sub _one_instance {1}
 
-our $page = '/page';
-our $add  = ' ';
-our @aview = qw/name/;
-our $one_instance = 1;
-our $simple = 1;
-our $icon = 1;
+#-------------------------------------------------------------------------------
 
-our %props = (
-	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' }
-);
 
-return 1;
+sub install_code {}
+
+1;
