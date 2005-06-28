@@ -21,7 +21,7 @@ sub table_cre
 
 sub aview
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	my $obj = shift;
@@ -36,16 +36,22 @@ sub aview
 
 sub aedit
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	
 	return $val;
 }
 
+sub filter_insert
+{
+	my $c = shift;
+	my $name = shift;
+}
+
 sub filter_load
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	my $obj = shift;
@@ -53,7 +59,7 @@ sub filter_load
 
 sub filter_save
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	my $obj = shift;
@@ -61,7 +67,7 @@ sub filter_save
 
 sub del
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	my $obj = shift;

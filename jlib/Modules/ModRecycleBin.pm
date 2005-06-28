@@ -15,6 +15,9 @@ sub _rpcs
 #-------------------------------------------------------------------------------
 
 
+our $version = '1.5';
+our $ini = JIO::Ini->new($JConfig::path_etc.'/ModRecycleBin.ini');
+
 sub admin_cmenu_for_self
 {
 	my $o = shift;
@@ -43,7 +46,7 @@ sub modrecyclebin_empty
 	my $o = shift;
 	
 	for my $i (1..$o->len()){ $o->elem_del(1); }
-	my $ini = JIO::Ini->new($JConfig::path_etc.'/ModRecycleBin.ini');
+	
 	%$ini = ();
 	
 	$o->{'_print'} = 'Корзина успешно очищена';
@@ -100,7 +103,7 @@ sub my_context
 	
 	if(ref($o->papaN(0)) eq 'ModRecycleBin')
 	{
-		if(ref($o->papa()) eq 'ModRecycleBin')
+		if(ref($o->papa()) eq 'ModRecycleBin' and $ModRecycleBin::ini->{$o->myurl()})
 		{
 			print 'elem_add(JHR());';
 			print 'elem_add(JMIHref("Восстановить","right.ehtml?url=',$o->papa(),'&act=cms_restore_from_recyclebin&enum=',$o->enum(),'"));';
@@ -120,22 +123,19 @@ sub cms_restore_from_recyclebin
 	
 	$o->{'_do_list'} = 1;
 	
-	my $ini = JIO::Ini->new($JConfig::path_etc.'/ModRecycleBin.ini');
-	
 	my $e = $o->elem_cut($r->{'enum'});
 	
-	my $rp = JDBI::url($ini->{$e->myurl()});
-	
-	unless($rp)
+	unless($ModRecycleBin::ini->{$e->myurl()})
 	{
 		$o->elem_paste($e);
 		$o->err_add('Неизвестно исходное местоположение объекта.');
 		return;
 	}
 	
-	delete $ini->{$e->myurl()};
-	
+	my $rp = JDBI::url($ModRecycleBin::ini->{$e->myurl()});
 	$rp->elem_paste($e);
+	
+	delete $ModRecycleBin::ini->{$e->myurl()};
 }
 
 sub cms_move_to_recyclebin
@@ -149,8 +149,8 @@ sub cms_move_to_recyclebin
 	my $e = $o->elem_cut($r->{'enum'});
 	$rb->elem_paste($e);
 	
-	my $ini = JIO::Ini->new($JConfig::path_etc.'/ModRecycleBin.ini');
-	$ini->{$e->myurl()} = $o->myurl();
+	$ModRecycleBin::ini = JIO::Ini->new($JConfig::path_etc.'/ModRecycleBin.ini');
+	$ModRecycleBin::ini->{$e->myurl()} = $o->myurl();
 	
 	$o->{'_do_list'} = 1;
 }

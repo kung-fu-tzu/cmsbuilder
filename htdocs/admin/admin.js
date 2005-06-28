@@ -229,7 +229,6 @@ function DnD_Line_OnMouseOut(num,obj)
 	drag_num = -1;
 }
 
-
 function DnD_OnMouseUp()
 {
 	document.onmouseup = f_drag_mouse_up;

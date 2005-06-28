@@ -115,12 +115,12 @@ sub admin_pname
 	return '<nobr style="CURSOR: default">'.$icon.'&nbsp;&nbsp;'.$ret.'&nbsp;</nobr>';
 }
 
-sub admin_iname_ex
+sub admin_name_ex
 {
 	my $c = shift;
 	my %opt = @_;
 	
-	if(length($opt{'name'}) > $JConfig::admin_max_left_view_len){ $opt{'name'} = substr($opt{'name'},0,$JConfig::admin_max_view_name_len-1).'...' }
+	if(length($opt{'name'}) > $JConfig::admin_max_view_name_len){ $opt{'name'} = substr($opt{'name'},0,$JConfig::admin_max_view_name_len-1).'...' }
 	
 	return '<nobr '.$opt{'js'}.' style="CURSOR: default"><img align="absmiddle" src="'.($opt{'icon'}||'icons/default.gif').'">&nbsp;&nbsp;'.($opt{'href'}?'<a '.($opt{'targ'}?'target="'.$opt{'targ'}.'"':'').' href="'.$opt{'href'}.'">':'').($opt{'name'}||'Без имени').($opt{'href'}?'</a>':'').'</nobr>'
 }
@@ -246,15 +246,12 @@ sub admin_edit
 		$val = $r->{$key};
 		$vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
 		
-		if(!$JDBI::group->{'html'} and !${$vtype.'::dont_html_filter'}){ $val = JDBI::HTMLfilter($val); }
+		unless($JDBI::group->{'html'} || ${$vtype.'::dont_html_filter'}){ $val = JDBI::HTMLfilter($val); }
 		
-		$val = $vtype->aedit($key,$val,$o);
-		
-		$o->{$key} = $val;
+		$o->{$key} = $vtype->aedit($key,$val,$o,$r);
 	}
 	
-	if($o->err_is()){ $o->{'_print'} = "Изменения частично внесены.<br>\n"; }
-	else{ $o->{'_print'} = "Изменения успешно внесены.<br>\n"; }
+	$o->{'_print'} = $o->err_is()?'Изменения частично внесены.<br>':'Изменения успешно внесены.<br>'
 }
 
 sub admin_cre
@@ -337,7 +334,7 @@ sub admin_props
 	for $key (@keys)
 	{
 		$vtype = 'JDBI::vtypes::'.$p->{$key}{'type'};
-		if(${ $vtype.'::admin_own_html' })
+		if(${$vtype.'::admin_own_html'})
 		{
 			print $vtype->aview( $key, $o->{$key}, $o );
 		}

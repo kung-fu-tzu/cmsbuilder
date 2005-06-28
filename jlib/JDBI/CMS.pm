@@ -146,7 +146,7 @@ sub cms_array_elem_move2
 	
 	sess()->{'admin_refresh_left'} = 0;
 	
-	print 'Выберите раздел, в который переместить элемент: <b>',$elem->admin_pname(),'</b>.<br><br>';
+	print 'Выберите раздел, в который переместить элемент: <b>',ref($elem)->admin_name_ex('name' => $elem->name()),'</b>.<br><br>';
 	
 	my $count = 0;
 	
@@ -159,7 +159,7 @@ sub cms_array_elem_move2
 			unless($d->elem_can_paste($elem)){ next; }
 			unless($d->access('a')){ next; }
 			
-			print $d->admin_name('?act=cms_array_elem_move2&url='.$from->myurl().'&to='.$d->myurl().'&enum='.$enum),'<br>';
+			print $d->admin_name('?url='.$from->myurl().'&act=cms_array_elem_move2&to='.$d->myurl().'&enum='.$enum),'<br>';
 			$count++;
 		}
 	}

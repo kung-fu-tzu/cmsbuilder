@@ -82,7 +82,9 @@ sub des_name
 sub myurl
 {
 	my $o = shift;
-	return ref($o).$o->{'ID'};
+	my $cn = ref($o);
+	$cn =~ s/\:\:/\./g;
+	return $cn.$o->{'ID'};
 }
 
 sub new

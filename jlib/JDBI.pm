@@ -372,6 +372,13 @@ sub MD5
 	return $res;
 }
 
+sub translit
+{
+	my $val = shift;
+	$val =~ tr/ÀÁÂÃÄÅ¨ÆÇÈÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÜÛÚİŞßàáâãäå¸æçèêëìíîïğñòóôõö÷øùüûúışÿ/ABVGDEEJZIKLMNOPRSTUFHC4SSQIQEUYabvgdeejziklmnoprstufhc4ssqiqeuy/;
+	return $val;
+}
+
 sub len2size
 {
 	my $len = shift;

@@ -146,31 +146,34 @@ sub reload
 {
 	my $o = shift;
 	my $p = $o->props();
+	my $res;
 	
-	unless($o->{'ID'}){ return; }
-	if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
-	
-	my $str = $JDBI::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
-	$str->execute($o->{'ID'});
-	
-	my $res = $str->fetchrow_hashref('NAME_lc');
-	
-	if($res->{'id'} != $o->{'ID'})
+	if($o->{'ID'})
 	{
-		print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n";
-		if($JConfig::lfnexrow_error505){ JIO::err505('exrow_error'); }
-		$o->clear();
-		return;
+		if($o->{'ID'} =~ m/\D/){ JIO::err505('DBO: Non-digital ID passed to reload(), '.ref($o).", $o->{'ID'}"); }
+		
+		my $str = $JDBI::dbh->prepare('SELECT * FROM `dbo_'.ref($o).'` WHERE ID = ? LIMIT 1');
+		$str->execute($o->{'ID'});
+		
+		$res = $str->fetchrow_hashref('NAME_lc');
+		
+		if($res->{'id'} != $o->{'ID'})
+		{
+			print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n";
+			if($JConfig::lfnexrow_error505){ JIO::err505('exrow_error'); }
+			$o->clear();
+			return;
+		}
+		
+		$o->{'PAPA_ID'} = $res->{'papa_id'};
+		$o->{'PAPA_CLASS'} = $res->{'papa_class'};
+		$o->{'OID'} = $res->{'oid'};
+		$o->{'CTS'} = $res->{'cts'};
+		$o->{'ATS'} = $res->{'ats'};
+		$o->{'SHCUT'} = $res->{'shcut'};
 	}
 	
-	$o->{'PAPA_ID'} = $res->{'papa_id'};
-	$o->{'PAPA_CLASS'} = $res->{'papa_class'};
-	$o->{'OID'} = $res->{'oid'};
-	$o->{'CTS'} = $res->{'cts'};
-	$o->{'ATS'} = $res->{'ats'};
-	$o->{'SHCUT'} = $res->{'shcut'};
-	
-	unless($o->access('r')){ return; }
+	unless($o->access('r')){ $res = {}; }
 	
 	my $vt;
 	for my $key (keys( %$p ))
@@ -206,7 +209,7 @@ sub save
 	#print 'Saving: ',$o->myurl(),'<br>';
 	
 	my $sql = 'UPDATE `dbo_'.ref($o).'` SET ';
-	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?';#SHCUT = ?, 
+	$sql .= ' OID = ?, PAPA_ID = ?, PAPA_CLASS = ?';
 	
 	my $vt;
 	for my $key (keys( %$p ))
@@ -238,17 +241,51 @@ sub save
 
 sub insert
 {
-	my $o = shift;
+	my $c = shift;
+	
+	my $id = $c->insertid();
+	my $p = $c->props();
+	my (@vals,$val,@flds,$sql);
+	
+	$sql = 'UPDATE `dbo_'.$c.'` SET ';
+	
+	my $vt;
+	for my $key (keys( %$p ))
+	{
+		$vt = 'JDBI::vtypes::'.$p->{$key}{'type'};
+		
+		if(${$vt.'::virtual'}){ next }
+		unless(${$vt.'::filter'}){ next }
+		
+		$val = $vt->filter_insert($key,$c);
+		
+		push @flds," $key = ? ";
+		push @vals, $val;
+	}
+	
+	$sql .= join(', ',@flds).' WHERE ID = ? LIMIT 1';
+	
+	if(@flds)
+	{
+		my $str = $JDBI::dbh->prepare($sql);
+		$str->execute(@vals,$id);
+	}
+	
+	return $id;
+}
+
+sub insertid
+{
+	my $c = shift;
 	my $str;
 	
-	$str = $JDBI::dbh->prepare('INSERT INTO `dbo_'.ref($o).'` (OID,CTS) VALUES (?,NOW())');
+	$str = $JDBI::dbh->prepare('INSERT INTO `dbo_'.$c.'` (OID,CTS) VALUES (?,NOW())');
 	$str->execute($JDBI::user->{'ID'});
 	
-	$str = $JDBI::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.ref($o).'` LIMIT 1');
+	$str = $JDBI::dbh->prepare('SELECT LAST_INSERT_ID() FROM `dbo_'.$c.'` LIMIT 1');
 	$str->execute();
-	my $id;
 	
-	($id) = $str->fetchrow_array();
+	my ($id) = $str->fetchrow_array();
 	
 	return $id;
 }

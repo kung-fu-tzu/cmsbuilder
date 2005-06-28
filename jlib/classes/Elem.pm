@@ -11,7 +11,7 @@ sub _props
 {
 	'name'		=> { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
 	'etext'		=> { 'type' => 'text', 'name' => 'Содержимое' },
-	'tf'		=> { 'type' => 'file', 'msize' => 100, 'ext' => ' bmp jpg gif txt html ', 'name' => 'File' }
+	'tf'		=> { 'type' => 'file', 'msize' => 100, 'ext' => ' bmp jpg gif txt html ', 'name' => 'Файл' }
 }
 
 #-------------------------------------------------------------------------------

@@ -11,9 +11,22 @@ sub table_cre
 	return ' INT(11) ';
 }
 
+sub filter_insert
+{
+	my $c = shift;
+	my $name = shift;
+	my $hc = shift;
+	
+	my $p = $hc->props();
+	
+	$to = $p->{$name}{'class'}->cre();
+	
+	return $to->{'ID'};
+}
+
 sub filter_load
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	my $obj = shift;
@@ -21,19 +34,9 @@ sub filter_load
 	my $to;
 	my $p = $obj->props();
 	
-	unless($val)
-	{
-		$to = $p->{$name}{'class'}->cre();
-		$to->{'PAPA_ID'} = $obj->{'ID'};
-		$to->{'PAPA_CLASS'} = ref($obj);
-		$to->save();
-		
-		$obj->{'_save_after_reload'} = 1;
-	}
-	else
-	{
-		$to = $p->{$name}{'class'}->new($val);
-	}
+	$to = $p->{$name}{'class'}->new($val);
+	$to->{'PAPA_ID'} = $obj->{'ID'};
+	$to->{'PAPA_CLASS'} = ref($obj);
 	
 	$to->{'_is_property'} = 1;
 	
@@ -42,7 +45,7 @@ sub filter_load
 
 sub filter_save
 {
-	my $class = shift;
+	my $c = shift;
 	my $name = shift;
 	my $val = shift;
 	my $obj = shift;

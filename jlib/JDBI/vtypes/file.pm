@@ -1,8 +1,10 @@
 # (с) Леонов П.А., 2005
 
 package JDBI::vtypes::file;
+use strict qw(subs vars);
 our @ISA = 'JDBI::VType';
 import JDBI;
+our $filter = 1;
 our $dont_html_filter = 1;
 # Содержимое файла и так не фильтруется - $val содержит имя файла.
 # А данные читаются из потока.
@@ -14,120 +16,246 @@ sub table_cre
 	return ' VARCHAR(10) ';
 }
 
+sub filter_load
+{
+	my $c = shift;
+	return JDBI::vtypes::file::object->new(@_);
+}
+
+sub filter_save
+{
+	my $c = shift;
+	return $_[1]->name(@_);
+}
+
 sub aview
 {
-	my $class = shift;
-	my $name = shift;
-	my $val = shift;
-	my $obj = shift;
-	my ($file_href,$file_del,$not_perm,$block);
+	my $c = shift;
+	my ($name,$val,$obj) = @_;
 	
-	my $props = $obj->props();
+	unless($obj->{$name}){ $obj->{$name} = $c->filter_load(@_); }
 	
-	if( $obj->{$name} ){ $file_href = '<a target="_new" href="'.$obj->file_href($name).'">Скачать...</a>'; }
-	if( $obj->{$name} and $JDBI::group->{'files'} ){ $file_del = 'Удалить - <input type=checkbox name="'.$name.'_todel">'; }
-	
-	if(!$JDBI::group->{'files'})
-	{
-		$not_perm = '\n\nЗапись файлов для Вашей группы не разрешена!';
-		$block = 'disabled';
-	}
-	
-	my @exts = split(/\s+/,$props->{$name}{'ext'});
-	shift @exts;
-	my $ext_list = join(', ', @exts);
-	
-	my $ret = '<input '.$block.' type="file" cols="30" name="'.$name.'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$file_del.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-		  .'<a href="#" onclick="alert(\'Допустимые расширения: '.$ext_list.'.\\nМаксимальный размер: '.$props->{$name}{'msize'}.'КБ'.$not_perm .'\'); return false;">Справка...</a>&nbsp;&nbsp;&nbsp;'
-		  .$file_href;
-	
-	return $ret;
+	return $obj->{$name}->aview(@_);
 }
 
 sub aedit
 {
-	my $class = shift;
-	my $name = shift;
-	my $val = CGI::param($name);+shift;
-	my $obj = shift;
+	my $c = shift;
+	my ($name,$val,$obj,$r) = @_;
 	
-	if(!$JDBI::group->{'files'})
-	{
-		if($val){ $obj->err_add('Запись файлов для Вашей группы не разрешена.') }
-		return $obj->{$name};
-	}
+	unless($obj->{$name}){ $obj->{$name} = $c->filter_load(@_); }
 	
-	my $props = $obj->props();
-	my $id = $obj->{ID};
-	my ($buff,$len,$todel);
-	if($id =~ m/\D/){ return 0; }
-	
-	my $fdir = $JConfig::path_wwfiles.'/';
-	
-	if($val)
-	{
-		unlink( $fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
-		
-		$val =~ m/(\.\w+$)/;
-		my $ext = $1;
-		
-		$ext =~ s/\W//g;
-		
-		if( index( $props->{$name}{'ext'}, ' '.lc($ext).' ') < 0 and $props->{$name}{'ext'} ne '*' )
-		{
-			$obj->err_add('Расширение файла, '.$ext.', недопустимо.');
-			return;
-		}
-		
-		$obj->{$name} = $ext;
-		
-		my $ores;
-		$ores = open(DBO_FILE, "> $fdir".$obj->myurl().'_'.$name.'.'.$obj->{$name});
-		
-		if( !$ores )
-		{
-			$obj->err_add('Невозможно открыть файл: '.$fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name}.'.');
-			return;
-		}
-		
-		binmode DBO_FILE;
-		while ( read($val,$buff,2048) )
-		{
-			print DBO_FILE $buff;
-			$len += 2048;
-			
-			if( $len > ($props->{$name}{msize}*1024) )
-			{
-				$obj->err_add('Файл слишком велик.');
-				return;
-			}
-		}
-		close DBO_FILE;
-		
-		return $ext;
-	}
-	else
-	{
-		$todel = CGI::param($name.'_todel');
-		
-		if($todel)
-		{
-			unlink( $fdir.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
-			return '';
-		}
-	}
-	
+	$obj->{$name}->aedit($name,$val,$obj,$r);
 	return $obj->{$name};
 }
 
 sub del
 {
-	my $class = shift;
-	my $name = shift;
-	my $val = shift;
-	my $obj = shift;
+	my $c = shift;
+	$_[1]->del(@_);
+}
+
+
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+
+
+package JDBI::vtypes::file::object;
+use strict qw(subs vars);
+
+sub new
+{
+	my $c = shift;
 	
-	unlink( $JConfig::path_wwfiles.'/'.$obj->myurl().'_'.$name.'.'.$obj->{$name} );
+	my $o = {};
+	bless($o,$c);
+	
+	$o->init(@_);
+	
+	return $o;
+}
+
+sub init
+{
+	my $o = shift;
+	
+	$o->{'_pname'} = shift;
+	$o->{'_val'} = shift;
+	$o->{'_obj'} = shift;
+	
+	unless($o->{'_obj'}){ return; }
+	
+	$o->{'_prop'} = $o->{'_obj'}->props()->{$o->{'_pname'}};
+}
+
+sub aedit
+{
+	my $o = shift;
+	my $name = shift;
+	my $val = CGI::param($name);shift();
+	my $obj = shift;
+	my $r = shift;
+	
+	unless($JDBI::group->{'files'})
+	{
+		if($val){ $obj->err_add('Запись файлов для Вашей группы не разрешена.') }
+		return $obj->{$name};
+	}
+	
+	my $p = $o->{'_prop'};
+	
+	my ($buff,$len,$todel,$fh);
+	
+	if($val)
+	{
+		my ($fname,$ext);
+		
+		$fname = $val;
+		$fname =~ s#\\#\/#g;
+		$fname =~ s#.*\/##;
+		$fname =~ m#^(.+)\.(\w+)$#;
+		($fname,$ext) = ($1,$2);
+		
+		$fname = JDBI::translit($fname);
+		$fname =~ s/\W/_/g;
+		
+		if( index( $p->{'ext'}, ' '.lc($ext).' ') < 0 and $p->{'ext'} ne '*' )
+		{
+			$obj->err_add('Расширение файла, '.$ext.', недопустимо.');
+			return;
+		}
+		
+		$o->del();
+		
+		my $num;
+		do
+		{
+			$o->{'_val'} = $fname.$num.'.'.$ext;
+			$num++;
+		}
+		while($o->exists());
+		
+		
+		unless(open($fh,'>',$o->path()))
+		{
+			$obj->err_add('Невозможно открыть файл для записи: '.$o->path().'.');
+			return;
+		}
+		
+		binmode $fh;
+		binmode $val;
+		while(read($val,$buff,2048))
+		{
+			print $fh $buff;
+			$len += 2048;
+			
+			if($len > ($p->{'msize'}*1024))
+			{
+				$obj->err_add('Файл слишком велик.');
+				return;
+			}
+		}
+		close $fh;
+		
+		return;
+	}
+	else
+	{
+		if($r->{$name.'_todel'})
+		{
+			$o->del();
+			return;
+		}
+	}
+	
+	return;
+}
+
+sub aview
+{
+	my $o = shift;
+	
+	my ($file_href,$file_del,$not_perm,$block);
+	
+	my $p = $o->{'_prop'};
+	
+	if($o->exists()){ $file_href = '<a target="_new" href="'.$o->href().'">Скачать...</a>'; }
+	
+	if($JDBI::group->{'files'})
+	{
+		if($o->exists()){ $file_del = 'Удалить - <input type=checkbox name="'.$o->{'_pname'}.'_todel">'; }
+	}
+	else
+	{
+		$not_perm = '\n\nЗапись файлов для Вашей группы не разрешена!';
+		$block = 'disabled';
+	}
+	
+	my @exts = split(/\s+/,$p->{'ext'});
+	shift @exts;
+	my $ext_list = join(', ', @exts);
+	
+	my $ret = '<input '.$block.' type="file" cols="30" name="'.$o->{'_pname'}.'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$file_del.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+		  .'<a href="#" onclick="alert(\'Допустимые расширения: '.$ext_list.'.\\nМаксимальный размер: '.$o->max_size_t().$not_perm .'\'); return false;">Справка...</a>&nbsp;&nbsp;&nbsp;'
+		  .$file_href;
+	
+	return $ret;
+}
+
+sub name
+{
+	my $o = shift;
+	return $o->{'_val'};
+}
+
+sub href
+{
+	my $o = shift;
+	return $JConfig::http_wwfiles.'/'.$o->name();
+}
+
+sub path
+{
+	my $o = shift;
+	return $JConfig::path_wwfiles.'/'.$o->name();
+}
+
+sub size
+{
+	my $o = shift;
+	return (stat($o->path()))[7];
+}
+
+sub size_t
+{
+	my $o = shift;
+	return JDBI::len2size( ( stat($o->path()) )[7] );
+}
+
+sub max_size
+{
+	my $o = shift;
+	return $o->{'_prop'}->{'msize'}*1024;
+}
+
+sub max_size_t
+{
+	my $o = shift;
+	return JDBI::len2size($o->max_size());
+}
+
+sub del
+{
+	my $o = shift;
+	unlink($o->path());
+	$o->{'_val'} = '';
+}
+
+sub exists
+{
+	my $o = shift;
+	return -f $o->path();
 }
 
 1;

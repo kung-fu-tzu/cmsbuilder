@@ -41,7 +41,7 @@ sub user_xinfo
 	if($name eq 'exit')
 	{
 		unless($JConfig::access_on_e){ return; }
-		print '<a href="',$JConfig::http_eroot,'/login.ehtml?act=out"><img align="absmiddle" alt="Выход" src="img/logoff.gif"></a>';
+		print '<a href="',$JConfig::http_eroot,'/errors/err402.ehtml?act=out"><img align="absmiddle" alt="Выход" src="img/logoff.gif"></a>';
 	}
 	
 	if($name eq 'shtoolbox')
