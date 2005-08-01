@@ -47,8 +47,8 @@
 <preference-set id="">
   <string id="import_type">makeFlat</string>
   <string id="import_dirname">E:\home\engine\jlib\JDBI\vtypes</string>
-  <boolean id="import_recursive">0</boolean>
   <string id="import_include_matches">*.pm</string>
+  <boolean id="import_recursive">0</boolean>
 </preference-set>
 <file url="jlib/JDBI/vtypes/file.pm" id="9EBD8BF9-55D7-48C7-BF95-E41A9152163F" name="file.pm">
 </file>
@@ -159,8 +159,6 @@
 </file>
 <folder id="A5C29EB2-D287-4122-B5CB-787674676865" name="CMS">
 <file url="jlib/CMS/fileman.pm" id="7A38A737-4B20-43D9-8343-4319DFF3159D" name="fileman.pm">
-</file>
-<file url="jlib/CMS/cpanel.pm" id="F99BC794-9286-4161-8AC0-D152D5A010DF" name="cpanel.pm">
 </file>
 </folder>
 <file url="jlib/Exeptions.pm" id="818EA183-02A7-4968-AFC6-A4513B205FEF" name="Exeptions.pm">

@@ -4,6 +4,7 @@ package JDBI::SimpleModule;
 use strict qw(subs vars);
 our @ISA = ('JDBI::Module','JDBI::NoBase','JDBI::Object');
 
+sub _one_instance {1}
 sub _cname {'Простой базовый модуль'}
 # Простой модуль, состоит из функций (не содержит дерева)
 

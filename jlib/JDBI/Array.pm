@@ -187,6 +187,7 @@ sub admin_array_view
 	<div class="hr">
 	<script language="JavaScript">
 	if(CMS_HaveParent()) document.write(\'',$o->admin_name(),' - \');
+	dragndrop_on = true;
 	</script>
 	 Список вложенных элементов:</div>';
 	

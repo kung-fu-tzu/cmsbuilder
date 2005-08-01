@@ -68,7 +68,8 @@ sub su_start
 	
 	JDBI::cache_clear();
 	
-	if($JDBI::user and $JDBI::group){
+	if($JDBI::user and $JDBI::group)
+	{
 		push @users_s,  $JDBI::user;
 		push @groups_s, $JDBI::group;
 	}

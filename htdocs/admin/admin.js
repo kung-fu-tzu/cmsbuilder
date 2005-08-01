@@ -213,6 +213,7 @@ var drag_line_n2;
 var drag_num;
 var drag_start_num;
 var drag_href_url;
+var dragndrop_on;
 
 
 function DnD_Line_OnMouseOver(num,obj)
@@ -226,7 +227,7 @@ function DnD_Line_OnMouseOut(num,obj)
 {
 	if(!drag_obj) return;
 	if(obj.className != "drag_line_droped") obj.className = "";
-	drag_num = -1;
+	drag_num = undefined;
 }
 
 function DnD_OnMouseUp()
@@ -234,7 +235,7 @@ function DnD_OnMouseUp()
 	document.onmouseup = f_drag_mouse_up;
 	document.onmousemove = f_drag_mouse_move;
 	
-	if(drag_num < 0)
+	if(drag_num == undefined)
 	{
 		drag_obj.style.position = "";
 	}
@@ -261,6 +262,7 @@ function DnD_OnMouseMove()
 
 function OnDragStart(obj)
 {
+	if(dragndrop_on == undefined) return true;
 	drag_obj = obj;
 	
 	drag_obj.style.position = "absolute";

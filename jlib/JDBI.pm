@@ -203,7 +203,7 @@ sub doaccess()
 	{
 		$user  = User->new();
 		$user->{'ID'}		= 1;
-		$user->{'name'} = 'Монопольный режим';
+		$user->{'name'}		= 'Монопольный режим';
 		
 		$group = UserGroup->new();
 		$group->{'ID'}		= 1;
