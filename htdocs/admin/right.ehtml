@@ -1,35 +1,36 @@
-<?eml Front::access(); ?><html>
+<?eml CMSFront::access(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css">
-<link href="style.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" src="admin.js"></script>
-<script language="JavaScript" src="editor/fckeditor.js"></script>
+<link href="admin.css" rel="stylesheet" type="text/css">
+<link href="tree.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" src="fckeditor/fckeditor.js"></script>
 </head>
-<body bgcolor="#f0f4f0">
+<body id="body_right">
+<script language="JavaScript" src="admin.js"></script>
 <script language="JavaScript" src="cmenu.js"></script>
 
-<?eml Front::user_xinfo('shtoolbox') ?>
-<script language="JavaScript">
-Tree_div_it();
-</script>
+<table id="fixedbar"><tr><td class="framehead">
+Ёлемент: <?eml CMSFront::path_html() ?>
+</td></tr></table>
 
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr><td width=10></td><td>
-
-<br>
-
-<?eml Front::right() ?>
-
-</td></tr>
-</table>
-
-<?eml Front::path() ?>
+<div id="right_content">
+	<?eml CMSFront::right() ?>
+</div>
 
 <script language="JavaScript">
+<?eml CMSFront::path_js() ?>
+<?eml CMSFront::jscript(); ?>
 
-<?eml Front::jscript(); ?>
+try
+{
+	main_form.focus();
+	main_form.elements[0].focus();
+}
+catch(T){}
 
+
+//alert(window.showModalDialog("./"));
+//alert(window.open("about:blank","cmsb_popup","modal=yes,dependent=yes"));
 </script>
 
 </body>

@@ -1,46 +1,94 @@
 use File::Find;
 
-print 'Enter search string: '.$ARGV[0];
-$what = $ARGV[0] || <>;
-chomp($what);
-print "\n\n";
+our @exts = qw/cgi pl pm ehtml js php tpl htaccess conf/;
+our $pat = '(\.'.join('$)|(\.',@exts).'$)';
+our $what;
 
-$dircnt = 0;
-$i = 1;
+our
+(
+	$dircnt,$i,$out,$cnt
+);
+
 $| = 1;
 
-sub cnt { $dircnt++; }
+sub cnt { if($_ !~ m/$pat/oi){ return; } $dircnt++; }
 
 sub p
 {
-	open(F,$_);
+	my($fh);
+	
+	if($_ !~ m/$pat/oi){ return; }
+	
+	open($fh,$_);
 	
 	if($i % int($dircnt/10) == 0){ print '.'; }
-	while($str = <F>)
+	
+	my $strnum;
+	my $f = 0;
+	
+	while($str = <$fh>)
 	{
-		if($str =~ m/$what/oi){ $cnt{$_}++; }
+		$strnum++;
+		
+		if($str =~ m/$what/i)
+		{
+			unless($f){ $out .= "\n[$_]\n" }
+			$f = 1;
+			
+			$cnt++;
+			
+			$out .= $strnum.'	'.$str;
+		}
 	}
 	
-	close(F);
+	close($fh);
 	$i++;
 }
 
-find(\&cnt,'.');
-
-print "Files: $dircnt\n";
-
-print '[';
-find(\&p,'.');
-print ']';
-
-print "\n\n";
-for $key (keys %cnt)
+sub search
 {
-	print $key,' [',$cnt{$key},"]\n";
+	$out = $cnt = '';
+	$dircnt = 0;
+	$i = 1;
+	
+	find(\&cnt,'.');
+	
+	print "\nSearching for \"$what\" in $dircnt files  ";
+	
+	print '[';
+	find(\&p,'.');
+	print ']';
+	
+	unless($cnt)
+	{
+		print "\n\n\n			NOTHING FOUND.";
+	}
+	else
+	{
+		print "\n",'-'x80,"\n$out\n",'-'x80,"\nMATHCES: $cnt";
+	}
+	
+	print "\n\n\n";
 }
 
-if( $#{[keys(%cnt)]} < 0){ print "No results.\n"; }
+sub main
+{
+	$what = $ARGV[0];
+	
+	while(1)
+	{
+		print 'Enter search string: '.$ARGV[0];
+		my $str = <STDIN>;
+		chomp($str);
+		
+		if(length($str))
+		{
+			$what = $str;
+			$what =~ s#(\W)#\\$1#g;
+		}
+		
+		search();
+	}
+}
 
-print "\nDONE";
-
-$x = <STDIN>;
+main();

@@ -1,10 +1,40 @@
-<?eml Front::access(); ?><html>
+<?eml CMSFront::access(); ?><html>
 <head>
-<script language="JavaScript" src="admin.js"></script>
-<link href="style.css" rel="stylesheet" type="text/css">
+
+<link href="admin.css" rel="stylesheet" type="text/css">
+<link href="fileman.css" rel="stylesheet" type="text/css">
+<style>
+	
+	.fileman img
+	{
+		width: 16px;
+		height: 16px;
+	}
+	
+</style>
 </head>
-<body class="left_body">
-<?eml CMS::fileman->action(); ?>
-<br>
+<body id="body_fileman">
+<script language="JavaScript" src="admin.js"></script>
+<script language="JavaScript" src="cmenu.js"></script>
+
+<table width="100%" height="100%">
+<tr><td class="framehead">
+Мои документы
+</td></tr>
+<tr><td class="main_td" valign="top">
+
+<div name="scrolldiv" class="scrolldiv">
+<div class="left_padding">
+<?eml CMSBuilder::Fileman->action(); ?>
+</div>
+</div>
+
+</td></tr>
+</table>
+
+<script language="JavaScript">
+<?eml #CMSFront::jscript(); ?>
+</script>
+
 </body>
 </html>

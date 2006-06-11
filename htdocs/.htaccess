@@ -1,9 +1,11 @@
+#Options +Includes +MultiViews
 
-Options +Includes +MultiViews
-AddType text/html .shtml
-AddHandler server-parsed .shtml
-
-AddType application/x-httpd-enjine_html .ehtml
-Action application/x-httpd-enjine_html /cgi-bin/eml.cgi
+AddType application/x-httpd-cmsbuilder_html .ehtml
+Action application/x-httpd-cmsbuilder_html /cgi-bin/cmsb.pl
 
-DirectoryIndex index.html index.htm index.shtml index.ehtml index.php
+DirectoryIndex index.ehtml index.html index.htm index.shtml index.php index.xml /cgi-bin/env.cgi
+
+ErrorDocument 404 /cgi-bin/env.cgi
+
+#RewriteEngine On
+#RewriteRule   ^$  /cmsbuilder_index

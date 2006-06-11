@@ -1,12 +1,17 @@
-<?eml Front::access(); ?><html>
+<?eml CMSFront::access(); ?><html>
 <head>
-<link rel="stylesheet" type="text/css" href="style.css">
-<script language="JavaScript" src="admin.js"></script>
+<link href="cmenu.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="admin.css" />
 </head>
-<body class="left_body" leftmargin="0" topmargin="0"  rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
+<body id="body_modules">
+<script language="JavaScript" src="admin.js"></script>
 <script language="JavaScript" src="cmenu.js"></script>
 
-<?eml Front::modules(); ?>
+<?eml CMSFront::modules(); ?>
+
+<script language="JavaScript">
+<?eml CMSFront::dnd(); ?>
+</script>
 
 </body>
 </html>

@@ -1,112 +1,115 @@
-<?eml Front::access(); ?><html>
+<?eml CMSFront::access(); ?>
+<html>
 <head>
 <title>Система администрирования</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-<link href="style.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" src="admin.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<link href="cmenu.css" rel="stylesheet" type="text/css">
+<link href="admin.css" rel="stylesheet" type="text/css" />
 </head>
-<body bgcolor="#ffffff">
+<body id="body_index">
+<script language="JavaScript" src="admin.js"></script>
 <script language="JavaScript" src="cmenu.js"></script>
 
-<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-<tr height="40" bgColor="#ff7300"><td align="center">
-	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
+<table width="100%" height="100%">
+
+<tr>
+<td class="toolbar" id="tbpanel">
+	<table>
 	<tr>
-		<td width="10%" class="tdlr" align="left"><a href="/"><font class="site_name">На&nbsp;сайт...</font></a></td>
-		<td width="80%" align="center"><?eml Front::user_xinfo('main_menu') ?></td>
-		<td width="10%" class="tdlr" align="right">
-		<?eml Front::user_xinfo('exit') ?>
-		</td>
+		<td>&nbsp;</td>
+		<td width="30%">&nbsp;</td>
+		<td width="40%" id="aboutbox"><a href="/">На сайт...</a>
+		<a target="admin_right" href="about.html">О системе...</a>
+		<?eml CMSFront::user_xinfo('exit') ?></td>
 	</tr>
 	</table>
-</td></tr>
+</td>
+</tr>
 
 
 
-<tr><td bgcolor="#DDE3E6" align="center">
+<tr>
+<td align="center">
 	
-	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0" align="center">
+	<table width="95%" height="100%" align="center">
 	<tr>
-		<?eml if($JConfig::have_left_frame){ ?>
-		<td width="3" id="id_left_border" bgcolor="#9AABB5">&nbsp;</td>
-		<td width="30%" id="id_left_td" valign="top" bgcolor="#F7F7F7">
-		
-		<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
-			<tr height="40"><td>
-			<table cellSpacing="0" cellPadding="0" width="100%"  border="0" bgcolor="#F0F4F0">
-				<tr><td height="34" width="1"><img src="img/null.gif" width="14"></td><td valign="middle"><b><div id="module_div_it">Модуль не выбран:</div></b></td><td width="1"><nobr><?eml Front::user_xinfo('fileman_btn'); ?><img alt="Скрыть дерево" src="img/left_hide.gif" onclick="HideLeft()"></nobr></td></tr>
-				<tr><td colspan="3" class="red_hr"></td></tr>
-			</table>
-			</td></tr>
-			
+		<?eml if($CMSBuilder::Config::have_left_frame){ ?>
+		<td id="id_left_border" class="bigborder bbv">&nbsp;</td>
+		<td width="<?eml CMSFront::user_xinfo('left_td_width') ?>" id="id_left_td" valign="top">
+		<table width="100%" height="100%">
 			<!-- left -->
-			<tr id="admin_left_tr"><td>
-			<iframe name="admin_left" frameBorder="0" width="100%" height="100%"></iframe>
-			</td></tr>
-			<!-- /left -->
-			
-			<!-- fileman -->
-			<tr id="admin_fileman_tr" class="hidden"><td>
-			<iframe name="admin_fileman" src="fileman.ehtml" frameBorder="0" width="100%" height="100%"></iframe>
-			</td></tr>
-			<!-- /fileman -->
-			
-			<tr height="150"><td bgcolor="#F7F7F7" valign="top">
-			
-			<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
-				<tr><td colspan="2" class="red_hr"></td></tr>
-				<tr><td width="14" height="34"><img src="img/null.gif" width="14"></td><td width="100%" valign="middle" align="left"><b>Персональные модули:</b></td></tr>
-				<tr><td colspan="2" class="red_hr"></td></tr>
-				<tr><td colspan="2">
-				<iframe name="admin_modules" src="modules.ehtml" frameBorder="0" width="100%" height="100%"></iframe>
-				</td></tr>
-			</table>
-			</td></tr>
-		</table>
-		
-		</td>
-		<?eml } ?>
-		<td width="3" bgcolor="#9AABB5">&nbsp;</td>
-		<td align="left">
-		
-		<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
-		<tr><td height="34" valign="middle" align="left">
-			<table cellSpacing="0" cellPadding="0" width="100%" height="100%" border="0" bgcolor="#F0F4F0">
-			<tr>
-				<td width="16"><img id="id_show" style="DISPLAY: none" src="img/left_show.gif" onclick="ShowLeft()"></td>
-				<td><b>Активный элемент:</b><br><div id="tree_div_it">Элемент не выбран</div></td>
+			<tr id="admin_left_tr">
+				<td>
+					<div id="left_panels_holder"><div id="top_panel_float"><?eml CMSFront::user_xinfo('main_menu') ?></div></div>
+					<iframe id="admin_left" name="admin_left" class="wide" frameborder="0"></iframe>
+				</td>
 			</tr>
-			</table>
-			
-		</td></tr>
-		<tr><td class="red_hr"></td></tr>
-		<tr><td>
-			<iframe name="admin_right" frameBorder="0" width="100%" height="100%"></iframe>
-		</td></tr>
+			<!-- /left -->
+			<tr class="bigborder bbh"><td></td></tr>
+			<tr height="182">
+				<td valign="top">
+					<table width="100%" height="100%">
+						<tr><td class="framehead">Персональные модули</td></tr>
+						<tr><td><iframe name="admin_modules" src="modules.ehtml" class="wide" frameborder="0"></iframe></td></tr>
+					</table>
+				</td>
+			</tr>
 		</table>
 		
 		</td>
-		<td width="3" bgcolor="#9AABB5">&nbsp;</td>
-	</TR>
+		
+		<td class="bigborder bbv" valign="top">
+			<img scr="img/null.gif" width="1" height="100">
+			<a href="hide"><img id="btn_treehide" alt="Скрыть дерево" src="img/left_hide.gif" onclick="return HideLeft();"></a>
+			<a href="show"><img id="btn_treeshow" alt="Показать дерево" style="display: none" src="img/left_show.gif" onclick="return ShowLeft();"></a>
+			
+			<img scr="img/null.gif" width="1" height="100">
+			<img style="cursor: w-resize" onmousedown="return CMS_Float_MD(this)" id="btn_treeresize" alt="Изменить размер" src="img/left_resize.gif">
+		</td>
+		
+		<?eml }else{ ?>
+		
+		<td id="id_left_border" class="bigborder bbv">&nbsp;</td>
+		
+		<?eml } ?>
+		
+		<td>
+			<div style="position:relative;"><div style="position:absolute;left:0;top:0;z-index:5">&nbsp;</div></div>
+			<iframe id="admin_right" name="admin_right" class="wide" frameborder="0"></iframe>
+		</td>
+		<td class="bigborder bbv">&nbsp;</td>
+	</tr>
 	</table>
 	
 </td></tr>
 
 
+<script language="JavaScript">
+	
+	if(CMS_HaveParent()) parent.parent.parent.document.location.href = location.href;
+	
+</script>
 
 
-
-<tr height="24" bgColor=#ff7300><td align="center">
-	<table height="100%" cellSpacing="0" cellPadding="0" width="95%" border="0">
+<tr>
+<td class="toolbar" id="tbstatus">
+	<table>
 	<tr>
-		<td class="tdlr" align="left"><a target="admin_right" href="about.html"><font class="authors">О системе администрирования...</font></a></td>
-		<td class="tdlr" align="right"><font class="authors"><b><nobr><?eml Front::user_xinfo('name') ?></nobr></b></font></td>
+		<td>&nbsp;</td>
+		<td width="10%"><?eml CMSFront::user_xinfo('name') ?> <div id="version">( <?eml print $CMSBuilder::version; ?> )</div></td>
 	</tr>
 	</table>
-</td></tr>
+</td>
+</tr>
 
+</table>
 
+<iframe name="admin_temp" src="about:blank" class="wide" frameborder="0" style="display: none"></iframe>
 
+<table id="movemodalwindow" class="modalwindowbg" style="display: none">
+    <tr>
+		<td>&nbsp;</td>
+    </tr>
 </table>
 
 </body>

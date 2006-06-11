@@ -1,156 +1,128 @@
-.cmenu_item_on
-{
-    PADDING-RIGHT: 10px;
-    PADDING-LEFT: 10px;
-    FONT-WEIGHT: bold;
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 4px;
-    MARGIN: 0px;
-    WIDTH: 100%;
-    CURSOR: default;
-    COLOR: #ffffff;
-    PADDING-TOP: 4px;
-    BACKGROUND-COLOR: #ff7300;
-    TEXT-DECORATION: none
-}
-.cmenu_hr
-{
-    PADDING-RIGHT: 0px;
-    PADDING-LEFT: 0px;
-    FONT-SIZE: 1px;
-    LEFT: 0px;
-    PADDING-BOTTOM: 0px;
-    MARGIN: 2px 0px;
-    WIDTH: 100%;
-    PADDING-TOP: 0px;
-    HEIGHT: 2px;
-    BACKGROUND-COLOR: #ff7300
-}
 .cmenu_menu
 {
-    BORDER-RIGHT: #ff7300 2px solid;
-    PADDING-RIGHT: 0px;
-    BORDER-TOP: #ff7300 2px solid;
-    PADDING-LEFT: 0px;
-    FILTER: alpha(opacity=75,style=0);
-    PADDING-BOTTOM: 4px;
-    MARGIN: 0px;
-    BORDER-LEFT: #ff7300 2px solid;
-    PADDING-TOP: 4px;
-    BORDER-BOTTOM: #ff7300 2px solid;
-    POSITION: absolute;
-    BACKGROUND-COLOR: #f0f4f0;
-    TEXT-DECORATION: none
+	border: #ff7300 2px solid;
+	padding: 0;
+	margin: 0;
+	filter: alpha(opacity=75,style=0);
+	opacity: 0.75;
+	position: absolute;
+	background-color: #f0f0f0;
+	font-size: 11px;
+	font-weight: bold;
 }
-.cmenu_menu TD
+.cmenu_menu *
 {
-    PADDING-RIGHT: 0px;
-    PADDING-LEFT: 0px;
-    PADDING-BOTTOM: 2px;
-    MARGIN: 0px;
-    PADDING-TOP: 0px
+	cursor: default;
 }
-.cmenu_menu TR
+.cmenu_menu td
 {
-    PADDING-RIGHT: 0px;
-    PADDING-LEFT: 0px;
-    PADDING-BOTTOM: 0px;
-    MARGIN: 0px;
-    PADDING-TOP: 0px
-}
-BODY
-{
-    FONT-FAMILY: Arial
+	padding: 0;
+	margin: 0;
 }
 .cmenu_item_down
 {
-    PADDING-RIGHT: 10px;
-    PADDING-LEFT: 10px;
-    FONT-WEIGHT: bold;
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 4px;
-    MARGIN: 0px;
-    WIDTH: 100%;
-    CURSOR: default;
-    COLOR: #ffffff;
-    PADDING-TOP: 4px;
-    BACKGROUND-COLOR: #de5500;
-    TEXT-DECORATION: none
+	padding: 4 10;
+	margin: 0px;
+	color: #ffffff;
+	background-color: #808080;
 }
-.cmenu_item_out
+.cmenu_item_out, .cmenu_item_on
 {
-    CLEAR: both;
-    PADDING-RIGHT: 10px;
-    PADDING-LEFT: 10px;
-    FONT-WEIGHT: bold;
-    FONT-SIZE: 11px;
-    PADDING-BOTTOM: 4px;
-    MARGIN: 0px;
-    WIDTH: 100%;
-    CURSOR: default;
-    COLOR: #606260;
-    PADDING-TOP: 4px;
-    TEXT-DECORATION: none
+	padding: 4 10 4 10;
+	margin: 0;
+	color: #606060;
+	position: relative;
 }
-.cmenu_item_on TD
+.cmenu_item_on
 {
-    FONT-WEIGHT: bold;
-    FONT-SIZE: 11px;
-    COLOR: #ffffff;
-    TEXT-DECORATION: none
+	color: #ffffff;
+	background-color: #ff7300;
 }
-.cmenu_item_out TD
+.cmenu_item_on *
 {
-    FONT-WEIGHT: bold;
-    FONT-SIZE: 11px;
-    COLOR: #606260;
-    TEXT-DECORATION: none
+	color: #ffffff;
 }
-.cmenu_4
+.cmenu_item_out *
 {
-    FONT-SIZE: 10px;
-    LEFT: 5px;
-    WIDTH: 100%;
-    POSITION: relative;
-    TEXT-ALIGN: right
-}
-.cmenu_title
-{
-    PADDING-RIGHT: 10px;
-    PADDING-LEFT: 10px;
-    PADDING-BOTTOM: 4px;
-    MARGIN: 0px 0px 2px;
-    CURSOR: default;
-    COLOR: #ffffff;
-    PADDING-TOP: 4px;
-    BACKGROUND-COLOR: #ff7300;
-    TEXT-ALIGN: center
+	color: #606260;
 }
 .cmenu_JMISubMenu
 {
-    BORDER-RIGHT: 0px;
-    PADDING-RIGHT: 0px;
-    BORDER-TOP: 0px;
-    PADDING-LEFT: 0px;
-    PADDING-BOTTOM: 0px;
-    MARGIN: 0px;
-    BORDER-LEFT: 0px;
-    PADDING-TOP: 0px;
-    BORDER-BOTTOM: 0px
+	padding-right: 12px;
 }
-.cmenu_JMISubMenu TD
+.cmenu_4
 {
-    PADDING-RIGHT: 0px;
-    PADDING-LEFT: 0px;
-    PADDING-BOTTOM: 0px;
-    MARGIN: 0px;
-    PADDING-TOP: 0px
+	font-size: 10px;
+	right: 5px;
+	position: absolute;
 }
-.cmenu_JMISubMenu TR
+.cmenu_title
 {
-    PADDING-RIGHT: 0px;
-    PADDING-LEFT: 0px;
-    PADDING-BOTTOM: 0px;
-    MARGIN: 0px;
-    PADDING-TOP: 0px
+	padding: 4 10;
+	margin: 0 0 2 0;
+	color: #ffffff;
+	background-color: #ff7300;
+	text-align: center
+}
+.cmenu_title *
+{
+	color: #ffffff;
+}
+.cmenu_hr
+{
+	padding: 0;
+	font-size: 1px;
+	left: 0px;
+	margin: 2px 0px;
+	height: 2px;
+	background-color: #ff7300;
+}
+.jcalendar .dtd
+{
+	border: #ff7300 1px solid;
+	padding: 2 3;
+	cursor: pointer;
+	text-align: center;
+}
+.jcalendar table
+{
+	width: 100%;
+	border-spacing: expression(this.cellSpacing=2); /*IE*/
+	border-spacing: 2;
+}
+.jcalendar .day
+{
+	border: #808080 1px solid;
+	padding: 2 3;
+	background-color: #dcdcdc;
+	text-align: center
+}
+.jcalendar .head
+{
+	margin-bottom: 4px;
+	border-bottom: #808080 2px solid
+}
+.jcalendar .datestr
+{
+	padding-bottom: 4px;
+	text-align: center
+}
+.jcalendar BUTTON
+{
+	width: 30px
+}
+.jcalendar .buttons
+{
+	padding-bottom: 2px;
+	padding-top: 3px;
+	text-align: center
+}
+.jcalendar .dtd_on
+{
+	color: #ffffff;
+	background-color: #ff7300
+}
+.cmenu_title TD
+{
+	color: #ffffff
 }

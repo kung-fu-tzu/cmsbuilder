@@ -1,16 +1,1 @@
-<!--#include file="shapka.txt" -->
-<!--#include file="left.txt" -->
-
-<a href="/page/">/page/</a><br><br>
-
-<?eml design::init(); ?>
-
-<?eml
-
-design::page();
-
-?>
-&nbsp;
-<!--#include file="copyright.txt" -->
-<!--#include file="users.txt" -->
-</body></html>
+<?eml CMSBuilder::EML->index(); ?>

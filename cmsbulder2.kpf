@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="BD099AC8-A94E-4EC5-A978-58F8AE9F9FDB" name="cmsbulder" kpf_version="2">
+<preference-set id="">
+</preference-set>
+<folder id="CEA9F362-9638-481A-83B9-3D87109FF307" name="libcore">
+<folder id="89F6B7F6-D674-45A4-BBA3-1E6439951B64" name="CMSBuilder">
+<folder id="10A1F04F-AAB1-41A0-99BE-1C09A9E8D316" name="DBI">
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Access.pm" id="F7ED4023-1573-401D-90BD-D9CEC0680BA4" name="Access.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Array.pm" id="A240632F-4538-480B-ADAC-0CA120114F8E" name="Array.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/CMS.pm" id="775F9939-1ACC-4153-82C7-5A5295CDC3A5" name="CMS.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Module.pm" id="1C62E23B-E58B-4719-8C21-0F25E10E0E60" name="Module.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Object.pm" id="4C12D37A-E627-4ED1-983B-A0773E11F6BB" name="Object.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/RPC.pm" id="989E9588-28C5-4211-97CD-F8959DB3D416" name="RPC.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/TreeModule.pm" id="AEB61DE0-58B2-4B88-9503-7406AF517EDB" name="TreeModule.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/VType.pm" id="B4834C8F-A92B-4BC9-BAC7-18F3B7ECC55F" name="VType.pm">
+</file>
+<folder id="76A3212B-E02B-4A24-A233-38D8C06408F5" name="Object">
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Object/OBase.pm" id="757AFC69-BB9B-46AB-9A32-21B837E00C57" name="OBase.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Object/OCore.pm" id="7A5935FB-F3B3-4ABC-AE86-108FA2E6E7B2" name="OCore.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Object/OAdmin.pm" id="3E888033-99AC-4606-9556-A75C3E5F2751" name="OAdmin.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Object/ONoBase.pm" id="3FBCFB3D-53AE-4D56-A09F-84A5C158C758" name="ONoBase.pm">
+</file>
+</folder>
+<folder id="B359E6FA-DF9F-4039-898D-F7ACF4348BB4" name="Array">
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Array/ACore.pm" id="6289FBD9-787A-499B-A3C4-0E2EF7F060CA" name="ACore.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Array/ABase.pm" id="E0E3E537-9E59-4D70-8D68-332B1F90635A" name="ABase.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/Array/AAdmin.pm" id="4B356609-2F0C-4F25-9F89-D4A7377761C4" name="AAdmin.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI/SimpleModule.pm" id="7F701A24-86F4-4AFB-8FC8-1F6763710CDE" name="SimpleModule.pm">
+</file>
+</folder>
+<folder id="8400DC78-47C7-4A60-92E1-C5327FC84A2C" name="IO">
+<file url="cmsbuilder/libcore/CMSBuilder/IO/GUI.pm" id="E1D212EB-5B1D-4C89-AA80-0FA68E09E643" name="GUI.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/IO/Ini.pm" id="2B812D95-7C0B-4D11-9E07-74F4B4A4E5A5" name="Ini.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/IO/Session.pm" id="70F5F58E-C601-4616-B6F8-AE49C5D98E96" name="Session.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libcore/CMSBuilder/DBI.pm" id="CA9E6C64-65AE-4BDA-851B-6079EC191A0A" name="DBI.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/EML.pm" id="539191CF-F4BE-4DFC-BE4A-95A25ED0BA08" name="EML.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/Fileman.pm" id="2B1D8660-8888-4DD6-8CB5-D58590C778AE" name="Fileman.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/IO.pm" id="921B3A14-908A-4DA1-86D8-5C6C612CEE60" name="IO.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/Plugin.pm" id="AE952CBC-FF09-4BAC-8ED1-CDB67D7CBEBE" name="Plugin.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/Property.pm" id="DA5049A6-2571-4AD5-B284-80F6C522FA4C" name="Property.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/TimeMeter.pm" id="9EE9834C-9D32-4FDD-A10F-5A3F1B3E15E8" name="TimeMeter.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/Utils.pm" id="42BE51B9-C631-4C4B-BBDD-D5192B19F77D" name="Utils.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/Starter.pm" id="97B939CD-AF68-4D2D-8447-F04439E7B5A0" name="Starter.pm">
+</file>
+<folder id="03253224-4CF2-4A9C-81C6-9C4FB137CB36" name="Starter">
+<file url="cmsbuilder/libcore/CMSBuilder/Starter/cgi_server_cgi.pm" id="7A532612-EA44-4776-8642-AE4244E4CE8D" name="cgi_server_cgi.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSBuilder/Starter/cgi_server_server.pm" id="9345D676-CC80-4ECE-BEE7-AC92C88AAA38" name="cgi_server_server.pm">
+</file>
+</folder>
+</folder>
+<folder id="E74FB4C7-CBD4-452C-A4AB-498488809175" name="PlgnUsers">
+<file url="cmsbuilder/libcore/PlgnUsers/User.pm" id="C68758C0-F0FE-4C48-96ED-8E55308C862F" name="User.pm">
+</file>
+<file url="cmsbuilder/libcore/PlgnUsers/UserGroup.pm" id="F9B2B255-B117-4D66-BF5A-56823F2CBEC9" name="UserGroup.pm">
+</file>
+<file url="cmsbuilder/libcore/PlgnUsers/ModUsers.pm" id="9B83AAD2-8890-482A-9CF4-F7AA59EF6394" name="ModUsers.pm">
+</file>
+<file url="cmsbuilder/libcore/PlgnUsers/Login.pm" id="49788CA1-7E5C-492C-ADF0-9BC64F4A199A" name="Login.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libcore/CMSBuilder.pm" id="6551EBAD-DF5C-4341-80EA-6F17DA6F358E" name="CMSBuilder.pm">
+</file>
+<file url="cmsbuilder/libcore/CMSFront.pm" id="391E9871-ADDF-4517-B8DE-2B56EAF3DA78" name="CMSFront.pm">
+</file>
+<folder id="5AB198AA-F675-4E03-AC8F-4D570B414F88" name="VTypes">
+<file url="cmsbuilder/libcore/VTypes/date.pm" id="FC9A4D3B-037C-42BC-BA75-591B4F337E78" name="date.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/file.pm" id="AEB981A7-228B-4AA3-BB00-DB9C62A2CD87" name="file.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/int.pm" id="235E5A4C-DB04-4E94-98A1-DEF0CDAEB2BC" name="int.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/miniword.pm" id="D40D967A-EA1E-4580-A722-A7DA8C5FB19C" name="miniword.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/object.pm" id="7086D1C4-B6D9-4DE7-AFEE-BEDEF2EABBF4" name="object.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/password.pm" id="FCD18BAC-10F9-4D12-B89A-398AE77A48BC" name="password.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/radio.pm" id="996BF27D-D106-4B16-AC14-AC040773B4EA" name="radio.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/select.pm" id="A7127DD8-9A53-4E50-A683-C8850EA06E65" name="select.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/string.pm" id="D38DA8FE-23C9-40D6-8013-6E1F4EB1F37D" name="string.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/text.pm" id="DCB4B5F0-C077-4883-A113-2AEEDB9DB4F5" name="text.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/time.pm" id="FAC94FD3-1373-484F-AFEC-DBFDAF774C45" name="time.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/timestamp.pm" id="F31354AF-3F24-4016-A3D6-2F9AD070EDB9" name="timestamp.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/checkbox.pm" id="134FDB46-676B-42CE-B31C-3866AB67E918" name="checkbox.pm">
+</file>
+<file url="cmsbuilder/libcore/VTypes/ClassList.pm" id="4C412570-79FA-471B-83D2-C3E2E13BFBDF" name="ClassList.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libcore/modControlPanel.pm" id="D6DEB5C2-7FAB-48FA-8E1F-AD806482A26B" name="modControlPanel.pm">
+</file>
+<file url="cmsbuilder/libcore/modRoot.pm" id="5B9F782B-7915-4466-9285-9F5CF56540BC" name="modRoot.pm">
+</file>
+<file url="cmsbuilder/libcore/modSysUtils.pm" id="422F3F49-9231-4847-A789-B4F548FA36C2" name="modSysUtils.pm">
+</file>
+<file url="cmsbuilder/libcore/plgnCPanelBackup.pm" id="6E016FB8-C2C5-49CA-AA28-D63136B5BA65" name="plgnCPanelBackup.pm">
+</file>
+<file url="cmsbuilder/libcore/plgnFileManager.pm" id="79822B2D-AAA6-4186-8ED0-CA58442E05BD" name="plgnFileManager.pm">
+</file>
+<file url="cmsbuilder/libcore/plgnUsers.pm" id="D4A14864-59C5-4695-A327-3694DB562FC2" name="plgnUsers.pm">
+</file>
+<file url="cmsbuilder/libcore/plgnAccess.pm" id="4FB5C4F8-5F99-4532-A4BA-F1F78C84AE3B" name="plgnAccess.pm">
+</file>
+</folder>
+<folder id="300EEB77-1761-4FA0-8020-0627EC219A05" name="libsite">
+<file url="cmsbuilder/libsite/VTypesTest.pm" id="1171D9BF-AFE7-4939-9267-10FFE1FFDAFB" name="VTypesTest.pm">
+</file>
+<folder id="E6A47F61-D8F0-47AB-878F-5BE02FD4B2D2" name="Site">
+<file url="cmsbuilder/libsite/Site/Page.pm" id="E14817BD-BF5F-4525-8539-48E46CE53D11" name="Page.pm">
+</file>
+<file url="cmsbuilder/libsite/Site/SiteInterface.pm" id="7262A8C4-AE3E-4C73-98CF-2DA481F3559A" name="SiteInterface.pm">
+</file>
+<file url="cmsbuilder/libsite/Site/modSite.pm" id="8E76F88C-284A-41A6-99B2-54A0BFD91629" name="modSite.pm">
+</file>
+<file url="cmsbuilder/libsite/Site/SiteMember.pm" id="459C7BE9-80FA-47AB-A93E-5E3B8E16F27C" name="SiteMember.pm">
+</file>
+<file url="cmsbuilder/libsite/Site/SiteData.pm" id="7F10A3A4-B91D-4369-BBD1-2BC665631D0B" name="SiteData.pm">
+</file>
+<file url="cmsbuilder/libsite/Site/SiteObject.pm" id="E224E232-7205-4DE7-B390-53EDAB6C0E67" name="SiteObject.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libsite/plgnSite.pm" id="2BD3F76E-C563-4D46-A005-EEB05765871A" name="plgnSite.pm">
+</file>
+<folder id="0468E7C6-92AC-4887-BEA2-0013390805B0" name="Templates">
+<file url="cmsbuilder/libsite/Templates/Template.pm" id="0A3E250B-6F35-495D-A07C-E7F00E5222A0" name="Template.pm">
+</file>
+<file url="cmsbuilder/libsite/Templates/TemplateDir.pm" id="7172DFF2-B69B-4C6F-9B30-1015AD33CA33" name="TemplateDir.pm">
+</file>
+<file url="cmsbuilder/libsite/Templates/modTemplates.pm" id="74DD595F-E45C-4908-83F5-FF87378DF60B" name="modTemplates.pm">
+</file>
+<file url="cmsbuilder/libsite/Templates/TemplateInterface.pm" id="77FDC171-141B-4556-B9C2-569875211936" name="TemplateInterface.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libsite/plgnTemplates.pm" id="F6ABCCF0-30C4-4624-BD13-3415E148108A" name="plgnTemplates.pm">
+</file>
+<folder id="E75EFC78-FDC9-4783-9A64-45DEB2F9BA92" name="Catalog">
+<file url="cmsbuilder/libsite/Catalog/CatWare.pm" id="E462D6EC-1B6C-4DAC-975D-849F830FE27C" name="CatWare.pm">
+</file>
+<file url="cmsbuilder/libsite/Catalog/modCatalog.pm" id="62C23BDD-3B21-4B4A-98BA-DAFBFC6E3A90" name="modCatalog.pm">
+</file>
+<file url="cmsbuilder/libsite/Catalog/CatDir.pm" id="16947F4D-73FC-4EAE-B28E-0E1D2CA03896" name="CatDir.pm">
+</file>
+<file url="cmsbuilder/libsite/Catalog/CatInterface.pm" id="6C90C1C1-33FC-49C5-B8BB-B65AC3F691BE" name="CatInterface.pm">
+</file>
+<file url="cmsbuilder/libsite/Catalog/CatMember.pm" id="9F9EA5FE-C2E2-4C3F-8101-D5EA191E31F2" name="CatMember.pm">
+</file>
+</folder>
+<file url="cmsbuilder/libsite/plgnCatalog.pm" id="6B8D42E8-27AE-4202-9619-0C94823AFA7A" name="plgnCatalog.pm">
+</file>
+<file url="cmsbuilder/libsite/fltGZIP.pm" id="1D367E07-EF25-4277-AFFA-232181E55AFC" name="fltGZIP.pm">
+</file>
+<file url="cmsbuilder/libsite/fltXSLT.pm" id="5607A5D5-A9C9-43B1-92BF-0D730754108A" name="fltXSLT.pm">
+</file>
+</folder>
+<folder id="BCCB24C2-D8A7-4327-B219-3AD4AC2E5211" name="admin">
+<folder id="FB9C17FE-9C9A-4EF6-83F4-076AFE998798" name="css">
+<file url="htdocs/admin/cmenu.css" id="74C06542-C40A-4BEC-A119-DC3D9F9837B3" name="cmenu.css">
+</file>
+<file url="htdocs/admin/tree.css" id="81833E6B-FCF7-491D-B875-73B7B51B7708" name="tree.css">
+</file>
+<file url="htdocs/admin/admin.css" id="FCF39C50-D02F-412D-AC8F-660A55DB1658" name="admin.css">
+</file>
+</folder>
+<folder id="63E3ED9E-EB62-4DC0-86E6-16C3099627BF" name="js">
+<file url="htdocs/admin/admin.js" id="8DB4CE39-4348-4089-9EA4-7C1145E3CC36" name="admin.js">
+</file>
+<file url="htdocs/admin/cmenu.js" id="61650D7D-8AD6-49A7-87A9-156EC298A3A4" name="cmenu.js">
+</file>
+</folder>
+<file url="htdocs/admin/about.html" id="75CE74B9-3933-4C95-87CC-D5885573D471" name="about.html">
+</file>
+<file url="htdocs/admin/fileman.ehtml" id="22C64711-CC10-41BD-82B0-2E844B45F618" name="fileman.ehtml">
+</file>
+<file url="htdocs/admin/index.ehtml" id="6A562760-F484-48A3-8D06-1EC9CA1396DA" name="index.ehtml">
+</file>
+<file url="htdocs/admin/left.ehtml" id="EA998A51-1BB3-4875-8E1B-7034E5C70EB8" name="left.ehtml">
+</file>
+<file url="htdocs/admin/login.ehtml" id="15753E15-E4E7-40C5-8C81-1496710F166D" name="login.ehtml">
+</file>
+<file url="htdocs/admin/modules.ehtml" id="C257A3CB-A6E3-4470-9770-1EDC6AB58BCB" name="modules.ehtml">
+</file>
+<file url="htdocs/admin/right.ehtml" id="7FC732B6-970B-40EC-8A8F-94281F74C06A" name="right.ehtml">
+</file>
+<folder id="B78654BF-6935-4900-837B-CA1752AE6531" name="cgi-bin">
+<file url="cgi-bin/cmsb.pl" id="E2F511CE-7278-4A8D-961A-FF4977E1098E" name="cmsb.pl">
+</file>
+<file url="cgi-bin/error.log" id="0DBEE64A-D169-43CA-9B39-C527BC193E3E" name="error.log">
+</file>
+</folder>
+<file url="htdocs/admin/cmenu.ehtml" id="E07D1547-71C2-41E9-98B6-4976C44AD92F" name="cmenu.ehtml">
+</file>
+<file url="cmsbuilder/etc/errors.html.tpl" id="41F59836-94FE-439E-8223-B546D26D0A48" name="errors.html.tpl">
+</file>
+</folder>
+<folder id="7773D0C9-807E-45DC-AA0E-854B34AF4D6B" name="htdocs">
+<file url="htdocs/.htaccess" id="48095D80-1032-4ED7-A951-8D32C6C3140B" name=".htaccess">
+</file>
+<file url="htdocs/index.ehtml" id="ACE084D9-B73F-47B5-95D6-ECB4AC37A803" name="index.ehtml">
+</file>
+<file url="htdocs/main.html" id="0DCBA09F-E2FC-40DD-8225-1E877601E0F2" name="main.html">
+</file>
+<file url="htdocs/page.ehtml" id="37D220D7-6C05-4E52-B3AB-7E174FA6A0BE" name="page.ehtml">
+</file>
+<file url="htdocs/style.css" id="04B21F78-9D91-42B1-9C18-C574AF6B7102" name="style.css">
+</file>
+<file url="htdocs/test.ehtml" id="6E77EA53-7C9D-49EC-8440-B8B305480B88" name="test.ehtml">
+</file>
+<file url="htdocs/style.xsl" id="66839CFE-51BF-44BD-98E1-CDACD05C2BB0" name="style.xsl">
+</file>
+</folder>
+<file url="cmsbuilder/Config.pm" id="23477EBB-BAD1-4C64-9299-EA7A6D13A0AD" name="Config.pm">
+</file>
+</project>
