@@ -1,6 +1,8 @@
+/CatData.pm////*///
 /CatDir.pm////*///
 /CatInterface.pm////*///
 /CatMember.pm////*///
+/CatObject.pm////*///
 /CatWare.pm////*///
+/CatWareSimple.pm////*///
 /modCatalog.pm////*///
-/plgnForms.pm////*///

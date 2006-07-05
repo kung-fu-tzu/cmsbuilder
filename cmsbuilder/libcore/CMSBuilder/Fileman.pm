@@ -1,7 +1,8 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::Fileman;
 use strict qw(subs vars);
+use utf8;
 
 import CGI 'param';
 use plgnUsers;
@@ -36,7 +37,7 @@ sub action
 	{
 		my $iact = 'rpc_'.$act;
 		if(__PACKAGE__->can($iact)){ __PACKAGE__->$iact(); }
-		else{ print 'Нет такой функции.<br>'; }
+		else{ print 'РќРµС‚ С‚Р°РєРѕР№ С„СѓРЅРєС†РёРё.<br>'; }
 	}
 	
 	print '<br>';
@@ -64,7 +65,7 @@ sub list
 	closedir($ud);
 	
 	$ahref = '<a ondrop="alert(event.dataTransfer.getData(\'text\'))" href="?chdir='.$ncd.'">';
-	print $ahref,'<img border="0" width="16" height="16" src="'.fileman_icon($uldir,$uhdir,$chdir,'..').'"></a>&nbsp;&nbsp;',$ahref,'Вверх...','</a><br>';
+	print $ahref,'<img border="0" width="16" height="16" src="'.fileman_icon($uldir,$uhdir,$chdir,'..').'"></a>&nbsp;&nbsp;',$ahref,'Р’РІРµСЂС…...','</a><br>';
 	
 	print '<br>';
 	
@@ -98,14 +99,14 @@ sub list
 		<input type="hidden" name="chdir" value="',$chdir,'">
 		<input type="hidden" name="act" value="add">
 		<input type="file" name="file">
-		<input type="submit" value="Сохранить">
+		<input type="submit" value="РЎРѕС…СЂР°РЅРёС‚СЊ">
 	</form>
 	
 	<form action="?" method="post">
 		<input type="hidden" name="chdir" value="',$chdir,'">
 		<input type="hidden" name="act" value="mkdir">
 		<input type="text" name="dname">
-		<input type="submit" value="Создать">
+		<input type="submit" value="РЎРѕР·РґР°С‚СЊ">
 	</form>
 	';
 }
@@ -122,7 +123,7 @@ sub rpc_del
 	path_it($fname);
 	$fname =~ s#.*\/##s;
 	
-	print( (unlink($uldir.$chdir.$fname)|rmdir($uldir.$chdir.$fname))?"Файл успешно удалён.":"Невозможно удалить файл" );
+	print( (unlink($uldir.$chdir.$fname)|rmdir($uldir.$chdir.$fname))?"Р¤Р°Р№Р» СѓСЃРїРµС€РЅРѕ СѓРґР°Р»С‘РЅ.":"РќРµРІРѕР·РјРѕР¶РЅРѕ СѓРґР°Р»РёС‚СЊ С„Р°Р№Р»" );
 }
 
 sub rpc_mkdir
@@ -131,7 +132,7 @@ sub rpc_mkdir
 	path_it($dname);
 	$dname =~ s#.*\/##s;
 	
-	print mkdir($uldir.$chdir.$dname)?"Директория успешно создана.":"Невозможно создать директорию";
+	print mkdir($uldir.$chdir.$dname)?"Р”РёСЂРµРєС‚РѕСЂРёСЏ СѓСЃРїРµС€РЅРѕ СЃРѕР·РґР°РЅР°.":"РќРµРІРѕР·РјРѕР¶РЅРѕ СЃРѕР·РґР°С‚СЊ РґРёСЂРµРєС‚РѕСЂРёСЋ";
 }
 
 sub rpc_add
@@ -146,7 +147,7 @@ sub rpc_add
 	$nfname =~ m/\.(\w+)$/;
 	my $ext = $1;
 	
-	if(index(' eml ehtml asp php php3 phtml php4 php5 cgi pl ',' '.lc($ext).' ') >= 0){ print 'Расширение ',$ext,' недопустимо!'; return; }
+	if(index(' eml ehtml asp php php3 phtml php4 php5 cgi pl ',' '.lc($ext).' ') >= 0){ print 'Р Р°СЃС€РёСЂРµРЅРёРµ ',$ext,' РЅРµРґРѕРїСѓСЃС‚РёРјРѕ!'; return; }
 	
 	open($nfh,'>',$uldir.$chdir.$nfname);
 	binmode($nfh);
@@ -155,7 +156,7 @@ sub rpc_add
 	while(read($nfile,$buff,2048)){ print $nfh $buff; }
 	close($nfh);
 	
-	print 'Файл "',$nfname,'" успешно сохранён.<br>';
+	print 'Р¤Р°Р№Р» "',$nfname,'" СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅС‘РЅ.<br>';
 }
 
 
@@ -189,8 +190,8 @@ sub fileman_icon
 
 sub path_it
 {
-	$_[0] =~ tr/абвгдеёжзийклмнопрстуфхцчшщьыъэюя/abvgdeejziyklmnoprstufhc4ww_i_eua/;
-	$_[0] =~ tr/АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ/ABVGDEEJZIYKLMNOPRSTUFHC4WW_I_EUA/;
+	$_[0] =~ tr/Р°Р±РІРіРґРµС‘Р¶Р·РёР№РєР»РјРЅРѕРїСЂСЃС‚СѓС„С…С†С‡С€С‰СЊС‹СЉСЌСЋСЏ/abvgdeejziyklmnoprstufhc4ww_i_eua/;
+	$_[0] =~ tr/РђР‘Р’Р“Р”Р•РЃР–Р—РР™РљР›РњРќРћРџР РЎРўРЈР¤РҐР¦Р§РЁР©Р¬Р«РЄР­Р®РЇ/ABVGDEEJZIYKLMNOPRSTUFHC4WW_I_EUA/;
 	$_[0] =~ s/\\/\//g;
 	$_[0] =~ s/\.\///g;
 	$_[0] =~ s/\.\.\///g;

@@ -1,7 +1,8 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::OInterface;
 use strict qw(subs vars);
+use utf8;
 
 
 

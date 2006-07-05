@@ -1,0 +1,21 @@
+﻿
+
+.message
+{
+    border: solid 1px #aaa;
+    margin: 1em 5em;
+    padding: 0.5em 2em;
+    text-align: center;
+    clear: both;
+}
+
+table
+{
+    border-collapse: collapse;
+    border: 1px #888;
+}
+
+td
+{
+    padding: 0.5em;
+}

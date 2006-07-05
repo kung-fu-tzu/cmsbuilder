@@ -1,13 +1,12 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::vtypes::timestamp;
 use strict qw(subs vars);
-our @ISA = 'CMSBuilder::DBI::VType';
-# Временная метка ####################################################
+use utf8;
 
-sub table_cre
-{
-	return ' TIMESTAMP(14) ';
-}
+our @ISA = 'CMSBuilder::DBI::VType';
+# Р’СЂРµРјРµРЅРЅР°СЏ РјРµС‚РєР° ####################################################
+
+sub table_cre {'TIMESTAMP'}
 
 1;

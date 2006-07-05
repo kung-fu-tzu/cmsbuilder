@@ -1,12 +1,13 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 # 
-# Модуль управляет буферизацией вывода
-# и определяет функции стандартных ошибок.
+# РњРѕРґСѓР»СЊ СѓРїСЂР°РІР»СЏРµС‚ Р±СѓС„РµСЂРёР·Р°С†РёРµР№ РІС‹РІРѕРґР°
+# Рё РѕРїСЂРµРґРµР»СЏРµС‚ С„СѓРЅРєС†РёРё СЃС‚Р°РЅРґР°СЂС‚РЅС‹С… РѕС€РёР±РѕРє.
 # 
 
 package CMSBuilder::IO;
 use strict qw(subs vars);
+use utf8;
 
 use Carp;
 use POSIX 'strftime';
@@ -31,7 +32,7 @@ our
 	$mem,$out,%headers,
 	$system_ini,$modules_ini,$sts,
 	%errtext,%errstatus,$errtpl,
-	$stdout_bkp
+	$stdout_bkp,$err_catched
 );
 
 %errstatus =
@@ -45,16 +46,14 @@ our
 
 %errtext =
 (
-	500 => '<h1>На сервере произошла ошибка.</h1><p>Попробуйте обратиться к этой странице позже.</p>',
-	404 => '<h1>Запрашиваемый документ не найден.</h1>',
-	403 => '<h1>У вас нет доступа к этому разделу или элементу.</h1>
-			<p>Если вы не вошли в систему под своим именем,<br> можете сделать это на <a href="'.$CMSBuilder::Config::http_aroot.'/login.ehtml"><u>странице входа в систему</u></a>.</p>',
-	'*' => 'Неизвестная ошибка.'
+	500 => '<h4>РќР° СЃРµСЂРІРµСЂРµ РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°.</h4><p>РџРѕРїСЂРѕР±СѓР№С‚Рµ РѕР±СЂР°С‚РёС‚СЊСЃСЏ Рє СЌС‚РѕР№ СЃС‚СЂР°РЅРёС†Рµ РїРѕР·Р¶Рµ.</p>',
+	404 => '<h4>Р—Р°РїСЂР°С€РёРІР°РµРјС‹Р№ РґРѕРєСѓРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ.</h4>',
+	403 => '<h4>РЈ РІР°СЃ РЅРµС‚ РґРѕСЃС‚СѓРїР° Рє СЌС‚РѕРјСѓ СЂР°Р·РґРµР»Сѓ РёР»Рё СЌР»РµРјРµРЅС‚Сѓ.</h4>
+			<p>Р•СЃР»Рё РІС‹ РЅРµ РІРѕС€Р»Рё РІ СЃРёСЃС‚РµРјСѓ РїРѕРґ СЃРІРѕРёРј РёРјРµРЅРµРј,<br> РјРѕР¶РµС‚Рµ СЃРґРµР»Р°С‚СЊ СЌС‚Рѕ РЅР° <a href="'.$CMSBuilder::Config::http_aroot.'/login.ehtml"><u>СЃС‚СЂР°РЅРёС†Рµ РІС…РѕРґР° РІ СЃРёСЃС‚РµРјСѓ</u></a>.</p>',
+	'*' => 'РќРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°.'
 );
 
-################################################################################
-# Рабочие функции интерфейса
-################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” Р Р°Р±РѕС‡РёРµ С„СѓРЅРєС†РёРё РёРЅС‚РµСЂС„РµР№СЃР° вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub errany
 {
@@ -63,7 +62,7 @@ sub errany
 	
 	$en =~ s/\D//g;
 	
-	$errtpl = $errtpl || f2var($CMSBuilder::Config::path_etc.'/errors.html.tpl');
+	$errtpl = $errtpl || f2var_utf8($CMSBuilder::Config::path_etc.'/errors.html.tpl');
 	
 	my $out = parsetpl
 	(
@@ -77,56 +76,45 @@ sub errany
 	
 	$headers{'Status'} = $en.' '.($errstatus{$en} || $errstatus{'*'});
 	
-	CMSBuilder::IO->send_data_begin();
-	print $out;
-	CMSBuilder::IO->send_data_end();
+	CMSBuilder::IO->send_data_utf8($out);
 }
 
-sub err500{ my $en = 500; errany($en); croak('Error '.$en.': '.join('',@_)); }
-sub err404{ my $en = 404; errany($en); croak('OK'); }
-sub err403{ my $en = 403; errany($en); croak('OK'); }
+sub err500{ my $en = $err_catched = 500; errany($en); croak('Error '.$en.': '.join('',@_)); }
+sub err404{ my $en = $err_catched = 404; errany($en); croak('Error '.$en.': '.join('',@_)); }
+sub err403{ my $en = $err_catched = 403; errany($en); croak('Error '.$en.': '.join('',@_)); }
 
-sub start
+sub init
 {
-	if($sts){ return; }
-	$sts = 1;
-	
-	select $stdout_bkp if $stdout_bkp;
-	
-	$system_ini = CMSBuilder::IO::Ini->new($CMSBuilder::Config::path_etc.'/system.ini');
-	$modules_ini = CMSBuilder::IO::Ini->new($CMSBuilder::Config::path_etc.'/modules.ini');
-	
-	# Заголовки
+	# Р—Р°РіРѕР»РѕРІРєРё
 	%headers =
 	(
-		'Content-type' => 'text/html; charset=windows-1251',
+		'Content-type' => 'text/html; charset=utf-8',
 		'Pragma' => 'no-cache',
 		'Cache-control' => 'max-age=0',
 		'Expires' => '0',
 		'X-Powered-By' => 'Paleo CMS Builder '.$CMSBuilder::version,
 		'Last-Modified' => estrftime('%a, %d %b %Y %T %H:%M:%S GMT',localtime(time()-3600*2)),
 	);
+}
+
+sub start
+{
+	my $c = shift;
 	
-	$out = '';
+	if($sts){ return; }
+	$sts = 1;
 	
-	if($CMSBuilder::Config::buff_do)
-	{
-		if($CMSBuilder::Config::buff_mem)
-		{
-			open($mem,'>',\$out);
-			
-		}
-		else
-		{
-			open($mem,'>'.$CMSBuilder::Config::path_tmp.'/tmpout_'.$$.'.html');
-		}
-		
-		$stdout_bkp = select($mem);
-	}
-	else
-	{
-		print_headers();
-	}
+	$c->init();
+	
+	select $stdout_bkp if $stdout_bkp;
+	
+	$system_ini = CMSBuilder::IO::Ini->new($CMSBuilder::Config::path_etc.'/system.ini');
+	$modules_ini = CMSBuilder::IO::Ini->new($CMSBuilder::Config::path_etc.'/modules.ini');
+	
+	$out = 'РІРѕС‚ РѕРЅ СЋРЅРёРєРѕРґ';
+	
+	open($mem,'>:utf8',\$out);
+	$stdout_bkp = select($mem);
 	
 	CMSBuilder::IO::Session->start();
 }
@@ -135,27 +123,19 @@ sub sess { return \%CMSBuilder::IO::Session::sess; }
 
 sub clear
 {
-	if($CMSBuilder::Config::buff_do)
-	{
-		select $stdout_bkp if $stdout_bkp;
-		close $mem;
-		
-		if($CMSBuilder::Config::buff_mem)
-		{
-			$out = '';
-			open($mem,'>',\$out);
-		}
-		else
-		{
-			open($mem,'>','out'.$$.'.tmp');
-		}
-		
-		select $mem;
-	}
+	select $stdout_bkp if $stdout_bkp;
+	close $mem;
+	
+	$out = 'СЃРЅРѕРІР° СЋРЅРёРєРѕРґ';
+	open($mem,'>:utf8',\$out);
+	
+	select $mem;
 }
 
 sub stop
 {
+	my $c = shift;
+	
 	unless($sts){ return; }
 	$sts = 0;
 	
@@ -164,25 +144,14 @@ sub stop
 	$system_ini = '';
 	$modules_ini = '';
 	
-	if($CMSBuilder::Config::buff_do)
-	{
-		select $stdout_bkp if $stdout_bkp;
-		close $mem;
-		
-		unless($CMSBuilder::Config::buff_mem)
-		{
-			open($mem,'<'.$CMSBuilder::Config::path_tmp.'/out'.$$.'.tmp');
-			$out = join('',<$mem>);
-			close $mem;
-			
-			unlink($CMSBuilder::Config::path_tmp.'/out'.$$.'.tmp');
-		}
-		
-		for my $flt (@CMSBuilder::Config::io_filters){ $flt->filt(\$out,\%headers); }
-		
-		print_headers();
-		print $out;
-	}
+	select $stdout_bkp if $stdout_bkp;
+	binmode(select(), ":utf8");
+	close $mem;
+	
+	for my $flt (@CMSBuilder::Config::io_filters){ $flt->filt(\$out,\%headers); }
+	
+	$c->print_headers();
+	print $out;
 }
 
 sub send_data_begin
@@ -207,6 +176,18 @@ sub send_data
 	my $data = shift;
 	
 	$c->send_data_begin();
+	binmode(select());
+	print $data;
+	$c->send_data_end();
+}
+
+sub send_data_utf8
+{
+	my $c = shift;
+	my $data = shift;
+	
+	$c->send_data_begin();
+	binmode(select(),':utf8');
 	print $data;
 	$c->send_data_end();
 }

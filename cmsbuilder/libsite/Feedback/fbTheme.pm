@@ -1,21 +1,23 @@
-# (с) Токмаков А. И., 2005-2006
+п»ї# (СЃ) РўРѕРєРјР°РєРѕРІ Рђ. Р., 2005-2006
 
 package fbTheme;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('plgnSite::Object','CMSBuilder::DBI::FilteredArray','CMSBuilder::DBI::Array');
 
-sub _cname {'Тема'}
+sub _cname {'РўРµРјР°'}
 sub _aview {'name','desc','onpage'}
 sub _add_classes {qw/fbQuestion/}
 sub _have_icon {1}
 
 sub _props
 {
-	'name'	=> { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-	'desc'	=> { 'type' => 'miniword', 'name' => 'Описание' }
+	'name'	=> { 'type' => 'string', 'length' => 100, 'name' => 'РќР°Р·РІР°РЅРёРµ' },
+	'desc'	=> { 'type' => 'miniword', 'name' => 'РћРїРёСЃР°РЅРёРµ' }
 }
 
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 use plgnUsers;
 use CMSBuilder::Utils;
@@ -36,7 +38,6 @@ sub _have_icon
 	return (grep {!$_->{'answer'}} $o->get_all())?'icons/fbTheme_new.gif':'icons/fbTheme.gif';
 }
 
-#-------------------------------------------------------------------------------
 sub process_params
 {
 	my $o = shift;
@@ -44,7 +45,7 @@ sub process_params
 	
 	return if $r->{'action'} ne 'save';
 	
-	if($r->{'question'}) #Нет вопроса - свалим.
+	if($r->{'question'}) #РќРµС‚ РІРѕРїСЂРѕСЃР° - СЃРІР°Р»РёРј.
 	{
 		my $to = fbQuestion->cre();
 		my $res = $o->elem_paste($to);
@@ -65,24 +66,24 @@ sub process_params
 				(
 					'to'	=> $o->root->{'email'},
 					'from'	=> $to->{'username'}.' <'.($to->{'email'} || $o->root->{'email'}).'>',
-					'subj'	=> 'Вопрос-ответ, тема:'.$o->name(),
-					'text'	=> $to->{'question'}."\n\n--\n\nОтвет можно написать из админки: ".$href
+					'subj'	=> '['.$o->root->{'bigname'}.'] РњРѕРґСѓР»СЊ РІРѕРїСЂРѕСЃ-РѕС‚РІРµС‚, РЅРѕРІР°СЏ С‚РµРјР°:'.$o->name(),
+					'text'	=> $to->{'question'}."\n\n--\n\nРћС‚РІРµС‚ РјРѕР¶РЅРѕ РЅР°РїРёСЃР°С‚СЊ РёР· Р°РґРјРёРЅРєРё: ".$href
 				);
 			}
 			
 			print
 			'
-			<p>Спасибо, ваш вопрос был успешно добавлен. Вы увидите его на сайте, когда он будет обработан.</p>
-			'.($to->{'emailme'}?'<p>На указанный вами e-mail придёт уведомление об ответе.</p>':'').'
-			<p><a href="'.$o->site_href().'?form=yes">Продолжить задавать вопросы...</a></p>
+			<p>РЎРїР°СЃРёР±Рѕ, РІР°С€ РІРѕРїСЂРѕСЃ Р±С‹Р» СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅ. Р’С‹ СѓРІРёРґРёС‚Рµ РµРіРѕ РЅР° СЃР°Р№С‚Рµ, РєРѕРіРґР° РѕРЅ Р±СѓРґРµС‚ РѕР±СЂР°Р±РѕС‚Р°РЅ.</p>
+			'.($to->{'emailme'}?'<p>РќР° СѓРєР°Р·Р°РЅРЅС‹Р№ РІР°РјРё e-mail РїСЂРёРґС‘С‚ СѓРІРµРґРѕРјР»РµРЅРёРµ РѕР± РѕС‚РІРµС‚Рµ.</p>':'').'
+			<p><a href="'.$o->site_href().'?form=yes">РџСЂРѕРґРѕР»Р¶РёС‚СЊ Р·Р°РґР°РІР°С‚СЊ РІРѕРїСЂРѕСЃС‹...</a></p>
 			';
 		}
 		else
 		{
 			print
 			'
-				К сожалению, по техническим причинам, ваш вопрос не был сохранен.
-				Попробуйте отправить его по почте: <a href="mailto:',$o->root->{'email'},'">',$o->root->{'email'},'</a>.
+				Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ, РїРѕ С‚РµС…РЅРёС‡РµСЃРєРёРј РїСЂРёС‡РёРЅР°Рј, РІР°С€ РІРѕРїСЂРѕСЃ РЅРµ Р±С‹Р» СЃРѕС…СЂР°РЅРµРЅ.
+				РџРѕРїСЂРѕР±СѓР№С‚Рµ РѕС‚РїСЂР°РІРёС‚СЊ РµРіРѕ РїРѕ РїРѕС‡С‚Рµ: <a href="mailto:',$o->root->{'email'},'">',$o->root->{'email'},'</a>.
 			';
 			
 			return 0;
@@ -92,14 +93,14 @@ sub process_params
 	}
 	else
 	{
-		print '<div class="error">Вы не ввели текст вопроса.</div>';
+		print '<div class="error">Р’С‹ РЅРµ РІРІРµР»Рё С‚РµРєСЃС‚ РІРѕРїСЂРѕСЃР°.</div>';
 		return 0;
 	}
 	
 	return 1;
 }
-#------------------------------------------------------------------------------------
-#Скрывает строчку с номерами страниц во время составления вопроса.
+
+#РЎРєСЂС‹РІР°РµС‚ СЃС‚СЂРѕС‡РєСѓ СЃ РЅРѕРјРµСЂР°РјРё СЃС‚СЂР°РЅРёС† РІРѕ РІСЂРµРјСЏ СЃРѕСЃС‚Р°РІР»РµРЅРёСЏ РІРѕРїСЂРѕСЃР°.
 sub site_pagesline
 {
 	my $o = shift;
@@ -109,8 +110,8 @@ sub site_pagesline
 	
 	return $o->SUPER::site_pagesline($r,@_);
 }
-#------------------------------------------------------------------------------------
-#Распечатывает список тем. Если их слишком много, бьёт на страницы.
+
+#Р Р°СЃРїРµС‡Р°С‚С‹РІР°РµС‚ СЃРїРёСЃРѕРє С‚РµРј. Р•СЃР»Рё РёС… СЃР»РёС€РєРѕРј РјРЅРѕРіРѕ, Р±СЊС‘С‚ РЅР° СЃС‚СЂР°РЅРёС†С‹.
 sub site_content
 {
 	my $o = shift;
@@ -126,11 +127,11 @@ sub site_content
 	
 	print '<div class="mod-feedback">';
 	
-	print $o->access('a') ? '<p><a href="?form=yes">Задать вопрос...</a></p>' : '<p>Тема закрыта.</p>';
+	print $o->access('a') ? '<p><a href="?form=yes">Р—Р°РґР°С‚СЊ РІРѕРїСЂРѕСЃ...</a></p>' : '<p>РўРµРјР° Р·Р°РєСЂС‹С‚Р°.</p>';
 	
 	if(!@page)
 	{
-		print '<div class="message">В этой теме нет вопросов.</div>';
+		print '<div class="message">Р’ СЌС‚РѕР№ С‚РµРјРµ РЅРµС‚ РІРѕРїСЂРѕСЃРѕРІ.</div>';
 	}
 	else
 	{
@@ -139,7 +140,7 @@ sub site_content
 	
 	print '</div>';
 }
-#-------------------------------------------------------------------------------
+
 sub print_form
 {
 	my $o = shift;
@@ -153,30 +154,30 @@ sub print_form
 		
 		<table>
 		<tr>
-			<td><label for="username">Ваше имя</label>:</td>
+			<td><label for="username">Р’Р°С€Рµ РёРјСЏ</label>:</td>
 			<td><input name="username" value="',$r->{'username'},'"></td>
 		</tr>
 		<tr>
-			<td><label for="email">Ваш e-mail</label>:<br/><small>(для администратора)</small></td>
+			<td><label for="email">Р’Р°С€ e-mail</label>:<br/><small>(РґР»СЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°)</small></td>
 			<td><input name="email" value="',$r->{'email'},'"></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input id="checkbox_emailme" type="checkbox" ',$r->{'emailme'}?'checked="checked"':'',' name="emailme"><label for="checkbox_emailme">Оповестить об ответе на e-mail</label></td>
+			<td><input id="checkbox_emailme" type="checkbox" ',$r->{'emailme'}?'checked="checked"':'',' name="emailme"><label for="checkbox_emailme">РћРїРѕРІРµСЃС‚РёС‚СЊ РѕР± РѕС‚РІРµС‚Рµ РЅР° e-mail</label></td>
 		</tr>
 		<tr>
-			<td><label for="question">Текст вопроса</label>:</td>
+			<td><label for="question">РўРµРєСЃС‚ РІРѕРїСЂРѕСЃР°</label>:</td>
 			<td><textarea cols="42" rows="15" name="question">',$r->{'question'},'</textarea></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><button type="submit">Задать вопрос</button></td>
+			<td><button type="submit">Р—Р°РґР°С‚СЊ РІРѕРїСЂРѕСЃ</button></td>
 		</tr>
 		</table>
 	</form>
 	';
 }
-#-------------------------------------------------------------------------------
+
 sub site_preview
 {
 	my $o = shift;
@@ -189,5 +190,5 @@ sub site_preview
 		</div>
 	';
 }
-#-------------------------------------------------------------------------------
+
 1;

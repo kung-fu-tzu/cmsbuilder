@@ -1,10 +1,12 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package plgnCPanelBackup;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::Plugin');
 
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 sub plgn_load
@@ -20,22 +22,24 @@ sub plgn_load
 
 package plgnCPanelBackup::ModBackup;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('plgnFileManager::Object','CMSBuilder::DBI::SimpleModule');
 
-sub _cname {'Резервное копирование'}
+sub _cname {'Р РµР·РµСЂРІРЅРѕРµ РєРѕРїРёСЂРѕРІР°РЅРёРµ'}
 sub _have_icon {1}
 sub _one_instance {1}
 sub _rpcs {keys %{{_simplem_menu()}}}
 
 sub _simplem_menu
 {
-	'cpanel_backup'				=> { -name => 'Резервная копия', -icon => 'icons/backup.gif' },
-		'fileman_view'			=> { -name => 'Список архивов', -icon => 'icons/Dir.gif', -papa => 'cpanel_backup' },
-		'cpanel_backup_create'	=> { -name => 'Создать', -icon => 'icons/backup.gif', -papa => 'cpanel_backup' },
-		'cpanel_backup_restore'	=> { -name => 'Восстановить', -icon => 'icons/backup.gif', -papa => 'cpanel_backup', -hide => 1},
+	'cpanel_backup'				=> { -name => 'Р РµР·РµСЂРІРЅР°СЏ РєРѕРїРёСЏ', -icon => 'icons/backup.gif' },
+		'fileman_view'			=> { -name => 'РЎРїРёСЃРѕРє Р°СЂС…РёРІРѕРІ', -icon => 'icons/Dir.gif', -papa => 'cpanel_backup' },
+		'cpanel_backup_create'	=> { -name => 'РЎРѕР·РґР°С‚СЊ', -icon => 'icons/backup.gif', -papa => 'cpanel_backup' },
+		'cpanel_backup_restore'	=> { -name => 'Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ', -icon => 'icons/backup.gif', -papa => 'cpanel_backup', -hide => 1},
 }
 
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
@@ -49,7 +53,7 @@ our $zitems =
 [
 	{
 		-name	=> 'ee',
-		-text	=> 'Файлы пользователей',
+		-text	=> 'Р¤Р°Р№Р»С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_htdocs.$CMSBuilder::Config::http_eroot,
 		-zip	=> 'ee',
@@ -57,28 +61,28 @@ our $zitems =
 	},
 	{
 		-name	=> 'admin',
-		-text	=> 'Система администрирования',
+		-text	=> 'РЎРёСЃС‚РµРјР° Р°РґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёСЏ',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_htdocs.$CMSBuilder::Config::http_aroot,
 		-zip	=> 'admin',
 	},
 	{
 		-name	=> 'etc',
-		-text	=> 'Служебные файлы',
+		-text	=> 'РЎР»СѓР¶РµР±РЅС‹Рµ С„Р°Р№Р»С‹',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_etc,
 		-zip	=> 'etc',
 	},
 	{
 		-name	=> 'tmp',
-		-text	=> 'Временные файлы',
+		-text	=> 'Р’СЂРµРјРµРЅРЅС‹Рµ С„Р°Р№Р»С‹',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_tmp,
 		-zip	=> 'tmp',
 	},
 	{
 		-name	=> 'www',
-		-text	=> 'Дизайн',
+		-text	=> 'Р”РёР·Р°Р№РЅ',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_htdocs,
 		-zip	=> 'www',
@@ -87,7 +91,7 @@ our $zitems =
 	},
 	{
 		-name	=> 'libsite',
-		-text	=> 'Код приложений',
+		-text	=> 'РљРѕРґ РїСЂРёР»РѕР¶РµРЅРёР№',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_libsite,
 		-zip	=> 'code/libsite',
@@ -95,14 +99,14 @@ our $zitems =
 	},
 	{
 		-name	=> 'libcore',
-		-text	=> 'Код ядра',
+		-text	=> 'РљРѕРґ СЏРґСЂР°',
 		-type	=> 'tree',
 		-local	=> $CMSBuilder::Config::path_libcore,
 		-zip	=> 'code/libcore',
 	},
 	{
 		-name	=> 'base',
-		-text	=> 'База данных',
+		-text	=> 'Р‘Р°Р·Р° РґР°РЅРЅС‹С…',
 		-type	=> 'base',
 		-cmdin	=> $CMSBuilder::Config::mysql_dumpcmd,
 		-cmdout	=> $CMSBuilder::Config::mysql_importcmd,
@@ -277,7 +281,7 @@ sub fileman_cmenu
 	return
 	$o->SUPER::fileman_cmenu($path,$e,@_).'
 	elem_add(JHR());
-	elem_add(JMIHref("Восстановить","'.$o->admin_right_href().'&act=cpanel_backup_restore&path='.$path.'",""));
+	elem_add(JMIHref("Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ","'.$o->admin_right_href().'&act=cpanel_backup_restore&path='.$path.'",""));
 	';
 }
 
@@ -296,18 +300,18 @@ sub cpanel_backup_restore
 	
 	my $zip = Archive::Zip->new($o->fileman_localdir().'/'.$path);
 	
-	unless($zip->memberNamed($confname)){ return $o->err_add('Неверный формат файла!'); }
+	unless($zip->memberNamed($confname)){ return $o->err_add('РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ С„Р°Р№Р»Р°!'); }
 	
 	print $zip->zipfileComment().'<br><hr><br>' if $zip->zipfileComment();
 	
 	print
 	'
 	<form action="?" method="post">
-		<input type="hidden" name="url" value="',$o,'">
+		<input type="hidden" name="url" value="',$o->myurl(),'">
 		<input type="hidden" name="path" value="',$path,'">
 		<input type="hidden" name="act" value="cpanel_backup_restore">
 		<input type="hidden" name="sact" value="cre">
-		Выберите информацию, которую надо восстановить:<br><br>
+		Р’С‹Р±РµСЂРёС‚Рµ РёРЅС„РѕСЂРјР°С†РёСЋ, РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ:<br><br>
 		<table>
 	';
 	
@@ -326,7 +330,7 @@ sub cpanel_backup_restore
 	print
 	'
 			<tr><td colspan="2"><hr></td></tr>
-			<tr><td>Всё:</td><td><input type="checkbox" checked onclick="
+			<tr><td>Р’СЃС‘:</td><td><input type="checkbox" checked onclick="
 				tc = this.checked;
 	';
 	
@@ -343,7 +347,7 @@ sub cpanel_backup_restore
 			"></td></tr>
 			<tr><td colspan="2"><hr></td></tr>
 			<tr><td></td><td>&nbsp;</td></tr>
-			<tr><td colspan="2"><input type="submit" value="Восстановить" onclick="return confirm(\'ВНИМАНИЕ! При восстановлении из архива информация из выбранных разделов будет безвозвратно утеряна.\\n\\nПродолжить восстановление?\')"></td></tr>
+			<tr><td colspan="2"><input type="submit" value="Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ" onclick="return confirm(\'Р’РќРРњРђРќРР•! РџСЂРё РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРё РёР· Р°СЂС…РёРІР° РёРЅС„РѕСЂРјР°С†РёСЏ РёР· РІС‹Р±СЂР°РЅРЅС‹С… СЂР°Р·РґРµР»РѕРІ Р±СѓРґРµС‚ Р±РµР·РІРѕР·РІСЂР°С‚РЅРѕ СѓС‚РµСЂСЏРЅР°.\\n\\nРџСЂРѕРґРѕР»Р¶РёС‚СЊ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ?\')"></td></tr>
 		</table>
 	</form>
 	';
@@ -360,7 +364,7 @@ sub cpanel_backup_restore_make
 	
 	my $zip = Archive::Zip->new($o->fileman_localdir().'/'.$path);
 	
-	unless($zip->memberNamed($confname)){ return $o->err_add('Неверный формат файла!'); }
+	unless($zip->memberNamed($confname)){ return $o->err_add('РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ С„Р°Р№Р»Р°!'); }
 	
 	my $cnt;
 	for my $it (@$zitems)
@@ -374,13 +378,13 @@ sub cpanel_backup_restore_make
 			}
 			else
 			{
-				$o->err_add($it->{'-text'}.' - не удалось.');
+				$o->err_add($it->{'-text'}.' - РЅРµ СѓРґР°Р»РѕСЃСЊ.');
 			}
 			$cnt++;
 		}
 	}
 	
-	unless($cnt){ $o->notice_add('Ни одного элемента не было выбрано для восстановления.'); }
+	unless($cnt){ $o->notice_add('РќРё РѕРґРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РЅРµ Р±С‹Р»Рѕ РІС‹Р±СЂР°РЅРѕ РґР»СЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ.'); }
 }
 
 sub cpanel_backup_create
@@ -393,10 +397,10 @@ sub cpanel_backup_create
 	print
 	'
 	<form action="?" method="post">
-		<input type="hidden" name="url" value="',$o,'">
+		<input type="hidden" name="url" value="',$o->myurl(),'">
 		<input type="hidden" name="act" value="cpanel_backup_create">
 		<input type="hidden" name="sact" value="cre">
-		Выберите информацию, которую надо архивировать:<br><br>
+		Р’С‹Р±РµСЂРёС‚Рµ РёРЅС„РѕСЂРјР°С†РёСЋ, РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ Р°СЂС…РёРІРёСЂРѕРІР°С‚СЊ:<br><br>
 		<table>
 	';
 	
@@ -408,7 +412,7 @@ sub cpanel_backup_create
 	print
 	'
 			<tr><td colspan="2"><hr></td></tr>
-			<tr><td>Всё:</td><td><input type="checkbox" onclick="
+			<tr><td>Р’СЃС‘:</td><td><input type="checkbox" onclick="
 				tc = this.checked;
 	';
 	
@@ -421,10 +425,10 @@ sub cpanel_backup_create
 	'
 			"></td></tr>
 			<tr><td colspan="2"><hr></td></tr>
-			<tr><td>Скачать архив:</td><td><input type="checkbox" name="send"></td></tr>
+			<tr><td>РЎРєР°С‡Р°С‚СЊ Р°СЂС…РёРІ:</td><td><input type="checkbox" name="send"></td></tr>
 			<tr><td colspan="2"><hr></td></tr>
 			<tr><td></td><td>&nbsp;</td></tr>
-			<tr><td colspan="2"><input type="submit" value="Архивировать"></td></tr>
+			<tr><td colspan="2"><input type="submit" value="РђСЂС…РёРІРёСЂРѕРІР°С‚СЊ"></td></tr>
 		</table>
 	</form>
 	';
@@ -453,19 +457,19 @@ sub cpanel_backup_make
 			}
 			else
 			{
-				$o->err_add($it->{'-text'}.' - не удалось.');
+				$o->err_add($it->{'-text'}.' - РЅРµ СѓРґР°Р»РѕСЃСЊ.');
 			}
 		}
 	}
 	
 	unless(@done)
 	{
-		$o->err_add('Не указаны объекты орхивации.');
+		$o->err_add('РќРµ СѓРєР°Р·Р°РЅС‹ РѕР±СЉРµРєС‚С‹ РѕСЂС…РёРІР°С†РёРё.');
 	}
 	
 	if($o->err_cnt())
 	{
-		$o->notice_add('Создание архива прервано в связи с ошибками.');
+		$o->notice_add('РЎРѕР·РґР°РЅРёРµ Р°СЂС…РёРІР° РїСЂРµСЂРІР°РЅРѕ РІ СЃРІСЏР·Рё СЃ РѕС€РёР±РєР°РјРё.');
 		return;
 	}
 	
@@ -489,10 +493,10 @@ sub cpanel_backup_make
 	
 	if($zip->writeToFileNamed($CMSBuilder::Config::path_backup.'/'.$zfname) == AZ_OK)
 	{
-		$o->notice_add('Архив успешно создан: <b>'.$zfname.'</b> ('.len2size((stat($CMSBuilder::Config::path_backup.'/'.$zfname))[7]).').');
+		$o->notice_add('РђСЂС…РёРІ СѓСЃРїРµС€РЅРѕ СЃРѕР·РґР°РЅ: <b>'.$zfname.'</b> ('.len2size((stat($CMSBuilder::Config::path_backup.'/'.$zfname))[7]).').');
 		if($r->{'send'}){ print '<iframe style="width:0;height:0" src="',$o->admin_right_href(),'&act=fileman_view&path=/',$zfname,'"></iframe>'; }
 	}
-	else{ $o->err_add('Не удалось сохранить файл архива!'); }
+	else{ $o->err_add('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ С„Р°Р№Р» Р°СЂС…РёРІР°!'); }
 }
 
 sub cpanel_backup_old
@@ -523,7 +527,7 @@ sub cpanel_backup_old
 		
 		unless($zip->memberNamed($confname))
 		{
-			$o->err_add('Неверный формат файла!');
+			$o->err_add('РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ С„Р°Р№Р»Р°!');
 			unlink($tmpz);
 			return;
 		}
@@ -546,55 +550,55 @@ sub cpanel_backup_old
 			print $fh $sql;
 			close($fh);
 			
-			print 'База данных восcтановлена.<br>';
+			print 'Р‘Р°Р·Р° РґР°РЅРЅС‹С… РІРѕСЃcС‚Р°РЅРѕРІР»РµРЅР°.<br>';
 		}
 		
 		if($conf =~ /www/)
 		{
 			$zip->extractTree('www',$CMSBuilder::Config::path_htdocs);
-			print 'Дизайн восcтановлен.<br>';
+			print 'Р”РёР·Р°Р№РЅ РІРѕСЃcС‚Р°РЅРѕРІР»РµРЅ.<br>';
 		}
 		
 		if($conf =~ /ee/)
 		{
 			$zip->extractTree('ee',$CMSBuilder::Config::path_htdocs.$CMSBuilder::Config::http_eroot);
-			print 'Файлы пользователей восcтановлены.<br>';
+			print 'Р¤Р°Р№Р»С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РІРѕСЃcС‚Р°РЅРѕРІР»РµРЅС‹.<br>';
 		}
 		
 		if($conf =~ /admin/)
 		{
 			$zip->extractTree('admin',$CMSBuilder::Config::path_htdocs.$CMSBuilder::Config::http_aroot);
-			print 'Интерфейс администратора восcтановлена.<br>';
+			print 'РРЅС‚РµСЂС„РµР№СЃ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° РІРѕСЃcС‚Р°РЅРѕРІР»РµРЅР°.<br>';
 		}
 		
 		if($conf =~ /etc/)
 		{
 			$zip->extractTree('etc',$CMSBuilder::Config::path_etc);
-			print 'Служебные файлы восcтановлены.<br>';
+			print 'РЎР»СѓР¶РµР±РЅС‹Рµ С„Р°Р№Р»С‹ РІРѕСЃcС‚Р°РЅРѕРІР»РµРЅС‹.<br>';
 		}
 		
 		if($conf =~ /tmp/)
 		{
 			$zip->extractTree('tmp',$CMSBuilder::Config::path_tmp);
-			print 'Временные файлы воcстановлены.<br>';
+			print 'Р’СЂРµРјРµРЅРЅС‹Рµ С„Р°Р№Р»С‹ РІРѕcСЃС‚Р°РЅРѕРІР»РµРЅС‹.<br>';
 		}
 		
 		if($conf =~ /libcore/)
 		{
 			$zip->extractTree('code/libcore',$CMSBuilder::Config::path_libcore);
 			$zip->extractMember('code/eml.cgi','eml.cgi');
-			print 'Код ядра воcстановлен.<br>';
+			print 'РљРѕРґ СЏРґСЂР° РІРѕcСЃС‚Р°РЅРѕРІР»РµРЅ.<br>';
 		}
 		
 		if($conf =~ /libsite/)
 		{
 			$zip->extractTree('code/libsite',$CMSBuilder::Config::path_libsite);
-			print 'Код приложений воcстановлен.<br>';
+			print 'РљРѕРґ РїСЂРёР»РѕР¶РµРЅРёР№ РІРѕcСЃС‚Р°РЅРѕРІР»РµРЅ.<br>';
 		}
 		
 		unlink($tmpz);
 		
-		print '<br><br>Воcстановление закончено.';
+		print '<br><br>Р’РѕcСЃС‚Р°РЅРѕРІР»РµРЅРёРµ Р·Р°РєРѕРЅС‡РµРЅРѕ.';
 	}
 	elsif($sact eq 'send')
 	{
@@ -623,22 +627,22 @@ sub cpanel_backup_old
 		print
 		'
 		<form action="?" method="post">
-			<input type="hidden" name="url" value="',$o,'">
+			<input type="hidden" name="url" value="',$o->myurl(),'">
 			<input type="hidden" name="act" value="cpanel_backup_create">
 			<input type="hidden" name="sact" value="do">
-			Выберите информацию, которую надо архивировать:<br><br>
+			Р’С‹Р±РµСЂРёС‚Рµ РёРЅС„РѕСЂРјР°С†РёСЋ, РєРѕС‚РѕСЂСѓСЋ РЅР°РґРѕ Р°СЂС…РёРІРёСЂРѕРІР°С‚СЊ:<br><br>
 			<table>
-				<tr><td>База данных:</td><td><input type="checkbox" name="sql" checked></td></tr>
-				<tr><td>Файлы пользователей:</td><td><input type="checkbox" name="ee" checked></td></tr>
-				<tr><td>Служебные файлы:</td><td><input type="checkbox" name="etc" checked></td></tr>
+				<tr><td>Р‘Р°Р·Р° РґР°РЅРЅС‹С…:</td><td><input type="checkbox" name="sql" checked></td></tr>
+				<tr><td>Р¤Р°Р№Р»С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№:</td><td><input type="checkbox" name="ee" checked></td></tr>
+				<tr><td>РЎР»СѓР¶РµР±РЅС‹Рµ С„Р°Р№Р»С‹:</td><td><input type="checkbox" name="etc" checked></td></tr>
 				<tr><td colspan="2"><hr></td></tr>
-				<tr><td>Дизайн:</td><td><input type="checkbox" name="www"></td></tr>
-				<tr><td>Временные файлы:</td><td><input type="checkbox" name="tmp"></td></tr>
-				<tr><td>Интерфейс администратора:</td><td><input type="checkbox" name="admin"></td></tr>
-				<tr><td>Код ядра:</td><td><input type="checkbox" name="libcore"></td></tr>
-				<tr><td>Код приложений:</td><td><input type="checkbox" name="libsite"></td></tr>
+				<tr><td>Р”РёР·Р°Р№РЅ:</td><td><input type="checkbox" name="www"></td></tr>
+				<tr><td>Р’СЂРµРјРµРЅРЅС‹Рµ С„Р°Р№Р»С‹:</td><td><input type="checkbox" name="tmp"></td></tr>
+				<tr><td>РРЅС‚РµСЂС„РµР№СЃ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°:</td><td><input type="checkbox" name="admin"></td></tr>
+				<tr><td>РљРѕРґ СЏРґСЂР°:</td><td><input type="checkbox" name="libcore"></td></tr>
+				<tr><td>РљРѕРґ РїСЂРёР»РѕР¶РµРЅРёР№:</td><td><input type="checkbox" name="libsite"></td></tr>
 				<tr><td colspan="2"><hr></td></tr>
-				<tr><td>Всё:</td><td><input type="checkbox" onclick="
+				<tr><td>Р’СЃС‘:</td><td><input type="checkbox" onclick="
 					tc = this.checked;
 					sql.checked=tc;
 					ee.checked=tc;
@@ -650,18 +654,18 @@ sub cpanel_backup_old
 					libsite.checked=tc;
 				"></td></tr>
 				<tr><td colspan="2"><hr></td></tr>
-				<tr><td>Выслать:</td><td><input type="checkbox" name="send" checked></td></tr>
+				<tr><td>Р’С‹СЃР»Р°С‚СЊ:</td><td><input type="checkbox" name="send" checked></td></tr>
 				<tr><td></td><td>&nbsp;</td></tr>
-				<tr><td colspan="2"><input type="submit" value="Архивировать"></td></tr>
+				<tr><td colspan="2"><input type="submit" value="РђСЂС…РёРІРёСЂРѕРІР°С‚СЊ"></td></tr>
 			</table>
 		</form>
 		
 		<form action="?" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="url" value="',$o,'">
+			<input type="hidden" name="url" value="',$o->myurl(),'">
 			<input type="hidden" name="act" value="cpanel_backup_restore">
 			<input type="hidden" name="sact" value="upload">
 			<input type="file" name="bfile">
-			<input type="submit" value="Восстановить">
+			<input type="submit" value="Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ">
 		</form>
 		';
 		
@@ -675,19 +679,19 @@ sub cpanel_backup
 	print
 	'
 	<p>
-	Этот модуль поможет вам сохранить ценную информацию в случаях, когда она может
-	быть повреждена или утеряна.
+	Р­С‚РѕС‚ РјРѕРґСѓР»СЊ РїРѕРјРѕР¶РµС‚ РІР°Рј СЃРѕС…СЂР°РЅРёС‚СЊ С†РµРЅРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ РІ СЃР»СѓС‡Р°СЏС…, РєРѕРіРґР° РѕРЅР° РјРѕР¶РµС‚
+	Р±С‹С‚СЊ РїРѕРІСЂРµР¶РґРµРЅР° РёР»Рё СѓС‚РµСЂСЏРЅР°.
 	</p>
 	
 	<p>
-	<a href="',$o->admin_right_href(),'&act=cpanel_backup_create"><u>Создание резервных копий</u></a> сайта до начала внесения изменений и после его окончания
-	позволит упростить администрирование и снять часть нагрузки с редактора. Регулярное
-	создание и скачивание копий защитит от ошибок и сбоев в работе сервера.
+	<a href="',$o->admin_right_href(),'&act=cpanel_backup_create"><u>РЎРѕР·РґР°РЅРёРµ СЂРµР·РµСЂРІРЅС‹С… РєРѕРїРёР№</u></a> СЃР°Р№С‚Р° РґРѕ РЅР°С‡Р°Р»Р° РІРЅРµСЃРµРЅРёСЏ РёР·РјРµРЅРµРЅРёР№ Рё РїРѕСЃР»Рµ РµРіРѕ РѕРєРѕРЅС‡Р°РЅРёСЏ
+	РїРѕР·РІРѕР»РёС‚ СѓРїСЂРѕСЃС‚РёС‚СЊ Р°РґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёРµ Рё СЃРЅСЏС‚СЊ С‡Р°СЃС‚СЊ РЅР°РіСЂСѓР·РєРё СЃ СЂРµРґР°РєС‚РѕСЂР°. Р РµРіСѓР»СЏСЂРЅРѕРµ
+	СЃРѕР·РґР°РЅРёРµ Рё СЃРєР°С‡РёРІР°РЅРёРµ РєРѕРїРёР№ Р·Р°С‰РёС‚РёС‚ РѕС‚ РѕС€РёР±РѕРє Рё СЃР±РѕРµРІ РІ СЂР°Р±РѕС‚Рµ СЃРµСЂРІРµСЂР°.
 	</p>
 	
 	<p>
-	<a href="',$o->admin_right_href(),'&act=fileman_view"><u>Сохранив на свой компьютер</u></a> копию сайта, вы сведёте к минимуму риск утери сайта в случае ситуаций форс-мажорного характера.
-	Сайт всегда можно будет восстановить в прежнем виде, даже если в интернете он более не доступен.
+	<a href="',$o->admin_right_href(),'&act=fileman_view"><u>РЎРѕС…СЂР°РЅРёРІ РЅР° СЃРІРѕР№ РєРѕРјРїСЊСЋС‚РµСЂ</u></a> РєРѕРїРёСЋ СЃР°Р№С‚Р°, РІС‹ СЃРІРµРґС‘С‚Рµ Рє РјРёРЅРёРјСѓРјСѓ СЂРёСЃРє СѓС‚РµСЂРё СЃР°Р№С‚Р° РІ СЃР»СѓС‡Р°Рµ СЃРёС‚СѓР°С†РёР№ С„РѕСЂСЃ-РјР°Р¶РѕСЂРЅРѕРіРѕ С…Р°СЂР°РєС‚РµСЂР°.
+	РЎР°Р№С‚ РІСЃРµРіРґР° РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ РІ РїСЂРµР¶РЅРµРј РІРёРґРµ, РґР°Р¶Рµ РµСЃР»Рё РІ РёРЅС‚РµСЂРЅРµС‚Рµ РѕРЅ Р±РѕР»РµРµ РЅРµ РґРѕСЃС‚СѓРїРµРЅ.
 	</p>
 	';
 }

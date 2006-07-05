@@ -1,14 +1,13 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::vtypes::time;
 use strict qw(subs vars);
-our @ISA = 'CMSBuilder::DBI::VType';
-# Время ####################################################
+use utf8;
 
-sub table_cre
-{
-	return ' TIME ';
-}
+our @ISA = 'CMSBuilder::DBI::VType';
+# Р’СЂРµРјСЏ ####################################################
+
+sub table_cre {'TIME'}
 
 sub aview
 {

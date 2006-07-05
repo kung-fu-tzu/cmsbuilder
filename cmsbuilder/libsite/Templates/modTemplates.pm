@@ -1,22 +1,25 @@
-# (�) ������ �.�., 2006
+﻿# (с) Леонов П.А., 2006
 
 package modTemplates;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::DBI::TreeModule');
 
 our $VERSION = 1.0.0.0;
 
-sub _cname {'�������'}
+sub _cname {'Шаблоны'}
 sub _add_classes {qw/TemplateDir/}
 sub _aview {qw//}
 
 sub _props
 {
-	'name'			=> { 'type' => 'string', 'length' => 25, 'name' => '��������' },
+	'name'			=> { 'type' => 'string', 'length' => 25, 'name' => 'Название' },
 }
 
-#-------------------------------------------------------------------------------
+#———————————————————————————————————————————————————————————————————————————————
 
+use CMSBuilder::Utils;
 
 sub install_code
 {
@@ -31,37 +34,14 @@ sub install_code
 	$mr->elem_paste($to);
 	
 	my $td = TemplateDir->cre();
-	$td->{'name'} = '�����������';
+	$td->{'name'} = 'Стандартные';
 	$td->save();
 	
 	$to->elem_paste($td);
 	
 	my $tt = Template->cre();
-	$tt->{'name'} = '�� ���������';
-	$tt->{'content'} =
-	'<html>
-    <head>
-        <title>${site_title}</title>
-        <script language="javascript" type="text/javascript">//${site_script}</script>
-    </head>
-    <body>
-        <meta content="${site_description}" name="description" />
-        <table width="100%" border="1">
-            <tbody>
-                <tr>
-                    <td width="20%">&nbsp;</td>
-                    <td>${site_navigation}</td>
-                </tr>
-                <tr>
-                    <td valign="top">${modSite.mainmenu}</td>
-                    <td valign="top">
-                    <h1>${site_textname}</h1>
-                    ${site_contentbox}</td>
-                </tr>
-            </tbody>
-        </table>
-    </body>
-</html>';
+	$tt->{'name'} = 'По умолчанию';
+	$tt->{'content'} = f2var($CMSBuilder::Config::path_etc . '/first.tpl');
 	$tt->save();
 	
 	$td->elem_paste($tt);

@@ -1,16 +1,15 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ğ›ĞµĞ¾Ğ½Ğ¾Ğ² ĞŸ.Ğ., 2005
 
 package CMSBuilder::DBI::vtypes::object;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::VType';
-# Îáúåêò ###################################################
+# ĞĞ±ÑŠĞµĞºÑ‚ ###################################################
 
 our $filter = 1;
 
-sub table_cre
-{
-	return ' INT(11) ';
-}
+sub table_cre {'INT(11)'}
 
 sub filter_insert
 {
@@ -40,8 +39,10 @@ sub filter_load
 	unless($to && $to->{'ID'})
 	{
 		$to = $p->{$name}{'class'}->cre();
-		$to->papa_set($obj);
+		$obj->{'_save_after_reload'} = 1;
 	}
+	
+	$to->papa_set($obj) unless $to->papa;
 	
 	return $to;
 }
@@ -67,7 +68,7 @@ sub aview
 	my $c = shift;
 	my ($name,$val,$obj,$r) = @_;
 	
-	unless($obj->{$name}){ return 'Íåäîñòóïåí'; }
+	unless($obj->{$name}){ return 'ĞĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿ĞµĞ½'; }
 	
 	return $obj->{$name}->admin_name();
 }

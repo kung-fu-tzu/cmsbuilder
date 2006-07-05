@@ -1,11 +1,17 @@
-#Options +Includes +MultiViews
 
-AddType application/x-httpd-cmsbuilder_html .ehtml
-Action application/x-httpd-cmsbuilder_html /cgi-bin/cmsb.pl
+DirectoryIndex index.ehtml index.html index.htm index.shtml index.php index.xml
 
-DirectoryIndex index.ehtml index.html index.htm index.shtml index.php index.xml /cgi-bin/env.cgi
+RewriteEngine  On
+RewriteBase    /
 
-ErrorDocument 404 /cgi-bin/env.cgi
+RewriteCond %{REQUEST_URI}							^/$ [OR]
+RewriteCond %{REQUEST_FILENAME}						!-d
+RewriteCond %{REQUEST_URI}							\.ehtml$ [OR]
+RewriteCond %{REQUEST_FILENAME}						!-f
+RewriteCond %{REQUEST_FILENAME}						!-l
+RewriteRule (.*) /cgi-bin/cmsb.pl/$1
 
-#RewriteEngine On
-#RewriteRule   ^$  /cmsbuilder_index
+RewriteCond %{REQUEST_URI}							/$
+RewriteCond %{REQUEST_FILENAME}						-d
+RewriteCond "%{REQUEST_FILENAME}/.cmsb-catch-path"	-f
+RewriteRule (.*) /cgi-bin/cmsb.pl/$1

@@ -1,36 +1,38 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package modControlPanel;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::DBI::SimpleModule');
 
 use CMSBuilder;
 use CMSBuilder::Utils;
 use plgnUsers;
 
-sub _cname {'Панель управления'}
+sub _cname {'РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ'}
 sub _have_icon {1}
 sub _one_instance {1}
 sub _rpcs {qw/cpanel_table_cre/, keys %{{_simplem_menu()}}}
 
 sub _simplem_menu
 {
-	'cpanel_table_fix'		=> { -name => 'Обновить структуру...', -icon => 'icons/table.gif' },
-	'cpanel_object_stat'	=> { -name => 'Статистика объектов', -icon => 'icons/install.gif' },
-	'cpanel_install_mods'	=> { -name => 'Поставить модули...', -icon => 'icons/install.gif' },
+	'cpanel_table_fix'		=> { -name => 'РћР±РЅРѕРІРёС‚СЊ СЃС‚СЂСѓРєС‚СѓСЂСѓ...', -icon => 'icons/table.gif' },
+	'cpanel_object_stat'	=> { -name => 'РЎС‚Р°С‚РёСЃС‚РёРєР° РѕР±СЉРµРєС‚РѕРІ', -icon => 'icons/install.gif' },
+	'cpanel_install_mods'	=> { -name => 'РџРѕСЃС‚Р°РІРёС‚СЊ РјРѕРґСѓР»Рё...', -icon => 'icons/install.gif' },
 	'cpanel_mod_root1'		=> { -obj => 'modRoot1' },
 	$CMSBuilder::Config::server_type eq 'cgi-server'?
-	('cpanel_stopserver'		=> { -name => 'Остановить сервер', -icon => 'icons/shutdown.gif' }):(),
+	('cpanel_stopserver'		=> { -name => 'РћСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРµСЂРІРµСЂ', -icon => 'icons/shutdown.gif' }):(),
 }
 
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 our	$refresh;
 
 sub default
 {
-	print 'Модуль "Панель управления" помогает Вам централизовано настраивать систему и получать административную информацию.';
+	print 'РњРѕРґСѓР»СЊ "РџР°РЅРµР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ" РїРѕРјРѕРіР°РµС‚ Р’Р°Рј С†РµРЅС‚СЂР°Р»РёР·РѕРІР°РЅРѕ РЅР°СЃС‚СЂР°РёРІР°С‚СЊ СЃРёСЃС‚РµРјСѓ Рё РїРѕР»СѓС‡Р°С‚СЊ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РёРІРЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ.';
 }
 
 sub mod_is_installed { return 1; }
@@ -42,8 +44,8 @@ sub cpanel_stopserver
 	
 	warn "Kiling server, pid: $pid";
 	
-	if(kill('KILL' => $pid)){ print "Сервер успешно остановлен (KILL => $pid)."; }
-	else{ print "Сервер остановить не удалось ($pid)."; }
+	if(kill('KILL' => $pid)){ print "РЎРµСЂРІРµСЂ СѓСЃРїРµС€РЅРѕ РѕСЃС‚Р°РЅРѕРІР»РµРЅ (KILL => $pid)."; }
+	else{ print "РЎРµСЂРІРµСЂ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РЅРµ СѓРґР°Р»РѕСЃСЊ ($pid)."; }
 }
 
 sub admin_view_left
@@ -52,7 +54,7 @@ sub admin_view_left
 	
 	unless(modRoot->table_have())
 	{
-		print '<br><center>Структура базы не установлена!</center>';
+		print '<br><center>РЎС‚СЂСѓРєС‚СѓСЂР° Р±Р°Р·С‹ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°!</center>';
 		return;
 	}
 	
@@ -72,7 +74,7 @@ sub admin_view_right
 	
 	unless(modRoot->table_have())
 	{
-		print '<br><br>Структура базы не установлена! <a href="?url=',$o->myurl(),'&act=cpanel_table_cre"><b>Установить...</b></a>';
+		print '<br><br>РЎС‚СЂСѓРєС‚СѓСЂР° Р±Р°Р·С‹ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°! <a href="?url=',$o->myurl(),'&act=cpanel_table_cre"><b>РЈСЃС‚Р°РЅРѕРІРёС‚СЊ...</b></a>';
 		return;
 	}
 	
@@ -85,7 +87,7 @@ sub cpanel_scanbase
 {
 	my $o = shift;
 	
-	for my $cn (cmsb_allclasses())
+	for my $cn (cmsb_classes())
 	{
 		for my $to ($cn->sel_where(" PAPA_CLASS = '' OR PAPA_ID = 0 "))
 		{
@@ -101,7 +103,7 @@ sub cpanel_table_cre
 	CMSBuilder::DBI::access_creTABLE();
 	modRoot->table_cre();
 	my $mr = modRoot->cre();
-	$mr->{'name'} = 'Корень модулей';
+	$mr->{'name'} = 'РљРѕСЂРµРЅСЊ РјРѕРґСѓР»РµР№';
 	$mr->papa_set($o);
 	$mr->save();
 	
@@ -109,8 +111,8 @@ sub cpanel_table_cre
 	
 	print
 	'
-	<p>Таблицы всех классов, таблица разрешений и корень модулей успешно установлены.</p>
-	<p>Обычно, следующий шаг &#151; это <a href="'.$o->admin_right_href().'&act=cpanel_install_mods"><u>Установка модулей</u></a>.</p>
+	<p>РўР°Р±Р»РёС†С‹ РІСЃРµС… РєР»Р°СЃСЃРѕРІ, С‚Р°Р±Р»РёС†Р° СЂР°Р·СЂРµС€РµРЅРёР№ Рё РєРѕСЂРµРЅСЊ РјРѕРґСѓР»РµР№ СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹.</p>
+	<p>РћР±С‹С‡РЅРѕ, СЃР»РµРґСѓСЋС‰РёР№ С€Р°Рі &#151; СЌС‚Рѕ <a href="'.$o->admin_right_href().'&act=cpanel_install_mods"><u>РЈСЃС‚Р°РЅРѕРІРєР° РјРѕРґСѓР»РµР№</u></a>.</p>
 	';
 	$refresh = 1;
 }
@@ -118,7 +120,7 @@ sub cpanel_table_cre
 sub cpanel_table_fix
 {
 	my $ch;
-	for my $cn (cmsb_allclasses())
+	for my $cn (sort {$a->cname() cmp $b->cname()} cmsb_classes())
 	{
 		my $log = $cn->table_fix();
 		
@@ -141,7 +143,7 @@ sub cpanel_table_fix
 		}
 		else
 		{
-			print 'порядок';
+			print 'РїРѕСЂСЏРґРѕРє';
 		}
 		
 		print '</small>',$cn->admin_cname(),'</div>';
@@ -149,21 +151,18 @@ sub cpanel_table_fix
 		$ch += keys %$log;
 	}
 	
-	print '<p>';
-	if($ch){ print 'Структура обновлена.'; }
-	else{ print 'Обновление не требуется.'; }
-	print '</p>';
+	print '<p>',$ch ? 'РЎС‚СЂСѓРєС‚СѓСЂР° РѕР±РЅРѕРІР»РµРЅР°.' : 'РћР±РЅРѕРІР»РµРЅРёРµ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ.','</p>';
 }
 
 sub cpanel_object_stat
 {
-	print '<br><table><tr><td align="center"><b>Класс</b></td><td width="25">&nbsp;</td><td><b>Кол-во</b></td></tr>';
+	print '<table><tr><td align="center"><b>РљР»Р°СЃСЃ</b></td><td width="25">&nbsp;</td><td><b>РљРѕР»-РІРѕ</b></td></tr>';
 	
-	for my $mod (@CMSBuilder::modules,'',@CMSBuilder::classes)
+	for my $cn (sort {$a->cname cmp $b->cname} cmsb_classes())
 	{
-		unless($mod){ print '<tr><td>&nbsp;</td><td></td><td></td></tr>'; next; }
+		unless($cn){ print '<tr><td>&nbsp;</td><td></td><td></td></tr>'; next; }
 		
-		print '<tr><td>',$mod->admin_cname(),'</td><td></td><td align="center">',(${$mod.'::simple'}?'-':$mod->count()),'</td></tr>';
+		print '<tr><td>',$cn->admin_cname(),'</td><td></td><td align="center">',(${$cn.'::simple'}?'-':$cn->count()),'</td></tr>';
 	}
 	
 	print '</table>';
@@ -173,14 +172,14 @@ sub cpanel_install_mods
 {
 	my $some = 0;
 	
-	for my $mod (@CMSBuilder::modules)
+	for my $mod (cmsb_modules())
 	{
 		$some |= $mod->install();
 		$mod->err_print();
 	}
 	
-	if($some){ print '<br>Модули успешно установлены.'; } #$refresh = 1;
-	else{ print '<br>Установка не требуется.'; }
+	if($some){ print '<br>РњРѕРґСѓР»Рё СѓСЃРїРµС€РЅРѕ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹.'; } #$refresh = 1;
+	else{ print '<br>РЈСЃС‚Р°РЅРѕРІРєР° РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ.'; }
 }
 
 

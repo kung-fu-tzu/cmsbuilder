@@ -1,12 +1,11 @@
-D/CMSBuilder///////
-D/plgnUsers///////
-D/VTypes///////
 /CMSBuilder.pm////*///
 /CMSFront.pm////*///
 /modControlPanel.pm////*///
 /modRoot.pm////*///
-/modSysUtils.pm////*///
 /plgnAccess.pm////*///
 /plgnCPanelBackup.pm////*///
 /plgnFileManager.pm////*///
 /plgnUsers.pm////*///
+D/CMSBuilder///////
+D/VTypes///////
+D/plgnUsers///////

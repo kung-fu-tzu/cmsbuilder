@@ -1,53 +1,51 @@
-# (Ò) ÀÂÓÌÓ‚ œ.¿., 2005
+Ôªø# (—Å) –õ–µ–æ–Ω–æ–≤ –ü.–ê., 2005
 
 package VTypesTest;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::TreeModule';
 
-sub _cname {'“ÂÒÚ ‰Îˇ ‚-ÚËÔÓ‚'}
+sub _cname {'–¢–µ—Å—Ç –¥–ª—è –≤-—Ç–∏–ø–æ–≤'}
 sub _aview
 {qw/
 	string string1 string2 int checkbox
-	|
-	ClassList ClassList1 ClassList2
+	ObjectsList ObjectsList1 ObjectsList2
 	date timestamp time
-	|
 	file object
-	|
 	password password1
-	|
 	select radio
-	|
 	miniword text
 /}
 
 sub _props
 {
-	'string'		=> { 'type' => 'string', 'name' => '—ÚÓÍ‡' },
-	'string1'		=> { 'type' => 'string', 'big' => 1, 'name' => '—ÚÓÍ‡ (·ÓÎ¸¯‡ˇ)' },
-	'string2'		=> { 'type' => 'string', 'length' => 10, 'name' => '—ÚÓÍ‡ (10)' },
-	'int'			=> { 'type' => 'int', 'name' => '◊ËÒÎÓ' },
-	'checkbox'		=> { 'type' => 'checkbox', 'name' => '√‡ÎÓ˜Í‡' },
+	'string'		=> { 'type' => 'string', 'name' => '–°—Ç—Ä–æ–∫–∞' },
+	'string1'		=> { 'type' => 'string', 'big' => 1, 'name' => '–°—Ç—Ä–æ–∫–∞ (–±–æ–ª—å—à–∞—è)' },
+	'string2'		=> { 'type' => 'string', 'length' => 10, 'name' => '–°—Ç—Ä–æ–∫–∞ (10)' },
+	'int'			=> { 'type' => 'int', 'name' => '–ß–∏—Å–ª–æ' },
+	'checkbox'		=> { 'type' => 'checkbox', 'name' => '–ì–∞–ª–æ—á–∫–∞' },
+	'bool'			=> { 'type' => 'bool', 'name' => '–ë—É–ª–∏–µ–≤–æ –∑–Ω–∞—á–µ–Ω–∏–µ (–Ω–∞—Å–ª–µ–¥–Ω–∏–∫ –≥–∞–ª–æ—á–∫–∏)' },
 	
-	'ClassList'		=> { 'type' => 'ClassList', 'class' => 'User', 'name' => 'œÂÂ˜ÂÌ¸ Ó·˙ÂÍÚÓ‚ (User)' },
-	'ClassList1'	=> { 'type' => 'ClassList', 'class' => 'User', 'isnull' => 1, 'name' => 'œÂÂ˜ÂÌ¸ Ó·˙ÂÍÚÓ‚ (User) œÛÒÚÓÈ' },
-	'ClassList2'	=> { 'type' => 'ClassList', 'class' => 'User', 'once' => 1, 'name' => 'œÂÂ˜ÂÌ¸ Ó·˙ÂÍÚÓ‚ (User) Œ‰ÌÓÍ‡ÚÌÓ' },
+	'ObjectsList'		=> { 'type' => 'ObjectsList', 'class' => 'User', 'name' => '–ü–µ—Ä–µ—á–µ–Ω—å –æ–±—ä–µ–∫—Ç–æ–≤ (User)' },
+	'ObjectsList1'	=> { 'type' => 'ObjectsList', 'class' => 'User', 'isnull' => 1, 'name' => '–ü–µ—Ä–µ—á–µ–Ω—å –æ–±—ä–µ–∫—Ç–æ–≤ (User) –ü—É—Å—Ç–æ–π' },
+	'ObjectsList2'	=> { 'type' => 'ObjectsList', 'class' => 'User', 'once' => 1, 'name' => '–ü–µ—Ä–µ—á–µ–Ω—å –æ–±—ä–µ–∫—Ç–æ–≤ (User) –û–¥–Ω–æ–∫—Ä–∞—Ç–Ω–æ' },
 	
-	'date'			=> { 'type' => 'date', 'name' => 'ƒ‡Ú‡' },
-	'timestamp'		=> { 'type' => 'timestamp', 'name' => 'ÃÓÏÂÌÚ' },
-	'time'			=> { 'type' => 'time', 'name' => '¬ÂÏˇ' },
+	'date'			=> { 'type' => 'date', 'name' => '–î–∞—Ç–∞' },
+	'timestamp'		=> { 'type' => 'timestamp', 'name' => '–ú–æ–º–µ–Ω—Ç' },
+	'time'			=> { 'type' => 'time', 'name' => '–í—Ä–µ–º—è' },
 	
-	'file'			=> { 'type' => 'file', 'msize' => 100, 'ext' => [qw/bmp jpg gif png/], 'name' => '‘‡ÈÎ' },
-	'object'		=> { 'type' => 'object', 'class' => 'Page', 'name' => 'Œ·˙ÂÍÚ' },
-	'password'		=> { 'type' => 'password', 'name' => 'œ‡ÓÎ¸' },
-	'password1'		=> { 'type' => 'password', 'check' => 1, 'name' => 'œ‡ÓÎ¸ (Ò ‚‚Ó‰ÓÏ ÚÂÍÛ˘Â„Ó)' },
+	'file'			=> { 'type' => 'file', 'msize' => 100, 'ext' => [qw/bmp jpg gif png/], 'name' => '–§–∞–π–ª' },
+	'object'		=> { 'type' => 'object', 'class' => 'Page', 'name' => '–û–±—ä–µ–∫—Ç' },
+	'password'		=> { 'type' => 'password', 'name' => '–ü–∞—Ä–æ–ª—å' },
+	'password1'		=> { 'type' => 'password', 'check' => 1, 'name' => '–ü–∞—Ä–æ–ª—å (—Å –≤–≤–æ–¥–æ–º —Ç–µ–∫—É—â–µ–≥–æ)' },
 	
-	'select'		=> { 'type' => 'select', 'variants' => [{'1'=>'Œ‰ËÌ'},{'2'=>'ƒ‚‡'},{'3'=>'“Ë'}], 'name' => '¬˚Ô‡‰‡˛˘ËÈ ÒÔËÒÓÍ' },
-	'radio'			=> { 'type' => 'radio', 'variants' => [{'1'=>'Œ‰ËÌ'},{'2'=>'ƒ‚‡'},{'3'=>'“Ë'}], 'name' => 'œÂÂÍÎ˛˜‡ÚÂÎ¸' },
+	'select'		=> { 'type' => 'select', 'variants' => [{'1'=>'–û–¥–∏–Ω'},{'2'=>'–î–≤–∞'},{'3'=>'–¢—Ä–∏'}], 'name' => '–í—ã–ø–∞–¥–∞—é—â–∏–π —Å–ø–∏—Å–æ–∫' },
+	'radio'			=> { 'type' => 'radio', 'variants' => [{'1'=>'–û–¥–∏–Ω'},{'2'=>'–î–≤–∞'},{'3'=>'–¢—Ä–∏'}], 'name' => '–ü–µ—Ä–µ–∫–ª—é—á–∞—Ç–µ–ª—å' },
 	
-	'text'			=> { 'type' => 'text', 'name' => '¡ÎÓÍ ÚÂÍÒÚ‡' },
+	'text'			=> { 'type' => 'text', 'name' => '–ë–ª–æ–∫ —Ç–µ–∫—Å—Ç–∞' },
 	
-	'miniword'		=> { 'type' => 'miniword', 'toolbar' => 'Basic', 'name' => 'ÃËÌË‚Ó‰' },
+	'miniword'		=> { 'type' => 'miniword', 'toolbar' => 'Basic', 'name' => '–ú–∏–Ω–∏–≤–æ—Ä–¥' },
 }
 
 #-------------------------------------------------------------------------------

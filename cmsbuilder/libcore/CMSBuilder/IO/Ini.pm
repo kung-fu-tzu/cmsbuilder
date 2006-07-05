@@ -1,7 +1,10 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ğ›ĞµĞ¾Ğ½Ğ¾Ğ² ĞŸ.Ğ., 2005
 
 package CMSBuilder::IO::Ini;
 use strict qw(subs vars);
+use utf8;
+
+use Fcntl ':flock';
 
 our %fnames;
 
@@ -18,40 +21,90 @@ sub new
 	return $o;
 }
 
-sub cread
+sub read_data
 {
 	my $o = shift;
-	my $fname = shift;
-	my($f,$str,$var,$val);
+	my $f = shift;
 	
-	open($f,$fname); # or print STDERR 'CMSBuilder::IO::Ini::cread open(<) != 1, $fname = '.$fname;
-	while($str = <$f>)
+	seek($f,0,0);
+	my($var,$val,$cnt);
+	while(my $str = <$f>)
 	{
 		($var,$val) = split(/=/,$str,2);
 		chomp($val);
 		$o->{$var} = $val;
+		$cnt++;
 	}
+	
+	return $cnt;
+}
+
+sub cread
+{
+	my $o = shift;
+	my $fname = shift;
+	
+	$fnames{$o.'.name'} = $fname;
+	
+	return 2 if !-f $fname;
+	open(my $f,'<:utf8',$fname) || warn "Cannot open(<:utf8) '$fname': $!";
+	flock($f,LOCK_SH);
+	
+	$o->read_data($f);
+	
+	flock($f,LOCK_UN);
 	close($f);
 	
-	$fnames{$o} = $fname;
+	$fnames{$o.'.keys'} = [keys %$o];
 	
 	return 1;
+}
+
+sub write_data
+{
+	my $o = shift;
+	my $f = shift;
+	
+	seek($f,0,0);
+	truncate($f,0);
+	my $cnt;
+	for my $key (keys(%$o))
+	{
+		print $f $key,'=',$o->{$key},"\n";
+		$cnt++;
+	}
+	
+	return $cnt;
 }
 
 sub cwrite
 {
 	my $o = shift;
-	my($fname,$f,$key);
+	my $fname = $fnames{$o.'.name'};
 	
-	$fname = $fnames{$o};
+	my @deleted = grep { !exists $o->{$_} } @{$fnames{$o.'.keys'}};
 	
-	unless(keys %$o){ unlink($fname); return; }
+	touch($fname) unless -f $fname;
+	open(my $f,'+<:utf8',$fname) || warn "Cannot open(+<:utf8) '$fname': $!";
+	flock($f,LOCK_EX);
 	
-	open($f,'> '.$fname) or print STDERR 'CMSBuilder::IO::Ini::cwrite open(>) != 1, $fname = '.$fname;
-	for $key (keys(%$o))
-	{
-		print $f $key,'=',$o->{$key},"\n";
-	}
+	my %tvals = %$o;
+	$o->read_data($f);
+	%$o = (%$o,%tvals);
+	map {delete $o->{$_}} @deleted;
+	$o->write_data($f);
+	
+	unlink $fname unless keys %$o;
+	
+	flock($f,LOCK_UN);
+	close($f);
+}
+
+sub touch
+{
+	my $fname = shift;
+	
+	open(my $f,'>>:utf8',$fname) || warn "Cannot 'touch' open(>>:utf8) '$fname': $!";
 	close($f);
 }
 

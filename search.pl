@@ -1,6 +1,7 @@
-use File::Find;
+﻿use File::Find;
+use utf8;
 
-our @exts = qw/cgi pl pm ehtml js php tpl htaccess conf/;
+our @exts = qw/cgi pl pm ehtml php tpl htaccess conf js css/;
 our $pat = '(\.'.join('$)|(\.',@exts).'$)';
 our $what;
 
@@ -51,12 +52,12 @@ sub search
 	$dircnt = 0;
 	$i = 1;
 	
-	find(\&cnt,'.');
+	find({'wanted' => \&cnt, 'preprocess' => \&pps},'.');
 	
 	print "\nSearching for \"$what\" in $dircnt files  ";
 	
 	print '[';
-	find(\&p,'.');
+	find({'wanted' => \&p, 'preprocess' => \&pps},'.');
 	print ']';
 	
 	unless($cnt)
@@ -69,6 +70,11 @@ sub search
 	}
 	
 	print "\n\n\n";
+}
+
+sub pps
+{
+	return grep {$_ ne 'fckeditor' && $_ ne 'libperl'} @_;
 }
 
 sub main

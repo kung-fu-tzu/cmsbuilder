@@ -1,7 +1,9 @@
-# (ñ) Ëåîíîâ Ï. À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ. Ð., 2005
 
 package fltXSLT;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::IO::Filter');
 
 use XML::XSLT;
@@ -34,7 +36,7 @@ sub filt
 	if($file =~ m#^/.+#){ $file = $CMSBuilder::Config::path_htdocs.$file; }
 	chdir($CMSBuilder::EML::daparser->{'dir'});
 	unless(-f $file){ print STDERR "$c: no surch file '$file'"; return; }
-	my $xsl = f2var($file);
+	my $xsl = f2var_utf8($file);
 	
 	my $xslt = XML::XSLT->new($xsl, 'warnings' => 1);
 	$xslt->transform($$str);

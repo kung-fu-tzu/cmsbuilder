@@ -1,18 +1,17 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::vtypes::password;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::VType';
-# Пароль ####################################################
+# РџР°СЂРѕР»СЊ ####################################################
 
 our $filter = 1;
 
 use CMSBuilder::Utils;
 
-sub table_cre
-{
-	return ' VARCHAR(32) ';
-}
+sub table_cre {'VARCHAR(32)'}
 
 
 sub filter_load
@@ -46,13 +45,13 @@ sub aview
 	
 	if($val)
 	{
-		$ret = 'Установлен.';
-		$do = 'Изменить...';
+		$ret = 'РЈСЃС‚Р°РЅРѕРІР»РµРЅ.';
+		$do = 'РР·РјРµРЅРёС‚СЊ...';
 	}
 	else
 	{
-		$ret = '<span style="color:#ff0000">НЕ УСТАНОВЛЕН.</span>';
-		$do = 'Установить...';
+		$ret = '<span style="color:#ff0000">РќР• РЈРЎРўРђРќРћР’Р›Р•Рќ.</span>';
+		$do = 'РЈСЃС‚Р°РЅРѕРІРёС‚СЊ...';
 	}
 	
 	$ret .= '
@@ -70,14 +69,14 @@ sub aview
 	{
 		$ret .=
 		'
-			<input class="ainput" type="password" name="'.$name.'_check"> (текущий пароль)<br><br>
+			<input class="ainput" type="password" name="'.$name.'_check"> (С‚РµРєСѓС‰РёР№ РїР°СЂРѕР»СЊ)<br><br>
 		';
 	}
 	
 	$ret .=
 	'
-	<input class="ainput" type="password" name="'.$name.'"> (пароль)<br>
-	<input class="ainput" type="password" name="'.$name.'_verif"> (подтверждение)
+	<input class="ainput" type="password" name="'.$name.'"> (РїР°СЂРѕР»СЊ)<br>
+	<input class="ainput" type="password" name="'.$name.'_verif"> (РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ)
 	</span>
 	<input type="hidden" id="'.$name.'_doch" name="'.$name.'_doch">
 	';
@@ -98,14 +97,14 @@ sub aedit
 	{
 		if(MD5($r->{$name.'_check'}) ne $obj->{$name})
 		{
-			$obj->err_add('Текущий пароль введен неверно.');
+			$obj->err_add('РўРµРєСѓС‰РёР№ РїР°СЂРѕР»СЊ РІРІРµРґРµРЅ РЅРµРІРµСЂРЅРѕ.');
 			return $obj->{$name};
 		}
 	}
 	
 	if($val ne $verif)
 	{
-		$obj->err_add('Введенный пароль и подтверждение не совпадают.');
+		$obj->err_add('Р’РІРµРґРµРЅРЅС‹Р№ РїР°СЂРѕР»СЊ Рё РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РЅРµ СЃРѕРІРїР°РґР°СЋС‚.');
 		return $obj->{$name};
 	}
 	

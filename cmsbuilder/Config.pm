@@ -1,29 +1,32 @@
-# (с) Леонов П.А., 2006
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ. Рђ., 2006
 
-# 
-# Сборник переменных используемых различными модулями.
-# Считаю его конфигурационным файлом.
-# 
+# Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ РєРѕРЅС„РёРіСѓСЂР°С†РёРѕРЅРЅС‹Р№ С„Р°Р№Р» Р±РёР»РґРµСЂР°.
 
 package CMSBuilder::Config;
 use strict qw(subs vars);
+use utf8;
+
+use lib '/home/cmsbuilder2/cmsbuilder/libperl';
+#use lib '/home/cmsbuilder2/cmsbuilder/libperl/arch/freebsd4'; #FreeBSD 4.10-RELESE
 
 use lib '/home/cmsbuilder2/cmsbuilder/libcore';
 use lib '/home/cmsbuilder2/cmsbuilder/libsite';
 
+
 sub init
 {
 
-# Пути HTTP
+# РџСѓС‚Рё HTTP
 
 	our $http_eroot					= '/ee';
 	our $http_wwfiles				= $http_eroot.'/wwfiles';
 	our $http_errors				= $http_eroot.'/errors';
 	our $http_userdocs				= $http_eroot.'/userdocs';
 	our $http_aroot					= '/admin';
+	our $http_adress				= 'http://'.$ENV{'SERVER_NAME'};
 
 
-# Пути FS
+# РџСѓС‚Рё FS
 
 	our $path_home					= '/home/cmsbuilder2';
 	our $path_cmsb					= $path_home.'/cmsbuilder';
@@ -41,20 +44,17 @@ sub init
 	our $path_userdocs				= $path_htdocs.$http_userdocs;
 
 
-# Разное
+# Р¤Р°Р№Р»С‹
 
-	our $debug						= 1;
-	our $print_errors				= 1;
-	our $admin_left_width			= 280;
+	our $file_errorlog				= $path_etc.'/error.log';
 
 
-# Сервер
+# РЎРµСЂРІРµСЂ
 
 	#our $server_type				= 'cgi-server';
 	our $server_addres				= 'local:'.$path_etc.'/cgi_server_socket'; # 'tcp:127.0.0.1:9079';
 	our $server_cmd_start			= $path_home.'/cgi-bin/cmsb.pl server';
 	our $server_pidfile				= $path_etc.'/server_pid';
-	our $server_logfile				= $path_etc.'/server_log.txt';
 	our $server_autostart			= 1;
 	our $server_daemon				= 1;
 	our $server_shdown				= 50;
@@ -69,8 +69,8 @@ sub init
 	our $mysql_data_source			= 'DBI:mysql:'.$mysql_base.';port='.$mysql_port;
 	our $mysql_dumpcmd				= 'mysqldump -u'.$mysql_user.' -p'.$mysql_pas.' -P'.$mysql_port.' --add-drop-table '.$mysql_base;
 	our $mysql_importcmd			=     'mysql -u'.$mysql_user.' -p'.$mysql_pas.' -P'.$mysql_port.' '.$mysql_base;
-	our $mysql_charset				= 'cp1251';
-	our $mysql_colcon				= 'cp1251_general_ci';
+	our $mysql_charset				= 'utf8'; # cp1251
+	our $mysql_colcon				= 'utf8_general_ci'; # cp1251_general_ci
 
 
 # CMSBuilder::DBI
@@ -93,19 +93,19 @@ sub init
 	our $access_on_e = $access_on;
 
 
-# CMSBuilder::IO
+# CMSBuilder
 
-	our $buff_do					= 1;
-	our $buff_mem					= 1;
-	our $buff_gzip					= 0;
-	our @io_filters					= qw/fltXSLT fltGZIP/;
+	our @io_filters					= qw//; #fltXSLT fltGZIP
+	our @process_classes			= qw/CMSBuilder::MYURL CMSBuilder::EML/;
+	our $redirect_status			= '200';
+	our $slashobj_myurl				= 'modSite1';
 
 
 # CMS
 
 	our $have_left_frame			= 1;
 	our $have_left_tree				= 1;
-
+	our $admin_left_width			= 280;
 
 }
 

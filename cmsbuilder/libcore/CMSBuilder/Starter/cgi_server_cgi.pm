@@ -1,5 +1,6 @@
-package CMSBuilder::Starter::cgi_server_cgi;
+п»їpackage CMSBuilder::Starter::cgi_server_cgi;
 use strict qw(subs vars);
+use utf8;
 
 use Socket;
 #use Digest::MD5;
@@ -24,7 +25,7 @@ sub start
 			require CMSBuilder::IO;
 			import CMSBuilder::IO;
 			
-			err500('Внутренний сервер не отвечает.');
+			err500('Р’РЅСѓС‚СЂРµРЅРЅРёР№ СЃРµСЂРІРµСЂ РЅРµ РѕС‚РІРµС‡Р°РµС‚.');
 			
 			warn 'Server down. Culdn`t connect to '.$addr.', because: '.$!;
 			

@@ -1,9 +1,11 @@
+/.htaccess////*///
+/ajax.js////*///
+/favicon.ico////*///
+/plgnCatalog.css////*///
+/plgnForms.css////*///
+/plgnForms.js////*///
+/plgnSite.css////*///
 D/admin///////
 D/ee///////
 D/img///////
-/.htaccess////*///
-/catalog.css////*///
-/index.ehtml////*///
-/main.html////*///
-/site.css////*///
-/favicon.ico////*///
+/plgnShop.js////*///

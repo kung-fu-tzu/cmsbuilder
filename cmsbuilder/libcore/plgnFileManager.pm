@@ -1,7 +1,9 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package plgnFileManager;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::Plugin');
 
 
@@ -10,10 +12,11 @@ our @ISA = ('CMSBuilder::Plugin');
 
 package plgnFileManager::Object;
 use strict qw(subs vars);
+use utf8;
 
 sub _rpcs {'fileman_view'}
 
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 use CMSBuilder::Utils;
@@ -40,8 +43,8 @@ sub fileman_cmenu
 	
 	return
 	'
-	elem_add(JMIHref('.($ftype eq 'dir'?'"Открыть"':'"Скачать"').',"'.$o->admin_right_href().'&act=fileman_view&path='.$path.'"));
-	elem_add(JMIConfirm("Удалить","'.$o->admin_right_href().'&act=fileman_view&sact=del&path='.$rp.'&name='.$e->{'name'}.'","","Удалить \"'.$e->{'name'}.'\"?"));
+	elem_add(JMIHref('.($ftype eq 'dir'?'"РћС‚РєСЂС‹С‚СЊ"':'"РЎРєР°С‡Р°С‚СЊ"').',"'.$o->admin_right_href().'&act=fileman_view&path='.$path.'"));
+	elem_add(JMIConfirm("РЈРґР°Р»РёС‚СЊ","'.$o->admin_right_href().'&act=fileman_view&sact=del&path='.$rp.'&name='.$e->{'name'}.'","","РЈРґР°Р»РёС‚СЊ \"'.$e->{'name'}.'\"?"));
 	';
 }
 
@@ -57,7 +60,7 @@ sub fileman_del
 	
 	unless($fname)
 	{
-		$o->err_add('Корень удалить нельзя.');
+		$o->err_add('РљРѕСЂРµРЅСЊ СѓРґР°Р»РёС‚СЊ РЅРµР»СЊР·СЏ.');
 		return;
 	}
 	
@@ -65,11 +68,11 @@ sub fileman_del
 	
 	if(unlink($apath) || rmdir($apath))
 	{
-		$o->notice_add('Успешно удалено: "'.$fname.'".');
+		$o->notice_add('РЈСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅРѕ: "'.$fname.'".');
 	}
 	else
 	{
-		$o->err_add('Не удалось удалить: "'.$fname.'".');
+		$o->err_add('РќРµ СѓРґР°Р»РѕСЃСЊ СѓРґР°Р»РёС‚СЊ: "'.$fname.'".');
 	}
 }
 
@@ -119,7 +122,7 @@ sub fileman_view
 			print
 			'
 			<table class="maintbl">
-			<th><a href="',$ohref,'&sby=name">Имя файла</a></th><th><a href="',$ohref,'&sby=mtime">Дата</a></th><th><a href="',$ohref,'&sby=size">Размер</a></th>
+			<th><a href="',$ohref,'&sby=name">РРјСЏ С„Р°Р№Р»Р°</a></th><th><a href="',$ohref,'&sby=mtime">Р”Р°С‚Р°</a></th><th><a href="',$ohref,'&sby=size">Р Р°Р·РјРµСЂ</a></th>
 			';
 			
 			for my $file (@es)
@@ -131,7 +134,7 @@ sub fileman_view
 					-icon => $o->fileman_icon($path.'/'.$file->{'name'}),
 					-props =>
 					{
-						'title' => 'Размер: '.len2size($file->{'size'}),
+						'title' => 'Р Р°Р·РјРµСЂ: '.len2size($file->{'size'}),
 						#'cmenu' => $file->{'name'},
 						'oncontextmenu' => 'return OnContext(\''.$file->{'name'}.'\',event)',
 					},
@@ -142,7 +145,7 @@ sub fileman_view
 		}
 		else
 		{
-			unless(@es){ print '<div class="empty">Папка пуста</div>'; }
+			unless(@es){ print '<div class="empty">РџР°РїРєР° РїСѓСЃС‚Р°</div>'; }
 		}
 		
 		print '</fieldset>';
@@ -190,7 +193,7 @@ sub fileman_view
 	}
 	else
 	{
-		$o->err_add('Невозможно открыть путь "'.$path.'"');
+		$o->err_add('РќРµРІРѕР·РјРѕР¶РЅРѕ РѕС‚РєСЂС‹С‚СЊ РїСѓС‚СЊ "'.$path.'"');
 	}
 }
 
@@ -225,7 +228,7 @@ sub fileman_listdir
 	my ($dh,@fs,@ds,$it);
 	my $uldir = $o->fileman_localdir();
 	
-	opendir($dh,$uldir.$path) || return $o->err_add('Не удалось открыть директорию "'.$uldir.$path.'"');
+	opendir($dh,$uldir.$path) || return $o->err_add('РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ РґРёСЂРµРєС‚РѕСЂРёСЋ "'.$uldir.$path.'"');
 	while(my $fname = readdir($dh))
 	{
 		if($fname eq '.' or $fname eq '..'){ next; }

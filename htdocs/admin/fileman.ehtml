@@ -1,4 +1,4 @@
-<?eml CMSFront::access(); ?><html>
+п»ї<?eml CMSFront::access(); ?><html>
 <head>
 
 <link href="admin.css" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@
 
 <table width="100%" height="100%">
 <tr><td class="framehead">
-Мои документы
+РњРѕРё РґРѕРєСѓРјРµРЅС‚С‹
 </td></tr>
 <tr><td class="main_td" valign="top">
 

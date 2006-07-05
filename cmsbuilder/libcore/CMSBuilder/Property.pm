@@ -1,7 +1,8 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package CMSBuilder::Property;
 use strict qw(subs vars);
+use utf8;
 
 # tie $obj->{'prop'}, 'Property', $obj, 'prop';
 

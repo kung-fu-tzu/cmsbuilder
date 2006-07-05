@@ -1,11 +1,14 @@
-package CMSBuilder::Starter::cgi_server_server;
+ï»¿package CMSBuilder::Starter::cgi_server_server;
 use strict qw(subs vars);
+use utf8;
 
 use Socket;
-use CMSBuilder;
-use CMSBuilder::Utils;
 use POSIX 'setsid';
 use POSIX ':sys_wait_h';
+
+use CMSBuilder;
+use CMSBuilder::Utils;
+
 
 sub reaper
 {
@@ -22,23 +25,20 @@ sub start
 	{
 		print "Starting as daemon...";
 		
-		my $dpid = fork();
+		$SIG{'CHLD'} = 'IGNORE'; #$SIG{'CHLD'} = \&reaper;
+		defined (my $dpid = fork) or die "Cannot fork for a daemon: $!";
 		
-		if(!defined $dpid){ die "Can`t fork for daemon"; }
-		elsif($dpid){ exit(0); }
+		if($dpid){ exit(0); }
 		
 		print " OK\n";
 		
-		open(STDERR,'>>',$CMSBuilder::Config::server_logfile);
+		#open(STDERR,'>>:utf8',$CMSBuilder::Config::server_logfile);
 		open(STDOUT,'>&',STDERR);
 		close(STDIN);
 		
-		setsid() or die "Can`t setsid() for daemon";
+		setsid() or die "Cannot setsid() for daemon";
 		
 		var2f($$,$CMSBuilder::Config::server_pidfile);
-		
-		$SIG{'CHLD'} = 'IGNORE';
-		#$SIG{'CHLD'} = \&reaper;
 	}
 	
 	
@@ -58,7 +58,7 @@ sub listen_loop
 	
 	$| = 1;
 	
-	# Çàãðóçêà è êîìïèëÿöèÿ
+	# Ð—Ð°Ð³Ñ€ÑƒÐ·ÐºÐ° Ð¸ ÐºÐ¾Ð¼Ð¿Ð¸Ð»ÑÑ†Ð¸Ñ
 	CMSBuilder->load();
 	
 	print RSTDOUT "Ready for connections...\n";
@@ -95,7 +95,7 @@ sub listen_loop
 		}
 	}
 	
-	# Âûãðóçêà
+	# Ð’Ñ‹Ð³Ñ€ÑƒÐ·ÐºÐ°
 	CMSBuilder->unload();
 }
 
@@ -120,8 +120,10 @@ sub on_connection # forked
 	binmode($clnt);
 	read($clnt,$rcont,$ENV{'CONTENT_LENGTH'});
 	
-	select($clnt);
+	
 	open STDIN, "<", \$rcont;
+	binmode(STDIN);
+	select($clnt);
 	
 	CGI::initialize_globals();
 	
@@ -135,14 +137,14 @@ sub on_connection # forked
 
 sub do_job
 {
-	# Èíèöèàëèçàöèÿ è íà÷àëî ðàáîòû
+	# Ð˜Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¸ Ð½Ð°Ñ‡Ð°Ð»Ð¾ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹
 	CMSBuilder->init();
 	
-	# Ñîáñòâåííî ðàáîòà
+	# Ð¡Ð¾Ð±ÑÑ‚Ð²ÐµÐ½Ð½Ð¾ Ñ€Ð°Ð±Ð¾Ñ‚Ð°
 	CMSBuilder::EML->init();
 	CMSBuilder::EML->doall();
 	
-	# Êîíåö ðàáîòû: ôëàøè, êåøè, ïóøè è ò.ä.
+	# ÐšÐ¾Ð½ÐµÑ† Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹: Ñ„Ð»Ð°ÑˆÐ¸, ÐºÐµÑˆÐ¸, Ð¿ÑƒÑˆÐ¸ Ð¸ Ñ‚.Ð´.
 	CMSBuilder->destruct();
 }
 

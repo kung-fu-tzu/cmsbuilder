@@ -1,0 +1,12 @@
+/DOM.pm////*///
+/ESISParser.pm////*///
+/Parser.pm////*///
+/Perl2SAX.pm////*///
+/RegExp.pm////*///
+/SAX2Perl.pm////*///
+/Simple.pm////*///
+/XSLT.pm////*///
+D/DOM///////
+D/Handler///////
+D/Parser///////
+D/PatAct///////

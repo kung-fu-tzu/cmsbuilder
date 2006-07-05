@@ -1,9 +1,11 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package CMSBuilder::DBI::vtypes::radio;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::VType';
-# Ïåðåêëþ÷àòåëü #############################################
+# ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð°Ñ‚ÐµÐ»ÑŒ #############################################
 
 sub table_cre
 {
@@ -11,7 +13,7 @@ sub table_cre
 	my $p = shift;
 	my $vars = $p->{'variants'};
 	
-	return " ENUM( '".join("', '",(map {keys %$_} @$vars))."' )  ";
+	return "ENUM('" . join("','",(map {keys %$_} @$vars)) . "')";
 }
 
 sub aview

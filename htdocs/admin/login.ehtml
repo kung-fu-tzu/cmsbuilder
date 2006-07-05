@@ -1,6 +1,6 @@
-<html>
+п»ї<html>
 <head>
-<title>Вход в систему администрирования</title>
+<title>Р’С…РѕРґ РІ СЃРёСЃС‚РµРјСѓ Р°РґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёСЏ</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
 <link href="admin.css" rel="stylesheet" type="text/css" />
 </head>
@@ -15,7 +15,7 @@
 	<table>
 	<tr>
 		<td width="10%"></td>
-		<td width="80%" align="center">Вход в систему администрирования</td>
+		<td width="80%" align="center">Р’С…РѕРґ РІ СЃРёСЃС‚РµРјСѓ Р°РґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёСЏ</td>
 		<td width="10%" align="right"></td>
 	</tr>
 	</table>
@@ -40,9 +40,9 @@
 				<p>
 					<form action="?" method="post">
 					<input type="hidden" value="in" name="act">
-					<p>Логин:<br><input type="text" value="" name="login"></p>
-					<p>Пароль:<br><input type="password" value="" name="pas"></p>
-					<p><input type="submit" value="Войти"></p>
+					<p>Р›РѕРіРёРЅ:<br><input type="text" value="" name="login"></p>
+					<p>РџР°СЂРѕР»СЊ:<br><input type="password" value="" name="pas"></p>
+					<p><input type="submit" value="Р’РѕР№С‚Рё"></p>
 					</form>
 				</p>
 				

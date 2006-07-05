@@ -1,7 +1,8 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::CMS;
 use strict qw(subs vars);
+use utf8;
 
 use CMSBuilder;
 use CMSBuilder::IO;
@@ -18,10 +19,7 @@ cms_array_elem_mkcopy cms_array_object_move cms_array_clear
 cms_chown
 /}
 
-
-###################################################################################################
-# Методы поддерживающие RPC
-###################################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” РњРµС‚РѕРґС‹ РїРѕРґРґРµСЂР¶РёРІР°СЋС‰РёРµ RPC вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub cms_chown
 {
@@ -30,13 +28,13 @@ sub cms_chown
 	
 	my $uurl = $r->{'uurl'};
 	
-	unless($o->access('o')){ $o->err_add('У Вас нет прав менять владельца элементам.'); return; }
+	unless($o->access('o')){ $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ РїСЂР°РІ РјРµРЅСЏС‚СЊ РІР»Р°РґРµР»СЊС†Р° СЌР»РµРјРµРЅС‚Р°Рј.'); return; }
 	
 	if($uurl)
 	{
 		my $tu = cmsb_url($uurl);
 		
-		unless($tu->{'ID'}){ $o->err_add('Указанный пользователь не существует.'); return; }
+		unless($tu->{'ID'}){ $o->err_add('РЈРєР°Р·Р°РЅРЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.'); return; }
 		
 		$o->ochown($tu);
 		$o->save();
@@ -50,9 +48,9 @@ sub cms_chown
 	
 	print
 	'
-	<fieldset><legend>Изменение владельца для элемента: ',$o->admin_name(),'</legend>
-	<p>Текущий владелец элемента: <b>',$nowu->admin_name(),'</b><br>
-	Выберете нового владельца:
+	<fieldset><legend>РР·РјРµРЅРµРЅРёРµ РІР»Р°РґРµР»СЊС†Р° РґР»СЏ СЌР»РµРјРµРЅС‚Р°: ',$o->admin_name(),'</legend>
+	<p>РўРµРєСѓС‰РёР№ РІР»Р°РґРµР»РµС† СЌР»РµРјРµРЅС‚Р°: <b>',$nowu->admin_name(),'</b><br>
+	Р’С‹Р±РµСЂРµС‚Рµ РЅРѕРІРѕРіРѕ РІР»Р°РґРµР»СЊС†Р°:
 	<p>
 	<blockquote>
 	';
@@ -65,7 +63,7 @@ sub cms_chown
 		$count++;
 	}
 	
-	unless($count){ print 'Нет пользователей для отображения.'; }
+	unless($count){ print 'РќРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ.'; }
 	
 	print '</blockquote></p></p></fieldset>';
 }
@@ -75,7 +73,7 @@ sub cms_array_sort
 	my $o = shift;
 	my $r = shift;
 	
-	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	unless($o->access('w')){ $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ СЌС‚РѕС‚ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	my $by = $r->{'by'};
 	
@@ -96,7 +94,7 @@ sub cms_array_clear
 	my $o = shift;
 	my $r = shift;
 	
-	unless($o->access('w')){ $o->err_add('У Вас нет разрешения изменять этот элемент.'); return; }
+	unless($o->access('w')){ $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ СЌС‚РѕС‚ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	my $by = $r->{'by'};
 	
@@ -119,7 +117,7 @@ sub cms_array_elem_mkshcut
 	
 	unless($o->elem_can_paste($e_shcut))
 	{
-		$o->err_add('Невозможно сохранить ярлык для '.$elem->myurl().' в классе '.ref($o).'.');
+		$o->err_add('РќРµРІРѕР·РјРѕР¶РЅРѕ СЃРѕС…СЂР°РЅРёС‚СЊ СЏСЂР»С‹Рє РґР»СЏ '.$elem->myurl().' РІ РєР»Р°СЃСЃРµ '.ref($o).'.');
 		$e_shcut->del();
 		return;
 	}
@@ -159,15 +157,15 @@ sub cms_array_object_move
 	my $to = cmsb_url($r->{'ourl'});
 	my $papa = $to->papa();
 	
-	unless($o->myurl() ne $to->myurl()){ return $o->err_add('Нельзя переместить элемент в самого себя.'); }
-	unless($o->access('w')){ return $o->err_add('У Вас нет разрешения изменять массив назначения.'); }
+	unless($o->myurl() ne $to->myurl()){ return $o->err_add('РќРµР»СЊР·СЏ РїРµСЂРµРјРµСЃС‚РёС‚СЊ СЌР»РµРјРµРЅС‚ РІ СЃР°РјРѕРіРѕ СЃРµР±СЏ.'); }
+	unless($o->access('w')){ return $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ РјР°СЃСЃРёРІ РЅР°Р·РЅР°С‡РµРЅРёСЏ.'); }
 	
 	if($sact eq 'move')
 	{
-		unless($to->access('w')){ return $o->err_add('У Вас нет разрешения изменять перемещаемый элемент.'); }
-		unless($papa->access('w')){ return $o->err_add('У Вас нет разрешения изменять массив, содержащий элемент.'); }
+		unless($to->access('w')){ return $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ РїРµСЂРµРјРµС‰Р°РµРјС‹Р№ СЌР»РµРјРµРЅС‚.'); }
+		unless($papa->access('w')){ return $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ РјР°СЃСЃРёРІ, СЃРѕРґРµСЂР¶Р°С‰РёР№ СЌР»РµРјРµРЅС‚.'); }
 	}
-	unless($o->elem_can_paste($to)){ return $o->err_add('Елемент класса '.ref($o).' не может содержать элемент класса '.ref($to)); }
+	unless($o->elem_can_paste($to)){ return $o->err_add('Р•Р»РµРјРµРЅС‚ РєР»Р°СЃСЃР° '.ref($o).' РЅРµ РјРѕР¶РµС‚ СЃРѕРґРµСЂР¶Р°С‚СЊ СЌР»РµРјРµРЅС‚ РєР»Р°СЃСЃР° '.ref($to)); }
 	
 	if($sact eq 'copy')
 	{
@@ -239,13 +237,13 @@ sub cms_array_elem_move2
 	my $from = $o;
 	my $elem = $from->elem($enum);
 	
-	unless($from->access('w')){ $from->err_add('У Вас нет разрешения изменять массив, содержащий элемент.'); return; }
-	unless($elem->access('w')){ $from->err_add('У Вас нет разрешения изменять перемещаемый элемент.'); return; }
+	unless($from->access('w')){ $from->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ РјР°СЃСЃРёРІ, СЃРѕРґРµСЂР¶Р°С‰РёР№ СЌР»РµРјРµРЅС‚.'); return; }
+	unless($elem->access('w')){ $from->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РёР·РјРµРЅСЏС‚СЊ РїРµСЂРµРјРµС‰Р°РµРјС‹Р№ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	if($uto)
 	{
 		my $to = cmsb_url($uto);
-		unless($to->access('a')){ $from->err_add('У Вас нет разрешения добавлять в элемент назначения.'); return; }
+		unless($to->access('a')){ $from->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РґРѕР±Р°РІР»СЏС‚СЊ РІ СЌР»РµРјРµРЅС‚ РЅР°Р·РЅР°С‡РµРЅРёСЏ.'); return; }
 		
 		unless($to->elem_can_paste($elem)){ return; }
 		
@@ -257,11 +255,11 @@ sub cms_array_elem_move2
 		return;
 	}
 	
-	print 'Выберите раздел, в который переместить элемент: <b>',$elem->admin_name(),'</b>.<br><br>';
+	print 'Р’С‹Р±РµСЂРёС‚Рµ СЂР°Р·РґРµР», РІ РєРѕС‚РѕСЂС‹Р№ РїРµСЂРµРјРµСЃС‚РёС‚СЊ СЌР»РµРјРµРЅС‚: <b>',$elem->admin_name(),'</b>.<br><br>';
 	
 	my $count = 0;
 	
-	for my $c (cmsb_allclasses())
+	for my $c (cmsb_classes())
 	{
 		unless( $c->elem_can_add(ref($elem)) ){ next; }
 		
@@ -275,7 +273,7 @@ sub cms_array_elem_move2
 		}
 	}
 	
-	unless($count){ print '<center><b>Нет разделов для отображения.</b></center>'; }
+	unless($count){ print '<center><b>РќРµС‚ СЂР°Р·РґРµР»РѕРІ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ.</b></center>'; }
 }
 
 sub cms_array_elem_moveto
@@ -325,7 +323,7 @@ sub cms_admin_cre
 	
 	unless(cmsb_classOK($r->{'cname'})){ return; }
 	
-	unless($o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+	unless($o->access('a')){ $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РґРѕР±Р°РІР»СЏС‚СЊ РІ СЌС‚РѕС‚ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	my $to = $r->{'cname'}->cre();
 	$to->admin_edit($r);
@@ -359,7 +357,7 @@ sub cms_admin_edit
 	my $tname = $o->name();
 	$o->admin_edit($r);
 	$o->save();
-	$o->reload(); # Некоторые изменения, например ATS, OWNER, вступают в силу только после reload()
+	$o->reload(); # РќРµРєРѕС‚РѕСЂС‹Рµ РёР·РјРµРЅРµРЅРёСЏ, РЅР°РїСЂРёРјРµСЂ ATS, OWNER, РІСЃС‚СѓРїР°СЋС‚ РІ СЃРёР»Сѓ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ reload()
 	if($tname ne $o->name()){ $sess->{'admin_refresh_left'} = 1; }
 	
 	if($r->{'wdo'} eq 'ok')
@@ -390,11 +388,11 @@ sub cms_array_add
 	
 	unless(cmsb_classOK($r->{'cname'}))
 	{
-		$o->err_add('Класс <b>'.$r->{'cname'}.'</b> не существует.');
+		$o->err_add('РљР»Р°СЃСЃ <b>'.$r->{'cname'}.'</b> РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚.');
 		return;
 	}
 	
-	unless($o->access('a')){ $o->err_add('У Вас нет разрешения добавлять в этот элемент.'); return; }
+	unless($o->access('a')){ $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёСЏ РґРѕР±Р°РІР»СЏС‚СЊ РІ СЌС‚РѕС‚ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	my $to = $r->{'cname'}->new();
 	$to->admin_cre($o);
@@ -405,7 +403,7 @@ sub default
 	my $o = shift;
 	my $r = shift;
 	
-	unless($o->access('r')){ $o->err_add('У вас нет разрешений для просмотра этого элемента.'); return; }
+	unless($o->access('r')){ $o->err_add('РЈ РІР°СЃ РЅРµС‚ СЂР°Р·СЂРµС€РµРЅРёР№ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР° СЌС‚РѕРіРѕ СЌР»РµРјРµРЅС‚Р°.'); return; }
 	
 	$o->{'_do_list'} = 1;
 }

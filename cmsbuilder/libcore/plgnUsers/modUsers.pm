@@ -1,20 +1,22 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package modUsers;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::TreeModule';
 
-sub _cname {'Ïîëüçîâàòåëè'}
+sub _cname {'ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ð¸'}
 sub _add_classes {qw/UserGroup/}
 sub _one_instance {1}
 sub _have_icon {1}
 
 sub _props
 {
-	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Íàçâàíèå' },
+	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ' },
 }
 
-#-------------------------------------------------------------------------------
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 
 sub install_code
@@ -24,12 +26,12 @@ sub install_code
 	$mr = modRoot->new(1);
 	
 	$tm = $mod->cre();
-	$tm->{'name'} = 'Ïîëüçîâàòåëè';
+	$tm->{'name'} = 'ÐŸÐ¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ð¸';
 	$tm->save();
 	$mr->elem_paste($tm);
 	
 	$tg = UserGroup->cre();
-	$tg->{'name'}   = 'Àäìèíèñòðàòîðû';
+	$tg->{'name'}   = 'ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€Ñ‹';
 	$tg->{'html'}   = 1;
 	$tg->{'files'}  = 1;
 	$tg->{'cms'}	= 1;
@@ -40,25 +42,25 @@ sub install_code
 	$tm->elem_paste($tg);
 	
 	$tu = User->cre();
-	$tu->{'name'}   = 'Àäìèíèñòðàòîð';
+	$tu->{'name'}   = 'ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€';
 	$tu->{'login'}  = 'admin';
 	$tu->save();
 	$tg->elem_paste($tu);
 	
 	$tu = User->cre();
-	$tu->{'name'}   = 'Áàðìåíòàëü';
+	$tu->{'name'}   = 'Ð‘Ð°Ñ€Ð¼ÐµÐ½Ñ‚Ð°Ð»ÑŒ';
 	$tu->{'login'}  = 'barmental';
 	$tu->save();
 	$tg->elem_paste($tu);
 	
 	$tg = UserGroup->cre();
-	$tg->{'name'}   = 'Ãîñòè';
+	$tg->{'name'}   = 'Ð“Ð¾ÑÑ‚Ð¸';
 	$tg->save();
 	
 	$tm->elem_paste($tg);
 	
 	$tu = User->cre();
-	$tu->{'name'}   = 'Ãîñòü';
+	$tu->{'name'}   = 'Ð“Ð¾ÑÑ‚ÑŒ';
 	$tu->save();
 	
 	$tg->elem_paste($tu);

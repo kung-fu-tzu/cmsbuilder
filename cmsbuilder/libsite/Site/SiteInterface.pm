@@ -1,24 +1,69 @@
-# (с) Леонов П.А., 2006
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2006
 
 package plgnSite::Interface;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'plgnTemplates::Interface';
 
-sub _site_ehtml {}
 sub _template_export
 {qw/
 site_submenu site_mainmenu site_navigation site_content site_contentbox site_flatlist
 site_title site_description site_script
 site_preview site_mainpreview site_href site_head site_aname site_pagesline
+site_cdate site_adate
 /}
+sub _sview { return shift()->aview(@_) }
 
-#———————————————————————————————————————————————————————————————————————————————
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 use CMSBuilder;
+use CMSBuilder::Utils;
 use CMSBuilder::IO;
 
-sub site_ehtml { return $_[0]->_site_ehtml(@_); }
+sub sview { return shift()->_sview(@_) }
+
+sub site_props
+{
+	my $o = shift;
+	my $na =
+	{
+		-keys => [$o->sview()],
+		@_
+	};
+	
+	my $p = $o->props();
+	
+	return unless @{$na->{-keys}};
+	
+	my $vt;
+	for my $key (@{$na->{-keys}})
+	{
+		do { warn ref($o).': _props{} has no key "'.$key.'"'; next } unless exists $p->{$key};
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
+		
+		print '<div class="',$key,'">',$vt->sview( $key, $o->{$key}, $o ),'</div>';
+	}
+	
+	return 1;
+}
+
+sub site_cdate
+{
+	my $o = shift;
+	my $r = shift;
+	
+	return toDateStr($o->{'CTS'});
+}
+
+sub site_adate
+{
+	my $o = shift;
+	my $r = shift;
+	
+	return toDateStr($o->{'ATS'});
+}
 
 sub site_flatlist
 {
@@ -47,7 +92,7 @@ sub site_pagesline
 	
 	if($o->pages() < 2){ return; }
 	
-	print '<div class="pagesline"><span class="text">Страницы:</span>';
+	print '<div class="pagesline"><span class="text">РЎС‚СЂР°РЅРёС†С‹:</span>';
 	
 	for my $p (0 .. $o->pages()-1)
 	{
@@ -138,7 +183,7 @@ sub site_title
 	my $ttl = $o->site_name();
 	my $gttl = $o->papaN(0)->{'title'};
 	
-	print $gttl?"$ttl — $gttl":$ttl;
+	print $gttl?"$ttl вЂ” $gttl":$ttl;
 }
 
 sub site_description
@@ -159,14 +204,14 @@ sub site_preview
 {
 	my $o = shift;
 	
-	print '<h4>',$o->{'name'},'</h4><p>Предварительный вывод (site_preview) для класса "',ref($o),'" не определён.</p>';
+	print '<h4>',$o->{'name'},'</h4><p>РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РІС‹РІРѕРґ (site_preview) РґР»СЏ РєР»Р°СЃСЃР° "',ref($o),'" РЅРµ РѕРїСЂРµРґРµР»С‘РЅ.</p>';
 }
 
 sub site_mainpreview
 {
 	my $o = shift;
 	
-	print '<h4>',$o->{'name'},'</h4><p>Вывод на главной (site_index) для класса "',ref($o),'" не определён.</p>';
+	print '<h4>',$o->{'name'},'</h4><p>Р’С‹РІРѕРґ РЅР° РіР»Р°РІРЅРѕР№ (site_index) РґР»СЏ РєР»Р°СЃСЃР° "',ref($o),'" РЅРµ РѕРїСЂРµРґРµР»С‘РЅ.</p>';
 }
 
 sub site_href
@@ -174,7 +219,18 @@ sub site_href
 	my $o = shift;
 	my $page = shift;
 	
-	return $o->site_ehtml()?$o->site_ehtml().'/'.$o->myurl():'/'.lc($o->myurl()).'.ehtml';
+	return '/'.lc($o->myurl()).'.html';
+}
+
+sub site_abshref
+{
+	my $o = shift;
+	my $page = shift;
+	
+	my $base = $o->root->{'address'};
+	chop $base;
+	
+	return $base.$o->site_href();
 }
 
 sub site_name

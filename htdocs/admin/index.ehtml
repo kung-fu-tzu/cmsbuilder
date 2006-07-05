@@ -1,7 +1,7 @@
-<?eml CMSFront::access(); ?>
+п»ї<?eml CMSFront::access(); ?>
 <html>
 <head>
-<title>Система администрирования</title>
+<title>РЎРёСЃС‚РµРјР° Р°РґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёСЏ</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
 <link href="cmenu.css" rel="stylesheet" type="text/css">
 <link href="admin.css" rel="stylesheet" type="text/css" />
@@ -18,8 +18,8 @@
 	<tr>
 		<td>&nbsp;</td>
 		<td width="30%">&nbsp;</td>
-		<td width="40%" id="aboutbox"><a href="/">На сайт...</a>
-		<a target="admin_right" href="about.html">О системе...</a>
+		<td width="40%" id="aboutbox"><a href="/">РќР° СЃР°Р№С‚...</a>
+		<a target="admin_right" href="about.html">Рћ СЃРёСЃС‚РµРјРµ...</a>
 		<?eml CMSFront::user_xinfo('exit') ?></td>
 	</tr>
 	</table>
@@ -49,8 +49,8 @@
 			<tr height="182">
 				<td valign="top">
 					<table width="100%" height="100%">
-						<tr><td class="framehead">Персональные модули</td></tr>
-						<tr><td><iframe name="admin_modules" src="modules.ehtml" class="wide" frameborder="0"></iframe></td></tr>
+						<tr><td class="framehead">РџРµСЂСЃРѕРЅР°Р»СЊРЅС‹Рµ РјРѕРґСѓР»Рё</td></tr>
+						<tr><td><iframe name="admin_modules" src="modules.ehtml<?eml if(my $url = CGI::param('url')){ print "?url=$url"; } ?>" class="wide" frameborder="0"></iframe></td></tr>
 					</table>
 				</td>
 			</tr>
@@ -60,11 +60,11 @@
 		
 		<td class="bigborder bbv" valign="top">
 			<img scr="img/null.gif" width="1" height="100">
-			<a href="hide"><img id="btn_treehide" alt="Скрыть дерево" src="img/left_hide.gif" onclick="return HideLeft();"></a>
-			<a href="show"><img id="btn_treeshow" alt="Показать дерево" style="display: none" src="img/left_show.gif" onclick="return ShowLeft();"></a>
+			<a href="hide"><img id="btn_treehide" alt="РЎРєСЂС‹С‚СЊ РґРµСЂРµРІРѕ" src="img/left_hide.gif" onclick="return HideLeft();"></a>
+			<a href="show"><img id="btn_treeshow" alt="РџРѕРєР°Р·Р°С‚СЊ РґРµСЂРµРІРѕ" style="display: none" src="img/left_show.gif" onclick="return ShowLeft();"></a>
 			
 			<img scr="img/null.gif" width="1" height="100">
-			<img style="cursor: w-resize" onmousedown="return CMS_Float_MD(this)" id="btn_treeresize" alt="Изменить размер" src="img/left_resize.gif">
+			<img style="cursor: w-resize" onmousedown="return CMS_Float_MD(this)" id="btn_treeresize" alt="РР·РјРµРЅРёС‚СЊ СЂР°Р·РјРµСЂ" src="img/left_resize.gif">
 		</td>
 		
 		<?eml }else{ ?>

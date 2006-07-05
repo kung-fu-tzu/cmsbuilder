@@ -1,19 +1,13 @@
-# (�) ������ �.�., 2005
+﻿# (с) Леонов П.А., 2005
 
 package plgnCatalog::Member;
 use strict qw(subs vars);
-our @ISA = ('plgnCatalog::Interface','plgnSite::Object');
+use utf8;
+
+our @ISA = ('plgnCatalog::Object');
 
 sub _add_classes {qw/!* plgnCatalog::Member !modCatalog/}
-sub _aview {qw/img desc/}
 
-sub _props
-{
-	'img'		=> { 'type' => 'file', 'msize' => 100, 'ext' => [qw/bmp jpg gif txt html/], 'name' => '��������' },
-	'desc'		=> { 'type' => 'miniword', 'name' => '��������' },
-}
-
-#-------------------------------------------------------------------------------
-
+#———————————————————————————————————————————————————————————————————————————————
 
 1;

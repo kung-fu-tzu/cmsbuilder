@@ -1,14 +1,15 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package CMSBuilder::DBI::Module;
 use strict qw(subs vars);
+use utf8;
 
-sub _cname {'Ìîäóëü'}
-sub _one_instance {0}	# Åñëè óñòàíîâëåíî â 1, òî íåëüçÿ ñîçäàâàòü äâà ýêçåìïëÿðà ìîäóëÿ
+sub _cname {'ÐœÐ¾Ð´ÑƒÐ»ÑŒ'}
+sub _one_instance {0}	# Ð•ÑÐ»Ð¸ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾ Ð² 1, Ñ‚Ð¾ Ð½ÐµÐ»ÑŒÐ·Ñ ÑÐ¾Ð·Ð´Ð°Ð²Ð°Ñ‚ÑŒ Ð´Ð²Ð° ÑÐºÐ·ÐµÐ¼Ð¿Ð»ÑÑ€Ð° Ð¼Ð¾Ð´ÑƒÐ»Ñ
 sub _have_icon {0}
 sub _have_funcs {0}
 
-#------------------------------------------------------------------------------
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 
 use CMSBuilder::Utils;
@@ -25,12 +26,12 @@ sub admin_arrayline
 	
 	my $enum = $a->elem_tell_enum($o);
 	
-	print '<a onclick="return doDel()" href="'.$a->admin_right_href().'&act=cms_array_elem_delete&enum='.$enum.'"><img alt="Óäàëèòü" src="img/x.gif"></a>';
+	print '<a onclick="return doDel()" href="'.$a->admin_right_href().'&act=cms_array_elem_delete&enum='.$enum.'"><img alt="Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ" src="img/x.gif"></a>';
 	
 	print '<img src="img/nx.gif">';
 	
-	print( ($enum == $a->len())?('<img src="img/nx.gif">'):('<a href="'.$a->admin_right_href().'&act=cms_array_elem_down&enum='.$enum.'"><img alt="Ïåðåìåñòèòü íèæå" src="img/down.gif"></a>') );
-	print( ($enum == 1)?('<img src="img/nx.gif">'):('<a href="'.$a->admin_right_href().'&act=cms_array_elem_up&enum='.$enum.'"><img alt="Ïåðåìåñòèòü âûøå" src="img/up.gif"></a>') );
+	print( ($enum == $a->len())?('<img src="img/nx.gif">'):('<a href="'.$a->admin_right_href().'&act=cms_array_elem_down&enum='.$enum.'"><img alt="ÐŸÐµÑ€ÐµÐ¼ÐµÑÑ‚Ð¸Ñ‚ÑŒ Ð½Ð¸Ð¶Ðµ" src="img/down.gif"></a>') );
+	print( ($enum == 1)?('<img src="img/nx.gif">'):('<a href="'.$a->admin_right_href().'&act=cms_array_elem_up&enum='.$enum.'"><img alt="ÐŸÐµÑ€ÐµÐ¼ÐµÑÑ‚Ð¸Ñ‚ÑŒ Ð²Ñ‹ÑˆÐµ" src="img/up.gif"></a>') );
 	
 	print '<img src="img/nx.gif">';
 }

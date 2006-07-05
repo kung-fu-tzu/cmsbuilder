@@ -1,19 +1,28 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ. Рђ., 2005
 
 package CMSBuilder::EML;
 use strict qw(subs vars);
+use utf8;
 
 use CMSBuilder;
+use CMSBuilder::Utils;
 use CMSBuilder::IO;
 use CMSBuilder::IO::Session;
 import CGI 'param';
 
-###################################################################################################
-# Базовые переменные интерфейса
-###################################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 our(@head,@pull,$dir,$path,%sess,$part_num);
 our $daparser;
+
+sub process_request
+{
+	my $c = shift;
+	my $r = shift;
+	
+	CMSBuilder::EML->init();
+	return CMSBuilder::EML->doall();
+}
 
 sub init
 {
@@ -29,7 +38,7 @@ sub doall
 
 	$eml->init_normal();
 	
-	$eml->parse();
+	return unless $eml->parse();
 	$eml->construct();
 	$eml->execute();
 	
@@ -59,49 +68,26 @@ sub header
 	push(@head, $str);
 }
 
-sub index
-{
-	my $obj = plgnSite->main();
-	
-	param('a');
-	$obj->site_page({CGI->Vars(), 'eml' => CMSBuilder::EML->parser(), 'main_obj' => $obj});
-}
-
 sub parse
 {
 	my $o = shift;
 	
-	unless(-f $o->{'file'})
-	{
-		#print '<!-- ','DATA 'x1000,' -->';
-		
-		my $myurl = $o->{'uri'};
-		$myurl =~ s#\.ehtml.*##g;
-		$myurl = substr($myurl,1);
-		$myurl =~ s#/#::#g;
-		
-		my $obj = cmsb_url($myurl);
-		
-		return err404('File not found: '.$o->{'file'}) unless $obj && $obj->{'ID'};
-		
-		param('a');
-		$obj->site_page({CGI->Vars(), 'eml' => $o, 'main_obj' => $obj});
-		
-		return;
-	}
+	return unless(-f $o->{'file'});
 	
 	my $emlf;
-	unless(open($emlf,'<',$o->{'file'})){ err500('Can`t open (<) file: '.$o->{'file'}); }
+	unless(open($emlf,'<:utf8',$o->{'file'})){ err500('Can`t open (<:utf8) file: '.$o->{'file'}); }
 	$o->{'data'} = join('',<$emlf>);
 	close($emlf);
 	
-	# Считываем и парсим конструкции <!--#include ... -->
+	# РЎС‡РёС‚С‹РІР°РµРј Рё РїР°СЂСЃРёРј РєРѕРЅСЃС‚СЂСѓРєС†РёРё <!--#include ... -->
 	chdir($o->{'dir'});
 	$o->{'data'} =~ s/<!--#include\s+(.+)\s*-->/SSI($o,$1);/gei;
 	chdir($o->{'cgi_dir'});
 	
-	# Считываем и парсим конструкции <?eml *** ?>
+	# РЎС‡РёС‚С‹РІР°РµРј Рё РїР°СЂСЃРёРј РєРѕРЅСЃС‚СЂСѓРєС†РёРё <?eml *** ?>
 	$o->{'parts'} = [ split(/<\?eml((?:.|\n)+?)\?>/,$o->{'data'}) ];
+	
+	return 1;
 }
 
 sub execute
@@ -112,12 +98,14 @@ sub execute
 	eval($o->{'code'});
 	pop @pull;
 	
-	if($@ && $@ !~ /^OK/)
+	if($@ && !$CMSBuilder::IO::err_catched)
 	{
 		my $etext = $@.'eval("'.$o->{'parts'}[$part_num].'") in '.$o->{'file'};
 		print STDERR $etext;
 		err500($etext);
 	}
+	
+	undef $CMSBuilder::IO::err_catched;
 }
 
 sub construct
@@ -135,8 +123,6 @@ sub init_normal
 {
 	my $o = shift;
 	
-	unless($ENV{'REDIRECT_STATUS'}){ err500('REDIRECT_STATUS'); }
-	
 	$o->{'uri'} = $ENV{'REQUEST_URI'};
 	
 	$o->{'cgi_dir'} = $ENV{'SCRIPT_FILENAME'};
@@ -153,14 +139,14 @@ sub init_normal
 	$o->{'dir'} =~ s/\/[^\/]+$/\//;
 }
 
-sub f2var
+sub eml_f2var
 {
 	my $o = shift;
 	my $f = shift;
 	my $var;
 	local *SSI;
 	
-	unless( open(SSI,'< '.$f) ){ return '[an error occurred while processing this directive]'; }
+	unless( open(SSI,'<',$f) ){ return '[an error occurred while processing this directive]'; }
 	$var = join('',<SSI>);
 	close(SSI);
 	
@@ -172,7 +158,7 @@ sub SSI
 	my $o = shift;
 	my $str = shift;
 	
-	if($str =~ m/\w+="(.+?)"/){ return f2var($o,$1); }
+	if($str =~ m/\w+="(.+?)"/){ return eml_f2var($o,$1); }
 	
 	return '';
 }

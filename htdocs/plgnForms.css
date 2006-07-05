@@ -1,0 +1,38 @@
+﻿.plgn-forms .error
+{
+    border: solid 1px #dd0000;
+}
+
+.plgn-forms .ok
+{
+    border: solid 1px #00dd00;
+}
+
+.plgn-forms input, .plgn-forms select, .plgn-forms textarea
+{
+    border: solid 1px #888;
+}
+
+.plgn-forms th
+{
+    padding: 3px 5px;
+    text-align: left;
+    font-weight: normal;
+}
+.plgn-forms td
+{
+    padding: 3px 5px;
+    width: 1px;
+}
+
+
+.plgn-forms table
+{
+    width: 100%;
+}
+
+.plgn-forms .submit
+{
+    text-align: center;
+    margin: auto;
+}

@@ -1,10 +1,10 @@
-
+﻿
 
 //document.body.ondragend = function () { window.setTimeout("SafeRefresh()",1500,"JavaScript"); }
 
 //window.ondragdrop = function(e){ alert(e); }
 
-//------------------------------------------------------------------------------
+//——————————————————————————————————————————————————————————————————————————————
 
 var flt_mm;
 var flt_mu;
@@ -96,13 +96,13 @@ function ShowLeft()
 	return false;
 }
 
-//------------------------------------------------------------------------------
+//——————————————————————————————————————————————————————————————————————————————
 
 window.onunload = function ()
 {
 	//if(document.all["main_form"])
 	//{
-	//	if(confirm("��������� ��������?")) document.all["main_form"].submit();
+	//	if(confirm("Сохранить зменения?")) document.all["main_form"].submit();
 	//}
 }
 
@@ -185,7 +185,7 @@ function getCookie(name)
 
 function doDel()
 {
-	return window.confirm('�������?');
+	return window.confirm('Удалить?');
 }
 
 var SelectMod_old;
@@ -258,7 +258,7 @@ function CMS_GetTypedElement(elem,type)
 	return undefined;
 }
 
-//--------------------------- Drag&Drop ----------------------------------------
+//——————————————————————————————————————————————————————————————————————————————
 
 function CMS_GlobalDragStart(obj)
 {
@@ -313,7 +313,7 @@ function CMS_GlobalDrop(obj)
 	var sact = "move";
 	if(event.ctrlKey) sact = "copy";
 	if(event.shiftKey) sact = "shcut";
-	if(!dro.papa) sact = "shcut"; //���� ������� - ������ ������ ������, �� ������ ������ � ������ :)
+	if(!dro.papa) sact = "shcut"; //Если указано - делать только ссылку, то только ссылку и делаем :)
 	
 	var href = "right.ehtml?url="+obj.myurl+"&act=cms_array_object_move&sact="+sact+"&ourl="+dro.myurl+"&pos="+(obj.elempos||"");
 	
@@ -421,3 +421,5 @@ function rpcall(href)
 //	document.body.appendChild(a);
 //	a.src = href;
 //}
+
+

@@ -1,6 +1,9 @@
-# (ñ) Ëåîíîâ Ï. À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ. Ð., 2005
 
 package fltGZIP;
+use strict qw(vars subs);
+use utf8;
+
 our @ISA = 'CMSBuilder::IO::Filter';
 
 use Compress::Zlib;
@@ -11,12 +14,10 @@ sub filt
 	my $str = shift;
 	my $hdrs = shift;
 	
-	unless(send_gzipped()){ return; }
+	unless($ENV{'HTTP_ACCEPT_ENCODING'} =~ /gzip/){ return; }
 	
 	$$str = Compress::Zlib::memGzip($$str);
 	$hdrs->{'Content-Length'} = length($$str);
 }
-
-sub send_gzipped { return ($CMSBuilder::Config::buff_gzip && $ENV{'HTTP_ACCEPT_ENCODING'} =~ /gzip/); }
 
 1;

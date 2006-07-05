@@ -1,16 +1,15 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ğ›ĞµĞ¾Ğ½Ğ¾Ğ² ĞŸ.Ğ., 2005
 
 package CMSBuilder::DBI::Object::OBase;
 use strict qw(subs vars);
+use utf8;
 
-#-------------------------------------------------------------------------------
-
-
+use Carp;
 use plgnUsers;
+use CMSBuilder::IO;
+use CMSBuilder::Utils;
 
-###################################################################################################
-# Ñèñòåìíûå ïîëÿ
-###################################################################################################
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€” Ğ¡Ğ¸ÑÑ‚ĞµĞ¼Ğ½Ñ‹Ğµ Ğ¿Ğ¾Ğ»Ñ â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 our %sys_cols =
 (
@@ -24,9 +23,7 @@ our %sys_cols =
 );
 
 
-###################################################################################################
-# Ñëåäóşùèå ìåòîäû íàõîäÿòñÿ â ğàçğàáîòêå
-###################################################################################################
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€” Ğ¡Ğ»ĞµĞ´ÑƒÑÑ‰Ğ¸Ğµ Ğ¼ĞµÑ‚Ğ¾Ğ´Ñ‹ Ğ½Ğ°Ñ…Ğ¾Ğ´ÑÑ‚ÑÑ Ğ² Ñ€Ğ°Ğ·Ñ€Ğ°Ğ±Ğ¾Ñ‚ĞºĞµ â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 sub object_tblname
 {
@@ -36,9 +33,7 @@ sub object_tblname
 }
 
 
-###################################################################################################
-# Ìåòîäû âûïîëíÿşùèå ïîèñê îáúåêòîâ
-###################################################################################################
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€” ĞœĞµÑ‚Ğ¾Ğ´Ñ‹ Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½ÑÑÑ‰Ğ¸Ğµ Ğ¿Ğ¾Ğ¸ÑĞº Ğ¾Ğ±ÑŠĞµĞºÑ‚Ğ¾Ğ² â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 sub sel_one
 {
@@ -90,9 +85,7 @@ sub sel_sql
 }
 
 
-###################################################################################################
-# Ìåòîäû äëÿ íåïîñğåäñòâåííîé ğàáîòû ñ Áàçîé Äàííûõ
-###################################################################################################
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€” ĞœĞµÑ‚Ğ¾Ğ´Ñ‹ Ğ´Ğ»Ñ Ğ½ĞµĞ¿Ğ¾ÑÑ€ĞµĞ´ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾Ğ¹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ Ğ‘Ğ°Ğ·Ğ¾Ğ¹ Ğ”Ğ°Ğ½Ğ½Ñ‹Ñ… â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 sub count
 {
@@ -113,12 +106,12 @@ sub del
 	my $p = $o->props();
 	
 	unless($o->{'ID'}){ $o->clear(); return; }
-	if($o->{'ID'} =~ m/\D/){ CMSBuilder::IO::err500('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{'ID'}); }
+	if($o->{'ID'} =~ m/\D/){ err500('DBO: Non-digital ID passed to del(), '.ref($o).', '.$o->{'ID'}); }
 	
 	my $papa = $o->papa();
 	unless($papa)
 	{
-		unless($o->access('w')){ $o->err_add('Ó Âàñ íåò ğàçğåøåíèé èçìåíÿòü ıòîò ıëåìåíò.'); return; }
+		unless($o->access('w')){ $o->err_add('Ğ£ Ğ’Ğ°Ñ Ğ½ĞµÑ‚ Ñ€Ğ°Ğ·Ñ€ĞµÑˆĞµĞ½Ğ¸Ğ¹ Ğ¸Ğ·Ğ¼ĞµĞ½ÑÑ‚ÑŒ ÑÑ‚Ğ¾Ñ‚ ÑĞ»ĞµĞ¼ĞµĞ½Ñ‚.'); return; }
 	}
 	
 	unless($o->{'SHCUT'})
@@ -144,12 +137,12 @@ sub reload
 	
 	if($o->{'ID'})
 	{
-		$res = $o->loadref($o->{'ID'});
+		$res = decode_utf8_hashref($o->loadref($o->{'ID'}));
 		
 		if($res->{'ID'} != $o->{'ID'})
 		{
-			print STDERR 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n";
-			if($CMSBuilder::Config::lfnexrow_error500){ CMSBuilder::IO::err404('nexrow_error'); }
+			carp 'DBO: Loading from not existed row, class = "'.ref($o).'",ID = '.$o->{'ID'}."\n";
+			if($CMSBuilder::Config::lfnexrow_error500){ err404('DBO: non existed row error'); }
 			$o->clear();
 			return;
 		}
@@ -172,105 +165,95 @@ sub reload
 	my $vt;
 	for my $key (keys( %$p ))
 	{
-		if($key eq '|'){ next; }
 		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
-		
-		if(${$vt.'::virtual'} || $p->{$key}{'virtual'}){ next }
 		
 		if(${$vt.'::filter'})
 		{
-			$o->{$key} = $vt->filter_load($key,$res->{$key},$o);
+			$res->{$key} = $vt->filter_load($key,$res->{$key},$o);
+		}
+		
+		if(${$vt.'::property'})
+		{
+			$o->{$key.'_real'} = $res->{$key};
+			tie($o->{$key},'CMSBuilder::Property',$o,$key);
 		}
 		else
 		{
 			$o->{$key} = $res->{$key};
 		}
-		
-		if(${$vt.'::property'})
-		{
-			tie($o->{$key},'CMSBuilder::Property',$o,$key);
-		}
 	}
+	
+	$o->save if delete $o->{'_save_after_reload'};
 }
 
 sub save
 {
 	my $o = shift;
 	my $p = $o->props();
-	my @vals = ();
-	my $val;
 	
-	unless($o->{'ID'}){ return; }
+	return unless $o->{'ID'};
 	unless($o->access('w')){ return; }
-	if($o->{'ID'} =~ m/\D/){ CMSBuilder::IO::err500('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
+	if($o->{'ID'} =~ m/\D/){ err500('DBO: Non-digital ID passed to save(), '.ref($o).', '.$o->{'ID'}); }
 	
 	#print 'Saving: ',$o->myurl(),'<br>';
 	
-	my $sql =
-	'
-	UPDATE '.$o->object_tblname().' SET
-	SHCUT = ?
-	';
-	
-	my $vt;
+	my($vt,$val,@flds,@vals);
 	for my $key (keys( %$p ))
 	{
-		if($key eq '|'){ next; }
 		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
 		
-		if(${$vt.'::virtual'} || $p->{$key}{'virtual'}){ next }
-		
-		$sql .= ",\n `$key` = ? ";
-		
-		if(${$vt.'::filter'})
+		if(${$vt.'::property'})
 		{
-			$val = $vt->filter_save($key,$o->{$key},$o);
+			$val = $o->{$key.'_real'};
 		}
 		else
 		{
 			$val = $o->{$key};
 		}
 		
+		if(${$vt.'::filter'})
+		{
+			$val = $vt->filter_save($key,$val,$o);
+		}
+		
+		next if ${$vt.'::virtual'} || $p->{$key}{'virtual'};
+		
+		push @flds, "`$key` = ?";
 		push @vals, $val;
 	}
 	
-	$sql .=  "\n".' WHERE ID = ? LIMIT 1';
+	my $sql = 'UPDATE '.$o->object_tblname().' SET `SHCUT` = ?, ' . join(',',@flds) . ' WHERE `ID` = ? LIMIT 1';
 	
-	my $str;
-	$str = $CMSBuilder::DBI::dbh->prepare($sql);
+	my $str = $CMSBuilder::DBI::dbh->prepare($sql);
 	$str->execute($o->{'SHCUT'},@vals,$o->{'ID'});
 }
 
 sub insert
 {
 	my $c = shift;
+	my (@vals,@flds);
 	
 	my $id = $c->insertid();
 	my $p = $c->props();
-	my (@vals,$val,@flds,$sql);
 	
-	$sql = 'UPDATE '.$c->object_tblname().' SET ';
-	
-	my $vt;
+	my ($val,$vt);
 	for my $key (keys( %$p ))
 	{
-		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
+		$vt = 'CMSBuilder::DBI::vtypes::' . $p->{$key}{'type'};
 		
-		if(${$vt.'::virtual'} || $p->{$key}{'virtual'}){ next; }
-		unless(${$vt.'::filter'}){ next; }
-		
+		next unless ${$vt.'::filter'};
 		$val = $vt->filter_insert($key,$c);
 		
-		push @flds," $key = ? ";
+		next if ${$vt.'::virtual'} || $p->{$key}{'virtual'};
+		push @flds, "`$key` = ?";
 		push @vals, $val;
 	}
 	
-	$sql .= join(', ',@flds).' WHERE ID = ? LIMIT 1';
+	my $sql = 'UPDATE ' . $c->object_tblname() . ' SET ' . join(', ',@flds) . ' WHERE ID = ? LIMIT 1';
 	
 	if(@flds)
 	{
-		my $str = $CMSBuilder::DBI::dbh->prepare($sql);
-		$str->execute(@vals,$id);
+		$CMSBuilder::DBI::dbh->prepare($sql)->execute(@vals,$id);
 	}
 	
 	return $id;
@@ -279,17 +262,14 @@ sub insert
 sub insertid
 {
 	my $c = shift;
-	my $str;
 	
-	$str = $CMSBuilder::DBI::dbh->prepare('INSERT INTO '.$c->object_tblname().' (OWNER,CTS) VALUES (?,NOW())');
-	$str->execute($user->myurl);
+	my $owner = $user ? $user->myurl : $CMSBuilder::Config::user_admin;
+	$CMSBuilder::DBI::dbh->do('INSERT INTO '.$c->object_tblname().' (OWNER,CTS) VALUES (?,NOW())',undef,$owner);
 	
-	$str = $CMSBuilder::DBI::dbh->prepare('SELECT LAST_INSERT_ID() FROM '.$c->object_tblname().' LIMIT 1');
+	my $str = $CMSBuilder::DBI::dbh->prepare('SELECT LAST_INSERT_ID() FROM '.$c->object_tblname().' LIMIT 1');
 	$str->execute();
 	
-	my ($id) = $str->fetchrow_array();
-	
-	return $id;
+	return $str->fetchrow_array();
 }
 
 sub loadref
@@ -298,7 +278,7 @@ sub loadref
 	my $id = shift;
 	my $res;
 	
-	if($id =~ m/\D/){ CMSBuilder::IO::err500('DBO: Non-digital ID passed to loadref(), '.ref($o).', '.$id); }
+	if($id =~ m/\D/){ err500('DBO: Non-digital ID passed to loadref(), '.ref($o).', '.$id); }
 	
 	my $str = $CMSBuilder::DBI::dbh->prepare('SELECT * FROM '.$o->object_tblname().' WHERE ID = ? LIMIT 1');
 	$str->execute($id);
@@ -352,9 +332,7 @@ sub papa_set
 }
 
 
-###################################################################################################
-# Âñïîìîãàòåëüíûå ìåòîäû ğàáîòû ñ Áàçîé Äàííûõ
-###################################################################################################
+#â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€” Ğ’ÑĞ¿Ğ¾Ğ¼Ğ¾Ğ³Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ğµ Ğ¼ĞµÑ‚Ğ¾Ğ´Ñ‹ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹ Ñ Ğ‘Ğ” â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”
 
 sub check
 {
@@ -416,11 +394,11 @@ sub table_fix
 {
 	my $c = shift;
 	my $test = shift;
-	my($str,$r,%cols,$p,$vtype,$csql,$tbl);
+	my($r,%cols,$p,$vt,$csql,$tbl,@do);
 	
 	my %log;# = ('changed'=>[],'existed'=>[],'deleted'=>[]);
 	
-	# ïğîâåğêà íà ñóùåñòâîâàíèå òàáëèöû
+	# Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° ÑÑƒÑ‰ĞµÑÑ‚Ğ²Ğ¾Ğ²Ğ°Ğ½Ğ¸Ğµ Ñ‚Ğ°Ğ±Ğ»Ğ¸Ñ†Ñ‹
 	unless($c->table_have)
 	{
 		$c->table_cre();
@@ -431,7 +409,7 @@ sub table_fix
 	$tbl = $c->object_tblname();
 	$p = $c->props();
 	
-	$str = $CMSBuilder::DBI::dbh->prepare('DESCRIBE '.$tbl);
+	my $str = $CMSBuilder::DBI::dbh->prepare('DESCRIBE '.$tbl);
 	$str->execute();
 	
 	while($r = $str->fetchrow_arrayref() )
@@ -441,53 +419,50 @@ sub table_fix
 		$cols{$r->[0]} =~ s/\s//g;
 	}
 	
-	# ïğîâåğêà íà èçìåíåíèå òèïà
+	# Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğµ Ñ‚Ğ¸Ğ¿Ğ°
 	for my $cn (keys(%cols))
 	{
-		unless($p->{$cn}){ next; }
-		$vtype = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
-		$csql = $vtype->table_cre($p->{$cn});
+		next unless $p->{$cn};
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
+		$csql = $vt->table_cre($p->{$cn});
 		$csql =~ s/\s//g;
 		
-		if(uc($cols{$cn}) ne uc($csql))
+		if(lc($cols{$cn}) ne lc($csql))
 		{
-			unless($test)
-			{
-				push @{$log{'changed'}}, {'name'=>$cn,'from'=>$cols{$cn},'to'=>$csql};
-				$CMSBuilder::DBI::dbh->do('ALTER TABLE '.$tbl.' CHANGE `'.$cn.'` `'.$cn.'` '.$csql.' NOT NULL ');
-			}
+			push @{$log{'changed'}}, {'name'=>$cn,'from'=>$cols{$cn},'to'=>$csql};
+			push @do, 'ALTER TABLE '.$tbl.' CHANGE `'.$cn.'` `'.$cn.'` '.$csql.' NOT NULL';
 		}
 	}
 	
-	# ïğîâåğêà íà íîâûå ïîëÿ
+	# Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° Ğ½Ğ¾Ğ²Ñ‹Ğµ Ğ¿Ğ¾Ğ»Ñ
 	for my $cn (keys(%$p))
 	{
-		$vtype = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
-		$csql = $vtype->table_cre($p->{$cn});
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
+		next if ${$vt.'::virtual'} || $p->{$cn}{'virtual'};
+		
+		$csql = $vt->table_cre($p->{$cn});
 		$csql =~ s/\s//g;
 		
-		unless($cols{$cn} || $p->{$cn}{'virtual'})
+		unless($cols{$cn})
 		{
-			unless($test)
-			{
-				push @{$log{'existed'}}, {'name'=>$cn,'to'=>$csql};
-				$CMSBuilder::DBI::dbh->do('ALTER TABLE '.$tbl.' ADD `'.$cn.'` '.$csql.' NOT NULL ');
-			}
+			push @{$log{'existed'}}, {'name'=>$cn,'to'=>$csql};
+			push @do, 'ALTER TABLE '.$tbl.' ADD `'.$cn.'` '.$csql.' NOT NULL';
 		}
 	}
 	
-	# ïğîâåğêà íà óäàë¸ííûå ïîëÿ
+	# Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€ĞºĞ° Ğ½Ğ° ÑƒĞ´Ğ°Ğ»Ñ‘Ğ½Ğ½Ñ‹Ğµ Ğ¿Ğ¾Ğ»Ñ
 	for my $cn (keys(%cols))
 	{
-		if(!$p->{$cn} || $p->{$cn}{'virtual'})
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
+		
+		if(!$p->{$cn} || ${$vt.'::virtual'} || $p->{$cn}{'virtual'})
 		{
-			unless($test)
-			{
-				push @{$log{'deleted'}}, {'name'=>$cn,'from'=>$cols{$cn}};
-				$CMSBuilder::DBI::dbh->do('ALTER TABLE '.$tbl.' DROP `'.$cn.'`');
-			}
+			push @{$log{'deleted'}}, {'name'=>$cn,'from'=>$cols{$cn}};
+			push @do, 'ALTER TABLE '.$tbl.' DROP `'.$cn.'`';
 		}
 	}
+	
+	map { $CMSBuilder::DBI::dbh->do($_) } @do unless $test;
 	
 	return \%log;
 }
@@ -495,38 +470,32 @@ sub table_fix
 sub table_cre
 {
 	my $c = shift;
-	my($key,$p,$vtype,$sc);
+	my (@flds);
+	my $p = $c->props();
 	
-	$p = $c->props();
-	
-	my $sql = 'CREATE TABLE IF NOT EXISTS '.$c->object_tblname().' ( '."\n";
-	
-	for $sc (sort keys %sys_cols)
+	for my $key (sort keys %sys_cols)
 	{
-		$sql .= '`'.$sc.'` '.$sys_cols{$sc}.', '."\n";
+		push @flds, "`$key` $sys_cols{$key}";
 	}
 	
-	for $key (keys %$p)
+	my $vt;
+	for my $key (keys %$p)
 	{
-		$vtype = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
+		next if ${$vt.'::virtual'};
 		
-		unless(${$vtype.'::virtual'} || $p->{$key}{'virtual'})
-		{
-			$sql .= " `$key` ".$vtype->table_cre($p->{$key}).' NOT NULL , '."\n";
-		}
+		push @flds, " `$key` ".$vt->table_cre($p->{$key})." NOT NULL";
 	}
-	$sql =~ s/,\s*$//;
-	$sql .= "\n )";
 	
-	my $str = $CMSBuilder::DBI::dbh->prepare($sql);
-	if($str->execute())
+	my $sql = 'CREATE TABLE IF NOT EXISTS '.$c->object_tblname().' ( '.join(',',@flds).' )';
+	
+	if($CMSBuilder::DBI::dbh->prepare($sql)->execute())
 	{
-		$sql =~ s/\n/<br>\n/g;
 		return $sql;
 	}
 	else
 	{
-		return 0;
+		return;
 	}
 }
 

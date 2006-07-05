@@ -1,16 +1,13 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package CMSBuilder::DBI::vtypes::int;
 use strict qw(subs vars);
-our @ISA = 'CMSBuilder::DBI::VType';
-# ×èñëî ####################################################
+use utf8;
 
-sub table_cre
-{
-	my $c = shift;
-	my $p = shift;
-	
-	return ' INT('.($p->{'length'} || 11).') ';
+our @ISA = 'CMSBuilder::DBI::VType';
+# Ð§Ð¸ÑÐ»Ð¾ ####################################################
+
+sub table_cre {'INT('.($_[1]->{'length'} || 11).')';
 }
 
 sub aview

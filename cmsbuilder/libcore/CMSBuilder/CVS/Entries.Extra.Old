@@ -1,10 +1,8 @@
-D/DBI///////
-D/IO///////
-D/Starter///////
 /DBI.pm////*///
 /EML.pm////*///
 /Fileman.pm////*///
 /IO.pm////*///
+/MYURL.pm////*///
 /OInterface.pm////*///
 /Plugin.pm////*///
 /Property.pm////*///

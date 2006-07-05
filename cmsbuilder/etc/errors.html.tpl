@@ -1,6 +1,6 @@
-<html>
+п»ї<html>
 <head>
-<title>Ошибка! (${errnum})</title>
+<title>РћС€РёР±РєР°! (${errnum})</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
 <link href="${aroot}/admin.css" rel="stylesheet" type="text/css">
 </head>
@@ -9,11 +9,11 @@
 <table id="error_tpl_table">
 
 <tr>
-<td class="toolbar">
+<td class="toolbar" id="tbpanel">
 	<table>
 	<tr>
 		<td width="10%"></td>
-		<td width="80%" align="center">Ошибка! (${errnum})</td>
+		<td width="80%" align="center">РћС€РёР±РєР°! (${errnum})</td>
 		<td width="10%" align="right"></td>
 	</tr>
 	</table>

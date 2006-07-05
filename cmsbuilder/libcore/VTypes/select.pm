@@ -1,11 +1,13 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package CMSBuilder::DBI::vtypes::select;
 use strict qw(subs vars);
-our @ISA = 'CMSBuilder::DBI::VType';
-# Ñïèñîê ####################################################
+use utf8;
 
-# 'prop'	=> { 'type' => 'select', 'variants' => [{'a' => 'Êðóòîé'},{'b' => 'Íåêðóòîé'},{'c' => 'Ïðîñòîé'}], 'name' => 'Òèï' },
+our @ISA = 'CMSBuilder::DBI::VType';
+# Ð¡Ð¿Ð¸ÑÐ¾Ðº ####################################################
+
+# 'prop'	=> { 'type' => 'select', 'variants' => [{'a' => 'ÐšÑ€ÑƒÑ‚Ð¾Ð¹'},{'b' => 'ÐÐµÐºÑ€ÑƒÑ‚Ð¾Ð¹'},{'c' => 'ÐŸÑ€Ð¾ÑÑ‚Ð¾Ð¹'}], 'name' => 'Ð¢Ð¸Ð¿' },
 
 sub table_cre
 {
@@ -13,7 +15,7 @@ sub table_cre
 	my $p = shift;
 	my $vars = $p->{'variants'};
 	
-	return " ENUM( '".join("', '",(map {keys %$_} @$vars))."' )  ";
+	return "ENUM('" . join("','",(map {keys %$_} @$vars)) . "')";
 }
 
 sub aview

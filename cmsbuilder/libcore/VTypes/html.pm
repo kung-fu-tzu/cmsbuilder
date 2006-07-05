@@ -1,16 +1,15 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::vtypes::html;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::VType';
-# Текст #####################################################
+# РўРµРєСЃС‚ #####################################################
 
 our $admin_own_html = 1;
 
-sub table_cre
-{
-	return ' TEXT ';
-}
+sub table_cre {'TEXT'}
 
 sub aedit
 {

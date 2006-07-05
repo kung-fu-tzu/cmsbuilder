@@ -1,13 +1,16 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ğ›ĞµĞ¾Ğ½Ğ¾Ğ² ĞŸ.Ğ., 2005
 
 package CMSBuilder::Starter;
 use strict qw(subs vars);
+use utf8;
 
 our $already_loaded;
 
 sub start
 {
 	my $starts = $CMSBuilder::Config::server_type || 'cgi';
+	
+	open(STDERR,'>>:utf8',$CMSBuilder::Config::file_errorlog) unless exists $ENV{'MOD_PERL'};
 	
 	if($starts eq 'cgi')
 	{
@@ -49,31 +52,30 @@ sub start_cgi
 	
 	unless($already_loaded)
 	{
-		# Çàãğóçêà è êîìïèëÿöèÿ
+		# Ğ—Ğ°Ğ³Ñ€ÑƒĞ·ĞºĞ° Ğ¸ ĞºĞ¾Ğ¼Ğ¿Ğ¸Ğ»ÑÑ†Ğ¸Ñ
 		CMSBuilder->load();
 	}
 	
 	
-	# Èíèöèàëèçàöèÿ è íà÷àëî ğàáîòû
+	# Ğ˜Ğ½Ğ¸Ñ†Ğ¸Ğ°Ğ»Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ğ¸ Ğ½Ğ°Ñ‡Ğ°Ğ»Ğ¾ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹
 	CMSBuilder->init();
 	
-	# Ñîáñòâåííî ğàáîòà
-	CMSBuilder::EML->init();
-	CMSBuilder::EML->doall();
+	# Ğ¡Ğ¾Ğ±ÑÑ‚Ğ²ĞµĞ½Ğ½Ğ¾ Ñ€Ğ°Ğ±Ğ¾Ñ‚Ğ°
+	CMSBuilder->process();
 	
-	# Êîíåö ğàáîòû: ôëàøè, êåøè, ïóøè è ò.ä.
+	# ĞšĞ¾Ğ½ĞµÑ† Ñ€Ğ°Ğ±Ğ¾Ñ‚Ñ‹: Ñ„Ğ»Ğ°ÑˆĞ¸, ĞºĞµÑˆĞ¸, Ğ¿ÑƒÑˆĞ¸ Ğ¸ Ñ‚.Ğ´.
 	CMSBuilder->destruct();
 	
+	# Ğ´Ğ»Ñ mod_perl
+	$already_loaded = 1;
 	
-	unless($already_loaded)
+	if($already_loaded && !exists $ENV{'MOD_PERL'})
 	{
-		# Âûãğóçêà
+		# Ğ’Ñ‹Ğ³Ñ€ÑƒĞ·ĞºĞ°
 		CMSBuilder->unload();
 	}
 	
 	################################################################################
-	
-	$already_loaded = 1;
 }
 
 1;

@@ -1,23 +1,25 @@
-# (Ò) “ÓÍÏ‡ÍÓ‚ ¿. »., 2006
+Ôªø# (—Å) –¢–æ–∫–º–∞–∫–æ–≤ –ê. –ò., 2006
 
 package fbQuestion;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('plgnSite::Object','CMSBuilder::DBI::Object');
 
-sub _cname {'¬ÓÔÓÒ'}
+sub _cname {'–í–æ–ø—Ä–æ—Å'}
 sub _aview {qw/username email emailme question answer emailed/}
 
 sub _props
 {
-	'username'		=> { 'type' => 'string', 'length' => 20, 'name' => '»Ïˇ ÔÓÎ¸ÁÓ‚‡ÚÂÎˇ'},
+	'username'		=> { 'type' => 'string', 'length' => 20, 'name' => '–ò–º—è –ø–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—è'},
 	'email'			=> { 'type' => 'string', 'length' => 50, 'name' => 'e-mail' },
-	'emailme'		=> { 'type' => 'checkbox', 'name' => '—ÓÓ·˘ËÚ¸ Ó· ÓÚ‚ÂÚÂ Ì‡ e-mail' },
-	'emailed'		=> { 'type' => 'checkbox', 'name' => '”‚Â‰ÓÏÎÂÌËÂ ÓÚÔ‡‚ÎÂÌÓ' },
-	'question'		=> { 'type' => 'text', 'name' => '¬‡¯ ‚ÓÔÓÒ' },
-	'answer'		=> { 'type' => 'text', 'name' => 'ŒÚ‚ÂÚ' }
+	'emailme'		=> { 'type' => 'checkbox', 'name' => '–°–æ–æ–±—â–∏—Ç—å –æ–± –æ—Ç–≤–µ—Ç–µ –Ω–∞ e-mail' },
+	'emailed'		=> { 'type' => 'checkbox', 'name' => '–£–≤–µ–¥–æ–º–ª–µ–Ω–∏–µ –æ—Ç–ø—Ä–∞–≤–ª–µ–Ω–æ' },
+	'question'		=> { 'type' => 'text', 'name' => '–í–∞—à –≤–æ–ø—Ä–æ—Å' },
+	'answer'		=> { 'type' => 'text', 'name' => '–û—Ç–≤–µ—Ç' }
 }
 
-#-------------------------------------------------------------------------------
+#‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî
 
 
 use CMSBuilder::Utils;
@@ -50,25 +52,22 @@ sub admin_edit
 		my $question = $o->{'question'};
 		$question =~ s/^/\> /g;
 		
-		my $href = $o->root->{'address'}.$o->site_href();
-		$href =~ s'/+'/'g;
-		
 		my $sended = sendmail
 		(
 			'to'	=> $o->{'email'},
 			'from'	=> $o->root->{'email'},
-			'subj'	=> 'Re: '.$o->papa()->name(),
-			'text'	=> $question."\n\n".$o->{'answer'}."\n\n--\n\nŒË„ËÌ‡Î: ".$href
+			'subj'	=> '['.$o->root->{'bigname'}.'] Re: '.$o->papa()->name(),
+			'text'	=> $question."\n\n".$o->{'answer'}."\n\n--\n\n–û—Ä–∏–≥–∏–Ω–∞–ª: ".$o->site_abshref
 		);
 		
 		if($sended)
 		{
-			$o->notice_add('œÓÎ¸ÁÓ‚‡ÚÂÎ˛ ÓÚÔ‡‚ÎÂÌÓ Û‚Â‰ÓÏÎÂÌËÂ.');
+			$o->notice_add('–ü–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—é –æ—Ç–ø—Ä–∞–≤–ª–µ–Ω–æ —É–≤–µ–¥–æ–º–ª–µ–Ω–∏–µ.');
 			$o->{'emailed'} = 1;
 		}
 		else
 		{
-			$o->err_add('Œ¯Ë·Í‡ ÓÚÔ‡‚ÍË Û‚Â‰ÓÏÎÂÌËˇ.');
+			$o->err_add('–û—à–∏–±–∫–∞ –æ—Ç–ø—Ä–∞–≤–∫–∏ —É–≤–µ–¥–æ–º–ª–µ–Ω–∏—è.');
 		}
 	}
 	
@@ -85,11 +84,11 @@ sub site_preview
 	'
 		<div class="mod-feedback-question">
 			<div class="question">
-				<div class="head">¬ÓÔÓÒ'.($o->{'username'}?' ÓÚ ÔÓÎ¸ÁÓ‚‡ÚÂÎˇ &laquo;'.$o->{'username'}.'&raquo;':'').': </div>
+				<div class="head">–í–æ–ø—Ä–æ—Å'.($o->{'username'}?' –æ—Ç –ø–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—è &laquo;'.$o->{'username'}.'&raquo;':'').': </div>
 				<div class="text">'.$o->{'question'}.'</div>
 			</div>
 			<div class="answer">
-				<div class="head">ŒÚ‚ÂÚ: </div>
+				<div class="head">–û—Ç–≤–µ—Ç: </div>
 				<div class="text">'.$o->{'answer'}.'</div>
 			</div>
 		</div>

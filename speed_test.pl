@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+﻿
 use strict qw(subs vars);
 
 use LWP::Simple;

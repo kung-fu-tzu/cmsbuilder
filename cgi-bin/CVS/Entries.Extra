@@ -1,4 +1,3 @@
 /cmsb.pl////*///
-/env.cgi////*///
-/error.log////*///
-/sendmail.log////*///
+/env.pl////*///
+/error.log.pl////*///

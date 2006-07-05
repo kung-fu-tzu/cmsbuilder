@@ -1,15 +1,24 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::vtypes::date;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::VType';
-# Дата ####################################################
+# Р”Р°С‚Р° ####################################################
 
 use CMSBuilder::Utils;
 
-sub table_cre
+sub table_cre {'DATE'}
+
+sub sview
 {
-	return ' DATE ';
+	my $c = shift;
+	my ($name,$val,$obj,$r) = @_;
+	
+	$val =~ s/\D//g;
+	
+	return toDateStr($val);
 }
 
 sub aview

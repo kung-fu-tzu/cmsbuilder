@@ -1,17 +1,14 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::Array::AAdmin;
 use strict qw(subs vars);
+use utf8;
 
-#———————————————————————————————————————————————————————————————————————————————
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 use CMSBuilder;
 use CMSBuilder::IO;
-
-################################################################################
-# Методы автоматизации администрирования массивов
-################################################################################
 
 sub admin_cmenu_for_self
 {
@@ -27,29 +24,29 @@ sub admin_cmenu_for_self
 		smenu = JMenu();
 		with(smenu)
 		{
-			elem_add(JTitle("Сортировать"));
+			elem_add(JTitle("РЎРѕСЂС‚РёСЂРѕРІР°С‚СЊ"));
 		';
 		if($o->len())
 		{
 			$code .=
 			'
-			elem_add(JMIHref("По имени","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=name"));
-			elem_add(JMIHref("Обратить","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=reverse"));
-			elem_add(JMIHref("По типу","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=class"));
-			elem_add(JMIHref("Создан","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=cts"));
-			elem_add(JMIHref("Изменён","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=ats"));
+			elem_add(JMIHref("РџРѕ РёРјРµРЅРё","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=name"));
+			elem_add(JMIHref("РћР±СЂР°С‚РёС‚СЊ","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=reverse"));
+			elem_add(JMIHref("РџРѕ С‚РёРїСѓ","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=class"));
+			elem_add(JMIHref("РЎРѕР·РґР°РЅ","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=cts"));
+			elem_add(JMIHref("РР·РјРµРЅС‘РЅ","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=ats"));
 			elem_add(JHR());
 			';
 		}
 		$code .=
 		'
-			elem_add(JMIHref("По ID","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=id"));
-			elem_add(JMIHref("Починить","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=num"));
+			elem_add(JMIHref("РџРѕ ID","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=id"));
+			elem_add(JMIHref("РџРѕС‡РёРЅРёС‚СЊ","right.ehtml?url='.$o->myurl().'&act=cms_array_sort&by=num"));
 		}
-		smenu_i = elem_add(JMISubMenu("Сортировать",smenu));
+		smenu_i = elem_add(JMISubMenu("РЎРѕСЂС‚РёСЂРѕРІР°С‚СЊ",smenu));
 		';
 
-		$code .= 'elem_add(JMIConfirm("Очистить","right.ehtml?url='.$o->myurl().'&act=cms_array_clear","","Удалить '.$o->len().' элементов?"));' if $o->len()
+		$code .= 'elem_add(JMIConfirm("РћС‡РёСЃС‚РёС‚СЊ","right.ehtml?url='.$o->myurl().'&act=cms_array_clear","","РЈРґР°Р»РёС‚СЊ '.$o->len().' СЌР»РµРјРµРЅС‚РѕРІ?"));' if $o->len()
 	}
 	
 	return $code;
@@ -66,16 +63,16 @@ sub admin_cmenu_for_son
 		$code .=
 		'
 		elem_add(JHR());
-		elem_add(JMIHref("Копия...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_mkcopy&turl='.$son->myurl().'"));
-		elem_add(JMIHref("Ярлык...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_mkshcut&turl='.$son->myurl().'"));
+		elem_add(JMIHref("РљРѕРїРёСЏ...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_mkcopy&turl='.$son->myurl().'"));
+		elem_add(JMIHref("РЇСЂР»С‹Рє...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_mkshcut&turl='.$son->myurl().'"));
 		';
 		
 		if($son->enum())
 		{
 			$code .=
 			'
-			elem_add(JMIHref("Переместить...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_move2&enum='.$son->enum().'"));
-			elem_add(JMIConfirm("Удалить","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_delete&enum='.$son->enum().'","","Удалить \"'.$son->name().'\"?"));
+			elem_add(JMIHref("РџРµСЂРµРјРµСЃС‚РёС‚СЊ...","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_move2&enum='.$son->enum().'"));
+			elem_add(JMIConfirm("РЈРґР°Р»РёС‚СЊ","right.ehtml?url='.$o->myurl().'&act=cms_array_elem_delete&enum='.$son->enum().'","","РЈРґР°Р»РёС‚СЊ \"'.$son->name().'\"?"));
 			';
 		}
 	}
@@ -101,7 +98,7 @@ sub admin_left_tree
 	
 	if($o->len() > $CMSBuilder::Config::admin_max_left)
 	{
-		push @elems, {-name => '<font style="cursor: pointer" onclick="alert(\'Количество элементов, отображаемых в левой панели, ограничено. Вы можете продолжать добавлять элементы. Они будут доступны в правой панели - по '.($o->array_onpage()||$CMSBuilder::Config::array_def_on_page).' на странице.\')" color="#ff7300" size=1>&nbsp;Элементы перечислены не полностью...</font>', -id => 'to_many'};
+		push @elems, {-name => '<font style="cursor: pointer" onclick="alert(\'РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ, РѕС‚РѕР±СЂР°Р¶Р°РµРјС‹С… РІ Р»РµРІРѕР№ РїР°РЅРµР»Рё, РѕРіСЂР°РЅРёС‡РµРЅРѕ. Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРѕРґРѕР»Р¶Р°С‚СЊ РґРѕР±Р°РІР»СЏС‚СЊ СЌР»РµРјРµРЅС‚С‹. РћРЅРё Р±СѓРґСѓС‚ РґРѕСЃС‚СѓРїРЅС‹ РІ РїСЂР°РІРѕР№ РїР°РЅРµР»Рё - РїРѕ '.($o->array_onpage()||$CMSBuilder::Config::array_def_on_page).' РЅР° СЃС‚СЂР°РЅРёС†Рµ.\')" color="#ff7300" size=1>&nbsp;Р­Р»РµРјРµРЅС‚С‹ РїРµСЂРµС‡РёСЃР»РµРЅС‹ РЅРµ РїРѕР»РЅРѕСЃС‚СЊСЋ...</font>', -id => 'to_many'};
 	}
 	
 	return {%ret, -elems => \@elems};
@@ -129,7 +126,7 @@ sub admin_array_view
 	print
 	'
 	<fieldset>
-	<legend onmousedown="ShowHide(aview_elems,treenode_aview_elems)"><span class="objtbl"><img class="ticon" id="treenode_aview_elems" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">Список вложенных элементов</span></span></legend>
+	<legend onmousedown="ShowHide(aview_elems,treenode_aview_elems)"><span class="objtbl"><img class="ticon" id="treenode_aview_elems" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">РЎРїРёСЃРѕРє РІР»РѕР¶РµРЅРЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ</span></span></legend>
 	<div class="padd" id="aview_elems" style="display:'.($dsp?'block':'none').'">
 	';
 
@@ -164,7 +161,7 @@ sub admin_array_view
 	}
 	else
 	{
-		print '<p align="center">Нет элементов.</p>';
+		print '<p align="center">РќРµС‚ СЌР»РµРјРµРЅС‚РѕРІ.</p>';
 	}
 	
 	$o->admin_array_pagesline($r);
@@ -226,12 +223,12 @@ sub admin_add_list
 	print
 	'
 	<fieldset>
-	<legend align="center">Создать</legend>
+	<legend align="center">РЎРѕР·РґР°С‚СЊ</legend>
 	<div class="padd">
 	';
 	
 	my $cnt;
-	for my $cn (cmsb_allclasses())
+	for my $cn (cmsb_classes())
 	{
 		unless($o->elem_can_add($cn)){ next; }
 		if($cn->one_instance()){ next; }
@@ -239,7 +236,7 @@ sub admin_add_list
 		$cnt++;
 	}
 	
-	unless($cnt){ print 'Нет классов.'; };
+	unless($cnt){ print 'РќРµС‚ РєР»Р°СЃСЃРѕРІ.'; };
 	
 	print '</div></fieldset>';
 }

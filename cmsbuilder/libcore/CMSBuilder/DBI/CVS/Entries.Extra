@@ -1,12 +1,11 @@
-D/Array///////
-D/Object///////
 /Array.pm////*///
 /CMS.pm////*///
 /Dynoprops.pm////*///
+/EventsInterface.pm////*///
 /FilteredArray.pm////*///
 /Module.pm////*///
+/Object.pm////*///
 /RPC.pm////*///
 /SimpleModule.pm////*///
 /TreeModule.pm////*///
 /VType.pm////*///
-/Object.pm////*///

@@ -1,21 +1,23 @@
-# (с) Леонов П.А., 2006
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2006
 
 package plgnSite::Data;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'plgnSite::Interface';
 
 sub _aview {qw/name template hidden title description/}
 
 sub _props
 {
-	'name'				=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
-	'template'			=> { 'type' => 'ClassList', 'class' => 'Template', 'isnull' => 1, 'nulltext' => 'Наследовать', 'name' => 'Шаблон страницы' },
-	'hidden'			=> { 'type' => 'checkbox', 'name' => 'Скрыть' },
-	'title'				=> { 'type' => 'string', 'name' => 'Заголовок' },
-	'description'		=> { 'type' => 'string', 'name' => 'Описание для поисковых роботов' },
+	'name'				=> { 'type' => 'string', 'length' => 50, 'name' => 'РќР°Р·РІР°РЅРёРµ' },
+	'template'			=> { 'type' => 'ObjectsList', 'class' => 'Template', 'isnull' => 1, 'nulltext' => 'РќР°СЃР»РµРґРѕРІР°С‚СЊ', 'name' => 'РЁР°Р±Р»РѕРЅ СЃС‚СЂР°РЅРёС†С‹' },
+	'hidden'			=> { 'type' => 'checkbox', 'name' => 'РЎРєСЂС‹С‚СЊ' },
+	'title'				=> { 'type' => 'string', 'name' => 'Р—Р°РіРѕР»РѕРІРѕРє' },
+	'description'		=> { 'type' => 'string', 'name' => 'РћРїРёСЃР°РЅРёРµ РґР»СЏ РїРѕРёСЃРєРѕРІС‹С… СЂРѕР±РѕС‚РѕРІ' },
 }
 
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 

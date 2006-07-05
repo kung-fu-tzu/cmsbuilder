@@ -1,24 +1,13 @@
-# (ñ) Ëåîíîâ Ï.À., 2005
+ï»¿# (Ñ) Ð›ÐµÐ¾Ð½Ð¾Ð² ÐŸ.Ð., 2005
 
 package CMSBuilder::DBI::vtypes::string;
 use strict qw(subs vars);
-our @ISA = 'CMSBuilder::DBI::VType';
-# Ñòðîêà ####################################################
+use utf8;
 
-sub table_cre
-{
-	my $c = shift;
-	my $p = shift;
-	
-	if($p->{'big'})
-	{
-		return ' TEXT ';
-	}
-	else
-	{
-		return ' VARCHAR( '.($p->{'length'} || 255).' ) ';
-	}
-}
+our @ISA = 'CMSBuilder::DBI::VType';
+# Ð¡Ñ‚Ñ€Ð¾ÐºÐ° ####################################################
+
+sub table_cre {$_[1]->{'big'} ? 'TEXT' : 'VARCHAR('.($_[1]->{'length'} || 255).')'}
 
 sub aview
 {

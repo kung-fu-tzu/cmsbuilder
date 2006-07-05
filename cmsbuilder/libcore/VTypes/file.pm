@@ -1,22 +1,22 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::vtypes::file;
 use strict qw(subs vars);
+use utf8;
 
 our @ISA = 'CMSBuilder::DBI::VType';
 our $filter = 1;
 our $dont_html_filter = 1;
-# Содержимое файла и так не фильтруется - $val содержит имя файла.
-# А данные читаются из потока.
+# РЎРѕРґРµСЂР¶РёРјРѕРµ С„Р°Р№Р»Р° Рё С‚Р°Рє РЅРµ С„РёР»СЊС‚СЂСѓРµС‚СЃСЏ - $val СЃРѕРґРµСЂР¶РёС‚ РёРјСЏ С„Р°Р№Р»Р°.
+# Рђ РґР°РЅРЅС‹Рµ С‡РёС‚Р°СЋС‚СЃСЏ РёР· РїРѕС‚РѕРєР°.
 
-# 'img'		=> { 'type' => 'file', 'msize' => 100, 'ext' => [qw/bmp jpg gif txt html/], 'name' => 'Картинка' },
+# 'file'		=> { 'type' => 'file', 'msize' => 100, 'ext' => [qw/zip doc xls txt/], 'name' => 'РљР°СЂС‚РёРЅРєР°' },
 
-# Любой файл ######################################################
+# Р›СЋР±РѕР№ С„Р°Р№Р» ######################################################
 
-sub table_cre
-{
-	return ' VARCHAR(50) ';
-}
+use CMSBuilder::Utils;
+
+sub table_cre {'VARCHAR(50)'}
 
 sub filter_load
 {
@@ -66,13 +66,14 @@ sub copy
 }
 
 
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 package CMSBuilder::DBI::vtypes::file::object;
 use strict qw(subs vars);
+use utf8;
 
 use CMSBuilder::Utils;
 use plgnUsers;
@@ -87,6 +88,22 @@ sub new
 	$o->init(@_);
 	
 	return $o;
+}
+
+sub ext_list
+{
+	my $o = shift;
+	my $p = $o->{'_prop'};
+	
+	return @{$p->{'ext'}}
+}
+
+sub msize
+{
+	my $o = shift;
+	my $p = $o->{'_prop'};
+	
+	return $p->{'msize'} || 256;
 }
 
 sub init
@@ -112,7 +129,7 @@ sub aedit
 	
 	unless($group->{'files'})
 	{
-		if($val){ $obj->err_add('Запись файлов для Вашей группы не разрешена.') }
+		if($val){ $obj->err_add('Р—Р°РїРёСЃСЊ С„Р°Р№Р»РѕРІ РґР»СЏ Р’Р°С€РµР№ РіСЂСѓРїРїС‹ РЅРµ СЂР°Р·СЂРµС€РµРЅР°.') }
 		return $obj->{$name};
 	}
 	
@@ -135,9 +152,9 @@ sub aedit
 		
 		$ext = lc($ext);
 		
-		if( indexA($ext,map {lc($_)} @{$p->{'ext'}}) < 0 and $p->{'ext'}->[0] ne '*' )
+		if( indexA($ext,map {lc($_)} $o->ext_list) < 0 && ($o->ext_list)[0] ne '*' )
 		{
-			$obj->err_add('Расширение файла, '.$ext.', недопустимо.');
+			$obj->err_add('Р Р°СЃС€РёСЂРµРЅРёРµ С„Р°Р№Р»Р° В«'.$ext.'В» РЅРµРґРѕРїСѓСЃС‚РёРјРѕ.');
 			return;
 		}
 		
@@ -154,7 +171,7 @@ sub aedit
 		
 		unless(open($fh,'>',$o->path()))
 		{
-			$obj->err_add('Невозможно открыть файл для записи: '.$o->path().'.');
+			$obj->err_add('РќРµРІРѕР·РјРѕР¶РЅРѕ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё: '.$o->path().'.');
 			return;
 		}
 		
@@ -165,9 +182,9 @@ sub aedit
 			print $fh $buff;
 			$len += 2048;
 			
-			if($len >= ($p->{'msize'}*1024))
+			if($len >= ($o->msize * 1024))
 			{
-				$obj->err_add('Файл "'.$o->name().'" ('.$p->{'name'}.') слишком велик: более '.len2size($len).'.');
+				$obj->err_add('Р¤Р°Р№Р» "'.$o->name().'" ('.$p->{'name'}.') СЃР»РёС€РєРѕРј РІРµР»РёРє: Р±РѕР»РµРµ '.len2size($len).'.');
 				return;
 			}
 		}
@@ -195,25 +212,26 @@ sub aview
 	
 	my $p = $o->{'_prop'};
 	
-	if($o->exists()){ $file_href = '<a href="'.$o->href().'">Просмотр...</a>'; }
+	if($o->exists()){ $file_href = '<a href="'.$o->href().'" target="_new">РџСЂРѕСЃРјРѕС‚СЂ...</a>'; }
 	
 	if($group->{'files'})
 	{
-		if($o->exists()){ $file_del = 'Удалить - <input type=checkbox name="'.$o->{'_pname'}.'_todel">'; }
+		if($o->exists()){ $file_del = '<input type="checkbox" id="'.$o->{'_obj'}->myurl.$o->{'_pname'}.'" name="'.$o->{'_pname'}.'_todel"><label for="'.$o->{'_obj'}->myurl.$o->{'_pname'}.'"> вЂ” СѓРґР°Р»РёС‚СЊ</label>'; }
 	}
 	else
 	{
-		$not_perm = '\n\nЗапись файлов для Вашей группы не разрешена!';
+		$not_perm = '\n\nР—Р°РїРёСЃСЊ С„Р°Р№Р»РѕРІ РґР»СЏ Р’Р°С€РµР№ РіСЂСѓРїРїС‹ РЅРµ СЂР°Р·СЂРµС€РµРЅР°!';
 		$block = 'disabled';
 	}
 	
-	my $ext_list = ($p->{'ext'}->[0] eq '*')?'без ограничений':join(', ', @{$p->{'ext'}});
+	my $ext_list = (($o->ext_list)[0] eq '*')?'Р±РµР· РѕРіСЂР°РЅРёС‡РµРЅРёР№':join(', ', $o->ext_list);
 	
 	return
 	'
-	<input '.$block.' type="file" cols="30" name="'.$o->{'_pname'}.'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$file_del.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<a href="#" onclick="alert(\'Допустимые расширения: '.$ext_list.'.\\nМаксимальный размер: '.$o->max_size_t().$not_perm .'\'); return false;">Справка...</a>&nbsp;&nbsp;&nbsp;
-	'.$file_href;
+	<input '.$block.' type="file" cols="30" name="'.$o->{'_pname'}.'">
+	<div class="file_acts">'.$file_del.'</div>
+	<div class="file_acts"><a href="#" onclick="alert(\'Р”РѕРїСѓСЃС‚РёРјС‹Рµ СЂР°СЃС€РёСЂРµРЅРёСЏ: '.$ext_list.'.\\nРњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ: '.$o->max_size_t().$not_perm .'\'); return false;">РЎРїСЂР°РІРєР°... '.$file_href.'</a></div>
+	';
 }
 
 sub copy
@@ -276,7 +294,7 @@ sub size_t
 sub max_size
 {
 	my $o = shift;
-	return $o->{'_prop'}->{'msize'}*1024;
+	return $o->msize * 1024;
 }
 
 sub max_size_t

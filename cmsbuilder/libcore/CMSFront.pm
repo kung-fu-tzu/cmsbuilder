@@ -1,7 +1,9 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSFront;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::Plugin');
 
 import CGI 'param';
@@ -28,9 +30,14 @@ sub user_xinfo
 		
 		print '<span class="toolpanel">';
 		
+		if($group->{'cpanel'})
+		{
+			print '<a title="РћР±РЅРѕРІРёС‚СЊ СЃС‚СЂСѓРєС‚СѓСЂСѓ" href="',modControlPanel->new(1)->admin_right_href(),'&act=cpanel_table_fix" target="admin_right"><img src="icons/table.gif" /></a><img src="img/nx.gif" />';
+		}
+		
 		if($group->{'files'})
 		{
-			print '<a title="Мои документы"   onclick="return selectLeftPanel(\'admin_docs_icon\')" id="admin_docs_icon" href="fileman.ehtml"><img src="icons/mydocs.gif" /></a>';
+			print '<a title="РњРѕРё РґРѕРєСѓРјРµРЅС‚С‹"   onclick="return selectLeftPanel(\'admin_docs_icon\')" id="admin_docs_icon" href="fileman.ehtml"><img src="icons/mydocs.gif" /></a>';
 			$cnt++;
 		}
 		
@@ -40,7 +47,7 @@ sub user_xinfo
 			$cnt++;
 		}
 		
-		print '<a'.($cnt?'':' style="display: none"').' title="Выбранный модуль" onclick="return selectLeftPanel(\'admin_modules_icon\')" id="admin_modules_icon" href="about:blank"><img src="icons/folders.gif" /></a>';
+		print '<a'.($cnt?'':' style="display: none"').' title="Р’С‹Р±СЂР°РЅРЅС‹Р№ РјРѕРґСѓР»СЊ" onclick="return selectLeftPanel(\'admin_modules_icon\')" id="admin_modules_icon" href="about:blank"><img src="icons/folders.gif" /></a>';
 		
 		print '</span>';
 	}
@@ -55,7 +62,7 @@ sub user_xinfo
 		}
 		else
 		{
-			$uname = 'Монопольный режим';
+			$uname = 'РњРѕРЅРѕРїРѕР»СЊРЅС‹Р№ СЂРµР¶РёРј';
 		}
 		
 		print $uname;
@@ -66,11 +73,11 @@ sub user_xinfo
 		unless($CMSBuilder::Config::access_on_e){ return; }
 		if(is_guest($user))
 		{
-			print '<a href="login.ehtml">Вход</a>';
+			print '<a href="login.ehtml">Р’С…РѕРґ</a>';
 		}
 		else
 		{
-			print '<a href="login.ehtml?act=out">Выход</a>';
+			print '<a href="login.ehtml?act=out">Р’С‹С…РѕРґ</a>';
 		}
 	}
 }
@@ -79,7 +86,7 @@ sub modules
 {
 	unless(modRoot->table_have())
 	{
-		print '<br><center>Структура базы не установлена!</center>
+		print '<br><center>РЎС‚СЂСѓРєС‚СѓСЂР° Р±Р°Р·С‹ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°!</center>
 		<script language="JavaScript">
 			parent.admin_right.location.href = "right.ehtml?url=modControlPanel1";
 			parent.admin_left.location.href = "left.ehtml?url=modControlPanel1";
@@ -89,36 +96,46 @@ sub modules
 		return;
 	}
 	
-	my @mods = cmsb_url('modRoot1')->get_all();
+	my $mr = cmsb_url('modRoot1');
+	return unless $mr;
+	my @mods = $mr->get_all();
 	
-	my %opts;
 	for my $mod (@mods)
 	{
-		%opts = $mod->admin_name_ex_opts();
+		my %opts = $mod->admin_name_ex_opts();
 		$opts{'-props'}{'onclick'} = 'SelectMod(id_'.$mod->myurl().',\''.$mod->admin_left_href().'\',\''.$mod->admin_right_href().'\'); return false;';
-		print admin_name_ex(%opts),'<br>';
+		print '<div>',admin_name_ex(%opts),'</div>';
 	}
 	
 	if(@mods)
 	{
 		my $sm = $mods[0];
+		my $so = $sm;
+		
+		if(my $to = cmsb_url(param('url')))
+		{
+			$sm = $to->root;
+			$so = $to;
+			print $to->admin_abs_href();
+		}
+		
 		print
 		'
 			<script language="JavaScript">
-				SelectMod(id_',$sm->myurl(),',"',$sm->admin_left_href(),'","',$sm->admin_right_href(),'");
+				SelectMod(id_',$sm->myurl(),',"',$sm->admin_left_href(),'","',$so->admin_right_href(),'");
 			</script>
 		';
 	}
 	else
 	{
-		print '<br><center>Нет модулей для отображения.</center>';
+		print '<br><center>РќРµС‚ РјРѕРґСѓР»РµР№ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ.</center>';
 	}
 }
 
 sub right
 {
 	my $url = param('url');
-	my $to = cmsb_url($url);
+	my $to = cmsb_url($url) || return;
 	
 	return $to->admin_view_right();
 }
@@ -126,7 +143,7 @@ sub right
 sub left
 {
 	my $url = param('url');
-	my $to = cmsb_url($url);
+	my $to = cmsb_url($url) || return;
 	
 	return $to->admin_view_left();
 }
@@ -134,7 +151,7 @@ sub left
 sub left_head
 {
 	my $url = param('url');
-	my $to = cmsb_url($url);
+	my $to = cmsb_url($url) || return;
 	
 	print $to->name();
 }
@@ -148,11 +165,13 @@ sub jscript
 	
 	delete $sess->{'admin_refresh_left'};
 	
+	my $to = cmsb_url(param('url'));
+	
 	print
 	'
 	function SafeRefresh()
 	{
-		document.location.href = "',cmsb_url(param('url'))->admin_right_href(),'";
+		',$to?('document.location.href = "',$to->admin_right_href(),'";'):'','
 	}
 	';
 	
@@ -162,7 +181,7 @@ sub jscript
 
 sub path_html
 {
-	print cmsb_url(param('url'))->admin_path_html({CGI->Vars()});
+	if(my $to = cmsb_url(param('url'))){ print $to->admin_path_html({CGI->Vars()}); }
 }
 
 sub path_js
@@ -174,7 +193,7 @@ sub path_js
 		{
 	';
 	
-	cmsb_url(param('url'))->admin_path_js({CGI->Vars()});
+	if(my $to = cmsb_url(param('url'))){ $to->admin_path_js({CGI->Vars()}); }
 	
 	print '
 		}
@@ -187,13 +206,13 @@ sub dnd
 {
 	print "var g_add_classes = new Object;\n\n";
 	
-	for my $tc (cmsb_allclasses())
+	for my $tc (cmsb_classes())
 	{
 		print 'g_add_classes["'.$tc.'"] = [';
 		
 		if($tc->can('elem_can_add'))
 		{
-			print '"',join('","',grep {$tc->elem_can_add($_)} cmsb_allclasses()),'"';
+			print '"',join('","',grep {$tc->elem_can_add($_)} cmsb_classes()),'"';
 		}
 		
 		print "]\n";
@@ -202,7 +221,7 @@ sub dnd
 
 sub rpccmenu
 {
-	my $to = cmsb_url(param('url'));
+	my $to = cmsb_url(param('url')) || return;
 	
 	$to->admin_cmenu();
 	

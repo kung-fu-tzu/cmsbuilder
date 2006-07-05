@@ -1,7 +1,9 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::IO::GUI;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'Exporter';
 our @EXPORT = qw/&admin_name_ex &tree_build &aname/;
 
@@ -13,7 +15,7 @@ sub confirm
 	<p align="center">
 	<table class="message_normal">
 	<tr><td colspan=2>',$q,'</td></tr>
-	<tr><td><button onclick="location.href=\''.$y.'\'">Да</button></td><td><button onclick="location.href=\''.$n.'\'">Нет</button></td></tr>
+	<tr><td><button onclick="location.href=\''.$y.'\'">Р”Р°</button></td><td><button onclick="location.href=\''.$n.'\'">РќРµС‚</button></td></tr>
 	</table>
 	</p>';
 }
@@ -22,7 +24,7 @@ sub print_info
 {
 	my $obj = shift;
 	
-	my $ne = $obj->err_cnt() > 1?'Возникли ошибки!':'Возникла ошибка!';
+	my $ne = $obj->err_cnt() > 1?'Р’РѕР·РЅРёРєР»Рё РѕС€РёР±РєРё!':'Р’РѕР·РЅРёРєР»Р° РѕС€РёР±РєР°!';
 	
 	if($obj->notice_cnt())
 	{
@@ -50,12 +52,12 @@ sub admin_name_ex
 {
 	my %opt =
 	(
-		-name => 'Без имени',
+		-name => 'Р‘РµР· РёРјРµРЅРё',
 		-icon => 'icons/default.gif',
 		-target => 'admin_right',
 		@_
 	);
-	
+	#$opt{'-name'} = Encode::decode_utf8($opt{'-name'});
 	if(length($opt{'-name'}) > $CMSBuilder::Config::admin_max_view_name_len){ $opt{'-name'} = substr($opt{'-name'},0,$CMSBuilder::Config::admin_max_view_name_len).'...' }
 	
 	my $icon	= '<img src="'.$opt{'-icon'}.'">';

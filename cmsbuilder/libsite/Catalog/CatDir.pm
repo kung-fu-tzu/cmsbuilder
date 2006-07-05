@@ -1,19 +1,21 @@
-# (�) ������ �.�., 2005
+﻿# (с) Леонов П. А., 2005
 
 package CatDir;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('plgnCatalog::Member','CMSBuilder::DBI::Array');
 
-sub _cname {'������'}
-sub _aview {qw/name img desc onpage previewtype/}
+sub _cname {'Раздел'}
+sub _aview {qw/name photo desc onpage previewtype/}
 sub _have_icon {1}
 
 sub _props
 {
-	'previewtype'	=> { 'type' => 'select', 'variants' => [{'text'=>'�����'},{'list'=>'������ �����������'}], 'name' => '������� ��������' },
+	'previewtype'	=> { 'type' => 'select', 'variants' => [{'text'=>'текст'},{'list'=>'список подразделов'}], 'name' => 'Краткое описание' },
 }
 
-#-------------------------------------------------------------------------------
+#———————————————————————————————————————————————————————————————————————————————
 
 sub catalog_preview_text
 {

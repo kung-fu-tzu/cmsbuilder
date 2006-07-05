@@ -1,7 +1,8 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package plgnUsers::Login;
 use strict qw(subs vars);
+use utf8;
 our @ISA = ('CMSBuilder::Plugin');
 
 use CMSBuilder;
@@ -25,7 +26,7 @@ sub act
 		}
 		else
 		{
-			print '<p class="message_error"><span class="head">Ошибка!</span> ',plgnUsers->last_error(),'</p>';
+			print '<p class="message_error"><span class="head">РћС€РёР±РєР°!</span> ',plgnUsers->last_error(),'</p>';
 		}
 	}
 	
@@ -37,7 +38,7 @@ sub act
 		}
 		else
 		{
-			print '<p class="message_error"><span class="head">Ошибка!</span> ',plgnUsers->last_error(),'</p>';
+			print '<p class="message_error"><span class="head">РћС€РёР±РєР°!</span> ',plgnUsers->last_error(),'</p>';
 		}
 	}
 	
@@ -51,7 +52,7 @@ sub list
 	
 	acs_off
 	{
-		print '<table><tr><td><p align="left">Система находится в тестовом режиме.<br> Выберите пользователя:</p>';
+		print '<table><tr><td><p align="left">РЎРёСЃС‚РµРјР° РЅР°С…РѕРґРёС‚СЃСЏ РІ С‚РµСЃС‚РѕРІРѕРј СЂРµР¶РёРјРµ.<br> Р’С‹Р±РµСЂРёС‚Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ:</p>';
 		
 		my $modu = cmsb_url($mod_name);
 		

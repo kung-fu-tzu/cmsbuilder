@@ -1,7 +1,9 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package plgnAccess;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::Plugin';
 
 use CMSBuilder;
@@ -14,13 +16,14 @@ sub plgn_load
 }
 
 
-################################################################################
-################################################################################
-################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 
 package plgnAccess::ObjectHook;
 use strict qw(subs vars);
+use utf8;
 
 import CGI 'param';
 use CMSBuilder;
@@ -33,12 +36,12 @@ our ($AC_READ,$AC_WRITE,$AC_ADD,$AC_CHMOD,,$AC_CHOWN) = (1,2,4,8,16,32);
 
 our %access_types =
 (
-	$AC_READ => 'Чтение',
-	$AC_WRITE => 'Редактирование',
-	$AC_ADD => 'Добавление&nbsp;элементов',
-	$AC_CHMOD => 'Смена&nbsp;разрешений',
-	#$AC_EXEC => 'Доступ&nbsp;ко&nbsp;вложенным',
-	$AC_CHOWN => 'Изменять&nbsp;владельца',
+	$AC_READ => 'Р§С‚РµРЅРёРµ',
+	$AC_WRITE => 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ',
+	$AC_ADD => 'Р”РѕР±Р°РІР»РµРЅРёРµ&nbsp;СЌР»РµРјРµРЅС‚РѕРІ',
+	$AC_CHMOD => 'РЎРјРµРЅР°&nbsp;СЂР°Р·СЂРµС€РµРЅРёР№',
+	#$AC_EXEC => 'Р”РѕСЃС‚СѓРї&nbsp;РєРѕ&nbsp;РІР»РѕР¶РµРЅРЅС‹Рј',
+	$AC_CHOWN => 'РР·РјРµРЅСЏС‚СЊ&nbsp;РІР»Р°РґРµР»СЊС†Р°',
 );
 
 our %type2bin =
@@ -52,9 +55,7 @@ our %type2bin =
 );
 
 
-################################################################################
-# Методы поддерживающие RPC
-################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” РњРµС‚РѕРґС‹ РїРѕРґРґРµСЂР¶РёРІР°СЋС‰РёРµ RPC вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub access_chmod
 {
@@ -63,7 +64,7 @@ sub access_chmod
 	
 	my $chact = $r->{'chact'};
 	
-	unless($o->access('c')){ $o->err_add('У Вас нет прав менять разрешения этому элементу.'); return; }
+	unless($o->access('c')){ $o->err_add('РЈ Р’Р°СЃ РЅРµС‚ РїСЂР°РІ РјРµРЅСЏС‚СЊ СЂР°Р·СЂРµС€РµРЅРёСЏ СЌС‚РѕРјСѓ СЌР»РµРјРµРЅС‚Сѓ.'); return; }
 	
 	if($chact eq 'edit')
 	{
@@ -87,9 +88,7 @@ sub access_chmod
 }
 
 
-################################################################################
-# Интерфейс пользователя
-################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” РРЅС‚РµСЂС„РµР№СЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub admin_cmenu_for_self
 {
@@ -98,7 +97,7 @@ sub admin_cmenu_for_self
 	
 	if($o->access('c'))
 	{
-		$code .= 'elem_add(JMIHref("Разрешения...","right.ehtml?url='.$o->myurl().'&act=access_chmod"));';
+		$code .= 'elem_add(JMIHref("Р Р°Р·СЂРµС€РµРЅРёСЏ...","right.ehtml?url='.$o->myurl().'&act=access_chmod"));';
 	}
 	
 	return $code . $o->CMSBuilder::DBI::Object::OAdmin::admin_cmenu_for_self(@_);
@@ -108,19 +107,18 @@ sub admin_additional
 {
 	my $o = shift;
 	
-	print '<tr><td valign="top">Вам&nbsp;разрешено:</td><td valign="top">',$o->access_print(),'</td></tr>';
+	print '<tr><td valign="top">Р’Р°Рј&nbsp;СЂР°Р·СЂРµС€РµРЅРѕ:</td><td valign="top">',$o->access_print(),'</td></tr>';
 }
 
-################################################################################
-# Методы реализации разделения доступа
-################################################################################
+
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” РњРµС‚РѕРґС‹ СЂРµР°Р»РёР·Р°С†РёРё СЂР°Р·РґРµР»РµРЅРёСЏ РґРѕСЃС‚СѓРїР° вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub access_memb_name
 {
 	my $memb = shift;
 	
-	if($memb eq 'all'){ return 'Все'; }
-	if($memb eq 'owner'){ return 'Владелец'; }
+	if($memb eq 'all'){ return 'Р’СЃРµ'; }
+	if($memb eq 'owner'){ return 'Р’Р»Р°РґРµР»РµС†'; }
 	
 	return cmsb_url($memb)->name();
 }
@@ -132,11 +130,11 @@ sub access_add
 	my $code = shift;
 	my($res,$sth);
 	
-	unless(access_memb_name($m)){ $o->err_add('Неверно указан элемент.'); return; }
+	unless(access_memb_name($m)){ $o->err_add('РќРµРІРµСЂРЅРѕ СѓРєР°Р·Р°РЅ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	$sth = $CMSBuilder::DBI::dbh->prepare('SELECT ID FROM `access` WHERE memb = ? AND url = ?');
 	$sth->execute($m,$o->myurl());
-	if($sth->fetchrow_hashref()){ $o->err_add('Такой элемент уже есть.'); return; }
+	if($sth->fetchrow_hashref()){ $o->err_add('РўР°РєРѕР№ СЌР»РµРјРµРЅС‚ СѓР¶Рµ РµСЃС‚СЊ.'); return; }
 	
 	unless($code)
 	{
@@ -161,13 +159,13 @@ sub access_del
 	my $m = shift;
 	my($res,$str,$have);
 	
-	unless(access_memb_name($m)){ $o->err_add('Неверно указан элемент.'); return; }
+	unless(access_memb_name($m)){ $o->err_add('РќРµРІРµСЂРЅРѕ СѓРєР°Р·Р°РЅ СЌР»РµРјРµРЅС‚.'); return; }
 	
 	$have = 0;
 	$str = $CMSBuilder::DBI::dbh->prepare('SELECT ID FROM `access` WHERE memb = ? AND url = ?');
 	$str->execute($m,$o->myurl());
 	while( $res = $str->fetchrow_hashref('NAME_lc') ){ $have = 1; }
-	if(!$have){ $o->err_add('Такого элемента нет.'); return; }
+	if(!$have){ $o->err_add('РўР°РєРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РЅРµС‚.'); return; }
 	
 	$str = $CMSBuilder::DBI::dbh->prepare('DELETE FROM `access` WHERE url = ? AND memb = ?');
 	$str->execute($o->myurl(),$m);
@@ -184,21 +182,21 @@ sub access_add_list
 	
 	print
 	'
-	<fieldset><legend>Добавление разрешений для элемента: ',$o->admin_name(),'</legend>
-	<p><b>Специальные:</b>
+	<fieldset><legend>Р”РѕР±Р°РІР»РµРЅРёРµ СЂР°Р·СЂРµС€РµРЅРёР№ РґР»СЏ СЌР»РµРјРµРЅС‚Р°: ',$o->admin_name(),'</legend>
+	<p><b>РЎРїРµС†РёР°Р»СЊРЅС‹Рµ:</b>
 	<blockquote>
 	';
 	
 	$count = 0;
-	unless($membs{'all'}){ print '<a href="?url=',$o->myurl(),'&act=access_chmod&chact=add&memb=all">Все</a><br>'; $count++; }
-	unless($membs{'owner'}){ print '<a href="?url=',$o->myurl(),'&act=access_chmod&chact=add&memb=owner">Владелец</a> (сейчас: ',$o->owner->admin_name(),')<br>'; $count++; }
-	unless($count){ print 'Нет элементов для отображения.'; }
+	unless($membs{'all'}){ print '<a href="?url=',$o->myurl(),'&act=access_chmod&chact=add&memb=all">Р’СЃРµ</a><br>'; $count++; }
+	unless($membs{'owner'}){ print '<a href="?url=',$o->myurl(),'&act=access_chmod&chact=add&memb=owner">Р’Р»Р°РґРµР»РµС†</a> (СЃРµР№С‡Р°СЃ: ',$o->owner->admin_name(),')<br>'; $count++; }
+	unless($count){ print 'РќРµС‚ СЌР»РµРјРµРЅС‚РѕРІ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ.'; }
 	
 	print
 	'
 	</blockquote></p>
 	<hr>
-	<p><b>Группы:</b>
+	<p><b>Р“СЂСѓРїРїС‹:</b>
 	<blockquote>
 	';
 	
@@ -207,12 +205,12 @@ sub access_add_list
 	{
 		unless($membs{$tg->myurl()}){ print $tg->admin_name('?url='.$o->myurl().'&act=access_chmod&chact=add&memb='.$tg->myurl() ),'<br>'; $count++; }
 	}
-	if(!$count){ print 'Нет групп для отображения.'; }
+	if(!$count){ print 'РќРµС‚ РіСЂСѓРїРї РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ.'; }
 	
 	print
 	'
 	</blockquote></p>
-	<p><b>Пользователи:</b>
+	<p><b>РџРѕР»СЊР·РѕРІР°С‚РµР»Рё:</b>
 	<blockquote>
 	';
 	
@@ -222,7 +220,7 @@ sub access_add_list
 		unless($membs{$tu->myurl()}){ print $tu->admin_name('?url='.$o->myurl().'&act=access_chmod&chact=add&memb='.$tu->myurl() ),'<br>'; $count++; }
 	}
 	
-	unless($count){ print 'Нет пользователей для отображения.'; }
+	unless($count){ print 'РќРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ.'; }
 	
 	print '</fieldset>';
 }
@@ -240,11 +238,11 @@ sub access_view
 	
 	#CMSBuilder::IO::GUI::print_info($o);
 	
-	if($#all < 0){ print '<center>Для этого элемента разрешения не определены.<br><br><a href="?url=',$o->myurl(),'&act=access_chmod&chact=addlist">Добавить пользователя/группу...</a></center>'; return; }
+	if($#all < 0){ print '<center>Р”Р»СЏ СЌС‚РѕРіРѕ СЌР»РµРјРµРЅС‚Р° СЂР°Р·СЂРµС€РµРЅРёСЏ РЅРµ РѕРїСЂРµРґРµР»РµРЅС‹.<br><br><a href="?url=',$o->myurl(),'&act=access_chmod&chact=addlist">Р”РѕР±Р°РІРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ/РіСЂСѓРїРїСѓ...</a></center>'; return; }
 	
 	print
 	'
-	<center><fieldset style="width:350px"><legend align="center">Изменение разрешений для элемента: ',$o->admin_name(),'</legend>
+	<center><fieldset style="width:350px"><legend align="center">РР·РјРµРЅРµРЅРёРµ СЂР°Р·СЂРµС€РµРЅРёР№ РґР»СЏ СЌР»РµРјРµРЅС‚Р°: ',$o->admin_name(),'</legend>
 	<p>
 	<select size="5" id="uarea" onchange="SelMemb()" class="ainput" style="width: 300px">
 	';
@@ -254,7 +252,7 @@ sub access_view
 	print
 	'
 	</select>
-	<table style="width: 290px"><tr><td align="left"><img alt="Удалить пользователя/группу из списка" src="img/x.gif" onclick="if(changed){ alert(\'Сначала сохраните!\'); return; } DelMemb()"></td><td align="right"><a onclick="if(changed){ alert(\'Сначала сохраните!\'); return false}" href="?url=',$o->myurl(),'&act=access_chmod&chact=addlist">Добавить пользователя/группу...</a></td></tr></table>
+	<table style="width: 290px"><tr><td align="left"><img alt="РЈРґР°Р»РёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ/РіСЂСѓРїРїСѓ РёР· СЃРїРёСЃРєР°" src="img/x.gif" onclick="if(changed){ alert(\'РЎРЅР°С‡Р°Р»Р° СЃРѕС…СЂР°РЅРёС‚Рµ!\'); return; } DelMemb()"></td><td align="right"><a onclick="if(changed){ alert(\'РЎРЅР°С‡Р°Р»Р° СЃРѕС…СЂР°РЅРёС‚Рµ!\'); return false}" href="?url=',$o->myurl(),'&act=access_chmod&chact=addlist">Р”РѕР±Р°РІРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ/РіСЂСѓРїРїСѓ...</a></td></tr></table>
 	</p>
 	';
 	
@@ -287,11 +285,11 @@ sub access_view
 		print '</table></fieldset></div>';
 	}
 	
-	#<p><input type="submit" name="submit_ok" value="OK">&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" value="Применить"></p>
+	#<p><input type="submit" name="submit_ok" value="OK">&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" value="РџСЂРёРјРµРЅРёС‚СЊ"></p>
 	
 	print
 	'
-	<p><button type="submit" onclick="wdo.value=\'ok\'">OK</button>&nbsp;&nbsp;&nbsp;<button type="submit">Применить</button></p>
+	<p><button type="submit" onclick="wdo.value=\'ok\'">OK</button>&nbsp;&nbsp;&nbsp;<button type="submit">РџСЂРёРјРµРЅРёС‚СЊ</button></p>
 	</form></fieldset></center>
 	';
 	
@@ -344,7 +342,7 @@ sub access_edit
 	$str->execute($o->myurl());
 	while( $res = $str->fetchrow_hashref('NAME_lc') ){ push(@all, $res); }
 	
-	if($#all < 0){ $o->err_add('Перед редактированием не было добавлено ни одного пользователя.'); return; }
+	if($#all < 0){ $o->err_add('РџРµСЂРµРґ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµРј РЅРµ Р±С‹Р»Рѕ РґРѕР±Р°РІР»РµРЅРѕ РЅРё РѕРґРЅРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.'); return; }
 	
 	for $res ( @all )
 	{
@@ -361,7 +359,7 @@ sub access_edit
 	
 	for $m (keys(%membs)){ $str->execute($membs{$m},$m,$o->myurl()); }
 	
-	$o->notice_add('Разрешения успешно изменены.');
+	$o->notice_add('Р Р°Р·СЂРµС€РµРЅРёСЏ СѓСЃРїРµС€РЅРѕ РёР·РјРµРЅРµРЅС‹.');
 }
 
 sub access_set
@@ -464,7 +462,7 @@ sub access_print
 		if($o->access_bin($type)){ push(@out,$access_types{$type}) }
 	}
 	
-	if($#out < 0){ return 'Нет разрешений.' }
+	if($#out < 0){ return 'РќРµС‚ СЂР°Р·СЂРµС€РµРЅРёР№.' }
 	return join(', ',@out).'.';
 }
 

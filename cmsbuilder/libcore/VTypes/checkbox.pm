@@ -1,9 +1,12 @@
-# (�) ������ �.�., 2005
+﻿# (с) Леонов П.А., 2005
 
 package CMSBuilder::DBI::vtypes::checkbox;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = 'CMSBuilder::DBI::VType';
-# ������� ###################################################
+
+#———————————————————————————————————— Галочка ——————————————————————————————————
 
 our $admin_own_html = 1;
 
@@ -25,14 +28,22 @@ sub aview
 		<tr>
 			<td></td>
 			<td valign=top>
-				<input id="checkbox_'.$name.'" type=checkbox name="'.$name.'" '.$val.'><label for="checkbox_'.$name.'">'.$p->{$name}{'name'}.'</label>
+				<input id="checkbox_'.$name.'" type="checkbox" name="'.$name.'" '.$val.'><label for="checkbox_'.$name.'">'.$p->{$name}{'name'}.'</label>
 			</td>
 		</tr>
 	';
 	
 	return $ret;
 }
-#
+
+sub sview
+{
+	my $c = shift;
+	my ($name,$val,$obj,$r) = @_;
+	
+	return $val ? 'да' : 'нет';
+}
+
 sub aedit
 {
 	my $c = shift;

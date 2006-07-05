@@ -1,45 +1,45 @@
-# (�) ������ �.�., 2005
+﻿# (с) Леонов П.А., 2005
 
 package CMSBuilder;
-use Exporter;
 use strict qw(subs vars);
+require 5.8.2;
+use utf8;
+
+use Exporter;
 our @ISA = 'Exporter';
 our @EXPORT =
 qw/
-&cmsb_allclasses &cmsb_url &cmsb_url2classid &cmsb_classOK &cmsb_class_guess &cmsb_allclasses
+&cmsb_classes &cmsb_modules &cmsb_plugins
+&cmsb_url &cmsb_url2classid &cmsb_classOK &cmsb_class_guess
 &cmsb_regpm &cmsb_pathload &cmsb_coreload &cmsb_siteload
 $user $group
 &cmsb_event_reg &cmsb_event_unreg &cmsb_event_ro
 /;
 
-our $VERSION = 2.12.82.110;
-our $version = '2.12.82-110';
+use Encode ();
+
+our $VERSION = 2.12.88.114;
+our $version = '2.12.88.114';
 
 require CMSBuilder::Property;
 require CMSBuilder::Utils;
 require CMSBuilder::EML;
+require CMSBuilder::MYURL;
 require CMSBuilder::IO;
 require CMSBuilder::DBI;
 require CMSBuilder::Plugin;
 
 
 use CMSBuilder::Utils;
+use CMSBuilder::IO;
 
 our
 (
-	@plugins,@classes,@modules,
-	
-	$user,$group,
-	
-	%dbo_cache,
-	
-	%oevents
+	@plugins,@classes,
+	%dbo_cache,%oevents
 );
 
-
-################################################################################
-# ������������� �������
-################################################################################
+#——————————————————————————— Экпортируемые функции —————————————————————————————
 
 sub cmsb_event_ro
 {
@@ -88,7 +88,7 @@ sub cmsb_pathload
 {
 	my $dir = shift;
 	
-	# �������� ������
+	# Инклудим пакеты
 	my @pms = listpms($dir);
 	for my $pm (@pms)
 	{
@@ -103,31 +103,24 @@ sub cmsb_regpm
 {
 	for my $pm (@_)
 	{
-		if( grep { $pm eq $_ } (@classes,@modules,@plugins) ){ return; }
+		@plugins = grep { $_ ne $pm } @plugins;
+		@classes = grep { $_ ne $pm } @classes;
 		
 		if($pm->isa('CMSBuilder::Plugin'))
 		{
 			push @plugins, $pm;
-			# �������� ������� � ���, ��� �� ��������
-			$pm->plgn_load();
-			#print STDERR "Plugin: $pm\n";
 		}
-		elsif($pm->isa('CMSBuilder::DBI::Module'))
-		{
-			push @modules, $pm;
-		}
-		elsif($pm->isa('CMSBuilder::DBI::Object'))
+		
+		if($pm->isa('CMSBuilder::DBI::Object'))
 		{
 			push @classes, $pm;
 		}
-		#else
-		#{
-		#	warn "Can`t reg '$pm'";
-		#}
 	}
 }
 
-sub cmsb_allclasses() { return (@classes,@modules); }
+sub cmsb_plugins() { return @plugins; }
+sub cmsb_classes() { return @classes; }
+sub cmsb_modules() { return grep { $_->isa('CMSBuilder::DBI::Module') } @classes; }
 
 sub cmsb_url
 {
@@ -162,19 +155,17 @@ sub cmsb_url2classid
 
 sub cmsb_classOK
 {
-	if(indexA($_[0],cmsb_allclasses()) >= 0){ return 1; }
+	if(indexA($_[0],cmsb_classes()) >= 0){ return 1; }
 	return 0;
 }
 
 sub cmsb_class_guess
 {
-	my @cns = grep { lc($_[0]) eq lc($_) } cmsb_allclasses();
+	my @cns = grep { lc($_[0]) eq lc($_) } cmsb_classes();
 	return @cns==1?$cns[0]:();
 }
 
-################################################################################
-# ������� �������
-################################################################################
+#———————————————————————————————— Базовые функции ——————————————————————————————
 
 sub ocache_save()
 {
@@ -191,20 +182,20 @@ sub ocache_clear()
 	%dbo_cache = ();
 }
 
-
-################################################################################
-# ������������ �������
-################################################################################
+#—————————————————————————————— Интерфейсные функции ———————————————————————————
 
 sub load
 {
-	@plugins = @classes = @modules = ();
+	@plugins = @classes = ();
 	%oevents = ();
 	
-	cmsb_regpm('CMSBuilder::DBI'); # ����������� ������ ����
+	cmsb_regpm('CMSBuilder::DBI'); # обязательно раньше всех
 	
 	cmsb_coreload();
 	cmsb_siteload();
+	map { cmsb_siteload($_) } listdirs($CMSBuilder::Config::path_libsite);
+	
+	for my $plg (@plugins){ $plg->plgn_load(); }
 }
 
 sub init
@@ -214,6 +205,32 @@ sub init
 	ocache_clear();
 	CMSBuilder::IO->start();
 	for my $plg (@plugins){ $plg->plgn_init(); }
+}
+
+sub process
+{
+	err500('REDIRECT_STATUS ne "'.$CMSBuilder::Config::redirect_status.'"')
+		if $CMSBuilder::Config::redirect_status && $ENV{'REDIRECT_STATUS'} ne $CMSBuilder::Config::redirect_status;
+	
+	CGI::param('a');
+	my $r = decode_utf8_hashref{CGI->Vars()};
+	
+	$r->{'_cmsb'} =
+	{
+		'path' => $ENV{'PATH_INFO'},
+		'redirect_status' => $ENV{'REDIRECT_STATUS'},
+	};
+	
+	# для mod_perl
+	delete $ENV{'REDIRECT_STATUS'};
+	
+	for my $cn (@CMSBuilder::Config::process_classes)
+	{
+		return if $cn->process_request($r)
+	}
+	
+	
+	err404('File not found: "'.$ENV{'PATH_TRANSLATED'}.'" by "'.$ENV{'PATH_INFO'}.'"');
 }
 
 sub destruct

@@ -1,17 +1,12 @@
-# (с) Леонов П.А., 2006
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2006
 
 package plgnSite;
 use strict qw(subs vars);
+use utf8;
+
 our @ISA = ('CMSBuilder::Plugin');
 
 use CMSBuilder;
-
-sub main
-{
-	return modSite->new(1);
-}
-
-
 
 sub plgn_load
 {
@@ -21,19 +16,17 @@ sub plgn_load
 	
 	cmsb_event_reg('admin_view_additional',\&admin_additional);
 	
-	#unshift(@CMSBuilder::DBI::Object::ISA,'plgnSite::ObjectHook');
+	unshift(@plgnUsers::UserMember::ISA,'plgnSite::Interface');
+	unshift(@UserGroup::ISA,'plgnSite::Interface');
+	unshift(@modUsers::ISA,'plgnSite::Interface');
 }
 
 sub admin_additional
 {
 	my $o = shift;
 	
-	print '<tr><td valign="top">Адрес&nbsp;на&nbsp;сайте:</td><td>',$o->can('site_href')?$o->site_href():'Нет.','</td></tr>';
+	print '<tr><td valign="top">РђРґСЂРµСЃ&nbsp;РЅР°&nbsp;СЃР°Р№С‚Рµ:</td><td>',$o->can('site_href')?$o->site_href():'РќРµС‚.','</td></tr>';
 }
-
-
-package plgnSite::ObjectHook;
-
 
 
 1;

@@ -1,7 +1,8 @@
-# (с) Леонов П.А., 2005
+п»ї# (СЃ) Р›РµРѕРЅРѕРІ Рџ.Рђ., 2005
 
 package CMSBuilder::DBI::Object::OAdmin;
 use strict qw(subs vars);
+use utf8;
 
 sub _rpcs {qw/admin_edit admin_path_html admin_path_js/}
 
@@ -10,10 +11,6 @@ sub _rpcs {qw/admin_edit admin_path_html admin_path_js/}
 
 use CMSBuilder::Utils;
 use plgnUsers;
-
-################################################################################
-# Методы автоматизации администрирования
-################################################################################
 
 sub admin_view_right
 {
@@ -27,7 +24,7 @@ sub admin_view_right
 	my $r = {CGI->Vars()};
 	$o->rpc_exec($act,$r);
 	
-	$o->save();
+	$o->save() if $act ne 'default';
 	
 	CMSBuilder::IO::GUI::print_info($o);
 	
@@ -45,13 +42,13 @@ sub admin_view_left
 	
 	unless($CMSBuilder::Config::have_left_tree)
 	{
-		print '<br><br><br><center>Дерево елементов отключено.</center>';
+		print '<br><br><br><center>Р”РµСЂРµРІРѕ РµР»РµРјРµРЅС‚РѕРІ РѕС‚РєР»СЋС‡РµРЅРѕ.</center>';
 		return;
 	}
 	my $tree = $o->admin_left_tree();
 	$tree->{'-root'} = 1;
 	
-	print '<div class="togpanell">'; #<div class="head">Структура</div>
+	print '<div class="togpanell">'; #<div class="head">РЎС‚СЂСѓРєС‚СѓСЂР°</div>
 	
 	print '<div class="content">',CMSBuilder::IO::GUI::tree_build($tree),'</div>'; #, -openroot => 1
 	
@@ -102,7 +99,7 @@ sub admin_name_ex_opts
 	
 	my $name = $o->name();
 	$name =~ s/\<.+?\>//sg;
-	unless($name){ $name = $o->cname().' без имени'; }
+	unless($name){ $name = $o->cname().' Р±РµР· РёРјРµРЅРё'; }
 	
 	return
 	(
@@ -156,6 +153,12 @@ sub admin_icon
 	return 'icons/default.gif';
 }
 
+sub admin_abs_href
+{
+	my $o = shift;
+	return $CMSBuilder::Config::http_adress.$CMSBuilder::Config::http_aroot.'/?url='.$o->myurl();
+}
+
 sub admin_right_href
 {
 	my $o = shift;
@@ -206,7 +209,7 @@ sub admin_cmenu_for_self
 	
 	if($o->access('r'))
 	{
-		$code .= 'elem_add(JMIHref("Открыть","'.$o->admin_right_href().'"));';
+		$code .= 'elem_add(JMIHref("РћС‚РєСЂС‹С‚СЊ","'.$o->admin_right_href().'"));';
 	}
 	
 	return $code;
@@ -218,14 +221,14 @@ sub admin_path_html
 {
 	my $o = shift;
 	
-	return join(' &gt; ', map { $_->admin_name() } $o->ppath() );
+	return join(' &gt; ', map { $_->admin_name() } $o->papa_path() );
 }
 
 sub admin_path_js
 {
 	my $o = shift;
 	
-	for my $to ($o->ppath())
+	for my $to ($o->papa_path())
 	{
 		print 'parent.admin_left.CMS_SelectLO("id_'.$to->myurl().'");';
 		print 'parent.admin_left.CMS_ShowMe("'.$to->myurl().'");';
@@ -236,23 +239,28 @@ sub admin_edit
 {
 	my $o = shift;
 	my $r = shift;
-	my $ks = shift;
+	
+	my $na =
+	{
+		-keys => [$o->aview()],
+		@_
+	};
 	
 	my $p = $o->props();
 	
-	my ($val,$vtype);
-	for my $key ($ks?@$ks:$o->aview())
+	my ($val,$vt);
+	for my $key (@{$na->{'-keys'}})
 	{
-		if($key eq '|'){ next; }
+		do { warn ref($o).': _props{} has no key "'.$key.'"'; next } unless exists $p->{$key};
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
 		$val = $r->{$key};
-		$vtype = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
 		
-		unless($group->{'html'} || ${$vtype.'::dont_html_filter'}){ $val = HTMLfilter($val); }
+		unless($group->{'html'} || ${$vt.'::dont_html_filter'}){ $val = HTMLfilter($val); }
 		
-		$o->{$key} = $vtype->aedit($key,$val,$o,$r);
+		$o->{$key} = $vt->aedit($key,$val,$o,$r);
 	}
 	
-	$o->notice_add( $o->err_cnt()?'Изменения внесены частично.<br>':'Изменения успешно сохранены.<br>' );
+	$o->notice_add( $o->err_cnt()?'РР·РјРµРЅРµРЅРёСЏ РІРЅРµСЃРµРЅС‹ С‡Р°СЃС‚РёС‡РЅРѕ.<br>':'РР·РјРµРЅРµРЅРёСЏ СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅРµРЅС‹.<br>' );
 }
 
 sub admin_cre
@@ -264,7 +272,7 @@ sub admin_cre
 	
 	print
 	'
-	<fieldset><legend>Создание элемента ',$o->admin_cname(),'</legend>
+	<fieldset><legend>РЎРѕР·РґР°РЅРёРµ СЌР»РµРјРµРЅС‚Р° ',$o->admin_cname(),'</legend>
 	<form onkeydown="return QuickSubmit(this)" id="main_form" action="?" method="post" enctype="multipart/form-data">
 	<div class="padd">
 	';
@@ -277,9 +285,9 @@ sub admin_cre
 	<p align=center>
 	<button type="submit">OK</button>
 	&nbsp;&nbsp;&nbsp;
-	<button onclick="location.href = \'right.ehtml?url='.$where->myurl().'\'">Отмена</button>
+	<button onclick="location.href = \'right.ehtml?url='.$where->myurl().'\'">РћС‚РјРµРЅР°</button>
 	&nbsp;&nbsp;&nbsp;
-	<button type="submit" onclick="wdo.value = \'add\'"><img src="icons/save.gif" /> Добавить</button>
+	<button type="submit" onclick="wdo.value = \'add\'"><img src="icons/save.gif" /> Р”РѕР±Р°РІРёС‚СЊ</button>
 	</p>
 	</div>
 	<input type="hidden" name="act" value="cms_admin_cre">
@@ -302,7 +310,7 @@ sub admin_view
 	print
 	'
 	<fieldset>
-	<legend onmousedown="ShowHide(aview_props,treenode_aview_props)"><span class="objtbl"><img class="ticon" id="treenode_aview_props" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">Свойства элемента',!$o->access('w')?' (только чтение)':'','</span></span></legend>
+	<legend onmousedown="ShowHide(aview_props,treenode_aview_props)"><span class="objtbl"><img class="ticon" id="treenode_aview_props" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">РЎРІРѕР№СЃС‚РІР° СЌР»РµРјРµРЅС‚Р°',!$o->access('w')?' (С‚РѕР»СЊРєРѕ С‡С‚РµРЅРёРµ)':'','</span></span></legend>
 	<div class="padd" id="aview_props" style="display:'.($dsp?'block':'none').'">
 	';
 	
@@ -345,8 +353,8 @@ sub admin_view_buttonsline
 	
 	print '<table class="edit_buttons"><tr><td width="50">';
 	
-	#выведем ссылочку на предыдущий объект, если он, конечно, существует
-	print $o->enum()>1?'<button onclick="location.href = \''.$o->papa()->elem($o->enum() - 1)->admin_right_href().'\'; return false;" title="Предыдущий элемент">&larr;</button>':'<button disabled title="Текущий элемент &#151 первый в списке">&nbsp;<b>[</b>&nbsp;</button>';
+	#РІС‹РІРµРґРµРј СЃСЃС‹Р»РѕС‡РєСѓ РЅР° РїСЂРµРґС‹РґСѓС‰РёР№ РѕР±СЉРµРєС‚, РµСЃР»Рё РѕРЅ, РєРѕРЅРµС‡РЅРѕ, СЃСѓС‰РµСЃС‚РІСѓРµС‚
+	print $o->enum()>1?'<button onclick="location.href = \''.$o->papa()->elem($o->enum() - 1)->admin_right_href().'\'; return false;" title="РџСЂРµРґС‹РґСѓС‰РёР№ СЌР»РµРјРµРЅС‚">&larr;</button>':'<button disabled title="РўРµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚ &#151 РїРµСЂРІС‹Р№ РІ СЃРїРёСЃРєРµ">&nbsp;<b>[</b>&nbsp;</button>';
 	
 	print '</td><td>';
 	
@@ -356,9 +364,9 @@ sub admin_view_buttonsline
 		print
 		'
 			<div class="ok_save">
-				<button type="submit" title="Сохранить изменения и перейти на уровень выше &#151; к родительскому элементу">OK</button>
-				<button onclick="location.href = \'right.ehtml?url='.($o->papa()||$o)->myurl().'\'" title="Отменить изменения">Отмена</button>
-				<button type="submit" onclick="wdo.value = \'save\'" title="Сохранить изменения"><img src="icons/save.gif" /> Сохранить</button>
+				<button type="submit" title="РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ Рё РїРµСЂРµР№С‚Рё РЅР° СѓСЂРѕРІРµРЅСЊ РІС‹С€Рµ &#151; Рє СЂРѕРґРёС‚РµР»СЊСЃРєРѕРјСѓ СЌР»РµРјРµРЅС‚Сѓ">OK</button>
+				<button onclick="location.href = \'right.ehtml?url='.($o->papa()||$o)->myurl().'\'" title="РћС‚РјРµРЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ">РћС‚РјРµРЅР°</button>
+				<button type="submit" onclick="wdo.value = \'save\'" title="РЎРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ"><img src="icons/save.gif" /> РЎРѕС…СЂР°РЅРёС‚СЊ</button>
 			</div>
 		';
 	}
@@ -369,8 +377,8 @@ sub admin_view_buttonsline
 	
 	print '</td><td align="right" width="50">';
 	
-	#выведем ссылочку на следующий объект, если он, конечно, существует
-	print $o->enum()&&$o->enum()<$o->papa()->len()?'<button onclick="location.href = \''.$o->papa()->elem($o->enum() + 1)->admin_right_href().'\'; return false;" title="Следующий элемент">&rarr;</button>':'<button disabled title="Текущий элемент &#151 последний в списке">&nbsp;<b>]</b>&nbsp;</button>';
+	#РІС‹РІРµРґРµРј СЃСЃС‹Р»РѕС‡РєСѓ РЅР° СЃР»РµРґСѓСЋС‰РёР№ РѕР±СЉРµРєС‚, РµСЃР»Рё РѕРЅ, РєРѕРЅРµС‡РЅРѕ, СЃСѓС‰РµСЃС‚РІСѓРµС‚
+	print $o->enum()&&$o->enum()<$o->papa()->len()?'<button onclick="location.href = \''.$o->papa()->elem($o->enum() + 1)->admin_right_href().'\'; return false;" title="РЎР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚">&rarr;</button>':'<button disabled title="РўРµРєСѓС‰РёР№ СЌР»РµРјРµРЅС‚ &#151 РїРѕСЃР»РµРґРЅРёР№ РІ СЃРїРёСЃРєРµ">&nbsp;<b>]</b>&nbsp;</button>';
 	
 	print '</td></tr></table>';
 }
@@ -384,12 +392,12 @@ sub admin_view_additional
 	print
 	'
 	<fieldset>
-	<legend onmousedown="ShowHide(aview_additional,treenode_aview_additional)"><span class="objtbl"><img class="ticon" id="treenode_aview_additional" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">Дополнительно</span></span></legend>
+	<legend onmousedown="ShowHide(aview_additional,treenode_aview_additional)"><span class="objtbl"><img class="ticon" id="treenode_aview_additional" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ</span></span></legend>
 	<div class="padd" id="aview_additional" style="display:'.($dsp?'block':'none').'">
 	
 	<table>
-	<tr><td valign="top">Создан:</td><td>',toDateTimeStr($o->{'CTS'}),'</td></tr>
-	<tr><td valign="top">Изменён:</td><td>',toDateTimeStr($o->{'ATS'}),'</td></tr>
+	<tr><td valign="top">РЎРѕР·РґР°РЅ:</td><td>',toDateTimeStr($o->{'CTS'}),'</td></tr>
+	<tr><td valign="top">РР·РјРµРЅС‘РЅ:</td><td>',toDateTimeStr($o->{'ATS'}),'</td></tr>
 	';
 	
 	$o->event_call('admin_view_additional');
@@ -415,19 +423,18 @@ sub admin_props
 	
 	my $p = $o->props();
 	
-	unless( @{$na->{-keys}} ){ print '<p align="center">Нет доступных для редактирования свойств.</p>'; return 0; }
+	unless( @{$na->{-keys}} ){ print '<p align="center">РќРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СЃРІРѕР№СЃС‚РІ.</p>'; return 0; }
 	
 	print '<table class="props_table">';
 	
-	my $vtype;
+	my $vt;
 	for my $key (@{$na->{-keys}})
 	{
-		if($key eq '|'){ print '<tr><td colspan="2"><hr></td></tr>'; next; }
-		
-		$vtype = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
-		if(${$vtype.'::admin_own_html'})
+		do { warn ref($o).': _props{} has no key "'.$key.'"'; next } unless exists $p->{$key};
+		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$key}{'type'};
+		if(${$vt.'::admin_own_html'})
 		{
-			print $vtype->aview( $key, $o->{$key}, $o );
+			print $vt->aview( $key, $o->{$key}, $o );
 		}
 		else
 		{
@@ -436,7 +443,7 @@ sub admin_props
 			<tr>
 			<td valign="top" width="20%" align="left"><label for="',$key,'">',$p->{$key}{'name'},'</label>:</td>
 			<td width="80%" align="left" valign="middle">
-			',$vtype->aview($key,$o->{$key},$o),'
+			',$vt->aview($key,$o->{$key},$o),'
 			</td></tr>
 			';
 		}
@@ -448,9 +455,7 @@ sub admin_props
 }
 
 
-################################################################################
-# Методы отображения ошибок
-################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” РњРµС‚РѕРґС‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РѕС€РёР±РѕРє вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub err_add
 {
@@ -478,9 +483,7 @@ sub err_cnt
 }
 
 
-################################################################################
-# Методы отображения сообщений
-################################################################################
+#вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ” РњРµС‚РѕРґС‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРѕРѕР±С‰РµРЅРёР№ вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”вЂ”
 
 sub notice_add
 {

@@ -1,4 +1,4 @@
-use CMSBuilder::IO;
+п»їuse CMSBuilder::IO;
 
 sub dynoprops
 {
@@ -16,7 +16,7 @@ sub admin_dynoprops
 	print
 	'
 	<fieldset>
-	<legend onmousedown="ShowHide(aview_dynoprops,treenode_aview_dynoprops)"><span class="objtbl"><img class="ticon" id="treenode_aview_dynoprops" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">Добавить/удалить свойство</span></span></legend>
+	<legend onmousedown="ShowHide(aview_dynoprops,treenode_aview_dynoprops)"><span class="objtbl"><img class="ticon" id="treenode_aview_dynoprops" src="img/'.($dsp?'minus':'plus').'.gif"><span class="subsel">Р”РѕР±Р°РІРёС‚СЊ/СѓРґР°Р»РёС‚СЊ СЃРІРѕР№СЃС‚РІРѕ</span></span></legend>
 	<div class="padd" id="aview_dynoprops" style="display:'.($dsp?'block':'none').'">
 	
 	</div>

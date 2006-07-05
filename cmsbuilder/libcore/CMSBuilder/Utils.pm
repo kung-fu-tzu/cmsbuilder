@@ -1,7 +1,10 @@
-# (Ò) ÀÂÓÌÓ‚ œ.¿., 2005
+Ôªø# (—Å) –õ–µ–æ–Ω–æ–≤ –ü.–ê., 2005
 
 package CMSBuilder::Utils;
 use strict qw(subs vars);
+use utf8;
+
+use Carp;
 use Digest::MD5;
 use POSIX ('strftime');
 import POSIX ('locale_h');
@@ -10,23 +13,61 @@ use Exporter;
 our @ISA = 'Exporter';
 our @EXPORT =
 qw/
-&listpms &indexA &NOW &epoch2ts &ts2epoch &toDateTimeStr &toDateStr &toRusDate
+&hook &hookp
+&listpms &listdirs &indexA &NOW &epoch2ts &ts2epoch &toDateTimeStr &toDateStr &toRusDate
 &toEngDate &estrftime &rstrftime &varr &HTMLfilter &escape &MD5 &translit
-&len2size &round2 &var2f &f2var &array2csv &str2csv &path_it &path_abs &parsetpl
-&catch_out
+&len2size &round2 &var2f &var2f_utf8 &f2var &f2var_utf8 &array2csv &str2csv &path_it &path_abs &parsetpl
+&catch_out &decode_utf8_hashref
 &sendmail
 /;
 
+#‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî‚Äî
+
+sub hook($$)
+{
+	my ($sub,$ref) = @_;
+	croak "Not CODEref passed to hook() as second arg: $ref" unless ref $ref eq 'CODE';
+	
+	my $old = *{$sub}{'CODE'};
+	*{$sub} = sub {&$ref($old,@_)};
+}
+
+sub hookp($$)
+{
+	my ($old,$new) = @_;
+	croak "Value of \$old id not a package name in hookp(): $old" unless defined %{$old.'::'};
+	croak "Value of \$new id not a package name in hookp(): $new" unless defined %{$new.'::'};
+	
+	my $i;
+	++$i while defined %{$old.$i.'::'};
+	
+	%{$old.$i.'::'} = %{$old.'::'};
+	%{$old.'::'} = %{$new.'::'};
+	push @{$old.'::ISA'}, $old.$i;
+	
+	return $old.$i;
+}
+
+sub decode_utf8_hashref($)
+{
+	my $hr = shift;
+	
+	map { $hr->{$_} = Encode::decode_utf8($hr->{$_}) unless ref $hr->{$_}; } keys %$hr;
+	
+	return $hr;
+}
 
 sub catch_out(&)
 {
 	my $code = shift;
-	my($fh,$buff,$io,@ret);
 	
-	open($fh,'>',\$buff);
+	my $fh;
+	my $buff = '—é–Ω–∏–∫–æ–¥ –≤–∞–º';
+	open($fh,'>:utf8',\$buff); #:utf8
+	#binmode($fh);
 	
 	my $io = select($fh);
-	@ret = &$code;
+	my @ret = &$code;
 	select($io);
 	
 	close($fh);
@@ -39,13 +80,31 @@ sub parsetpl
 	my $text = shift;
 	my $vars = shift;
 	
-	$text =~ s/\${(\w+)}/$vars->{$1}/ge;
+	$text =~ s/\${(.+?)}/$vars->{$1}/ge;
 	
 	return $text;
 }
 
-# ¬ÓÁ‚‡˘‡ÂÚ Ï‡ÒÒË‚ ËÏÂÌ Ù‡ÈÎÓ‚ Ô‡ÍÂÚÓ‚ ËÁ ÛÍ‡Á‡ÌÌÓÈ
-# ‰ËÂÍÚÓËË (·ÂÁ ‡Ò¯ËÂÌËˇ ".pm")
+# –í–æ–∑–≤—Ä–∞—â–∞–µ—Ç –º–∞—Å—Å–∏–≤ –∏–º–µ–Ω –ø–æ–¥–¥–∏—Ä–µ–∫—Ç–æ—Ä–∏–π –∏–∑ —É–∫–∞–∑–∞–Ω–Ω–æ–π –¥–∏—Ä–µ–∫—Ç–æ—Ä–∏–∏
+sub listdirs
+{
+	my $dir = shift;
+	
+	my ($dh,@res);
+	
+	opendir($dh,$dir);
+	while(my $file = readdir($dh))
+	{
+		next if $file eq '.' || $file eq '..';
+		push @res, $file if -d $dir.'/'.$file;
+	}
+	closedir($dh);
+	
+	return @res;
+}
+
+# –í–æ–∑–≤—Ä–∞—â–∞–µ—Ç –º–∞—Å—Å–∏–≤ –∏–º–µ–Ω —Ñ–∞–π–ª–æ–≤ –ø–∞–∫–µ—Ç–æ–≤ –∏–∑ —É–∫–∞–∑–∞–Ω–Ω–æ–π
+# –¥–∏—Ä–µ–∫—Ç–æ—Ä–∏–∏ (–±–µ–∑ —Ä–∞—Å—à–∏—Ä–µ–Ω–∏—è ".pm")
 sub listpms
 {
 	my $dir = shift;
@@ -55,10 +114,10 @@ sub listpms
 	opendir($dh,$dir);
 	while(my $file = readdir($dh))
 	{
-		unless(-f $dir.'/'.$file){ next; }
-		unless($file =~ m/^\w+\.pm$/){ next; }
+		next unless -f $dir.'/'.$file;
+		next unless $file =~ m/^\w+\.pm$/;
 		
-		$file =~ s/\.pm//g;
+		$file =~ s/\.pm$//g;
 		push @res, $file;
 	}
 	closedir($dh);
@@ -66,8 +125,8 @@ sub listpms
 	return @res;
 }
 
-# »˘ÂÚ ÁÌ‡˜ÂÌËÂ (ÔÂ‚˚È ‡„ÛÏÂÌÚ) ‚ Ï‡ÒÒË‚Â (ÓÒÚ‡Î¸Ì˚Â ‡„ÛÏÂÌÚ˚)
-# Ë ‚ÓÁ‚‡˘‡ÂÚ ËÌ‰ÂÍÒ ÔÂ‚Ó„Ó ÒÓ‚Ô‡‰ÂÌËˇ
+# –ò—â–µ—Ç –∑–Ω–∞—á–µ–Ω–∏–µ (–ø–µ—Ä–≤—ã–π –∞—Ä–≥—É–º–µ–Ω—Ç) –≤ –º–∞—Å—Å–∏–≤–µ (–æ—Å—Ç–∞–ª—å–Ω—ã–µ –∞—Ä–≥—É–º–µ–Ω—Ç—ã)
+# –∏ –≤–æ–∑–≤—Ä–∞—â–∞–µ—Ç –∏–Ω–¥–µ–∫—Å –ø–µ—Ä–≤–æ–≥–æ —Å–æ–≤–ø–∞–¥–µ–Ω–∏—è
 sub indexA($@)
 {
 	my $val = shift;
@@ -77,13 +136,13 @@ sub indexA($@)
 	return $[-1;
 }
 
-# ¬ÓÁ‚‡˘‡ÂÚ ‰‡ÚÛ ‚ ÙÓÏ‡ÚÂ MySQL TIMESTAMP
+# –í–æ–∑–≤—Ä–∞—â–∞–µ—Ç –¥–∞—Ç—É –≤ —Ñ–æ—Ä–º–∞—Ç–µ MySQL TIMESTAMP
 sub NOW(){ return strftime('%Y%m%d%H%M%S',localtime()); }
 
-# œÂÓ·‡ÁÛÂÚ ‰‡ÚÛ ‚ ÙÓÏ‡ÚÂ Unix ‚ MySQL TIMESTAMP
+# –ü—Ä–µ–æ–±—Ä–∞–∑—É–µ—Ç –¥–∞—Ç—É –≤ —Ñ–æ—Ä–º–∞—Ç–µ Unix –≤ MySQL TIMESTAMP
 sub epoch2ts($){ return strftime('%Y%m%d%H%M%S',localtime($_[0])); }
 
-# œÂÓ·‡ÁÛÂÚ ‰‡ÚÛ ‚ ÙÓÏ‡ÚÂ MySQL TIMESTAMP ‚ Unix
+# –ü—Ä–µ–æ–±—Ä–∞–∑—É–µ—Ç –¥–∞—Ç—É –≤ —Ñ–æ—Ä–º–∞—Ç–µ MySQL TIMESTAMP –≤ Unix
 sub ts2epoch($)
 {
 	my $ts = shift;
@@ -93,19 +152,19 @@ sub ts2epoch($)
 	return timelocal($6,$5,$4,$3,$2-1,$1-1900);
 }
 
-# œÂÓ·‡ÁÛÂÚ ‰‡ÚÛ ‚ ÙÓÏ‡ÚÂ MySQL TIMESTAMP ‚ Û‰Ó·Ó˜ËÚ‡ÂÏ˚È ‚Ë‰
-# Õ‡ÔËÏÂ, ‰Îˇ "20050816174452" ‚ÂÌ∏Ú "16 ¿‚„ÛÒÚ‡ 2005 „., 17:44:52"
+# –ü—Ä–µ–æ–±—Ä–∞–∑—É–µ—Ç –¥–∞—Ç—É –≤ —Ñ–æ—Ä–º–∞—Ç–µ MySQL TIMESTAMP –≤ —É–¥–æ–±–æ—á–∏—Ç–∞–µ–º—ã–π –≤–∏–¥
+# –ù–∞–ø—Ä–∏–º–µ—Ä, –¥–ª—è "20050816174452" –≤–µ—Ä–Ω—ë—Ç "16 –ê–≤–≥—É—Å—Ç–∞ 2005 –≥., 17:44:52"
 sub toDateTimeStr($)
 {
 	my $ts = shift;
 	$ts =~ s/\D//g;
 	
-	my @mnt = qw/ˇÌ‚‡ˇ ÙÂ‚‡Îˇ Ï‡Ú‡ ‡ÔÂÎˇ Ï‡ˇ Ë˛Ìˇ Ë˛Îˇ ‡‚„ÛÒÚ‡ ÒÂÌÚˇ·ˇ ÓÍÚˇ·ˇ ÌÓˇ·ˇ ‰ÂÍ‡·ˇ/;
+	my @mnt = qw/—è–Ω–≤–∞—Ä—è —Ñ–µ–≤—Ä–∞–ª—è –º–∞—Ä—Ç–∞ –∞–ø—Ä–µ–ª—è –º–∞—è –∏—é–Ω—è –∏—é–ª—è –∞–≤–≥—É—Å—Ç–∞ —Å–µ–Ω—Ç—è–±—Ä—è –æ–∫—Ç—è–±—Ä—è –Ω–æ—è–±—Ä—è –¥–µ–∫–∞–±—Ä—è/;
 	
 	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)?(\d\d)?(\d\d)?$/;
 			#  YYYY1     MM2   DD3   HH4   MM5   SS6	
 	
-	my $date = "$3 ".$mnt[$2-1]." $1„., $4:$5:$6";
+	my $date = "$3 ".$mnt[$2-1]." $1–≥., $4:$5:$6";
 	$date =~ s/^0+//;
 	
 	return $date;
@@ -116,12 +175,12 @@ sub toDateStr($)
 	my $ts = shift;
 	$ts =~ s/\D//g;
 	
-	my @mnt = qw/ˇÌ‚‡ˇ ÙÂ‚‡Îˇ Ï‡Ú‡ ‡ÔÂÎˇ Ï‡ˇ Ë˛Ìˇ Ë˛Îˇ ‡‚„ÛÒÚ‡ ÒÂÌÚˇ·ˇ ÓÍÚˇ·ˇ ÌÓˇ·ˇ ‰ÂÍ‡·ˇ/;
+	my @mnt = qw/—è–Ω–≤–∞—Ä—è —Ñ–µ–≤—Ä–∞–ª—è –º–∞—Ä—Ç–∞ –∞–ø—Ä–µ–ª—è –º–∞—è –∏—é–Ω—è –∏—é–ª—è –∞–≤–≥—É—Å—Ç–∞ —Å–µ–Ω—Ç—è–±—Ä—è –æ–∫—Ç—è–±—Ä—è –Ω–æ—è–±—Ä—è –¥–µ–∫–∞–±—Ä—è/;
 	
 	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)?(\d\d)?(\d\d)?$/;
 			#  YYYY1     MM2   DD3   HH4   MM5   SS6	
 	
-	my $date = "$3 ".$mnt[$2-1]." $1„.";
+	my $date = "$3 ".$mnt[$2-1]." $1–≥.";
 	$date =~ s/^0+//;
 	
 	return $date;
@@ -131,39 +190,39 @@ sub toRusDate($)
 {
 	my $date = shift;
 	
-	$date =~ s/January/ˇÌ‚‡ˇ/i;
-	$date =~ s/February/ÙÂ‚‡Îˇ/i;
-	$date =~ s/March/Ï‡Ú‡/i;
-	$date =~ s/April/‡ÔÂÎˇ/i;
-	$date =~ s/May/Ï‡ˇ/i;
-	$date =~ s/June/Ë˛Ìˇ/i;
-	$date =~ s/July/Ë˛Îˇ/i;
-	$date =~ s/August/‡‚„ÛÒÚ‡/i;
-	$date =~ s/September/ÒÂÌÚˇ·ˇ/i;
-	$date =~ s/October/ÓÍÚˇ·ˇ/i;
-	$date =~ s/November/ÌÓˇ·ˇ/i;
-	$date =~ s/December/‰ÂÍ‡·ˇ/i;
+	$date =~ s/January/—è–Ω–≤–∞—Ä—è/i;
+	$date =~ s/February/—Ñ–µ–≤—Ä–∞–ª—è/i;
+	$date =~ s/March/–º–∞—Ä—Ç–∞/i;
+	$date =~ s/April/–∞–ø—Ä–µ–ª—è/i;
+	$date =~ s/May/–º–∞—è/i;
+	$date =~ s/June/–∏—é–Ω—è/i;
+	$date =~ s/July/–∏—é–ª—è/i;
+	$date =~ s/August/–∞–≤–≥—É—Å—Ç–∞/i;
+	$date =~ s/September/—Å–µ–Ω—Ç—è–±—Ä—è/i;
+	$date =~ s/October/–æ–∫—Ç—è–±—Ä—è/i;
+	$date =~ s/November/–Ω–æ—è–±—Ä—è/i;
+	$date =~ s/December/–¥–µ–∫–∞–±—Ä—è/i;
 	
-	$date =~ s/Jan/ˇÌ‚/i;
-	$date =~ s/Feb/ÙÂ‚/i;
-	$date =~ s/Mar/Ï‡/i;
-	$date =~ s/Apr/‡Ô/i;
-	$date =~ s/May/Ï‡È/i;
-	$date =~ s/Jun/Ë˛Ì/i;
-	$date =~ s/Jul/Ë˛Î/i;
-	$date =~ s/Aug/‡‚„/i;
-	$date =~ s/Sep/ÒÂÌ/i;
-	$date =~ s/Oct/ÓÍÚ/i;
-	$date =~ s/Nov/ÌÓˇ/i;
-	$date =~ s/Dec/‰ÂÍ/i;
+	$date =~ s/Jan/—è–Ω–≤/i;
+	$date =~ s/Feb/—Ñ–µ–≤/i;
+	$date =~ s/Mar/–º–∞—Ä/i;
+	$date =~ s/Apr/–∞–ø—Ä/i;
+	$date =~ s/May/–º–∞–π/i;
+	$date =~ s/Jun/–∏—é–Ω/i;
+	$date =~ s/Jul/–∏—é–ª/i;
+	$date =~ s/Aug/–∞–≤–≥/i;
+	$date =~ s/Sep/—Å–µ–Ω/i;
+	$date =~ s/Oct/–æ–∫—Ç/i;
+	$date =~ s/Nov/–Ω–æ—è/i;
+	$date =~ s/Dec/–¥–µ–∫/i;
 	
-	$date =~ s/Mon/ÌÌ/i;
-	$date =~ s/Tue/‚Ú/i;
-	$date =~ s/Wed/Ò/i;
-	$date =~ s/Thu/˜Ú/i;
-	$date =~ s/Fri/ÔÚ/i;
-	$date =~ s/Sat/Ò·/i;
-	$date =~ s/Sun/‚Ò/i;
+	$date =~ s/Mon/–Ω–Ω/i;
+	$date =~ s/Tue/–≤—Ç/i;
+	$date =~ s/Wed/—Å—Ä/i;
+	$date =~ s/Thu/—á—Ç/i;
+	$date =~ s/Fri/–ø—Ç/i;
+	$date =~ s/Sat/—Å–±/i;
+	$date =~ s/Sun/–≤—Å/i;
 	
 	return $date;
 }
@@ -179,39 +238,39 @@ sub toEngDate($)
 		setlocale(&LC_CTYPE,"ru_RU.CP1251");
 	};
 	
-	$date =~ s/ˇÌ‚‡ˇ/January/i;
-	$date =~ s/ÙÂ‚‡Îˇ/February/i;
-	$date =~ s/Ï‡Ú‡/March/i;
-	$date =~ s/‡ÔÂÎˇ/April/i;
-	$date =~ s/Ï‡ˇ/May/i;
-	$date =~ s/Ë˛Ìˇ/June/i;
-	$date =~ s/Ë˛Îˇ/July/i;
-	$date =~ s/‡‚„ÛÒÚ‡/August/i;
-	$date =~ s/ÒÂÌÚˇ·ˇ/September/i;
-	$date =~ s/ÓÍÚˇ·ˇ/October/i;
-	$date =~ s/ÌÓˇ·ˇ/November/i;
-	$date =~ s/‰ÂÍ‡·ˇ/December/i;
+	$date =~ s/—è–Ω–≤–∞—Ä—è/January/i;
+	$date =~ s/—Ñ–µ–≤—Ä–∞–ª—è/February/i;
+	$date =~ s/–º–∞—Ä—Ç–∞/March/i;
+	$date =~ s/–∞–ø—Ä–µ–ª—è/April/i;
+	$date =~ s/–º–∞—è/May/i;
+	$date =~ s/–∏—é–Ω—è/June/i;
+	$date =~ s/–∏—é–ª—è/July/i;
+	$date =~ s/–∞–≤–≥—É—Å—Ç–∞/August/i;
+	$date =~ s/—Å–µ–Ω—Ç—è–±—Ä—è/September/i;
+	$date =~ s/–æ–∫—Ç—è–±—Ä—è/October/i;
+	$date =~ s/–Ω–æ—è–±—Ä—è/November/i;
+	$date =~ s/–¥–µ–∫–∞–±—Ä—è/December/i;
 	
-	$date =~ s/ˇÌ‚/Jan/i;
-	$date =~ s/ÙÂ‚/Feb/i;
-	$date =~ s/Ï‡/Mar/i;
-	$date =~ s/‡Ô/Apr/i;
-	$date =~ s/Ï‡È/May/i;
-	$date =~ s/Ë˛Ì/Jun/i;
-	$date =~ s/Ë˛Î/Jul/i;
-	$date =~ s/‡‚„/Aug/i;
-	$date =~ s/ÒÂÌ/Sep/i;
-	$date =~ s/ÓÍÚ/Oct/i;
-	$date =~ s/ÌÓˇ/Nov/i;
-	$date =~ s/‰ÂÍ/Dec/i;
+	$date =~ s/—è–Ω–≤/Jan/i;
+	$date =~ s/—Ñ–µ–≤/Feb/i;
+	$date =~ s/–º–∞—Ä/Mar/i;
+	$date =~ s/–∞–ø—Ä/Apr/i;
+	$date =~ s/–º–∞–π/May/i;
+	$date =~ s/–∏—é–Ω/Jun/i;
+	$date =~ s/–∏—é–ª/Jul/i;
+	$date =~ s/–∞–≤–≥/Aug/i;
+	$date =~ s/—Å–µ–Ω/Sep/i;
+	$date =~ s/–æ–∫—Ç/Oct/i;
+	$date =~ s/–Ω–æ—è/Nov/i;
+	$date =~ s/–¥–µ–∫/Dec/i;
 	
-	$date =~ s/ÔÌ/Mon/i;
-	$date =~ s/‚Ú/Tue/i;
-	$date =~ s/Ò/Wed/i;
-	$date =~ s/˜Ú/Thu/i;
-	$date =~ s/ÔÚ/Fri/i;
-	$date =~ s/Ò·/Sat/i;
-	$date =~ s/‚Ò/Sun/i;
+	$date =~ s/–ø–Ω/Mon/i;
+	$date =~ s/–≤—Ç/Tue/i;
+	$date =~ s/—Å—Ä/Wed/i;
+	$date =~ s/—á—Ç/Thu/i;
+	$date =~ s/–ø—Ç/Fri/i;
+	$date =~ s/—Å–±/Sat/i;
+	$date =~ s/–≤—Å/Sun/i;
 	
 	eval
 	{
@@ -279,7 +338,7 @@ sub escape
 	#$val =~ s/(.)/ord($1).' '/ges;
 	#$val =~ s/([^\w ])/'\\x'.sprintf('%02x',ord($1))/ges;
 	#$val =~ s/([\n\r"'\\])/'\\x'.sprintf('%02x',ord($1))/ges;
-	$val =~ s/(["'\\])/\\$1/gs;
+	$val =~ s/([\"\'\\])/\\$1/gs;
 	$val =~ s/\s+/ /gs;
 	#$val =~ s/\n/\\n/gs;
 	#$val =~ s/\r/\\r/gs;
@@ -295,7 +354,7 @@ sub MD5($)
 sub translit($)
 {
 	my $val = shift;
-	$val =~ tr/¿¡¬√ƒ≈®∆«» ÀÃÕŒœ–—“”‘’÷◊ÿŸ‹€⁄›ﬁﬂ‡·‚„‰Â∏ÊÁËÍÎÏÌÓÔÒÚÛÙıˆ˜¯˘¸˚˙˝˛ˇ/ABVGDEEJZIKLMNOPRSTUFHC4SSQIQEUYabvgdeejziklmnoprstufhc4ssqiqeuy/;
+	$val =~ tr/–ê–ë–í–ì–î–ï–Å–ñ–ó–ò–ö–õ–ú–ù–û–ü–†–°–¢–£–§–•–¶–ß–®–©–¨–´–™–≠–Æ–Ø–∞–±–≤–≥–¥–µ—ë–∂–∑–∏–∫–ª–º–Ω–æ–ø—Ä—Å—Ç—É—Ñ—Ö—Ü—á—à—â—å—ã—ä—ç—é—è/ABVGDEEJZIKLMNOPRSTUFHC4WWQIQEUYabvgdeejziklmnoprstufhc4wwqiqeuy/;
 	return $val;
 }
 
@@ -308,11 +367,11 @@ sub len2size($)
 	my $gb = $mb*1024;
 	my $tb = $gb*1024;
 	
-	if($len >= $tb){ return round2($len/$tb).' “¡'; }
-	if($len >= $gb){ return round2($len/$gb).' √¡'; }
-	if($len >= $mb){ return round2($len/$mb).' Ã¡'; }
-	if($len >= $kb){ return round2($len/$kb).'  ¡'; }
-	return $len.' ·‡ÈÚ';
+	if($len >= $tb){ return round2($len/$tb).' –¢–ë'; }
+	if($len >= $gb){ return round2($len/$gb).' –ì–ë'; }
+	if($len >= $mb){ return round2($len/$mb).' –ú–ë'; }
+	if($len >= $kb){ return round2($len/$kb).' –ö–ë'; }
+	return $len.' –±–∞–π—Ç';
 }
 
 sub round2($) { return (int($_[0]*10)/10); }
@@ -330,11 +389,21 @@ sub var2f
 	close($fh);
 }
 
+sub var2f_utf8
+{
+	my $val = shift;
+	my $fname = shift;
+	
+	my $fh;
+	open($fh,'>:utf8',$fname);
+	print $fh $val;
+	close($fh);
+}
+
 sub f2var
 {
 	my $fname = shift;
-	my $pv = $/;
-	$/ = undef;
+	local $/ = undef;
 	
 	my $fh;
 	open($fh,'<',$fname);
@@ -342,7 +411,18 @@ sub f2var
 	my $val = <$fh>;
 	close($fh);
 	
-	$/ = $pv;
+	return $val;
+}
+
+sub f2var_utf8
+{
+	my $fname = shift;
+	local $/ = undef;
+	
+	my $fh;
+	open($fh,'<:utf8',$fname);
+	my $val = <$fh>;
+	close($fh);
 	
 	return $val;
 }
@@ -363,7 +443,7 @@ sub array2csv($$$)
 	my $csv = "\n" x $padh;
 	
 	$csv .= ';' x $padw;
-	$csv .= '"Õ‡Á‚‡ÌËÂ";';
+	$csv .= '"–ù–∞–∑–≤–∞–Ω–∏–µ";';
 	for my $key (@psa)
 	{
 		if($key eq 'name'){ next; }
@@ -425,11 +505,7 @@ Content-type: $opts{'ct'}
 $opts{'text'}";
 
 	my $mail;
-	open($mail,'|-','/usr/sbin/sendmail -t') || return 0;
-	print $mail $mess;
-	close($mail);
-	
-	return 1;
+	return open($mail,'|-','/usr/sbin/sendmail -t') && (print $mail $mess) && close($mail);
 }
 
 1;

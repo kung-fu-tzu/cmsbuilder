@@ -1,57 +1,73 @@
-# (�) ������ �.�., 2005
+﻿# (с) Леонов П.А., 2005
 
 package plgnCatalog::Interface;
 use strict qw(subs vars);
-our @ISA = 'plgnSite::Interface';
+use utf8;
 
-#-------------------------------------------------------------------------------
-
+#———————————————————————————————————————————————————————————————————————————————
 
 sub catalog_props
 {
 	my $o = shift;
+	my $r = shift;
 	
-	return '<div class="props">'.join('',map { '<div class="'.$_.'">'.$o->{$_}.'</div>' } $o->aview()).'</div>';
+	my $p = $o->props();
+	my $vt = 'CMSBuilder::DBI::vtypes::';
+	return '<div class="props">'.join('',map {'<div class="'.$_.'">'.$o->{$_}.'</div>'} keys %$p).'</div>',
 }
 
 sub catalog_preview_text
 {
 	my $o = shift;
 	
-	$o->{'desc'} =~ m#<p>(.+?)</p>#;
+	my $desc = $o->{'desc'} =~ m{<p>(.+?)</p>}s || $o->{'desc'};
 	
-	my $desc = $1 || $o->{'desc'};
 	$desc =~ s/<.*?>/ /sg;
 	$desc =~ s/&nbsp;?/ /g;
 	$desc =~ s/^\s+|\s+$//g;
 	
 	my @words = split /\s+/, $desc;
 	
-	$desc = join ' ',@words[0..9];
-	$desc =~ s/([\.\?\!]+$)|([\,\;\:\-]+$)//;
+	$desc = join ' ', @words[0..9];
+	$desc =~ s/([\.\?\!]+$)|([\,\;\:\-]+$)/$1 || '…'/e || ($desc .= '…') if @words > 10;
 	
-	return $desc.(@words>10 && !$1?'...':'').$1;
+	return $desc;
 }
 
 sub site_preview
 {
 	my $o = shift;
 	
-	my $img;
-	
-	if($o->{'img'} && $o->{'img'}->exists()){ $img = '<div class="photo" style="background:url('.$o->{'img'}->href().')"><img class="nullpls" src="/img/null.gif" alt="'.$o->name().'" /></div>' }
+	my $photo_href;
+	if($o->{'smallphoto'} && $o->{'smallphoto'}->exists)
+	{
+		$photo_href = $o->{'smallphoto'}->href
+	}
+	elsif((my $cr = $o->catalog_root)->{'shownophoto'})
+	{
+		$photo_href = $cr->{'nophotoimg'}->href();
+	}
+	my $photo = $photo_href ? '<a href="'.$o->site_href.'"><img class="photo" src="'.$photo_href.'"></a>' : undef;
 	
 	print
 	'
 		<div class="preview">
-			',$img,$o->catalog_props(),'
+			',$photo,'
 			<div class="desc">
-				<div class="name">',$o->name(),'</div>
+				<div class="name">',$o->name,'</div>
 				<div class="text">',$o->catalog_preview_text(@_),'</div>
 			</div>
-			<div class="more"><a href="',$o->site_href(),'">���������...</a></div>
+			<div class="more"><a href="',$o->site_href,'">Подробнее...</a></div>
 		</div>
 	';
+}
+
+sub catalog_root
+{
+	my $o = shift;
+	
+	map { return $_ if $_->isa('modCatalog') } reverse $o->papa_path;
+	return;
 }
 
 sub catalog_navigation
@@ -79,18 +95,17 @@ sub site_content
 	
 	if($o->len())
 	{
-		print '<hr>';
 		map { $_->site_preview() } $o->get_all();
 	}
 	else
 	{
-		print '<div class="empty">�����</div>';
+		print '<div class="message">Пусто</div>';
 	}
 	
 	$o->site_pagesline(@_);
 	
 	print '<hr>' if $o->{'desc'} && $o->len();
-	print $o->{'desc'} if $o->{'desc'};
+	print $o->{'desc'};
 	
 	print '</div>';
 }
