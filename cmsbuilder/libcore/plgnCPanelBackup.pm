@@ -165,7 +165,7 @@ our $zfuncs_cre =
 		
 		my $cmd = $it->{'-cmdin'};
 		
-		my $res = `$cmd`;
+		my $res = `$cmd` || do { $cmd =~ s/-p\s*\S+/-p(YES)/; die "Cannnot `$cmd`: $!"; };
 		$zip->addString($res,$it->{'-zip'});
 		
 		return 1;
@@ -258,7 +258,7 @@ our $zfuncs_res =
 		my $res = $zip->contents($it->{'-zip'});
 		
 		my $fh;
-		open($fh,'|-',$cmd);
+		open($fh,'|-',$cmd) || do { $cmd =~ s/-p\s*\S+/-p(YES)/; die "Cannot open(|-) $cmd: $!"; };
 		print $fh $res;
 		close($fh);
 		
@@ -371,16 +371,27 @@ sub cpanel_backup_restore_make
 	{
 		if($zfuncs_have->{$it->{'-type'}}->($zip,$it) && $r->{$it->{'-name'}})
 		{
+			print '<div>',$it->{'-text'} . '&nbsp;—&nbsp;';
 			
-			if($zfuncs_res->{$it->{'-type'}}->($zip,$it))
+			my $res = eval { $zfuncs_res->{$it->{'-type'}}->($zip,$it) };
+			if($@)
 			{
-				print 'OK: '.$it->{'-text'}.'.<br>';
+				print "Ошибка: $@";
 			}
 			else
 			{
-				$o->err_add($it->{'-text'}.' - не удалось.');
+				if($res)
+				{
+					print 'успешно';
+					$cnt++;
+				}
+				else
+				{
+					print 'не удалось';
+				}
 			}
-			$cnt++;
+			
+			print '</div>';
 		}
 	}
 	
@@ -439,38 +450,51 @@ sub cpanel_backup_make
 	my $o = shift;
 	my $r = shift;
 	
-	my($sql,$mb,@mbs,@done);
+	my($sql,$mb,@mbs,@done,@errs);
 	
 	unless(-d $CMSBuilder::Config::path_backup){ mkdir($CMSBuilder::Config::path_backup); }
 	
 	my $zip = Archive::Zip->new();
 	
-	
 	for my $it (@$zitems)
 	{
 		if(exists $r->{$it->{'-name'}})
 		{
-			if($zfuncs_cre->{$it->{'-type'}}->($zip,$it))
+			print '<div>',$it->{'-text'} . '&nbsp;—&nbsp;';
+			
+			my $res = eval { $zfuncs_cre->{$it->{'-type'}}->($zip,$it); };
+			if($@)
 			{
-				push @done, $it->{'-name'};
-				print 'OK: '.$it->{'-text'}.'.<br>';
+				push @errs, $it->{'-name'};
+				print "Ошибка: $@";
 			}
 			else
 			{
-				$o->err_add($it->{'-text'}.' - не удалось.');
+				if($res)
+				{
+					push @done, $it->{'-name'};
+					print 'успешно';
+				}
+				else
+				{
+					push @errs, $it->{'-name'};
+					print 'не удалось';
+				}
 			}
+			
+			print '</div>';
 		}
+	}
+	
+	if(@errs)
+	{
+		$o->notice_add('Создание архива прервано в связи с ошибками.');
+		return;
 	}
 	
 	unless(@done)
 	{
-		$o->err_add('Не указаны объекты орхивации.');
-	}
-	
-	if($o->err_cnt())
-	{
-		$o->notice_add('Создание архива прервано в связи с ошибками.');
-		return;
+		$o->err_add('Не указаны объекты архивации.');
 	}
 	
 	my $conf = join(', ',@done);

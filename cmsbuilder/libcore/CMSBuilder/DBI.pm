@@ -4,10 +4,11 @@ package CMSBuilder::DBI;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = 'CMSBuilder::Plugin';
+our @ISA =qw(CMSBuilder::Plugin Exporter);
 
 use DBI;
 use Carp;
+use Exporter;
 
 use CMSBuilder::DBI::VType;
 
@@ -31,6 +32,9 @@ use CMSBuilder::DBI::SimpleModule;
 use CMSBuilder::DBI::TreeModule;
 
 use CMSBuilder::Utils;
+
+
+our @EXPORT = qw($dbh);
 
 #———————————————————————————————————————————————————————————————————————————————
 

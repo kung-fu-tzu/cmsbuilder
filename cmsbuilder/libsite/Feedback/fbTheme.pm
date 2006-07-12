@@ -58,7 +58,7 @@ sub process_params
 		if($res)
 		{
 			my $href = $o->root->{'address'}.$CMSBuilder::Config::http_aroot;
-			$href =~ s'/+'/'g;
+			$href =~ s|/+|/|g;
 			
 			if($o->papa()->{'emailme'})
 			{
@@ -127,7 +127,7 @@ sub site_content
 	
 	print '<div class="mod-feedback">';
 	
-	print $o->access('a') ? '<p><a href="?form=yes">Задать вопрос...</a></p>' : '<p>Тема закрыта.</p>';
+	print $o->access('a') ? '<p class="ask"><a href="?form=yes">Задать вопрос...</a></p>' : '<p class="closed">Тема закрыта.</p>';
 	
 	if(!@page)
 	{
@@ -163,7 +163,7 @@ sub print_form
 		</tr>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input id="checkbox_emailme" type="checkbox" ',$r->{'emailme'}?'checked="checked"':'',' name="emailme"><label for="checkbox_emailme">Оповестить об ответе на e-mail</label></td>
+			<td><input class="checkbox" id="checkbox_emailme" type="checkbox" ',$r->{'emailme'}?'checked="checked"':'',' name="emailme"><label for="checkbox_emailme">Оповестить об ответе на e-mail</label></td>
 		</tr>
 		<tr>
 			<td><label for="question">Текст вопроса</label>:</td>

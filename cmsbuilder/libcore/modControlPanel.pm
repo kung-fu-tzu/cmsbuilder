@@ -122,7 +122,7 @@ sub cpanel_table_fix
 	my $ch;
 	for my $cn (sort {$a->cname() cmp $b->cname()} cmsb_classes())
 	{
-		my $log = $cn->table_fix();
+		my $log = eval { $cn->table_fix() };
 		
 		print '<div><small style="float:right">';
 		
@@ -140,6 +140,10 @@ sub cpanel_table_fix
 			{
 				print join ', ', map { '<strong>-'.$_->{'name'}.'</strong>[ '.$_->{'from'}.' ]' } @{$log->{'deleted'}};
 			}
+		}
+		elsif($@)
+		{
+			print 'ошибка: ' . $@;
 		}
 		else
 		{

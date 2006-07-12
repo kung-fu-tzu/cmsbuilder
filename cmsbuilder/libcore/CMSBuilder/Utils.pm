@@ -13,7 +13,6 @@ use Exporter;
 our @ISA = 'Exporter';
 our @EXPORT =
 qw/
-&hook &hookp
 &listpms &listdirs &indexA &NOW &epoch2ts &ts2epoch &toDateTimeStr &toDateStr &toRusDate
 &toEngDate &estrftime &rstrftime &varr &HTMLfilter &escape &MD5 &translit
 &len2size &round2 &var2f &var2f_utf8 &f2var &f2var_utf8 &array2csv &str2csv &path_it &path_abs &parsetpl
@@ -22,31 +21,6 @@ qw/
 /;
 
 #———————————————————————————————————————————————————————————————————————————————
-
-sub hook($$)
-{
-	my ($sub,$ref) = @_;
-	croak "Not CODEref passed to hook() as second arg: $ref" unless ref $ref eq 'CODE';
-	
-	my $old = *{$sub}{'CODE'};
-	*{$sub} = sub {&$ref($old,@_)};
-}
-
-sub hookp($$)
-{
-	my ($old,$new) = @_;
-	croak "Value of \$old id not a package name in hookp(): $old" unless defined %{$old.'::'};
-	croak "Value of \$new id not a package name in hookp(): $new" unless defined %{$new.'::'};
-	
-	my $i;
-	++$i while defined %{$old.$i.'::'};
-	
-	%{$old.$i.'::'} = %{$old.'::'};
-	%{$old.'::'} = %{$new.'::'};
-	push @{$old.'::ISA'}, $old.$i;
-	
-	return $old.$i;
-}
 
 sub decode_utf8_hashref($)
 {

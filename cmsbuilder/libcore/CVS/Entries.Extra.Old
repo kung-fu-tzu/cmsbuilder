@@ -1,6 +1,4 @@
-/CMSBuilder.pm////*///
 /CMSFront.pm////*///
-/modControlPanel.pm////*///
 /modRoot.pm////*///
 /plgnAccess.pm////*///
 /plgnCPanelBackup.pm////*///
@@ -9,3 +7,6 @@
 D/CMSBuilder///////
 D/VTypes///////
 D/plgnUsers///////
+/CMSBuilder.pm////*///
+/modBaseConverter.pm////*///
+/modControlPanel.pm////*///
