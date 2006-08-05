@@ -4,7 +4,7 @@ package fbQuestion;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnSite::Object','CMSBuilder::DBI::Object');
+our @ISA = ('modSite::Object','CMSBuilder::DBI::Object');
 
 sub _cname {'Вопрос'}
 sub _aview {qw/username email emailme question answer emailed/}

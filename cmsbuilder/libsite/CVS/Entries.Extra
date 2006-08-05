@@ -1,7 +1,3 @@
-/VTypesTest.pm////*///
-/fltGZIP.pm////*///
-/fltXSLT.pm////*///
-/plgnSite.pm////*///
 D/Catalog///////
 D/Feedback///////
 D/Forms///////
@@ -9,3 +5,7 @@ D/News///////
 D/Registration///////
 D/Site///////
 D/Templates///////
+/fltGZIP.pm////*///
+/fltXSLT.pm////*///
+/plgnSite.pm////*///
+/VTypesTest.pm////*///

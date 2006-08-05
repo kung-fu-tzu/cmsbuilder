@@ -2,12 +2,12 @@
     <head>
         <title>${site_title}</title>
         <script language="javascript" type="text/javascript" src="/ajax.js"></script>
-        <script language="javascript" type="text/javascript" src="/plgnForms.js"></script>
-        <script language="javascript" type="text/javascript" src="/plgnShop.js"></script>
-        <link rel="stylesheet" type="text/css" href="/plgnForms.css"/>
-        <link rel="stylesheet" type="text/css" href="/plgnSite.css"/>
-        <link rel="stylesheet" type="text/css" href="/plgnShop.css"/>
-        <link rel="stylesheet" type="text/css" href="/plgnCatalog.css"/>
+        <script language="javascript" type="text/javascript" src="/modForms.js"></script>
+        <script language="javascript" type="text/javascript" src="/modShop.js"></script>
+        <link rel="stylesheet" type="text/css" href="/modForms.css"/>
+        <link rel="stylesheet" type="text/css" href="/modSite.css"/>
+        <link rel="stylesheet" type="text/css" href="/modShop.css"/>
+        <link rel="stylesheet" type="text/css" href="/modCatalog.css"/>
         <meta name="description" content="${site_description}"/>
     </head>
     <body>

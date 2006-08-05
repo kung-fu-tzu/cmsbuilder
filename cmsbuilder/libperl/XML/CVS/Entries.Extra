@@ -1,3 +1,7 @@
+D/DOM///////
+D/Handler///////
+D/Parser///////
+D/PatAct///////
 /DOM.pm////*///
 /ESISParser.pm////*///
 /Parser.pm////*///
@@ -6,7 +10,3 @@
 /SAX2Perl.pm////*///
 /Simple.pm////*///
 /XSLT.pm////*///
-D/DOM///////
-D/Handler///////
-D/Parser///////
-D/PatAct///////

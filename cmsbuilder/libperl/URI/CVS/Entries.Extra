@@ -1,3 +1,5 @@
+D/file///////
+D/urn///////
 /Escape.pm////*///
 /Heuristic.pm////*///
 /QueryParam.pm////*///
@@ -37,5 +39,3 @@
 /telnet.pm////*///
 /tn3270.pm////*///
 /urn.pm////*///
-D/file///////
-D/urn///////

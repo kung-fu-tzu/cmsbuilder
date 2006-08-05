@@ -4,7 +4,7 @@ package modSite;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnSite::Member','CMSBuilder::DBI::TreeModule');
+our @ISA = qw(modSite::Member CMSBuilder::DBI::Array CMSBuilder::Admin::Tree CMSBuilder::Module);
 
 our $VERSION = 1.0.0.0;
 
@@ -24,6 +24,26 @@ sub _props
 
 #———————————————————————————————————————————————————————————————————————————————
 
+
+use CMSBuilder;
+
+sub mod_load
+{
+	my $c = shift;
+	
+	cmsb_event_reg('admin_view_additional',\&admin_additional);
+	
+	unshift(@modUsers::UserMember::ISA,'modSite::Interface');
+	unshift(@UserGroup::ISA,'modSite::Interface');
+	unshift(@modUsers::ISA,'modSite::Interface');
+}
+
+sub admin_additional
+{
+	my $o = shift;
+	
+	print '<tr><td valign="top">Адрес&nbsp;на&nbsp;сайте:</td><td>',$o->can('site_href')?$o->site_href():'Нет.','</td></tr>';
+}
 
 sub onpage
 {

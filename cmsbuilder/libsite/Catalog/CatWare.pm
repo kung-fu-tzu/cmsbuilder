@@ -1,10 +1,10 @@
 ﻿# (с) Леонов П.А., 2005
 
-package plgnCatalog::Ware;
+package modCatalog::Ware;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnCatalog::Member');
+our @ISA = ('modCatalog::Member');
 
 sub _aview {qw/price/}
 sub _have_icon {'icons/CatWare.gif'}

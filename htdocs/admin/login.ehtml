@@ -34,7 +34,7 @@
 			
 			<div>
 				<p>
-				<?eml plgnUsers::Login->act() ?>
+				<?eml modUsers::Login->act() ?>
 				</p>
 				
 				<p>
@@ -47,7 +47,7 @@
 				</p>
 				
 				<p>
-				<?eml plgnUsers::Login->list() ?>
+				<?eml modUsers::Login->list() ?>
 				</p>
 			</div>
 			

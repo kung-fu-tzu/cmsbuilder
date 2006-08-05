@@ -1,8 +1,8 @@
-/CatData.pm////*///
-/CatDir.pm////*///
-/CatInterface.pm////*///
 /CatMember.pm////*///
 /CatObject.pm////*///
-/CatWare.pm////*///
+/CatDir.pm////*///
+/CatData.pm////*///
 /CatWareSimple.pm////*///
 /modCatalog.pm////*///
+/CatInterface.pm////*///
+/CatWare.pm////*///

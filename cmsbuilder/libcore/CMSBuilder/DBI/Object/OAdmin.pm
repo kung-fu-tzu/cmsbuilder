@@ -10,7 +10,7 @@ sub _rpcs {qw/admin_edit admin_path_html admin_path_js/}
 
 
 use CMSBuilder::Utils;
-use plgnUsers;
+use modUsers;
 
 sub admin_view_right
 {

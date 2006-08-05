@@ -4,7 +4,7 @@ package VTypesTest;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = 'CMSBuilder::DBI::TreeModule';
+our @ISA = qw(CMSBuilder::DBI::Array CMSBuilder::Admin::Tree CMSBuilder::Module);
 
 sub _cname {'Тест для в-типов'}
 sub _aview

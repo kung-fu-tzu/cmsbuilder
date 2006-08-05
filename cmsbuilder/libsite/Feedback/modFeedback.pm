@@ -7,7 +7,7 @@ use utf8;
 
 our $VERSION = 1.0.0.1;
 
-our @ISA = ('plgnSite::Member','CMSBuilder::DBI::TreeModule');
+our @ISA = qw(modSite::Member CMSBuilder::DBI::Array CMSBuilder::Admin::Tree CMSBuilder::Module);
 sub _cname {'Вопрос-ответ'}
 sub _add_classes {qw/!* fbTheme/}
 sub _aview {qw/name onpage emailme/}

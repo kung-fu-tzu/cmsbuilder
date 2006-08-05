@@ -4,7 +4,7 @@ package Page;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnSite::Member','CMSBuilder::DBI::Array');
+our @ISA = ('modSite::Member','CMSBuilder::DBI::Array');
 
 sub _cname {'Страница'}
 sub _aview {qw/name content submenu/}

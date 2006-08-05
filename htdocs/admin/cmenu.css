@@ -1,12 +1,12 @@
 ﻿.cmenu_menu
 {
-	border: #ff7300 2px solid;
+	border: #3991c9 2px solid;
 	padding: 0;
 	margin: 0;
-	filter: alpha(opacity=80,style=0);
-	opacity: 0.8;
+	filter: alpha(opacity=75,style=0);
+	opacity: 0.75;
 	position: absolute;
-	background-color: #e8eee8;
+	background-color: #f0f0f0;
 	font-size: 11px;
 	font-weight: bold;
 }
@@ -36,7 +36,7 @@
 .cmenu_item_on
 {
 	color: #ffffff;
-	background-color: #ff7300;
+	background-color: #3991c9;
 }
 .cmenu_item_on *
 {
@@ -61,7 +61,7 @@
 	padding: 4 10;
 	margin: 0 0 2 0;
 	color: #ffffff;
-	background-color: #ff7300;
+	background-color: #3991c9;
 	text-align: center
 }
 .cmenu_title *
@@ -75,11 +75,11 @@
 	left: 0px;
 	margin: 2px 0px;
 	height: 2px;
-	background-color: #ff7300;
+	background-color: #3991c9;
 }
 .jcalendar .dtd
 {
-	border: #ff7300 1px solid;
+	border: #3991c9 1px solid;
 	padding: 2 3;
 	cursor: pointer;
 	text-align: center;
@@ -120,7 +120,7 @@
 .jcalendar .dtd_on
 {
 	color: #ffffff;
-	background-color: #ff7300
+	background-color: #3991c9
 }
 .cmenu_title TD
 {

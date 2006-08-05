@@ -4,7 +4,7 @@ package modNews;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnSite::Member','CMSBuilder::DBI::TreeModule');
+our @ISA = qw(modSite::Member CMSBuilder::DBI::Array CMSBuilder::Admin::Tree CMSBuilder::Module);
 
 sub _cname {'Новости'}
 sub _classes {qw/News/}

@@ -1,9 +1,12 @@
-/DOM.pm/1.1/Sat Jun 24 00:48:45 2006//
+D/DOM////
+D/Handler////
+D/Parser////
+D/PatAct////
+/DOM.pm/1.1/Fri Jun 23 23:13:40 2006//
 /ESISParser.pm/1.1/Sat Jun 24 00:48:45 2006//
-/Parser.pm/1.1/Sat Jun 24 00:48:45 2006//
+/Parser.pm/1.1/Fri Jun 23 23:13:41 2006//
 /Perl2SAX.pm/1.1/Sat Jun 24 00:48:45 2006//
-/RegExp.pm/1.1/Sat Jun 24 00:48:45 2006//
+/RegExp.pm/1.1/Fri Jun 23 23:13:41 2006//
 /SAX2Perl.pm/1.1/Sat Jun 24 00:48:45 2006//
 /Simple.pm/1.1/Sat Jun 24 00:48:45 2006//
 /XSLT.pm/1.1/Sat Jun 24 00:48:45 2006//
-D

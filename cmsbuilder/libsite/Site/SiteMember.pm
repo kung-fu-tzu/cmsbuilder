@@ -1,12 +1,12 @@
 ﻿# (с) Леонов П.А., 2006
 
-package plgnSite::Member;
+package modSite::Member;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = 'plgnSite::Object';
+our @ISA = 'modSite::Object';
 
-sub _add_classes {qw/plgnSite::Member !modSite/}
+sub _add_classes {qw/modSite::Member !modSite/}
 
 #———————————————————————————————————————————————————————————————————————————————
 

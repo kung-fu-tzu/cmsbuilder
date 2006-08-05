@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>${site_title}</title>
-        <link rel="stylesheet" type="text/css" href="/plgnSite.css"/>
+        <link rel="stylesheet" type="text/css" href="/modSite.css"/>
         <meta name="description" content="${site_description}"/>
     </head>
     <body>

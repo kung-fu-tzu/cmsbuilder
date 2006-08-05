@@ -1,6 +1,6 @@
 ﻿# (с) Леонов П.А., 2006
 
-package plgnForms::Interface;
+package modForms::Interface;
 use strict qw(subs vars);
 use utf8;
 
@@ -103,8 +103,8 @@ sub forms_site_content
 			
 			print
 			'
-			<div class="plgn-forms">
-			<form action="?" method="post" onsubmit="return plgnForms_check(this,\'',$o->site_href,'\')">
+			<div class="mod-forms">
+			<form action="?" method="post" onsubmit="return modForms_check(this,\'',$o->site_href,'\')">
 			<input type="hidden" name="form-act" value="save"/>
 			';
 			

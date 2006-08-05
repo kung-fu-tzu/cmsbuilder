@@ -1,5 +1,6 @@
+D/Array///////
+D/Object///////
 /Array.pm////*///
-/CMS.pm////*///
 /Dynoprops.pm////*///
 /EventsInterface.pm////*///
 /FilteredArray.pm////*///
@@ -8,4 +9,5 @@
 /RPC.pm////*///
 /SimpleModule.pm////*///
 /TreeModule.pm////*///
+/CMS.pm////*///
 /VType.pm////*///

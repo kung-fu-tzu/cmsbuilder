@@ -25,7 +25,7 @@
 
 <div name="scrolldiv" class="scrolldiv">
 <div class="left_padding">
-<?eml CMSBuilder::Fileman->action(); ?>
+<?eml CMSBuilder::Admin::Fileman->action(); ?>
 </div>
 </div>
 

@@ -5,7 +5,7 @@ use strict qw(subs vars);
 use utf8;
 
 use Carp;
-use plgnUsers;
+use modUsers;
 use CMSBuilder::IO;
 use CMSBuilder::Utils;
 
@@ -422,8 +422,7 @@ sub table_fix
 	# проверка на изменение типа
 	for my $cn (keys(%cols))
 	{
-		next unless $p->{$cn} && $p->{$cn}{'type'};
-		#die "undefined $c->props->{'$cn'}{'type'}" unless $p->{$cn}{'type'};
+		next unless $p->{$cn};
 		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
 		$csql = $vt->table_cre($p->{$cn});
 		$csql =~ s/\s//g;
@@ -438,7 +437,6 @@ sub table_fix
 	# проверка на новые поля
 	for my $cn (keys(%$p))
 	{
-		next unless $p->{$cn}{'type'};
 		$vt = 'CMSBuilder::DBI::vtypes::'.$p->{$cn}{'type'};
 		next if ${$vt.'::virtual'} || $p->{$cn}{'virtual'};
 		

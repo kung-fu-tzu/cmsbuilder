@@ -1,6 +1,6 @@
 ﻿# (с) Леонов П.А., 2006
 
-package plgnTemplates::Interface;
+package modTemplates::Interface;
 use strict qw(subs vars);
 use utf8;
 

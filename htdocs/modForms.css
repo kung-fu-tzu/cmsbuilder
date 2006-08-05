@@ -1,0 +1,38 @@
+﻿.mod-forms .error
+{
+    border: solid 1px #dd0000;
+}
+
+.mod-forms .ok
+{
+    border: solid 1px #00dd00;
+}
+
+.mod-forms input, .mod-forms select, .mod-forms textarea
+{
+    border: solid 1px #888;
+}
+
+.mod-forms th
+{
+    padding: 3px 5px;
+    text-align: left;
+    font-weight: normal;
+}
+.mod-forms td
+{
+    padding: 3px 5px;
+    width: 1px;
+}
+
+
+.mod-forms table
+{
+    width: 100%;
+}
+
+.mod-forms .submit
+{
+    text-align: center;
+    margin: auto;
+}

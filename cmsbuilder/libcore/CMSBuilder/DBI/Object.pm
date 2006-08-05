@@ -11,8 +11,9 @@ our @ISA =
 	'CMSBuilder::DBI::Object::OBase',
 	
 	'CMSBuilder::DBI::RPC',
-	'CMSBuilder::DBI::CMS',
-	'CMSBuilder::DBI::EventsInterface'
+	'CMSBuilder::DBI::EventsInterface',
+
+	'CMSBuilder::Admin::CMSObject',
 );
 
 sub _cname {'Объект'}

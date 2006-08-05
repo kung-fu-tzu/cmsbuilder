@@ -1,10 +1,10 @@
 ﻿# (с) Леонов П.А., 2006
 
-package plgnSite::Data;
+package modSite::Data;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = 'plgnSite::Interface';
+our @ISA = 'modSite::Interface';
 
 sub _aview {qw/name template hidden title description/}
 

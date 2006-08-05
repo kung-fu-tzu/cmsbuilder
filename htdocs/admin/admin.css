@@ -213,15 +213,15 @@ TEXTAREA
 }
 .dragline
 {
-	border-bottom: #ff7300 2px solid;
+	border-bottom: #3991c9 2px solid;
 }
 .framehead
 {
 	padding: 2 16 2 16;
 	font-weight: bold;
-	border-bottom: #ff7300 2px solid;
+	border-bottom: #3991c9 2px solid;
 	height: 38px;
-	background-color: #e8eee8;
+	background-color: #e8ebee;
 	width: 100%;
 	vertical-align: middle;
 }
@@ -242,7 +242,7 @@ TEXTAREA
 {
 	text-align: center; /*IE*/
 	height: 20px;
-	background-color: #ff7300;
+	background-color: #3991c9;
 }
 .toolbar, .toolbar *
 {
@@ -307,7 +307,7 @@ TEXTAREA
 
 .object_dragover .subsel
 {
-	background-color: #ff7300;
+	background-color: #3991c9;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -319,7 +319,7 @@ TEXTAREA
     height: 100%;
 }
 
-.plgn_fileman .maintbl
+.mod_fileman .maintbl
 {
 	width: 100%;
 	margin: 16px 0;
@@ -327,13 +327,13 @@ TEXTAREA
 	border-bottom: solid 1px #606260;
 }
 
-.plgn_fileman .maintbl th
+.mod_fileman .maintbl th
 {
 	padding: 0 4px;
 	border-bottom: solid 1px #606260;
 }
 
-.plgn_fileman .maintbl td
+.mod_fileman .maintbl td
 {
 	padding: 0 4px;
 	border-left: solid 1px #606260;
@@ -341,12 +341,12 @@ TEXTAREA
 	white-space: nowrap;
 }
 
-.plgn_fileman .maintbl td td
+.mod_fileman .maintbl td td
 {
 	border: none;
 }
 
-.plgn_fileman .empty
+.mod_fileman .empty
 {
 	padding: 16px;
 	text-align: center;
@@ -384,7 +384,7 @@ TEXTAREA
 }
 .toolpanel .selected img
 {
-	border: 1px solid #ff7300;
+	border: 1px solid #3991c9;
 }
 .toolpanel a img
 {
@@ -395,7 +395,7 @@ TEXTAREA
 
 .pagesline
 {
-    border: #ff7300 1px solid;
+    border: #3991c9 1px solid;
 }
 .pagesline TD
 {
@@ -407,7 +407,7 @@ TEXTAREA
 {
     font-weight: bold;
     cursor: default;
-    background-color: #ff7300;
+    background-color: #3991c9;
 }
 .pagesline .drag
 {

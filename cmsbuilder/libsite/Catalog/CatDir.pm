@@ -4,7 +4,7 @@ package CatDir;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnCatalog::Member','CMSBuilder::DBI::Array');
+our @ISA = ('modCatalog::Member','CMSBuilder::DBI::Array');
 
 sub _cname {'Раздел'}
 sub _aview {qw/name photo desc onpage previewtype/}

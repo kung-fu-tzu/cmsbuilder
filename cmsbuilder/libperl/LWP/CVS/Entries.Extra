@@ -1,3 +1,6 @@
+D/Authen///////
+D/Protocol///////
+/media.types////*///
 /ConnCache.pm////*///
 /Debug.pm////*///
 /DebugFile.pm////*///
@@ -7,4 +10,3 @@
 /RobotUA.pm////*///
 /Simple.pm////*///
 /UserAgent.pm////*///
-/media.types////*///

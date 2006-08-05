@@ -6,11 +6,15 @@ package CMSBuilder::Config;
 use strict qw(subs vars);
 use utf8;
 
-use lib '/home/cmsbuilder2/cmsbuilder/libperl';
-#use lib '/home/cmsbuilder2/cmsbuilder/libperl/arch/freebsd4'; #FreeBSD 4.10-RELESE
+our $path_home;
 
-use lib '/home/cmsbuilder2/cmsbuilder/libcore';
-use lib '/home/cmsbuilder2/cmsbuilder/libsite';
+BEGIN { $path_home = '/home/cmsbuilder2'; }
+
+use lib $path_home . '/cmsbuilder/libperl';
+#use lib $path_home . '/cmsbuilder/libperl/arch/freebsd4'; #FreeBSD 4.10-RELESE
+
+use lib $path_home . '/cmsbuilder/libcore';
+use lib $path_home . '/cmsbuilder/libsite';
 
 
 sub init
@@ -19,16 +23,15 @@ sub init
 # Пути HTTP
 
 	our $http_eroot					= '/ee';
-	our $http_wwfiles				= $http_eroot.'/wwfiles';
-	our $http_errors				= $http_eroot.'/errors';
-	our $http_userdocs				= $http_eroot.'/userdocs';
+	our $http_wwfiles				= $http_eroot . '/wwfiles';
+	our $http_errors				= $http_eroot . '/errors';
+	our $http_userdocs				= $http_eroot . '/userdocs';
 	our $http_aroot					= '/admin';
-	our $http_adress				= 'http://'.$ENV{'SERVER_NAME'};
+	our $http_adress				= 'http://' . $ENV{'SERVER_NAME'};
 
 
 # Пути FS
 
-	our $path_home					= '/home/cmsbuilder2';
 	our $path_cmsb					= $path_home.'/cmsbuilder';
 	
 	our $path_libcore				= $path_cmsb . '/libcore';
@@ -39,22 +42,22 @@ sub init
 	our $path_sess					= $path_tmp . '/sessions';
 	
 	our $path_htdocs				= $path_home . '/htdocs';
-	our $path_aroot					= $path_htdocs.$http_aroot;
-	our $path_wwfiles				= $path_htdocs.$http_wwfiles;
-	our $path_userdocs				= $path_htdocs.$http_userdocs;
+	our $path_aroot					= $path_htdocs . $http_aroot;
+	our $path_wwfiles				= $path_htdocs . $http_wwfiles;
+	our $path_userdocs				= $path_htdocs . $http_userdocs;
 
 
 # Файлы
 
-	our $file_errorlog				= $path_etc.'/error.log';
+	our $file_errorlog				= $path_etc . '/error.log';
 
 
 # Сервер
 
 	#our $server_type				= 'cgi-server';
-	our $server_addres				= 'local:'.$path_etc.'/cgi_server_socket'; # 'tcp:127.0.0.1:9079';
-	our $server_cmd_start			= $path_home.'/cgi-bin/cmsb.pl server';
-	our $server_pidfile				= $path_etc.'/server_pid';
+	our $server_addres				= 'local:' . $path_etc . '/cgi_server_socket'; # 'tcp:127.0.0.1:9079';
+	our $server_cmd_start			= $path_home . '/cgi-bin/cmsb.pl server';
+	our $server_pidfile				= $path_etc . '/server_pid';
 	our $server_autostart			= 1;
 	our $server_daemon				= 1;
 	our $server_shdown				= 50;
@@ -66,9 +69,9 @@ sub init
 	our $mysql_user					= 'root';
 	our $mysql_pas					= 'pas';
 	our $mysql_port					= 3306;
-	our $mysql_data_source			= 'DBI:mysql:'.$mysql_base.';port='.$mysql_port;
-	our $mysql_dumpcmd				= 'mysqldump -u'.$mysql_user.' -p'.$mysql_pas.' -P'.$mysql_port.' --add-drop-table '.$mysql_base;
-	our $mysql_importcmd			=     'mysql -u'.$mysql_user.' -p'.$mysql_pas.' -P'.$mysql_port.' '.$mysql_base;
+	our $mysql_data_source			= 'DBI:mysql:' . $mysql_base . ';port=' . $mysql_port;
+	our $mysql_dumpcmd				= 'mysqldump -u' . $mysql_user . ' -p' . $mysql_pas . ' -P' . $mysql_port . ' --add-drop-table ' . $mysql_base;
+	our $mysql_importcmd			=     'mysql -u' . $mysql_user . ' -p' . $mysql_pas . ' -P' . $mysql_port . ' ' . $mysql_base;
 	our $mysql_charset				= 'utf8'; # cp1251
 	our $mysql_colcon				= 'utf8_general_ci'; # cp1251_general_ci
 

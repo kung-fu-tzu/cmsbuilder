@@ -4,7 +4,7 @@ package Client;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnForms::Interface','plgnUsers::UserMember','CMSBuilder::DBI::Object');
+our @ISA = ('modForms::Interface','modUsers::UserMember','CMSBuilder::DBI::Object');
 
 sub _cname {'Клиент'}
 sub _aview
@@ -47,7 +47,7 @@ sub _props
 #———————————————————————————————————————————————————————————————————————————————
 
 
-use plgnUsers;
+use modUsers;
 use CMSBuilder::Utils;
 
 

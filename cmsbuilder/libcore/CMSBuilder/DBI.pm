@@ -4,11 +4,10 @@ package CMSBuilder::DBI;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA =qw(CMSBuilder::Plugin Exporter);
+our @ISA = 'CMSBuilder::Module';
 
 use DBI;
 use Carp;
-use Exporter;
 
 use CMSBuilder::DBI::VType;
 
@@ -26,43 +25,19 @@ use CMSBuilder::DBI::Array;
 
 use CMSBuilder::DBI::RPC;
 use CMSBuilder::DBI::EventsInterface;
-use CMSBuilder::DBI::CMS;
-use CMSBuilder::DBI::Module;
-use CMSBuilder::DBI::SimpleModule;
-use CMSBuilder::DBI::TreeModule;
 
 use CMSBuilder::Utils;
-
-
-our @EXPORT = qw($dbh);
 
 #———————————————————————————————————————————————————————————————————————————————
 
 our
 (
-	$dbh,@vtypes,%cmenus,
+	$dbh,%cmenus,
 );
 
 #————————————————————————————— Интерфейсные функции ————————————————————————————
 
-sub plgn_load
-{
-	# Инклудим виртуальные типы ядра
-	for my $vt (listpms($CMSBuilder::Config::path_libcore.'/VTypes'))
-	{
-		require $CMSBuilder::Config::path_libcore.'/VTypes/'.$vt.'.pm';
-		push @vtypes, $vt;
-	}
-	
-	# Инклудим виртуальные типы пользователя
-	for my $vt (listpms($CMSBuilder::Config::path_libsite.'/VTypes'))
-	{
-		require $CMSBuilder::Config::path_libsite.'/VTypes/'.$vt.'.pm';
-		push @vtypes, $vt;
-	}
-}
-
-sub plgn_init
+sub mod_init
 {
 	my $c = shift;
 	
@@ -76,7 +51,7 @@ sub plgn_init
 	}
 }
 
-sub plgn_destruct
+sub mod_destruct
 {
 	$dbh->disconnect() unless $CMSBuilder::Config::dbi_keepalive;
 }

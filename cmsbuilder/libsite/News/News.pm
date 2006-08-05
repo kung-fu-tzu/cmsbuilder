@@ -4,7 +4,7 @@ package News;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnSite::Object','CMSBuilder::DBI::Object');
+our @ISA = ('modSite::Object','CMSBuilder::DBI::Object');
 
 sub _cname {'Новость'}
 sub _aview {qw/name content ndate/}

@@ -1,6 +1,6 @@
 ﻿# (с) Леонов П.А., 2005
 
-package plgnCatalog::Data;
+package modCatalog::Data;
 use strict qw(subs vars);
 use utf8;
 

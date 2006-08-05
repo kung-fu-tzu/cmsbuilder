@@ -4,7 +4,7 @@ package modRegistration;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnSite::Member','CMSBuilder::DBI::TreeModule');
+our @ISA = qw(modSite::Member CMSBuilder::DBI::Array CMSBuilder::Admin::Tree CMSBuilder::Module);
 
 sub _cname {'Регистрация'}
 sub _add_classes {qw/!*/}
@@ -15,13 +15,13 @@ sub _template_export {qw/userform/}
 
 sub _props
 {
-	'class'	=> { 'type' => 'ClassesList', 'class' => 'plgnUsers::UserMember', 'name' => 'Класс пользователей' },
+	'class'	=> { 'type' => 'ClassesList', 'class' => 'modUsers::UserMember', 'name' => 'Класс пользователей' },
 	'group'	=> { 'type' => 'ObjectsList', 'class' => 'UserGroup', 'name' => 'Создавать в группе' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————
 
-use plgnUsers;
+use modUsers;
 use CMSBuilder::Utils;
 
 
@@ -145,7 +145,7 @@ sub site_content
 				$o->{'group'}->elem_paste($tu);
 			};
 			
-			plgnUsers->login($tu->{'login'},$tu->{'pas'});
+			modUsers->login($tu->{'login'},$tu->{'pas'});
 			
 			sendmail
 			(
@@ -181,25 +181,25 @@ sub site_content
 	
 	if($r->{'act'} eq 'login')
 	{
-		if(plgnUsers->login($r->{'login'},$r->{'password'}))
+		if(modUsers->login($r->{'login'},$r->{'password'}))
 		{
 			print '<script>location.href = "/"</script>';
 		}
 		else
 		{
-			print '<div class="message"><span class="head">Ошибка!</span> ',plgnUsers->last_error(),'</div>';
+			print '<div class="message"><span class="head">Ошибка!</span> ',modUsers->last_error(),'</div>';
 		}
 	}
 	
 	if($r->{'act'} eq 'logout')
 	{
-		if(plgnUsers->logout())
+		if(modUsers->logout())
 		{
 			print '<script>location.href = "/"</script>';
 		}
 		else
 		{
-			print '<div class="message"><span class="head">Ошибка!</span> ',plgnUsers->last_error(),'</div>';
+			print '<div class="message"><span class="head">Ошибка!</span> ',modUsers->last_error(),'</div>';
 		}
 	}
 	

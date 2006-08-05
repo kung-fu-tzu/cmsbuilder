@@ -1,10 +1,10 @@
 ﻿# (с) Леонов П.А., 2006
 
-package plgnSite::Interface;
+package modSite::Interface;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = 'plgnTemplates::Interface';
+our @ISA = 'modTemplates::Interface';
 
 sub _template_export
 {qw/

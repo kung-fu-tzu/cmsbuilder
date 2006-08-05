@@ -1,0 +1,14 @@
+/GHTTP.pm////*///
+/cpan.pm////*///
+/data.pm////*///
+/file.pm////*///
+/ftp.pm////*///
+/gopher.pm////*///
+/http.pm////*///
+/http10.pm////*///
+/https.pm////*///
+/https10.pm////*///
+/loopback.pm////*///
+/mailto.pm////*///
+/nntp.pm////*///
+/nogo.pm////*///

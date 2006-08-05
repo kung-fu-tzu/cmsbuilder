@@ -1,12 +1,12 @@
 ﻿# (с) Леонов П.А., 2005
 
-package plgnCatalog::Member;
+package modCatalog::Member;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnCatalog::Object');
+our @ISA = ('modCatalog::Object');
 
-sub _add_classes {qw/!* plgnCatalog::Member !modCatalog/}
+sub _add_classes {qw/!* modCatalog::Member !modCatalog/}
 
 #———————————————————————————————————————————————————————————————————————————————
 

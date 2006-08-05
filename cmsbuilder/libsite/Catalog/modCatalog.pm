@@ -4,7 +4,7 @@ package modCatalog;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('plgnCatalog::Member','plgnSite::Member','CMSBuilder::DBI::TreeModule');
+our @ISA = qw(modCatalog::Member modSite::Member CMSBuilder::DBI::Array CMSBuilder::Admin::Tree CMSBuilder::Module);
 
 our $VERSION = 1.0.0.0;
 

@@ -9,17 +9,17 @@ use Exporter;
 our @ISA = 'Exporter';
 our @EXPORT =
 qw/
-&cmsb_classes &cmsb_modules &cmsb_plugins
+&cmsb_classes &cmsb_modules
 &cmsb_url &cmsb_url2classid &cmsb_classOK &cmsb_class_guess
-&cmsb_regpm &cmsb_pathload &cmsb_coreload &cmsb_siteload
+&cmsb_regpm &cmsb_modload
 $user $group
 &cmsb_event_reg &cmsb_event_unreg &cmsb_event_ro
 /;
 
 use Encode ();
 
-our $VERSION = 2.12.88.114;
-our $version = '2.12.88.114';
+our $VERSION = 2.12.88.113;
+our $version = '2.12.88.113';
 
 require CMSBuilder::Property;
 require CMSBuilder::Utils;
@@ -27,7 +27,8 @@ require CMSBuilder::EML;
 require CMSBuilder::MYURL;
 require CMSBuilder::IO;
 require CMSBuilder::DBI;
-require CMSBuilder::Plugin;
+require CMSBuilder::Module;
+require CMSBuilder::Admin;
 
 
 use CMSBuilder::Utils;
@@ -35,7 +36,7 @@ use CMSBuilder::IO;
 
 our
 (
-	@plugins,@classes,
+	@modules,@classes,
 	%dbo_cache,%oevents
 );
 
@@ -70,57 +71,50 @@ sub cmsb_event_unreg
 	return $olen != $#{$oevents{$type}};
 }
 
-sub cmsb_siteload
+sub cmsb_modload
 {
-	my $dir = shift;
+	my $mod = shift;
+	my $pls = $CMSBuilder::Config::path_libsite;
 	
-	return cmsb_pathload($CMSBuilder::Config::path_libsite.($dir?'/'.$dir:''),@_);
-}
-
-sub cmsb_coreload
-{
-	my $dir = shift;
+	return unless -d $pls . '/' . $mod;
 	
-	return cmsb_pathload($CMSBuilder::Config::path_libcore.($dir?'/'.$dir:''),@_);
-}
-
-sub cmsb_pathload
-{
-	my $dir = shift;
+	my @pms = listfiles($pls . '/' . $mod,'pm');
+	my @pls = listfiles($pls . '/' . $mod,'pl');
 	
-	# Инклудим пакеты
-	my @pms = listpms($dir);
 	for my $pm (@pms)
 	{
-		require( $dir.'/'.$pm.'.pm' );
-		cmsb_regpm($pm);
+		require $pls . '/' . $mod . '/' . $pm . '.pm';
+		cmsb_regpm($mod . '::' . $pm);
 	}
 	
-	return @pms;
+	for my $pl (@pls)
+	{
+		require $pls . '/' . $mod . '/' . $pl . '.pl';
+	}
+	
+	return 1;
 }
 
 sub cmsb_regpm
 {
 	for my $pm (@_)
 	{
-		@plugins = grep { $_ ne $pm } @plugins;
-		@classes = grep { $_ ne $pm } @classes;
-		
-		if($pm->isa('CMSBuilder::Plugin'))
+		if($pm->isa('CMSBuilder::Module'))
 		{
-			push @plugins, $pm;
+			@modules = grep { $_ ne $pm || (warn "redefine module '$_'") && 0 } @modules;
+			push @modules, $pm;
 		}
 		
 		if($pm->isa('CMSBuilder::DBI::Object'))
 		{
+			@classes = grep { $_ ne $pm || (warn "redefine class '$_'")  && 0 } @classes;
 			push @classes, $pm;
 		}
 	}
 }
 
-sub cmsb_plugins() { return @plugins; }
+sub cmsb_modules() { return @modules; }
 sub cmsb_classes() { return @classes; }
-sub cmsb_modules() { return grep { $_->isa('CMSBuilder::DBI::Module') } @classes; }
 
 sub cmsb_url
 {
@@ -186,16 +180,14 @@ sub ocache_clear()
 
 sub load
 {
-	@plugins = @classes = ();
+	@modules = @classes = ();
 	%oevents = ();
 	
 	cmsb_regpm('CMSBuilder::DBI'); # обязательно раньше всех
 	
-	cmsb_coreload();
-	cmsb_siteload();
-	map { cmsb_siteload($_) } listdirs($CMSBuilder::Config::path_libsite);
+	map { cmsb_modload($_) } listdirs($CMSBuilder::Config::path_libsite);
 	
-	for my $plg (@plugins){ $plg->plgn_load(); }
+	for my $mod (@modules){ $mod->mod_load(); }
 }
 
 sub init
@@ -204,7 +196,7 @@ sub init
 	
 	ocache_clear();
 	CMSBuilder::IO->start();
-	for my $plg (@plugins){ $plg->plgn_init(); }
+	for my $mod (@modules){ $mod->mod_init(); }
 }
 
 sub process
@@ -235,14 +227,14 @@ sub process
 
 sub destruct
 {
-	for my $plg (reverse @plugins){ $plg->plgn_destruct(); }
+	for my $mod (reverse @modules){ $mod->mod_destruct(); }
 	CMSBuilder::IO->stop();
 	ocache_clear();
 }
 
 sub unload
 {
-	for my $plg (reverse @plugins){ $plg->plgn_unload(); }
+	for my $mod (reverse @modules){ $mod->mod_unload(); }
 }
 
 1;
