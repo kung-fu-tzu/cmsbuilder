@@ -1,4 +1,4 @@
-﻿# (с) Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 # Глобальный конфигурационный файл билдера.
 
@@ -8,13 +8,13 @@ use utf8;
 
 our $path_home;
 
-BEGIN { $path_home = '/home/cmsbuilder2'; }
+BEGIN { $path_home = '/home/cmsbuilder3'; }
 
 use lib $path_home . '/cmsbuilder/libperl';
 #use lib $path_home . '/cmsbuilder/libperl/arch/freebsd4'; #FreeBSD 4.10-RELESE
 
-use lib $path_home . '/cmsbuilder/libcore';
-use lib $path_home . '/cmsbuilder/libsite';
+use lib $path_home . '/cmsbuilder/core';
+use lib $path_home . '/cmsbuilder/modules';
 
 
 sub init
@@ -34,8 +34,8 @@ sub init
 
 	our $path_cmsb					= $path_home.'/cmsbuilder';
 	
-	our $path_libcore				= $path_cmsb . '/libcore';
-	our $path_libsite				= $path_cmsb . '/libsite';
+	our $path_core					= $path_cmsb . '/core';
+	our $path_modules				= $path_cmsb . '/modules';
 	our $path_etc					= $path_cmsb . '/etc';
 	our $path_tmp					= $path_cmsb . '/tmp';
 	our $path_backup				= $path_cmsb . '/backup';
@@ -65,13 +65,14 @@ sub init
 
 # MySQL
 
-	our $mysql_base					= 'cmsbuilder2';
+	our $mysql_base					= 'cmsbuilder3';
 	our $mysql_user					= 'root';
 	our $mysql_pas					= 'pas';
+	our $mysql_host					= 'localhost';
 	our $mysql_port					= 3306;
-	our $mysql_data_source			= 'DBI:mysql:' . $mysql_base . ';port=' . $mysql_port;
-	our $mysql_dumpcmd				= 'mysqldump -u' . $mysql_user . ' -p' . $mysql_pas . ' -P' . $mysql_port . ' --add-drop-table ' . $mysql_base;
-	our $mysql_importcmd			=     'mysql -u' . $mysql_user . ' -p' . $mysql_pas . ' -P' . $mysql_port . ' ' . $mysql_base;
+	our $mysql_data_source			= "DBI:mysql:$mysql_base;host=$mysql_host;port=$mysql_port";
+	our $mysql_dumpcmd				= "/usr/local/bin/mysqldump -u $mysql_user -p$mysql_pas -P $mysql_port -h $mysql_host -Q --add-drop-table $mysql_base";
+	our $mysql_importcmd			=     "/usr/local/bin/mysql -u $mysql_user -p$mysql_pas -P $mysql_port $mysql_base";
 	our $mysql_charset				= 'utf8'; # cp1251
 	our $mysql_colcon				= 'utf8_general_ci'; # cp1251_general_ci
 
@@ -82,8 +83,8 @@ sub init
 	our $access_auto_off			= 1;
 	our $users_login_list			= 1;
 	our $users_pasoff				= 1;
-	our $user_admin					= 'User1';
-	our $user_guest					= 'User3';
+	our $user_admin					= 'modUsers::User1';
+	our $user_guest					= 'modUsers::User3';
 	our $admin_max_view_name_len	= 25;
 	our $admin_max_left				= 30;
 	our $autosave					= 0;
@@ -92,6 +93,7 @@ sub init
 	our $array_def_on_page			= 20;
 	our $dbi_inactivedestroy		= 0;
 	our $dbi_keepalive				= 1;
+	our $table_name_pfx 			= '';
 	
 	our $access_on_e = $access_on;
 
@@ -101,7 +103,7 @@ sub init
 	our @io_filters					= qw//; #fltXSLT fltGZIP
 	our @process_classes			= qw/CMSBuilder::MYURL CMSBuilder::EML/;
 	our $redirect_status			= '200';
-	our $slashobj_myurl				= 'modSite1';
+	our $slashobj_myurl				= 'modSite::modSite1';
 
 
 # CMS

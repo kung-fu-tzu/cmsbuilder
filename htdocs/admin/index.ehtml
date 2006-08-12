@@ -1,4 +1,4 @@
-﻿<?eml CMSFront::access(); ?>
+﻿<?eml modAdmin::Front::access(); ?>
 <html>
 <head>
 <title>Система администрирования</title>
@@ -18,9 +18,9 @@
 	<tr>
 		<td>&nbsp;</td>
 		<td width="30%">&nbsp;</td>
-		<td width="40%" id="aboutbox"><a href="/">На сайт...</a>
-		<a target="admin_right" href="about.html">О системе...</a>
-		<?eml CMSFront::user_xinfo('exit') ?></td>
+		<td width="40%" id="aboutbox"><a href="/">На сайт…</a>
+		<a target="admin_right" href="about.html">О системе…</a>
+		<?eml modAdmin::Front::user_xinfo('exit') ?></td>
 	</tr>
 	</table>
 </td>
@@ -35,12 +35,12 @@
 	<tr>
 		<?eml if($CMSBuilder::Config::have_left_frame){ ?>
 		<td id="id_left_border" class="bigborder bbv">&nbsp;</td>
-		<td width="<?eml CMSFront::user_xinfo('left_td_width') ?>" id="id_left_td" valign="top">
+		<td width="<?eml modAdmin::Front::user_xinfo('left_td_width') ?>" id="id_left_td" valign="top">
 		<table width="100%" height="100%">
 			<!-- left -->
 			<tr id="admin_left_tr">
 				<td>
-					<div id="left_panels_holder"><div id="top_panel_float"><?eml CMSFront::user_xinfo('main_menu') ?></div></div>
+					<div id="left_panels_holder"><div id="top_panel_float"><?eml modAdmin::Front::user_xinfo('main_menu') ?></div></div>
 					<iframe id="admin_left" name="admin_left" class="wide" frameborder="0"></iframe>
 				</td>
 			</tr>
@@ -59,12 +59,12 @@
 		</td>
 		
 		<td class="bigborder bbv" valign="top">
-			<img scr="img/null.gif" width="1" height="100">
-			<a href="hide"><img id="btn_treehide" alt="Скрыть дерево" src="img/left_hide.gif" onclick="return HideLeft();"></a>
-			<a href="show"><img id="btn_treeshow" alt="Показать дерево" style="display: none" src="img/left_show.gif" onclick="return ShowLeft();"></a>
+			<img scr="img/null.png" width="1" height="100">
+			<a href="hide"><img id="btn_treehide" alt="Скрыть дерево" src="img/left_hide.png" onclick="return HideLeft();"></a>
+			<a href="show"><img id="btn_treeshow" alt="Показать дерево" style="display: none" src="img/left_show.png" onclick="return ShowLeft();"></a>
 			
-			<img scr="img/null.gif" width="1" height="100">
-			<img style="cursor: w-resize" onmousedown="return CMS_Float_MD(this)" id="btn_treeresize" alt="Изменить размер" src="img/left_resize.gif">
+			<img scr="img/null.png" width="1" height="100">
+			<img style="cursor: w-resize" onmousedown="return CMS_Float_MD(this)" id="btn_treeresize" alt="Изменить размер" src="img/left_resize.png">
 		</td>
 		
 		<?eml }else{ ?>
@@ -96,7 +96,7 @@
 	<table>
 	<tr>
 		<td>&nbsp;</td>
-		<td width="10%"><?eml CMSFront::user_xinfo('name') ?> <div id="version">( <?eml print $CMSBuilder::version; ?> )</div></td>
+		<td width="10%"><?eml modAdmin::Front::user_xinfo('name') ?> <div id="version">( <?eml print $CMSBuilder::version; ?> )</div></td>
 	</tr>
 	</table>
 </td>
@@ -104,7 +104,7 @@
 
 </table>
 
-<iframe name="admin_temp" src="about:blank" class="wide" frameborder="0" style="display: none"></iframe>
+<iframe name="admin_temp" id="admin_temp" src="about:blank" class="wide" frameborder="0" style="display: none"></iframe>
 
 <table id="movemodalwindow" class="modalwindowbg" style="display: none">
     <tr>

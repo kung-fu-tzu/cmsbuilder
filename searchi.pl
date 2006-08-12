@@ -1,0 +1,1 @@
+﻿system('perl search.pl -i1');

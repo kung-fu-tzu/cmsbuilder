@@ -1,7 +1,0 @@
-redefine module 'modSite' at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 109.
-redefine class 'modSite' at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 115.
-redefine class 'Page' at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 115.
-redefine module 'modSite' at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 109.
-redefine class 'modSite' at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 115.
-redefine class 'Page' at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 115.
-Error 500: REDIRECT_STATUS ne "200" at /home/cmsbuilder2/cmsbuilder/libcore/CMSBuilder.pm line 211

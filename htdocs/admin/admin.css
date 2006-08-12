@@ -79,14 +79,27 @@ form
 	padding: 0;
 	margin: 0;
 }
+input[type=checkbox]
+{
+	//height: 1em;
+	margin: 0 0.25em 0 0;
+}
+
+/*————————————————————————————————————————————————————————————————————————————*/
+
 fieldset
 {
-	padding: 0 16px;
-	margin: 0 0 8px 0;
+	margin: 0 0 8px 0; padding: 8px;
+	position: relative;
 }
-fieldset .padd
+* HTML fieldset
 {
-	padding: 16px 0;
+	margin: 16px 0; padding: 16px;
+}
+* HTML fieldset legend
+{
+	position:absolute;
+	top:-0.6em; margin-bottom:-0.6em;
 }
 legend
 {
@@ -94,6 +107,13 @@ legend
 	font-weight: bold;
 	cursor: default;
 }
+fieldset td
+{
+	padding: 2px 8px;
+}
+
+/*————————————————————————————————————————————————————————————————————————————*/
+
 iframe.wide
 {
 	height: 100%;
@@ -106,14 +126,31 @@ iframe.wide
 	border: 2px solid red;
 }*/
 
-/*----------------------------------------------------------------------------*/
+legend.minus,
+legend.plus
+{
+	padding: 0 0 0 20px;
+	cursor: pointer;
+	background: left center no-repeat;
+}
+
+legend.minus
+{
+	background-image: url(img/minus.png);
+}
+
+legend.plus
+{
+	background-image: url(img/plus.png);
+}
+/*————————————————————————————————————————————————————————————————————————————*/
 
 TEXTAREA
 {
 	overflow: auto;
 }
 
-/*----------------------------------------------------------------------------*/
+/*————————————————————————————————————————————————————————————————————————————*/
 
 .admin_array_view
 {
@@ -133,7 +170,7 @@ TEXTAREA
 {
 	width: 50px; height: 50px;/**/
 	float: left;
-	border: solid 1px #606260;
+	border: solid 1px #606060;
 }
 .props_table div.file_acts a
 {
@@ -277,7 +314,7 @@ TEXTAREA
 	margin-bottom: 16px;
 	border: #000000 2px solid;
 	width: 40%;
-	position: absolute;
+	position: absolute; z-index: 50;
 	top: 42px;
 	//top: 4px;
 }
@@ -298,7 +335,7 @@ TEXTAREA
 	color: #ff7300;
 }
 
-/*----------------------------------------------------------------------------*/
+/*————————————————————————————————————————————————————————————————————————————*/
 
 .object_dragover *
 {
@@ -310,7 +347,7 @@ TEXTAREA
 	background-color: #3991c9;
 }
 
-/*----------------------------------------------------------------------------*/
+/*————————————————————————————————————————————————————————————————————————————*/
 
 .scrolldiv
 {
@@ -352,7 +389,7 @@ TEXTAREA
 	text-align: center;
 }
 
-/*----------------------------------------------------------------------------*/
+/*————————————————————————————————————————————————————————————————————————————*/
 
 .togpanell
 {
@@ -371,7 +408,7 @@ TEXTAREA
 	padding: 4px 8px 8px 4px;
 }
 
-/*----------------------------------------------------------------------------*/
+/*————————————————————————————————————————————————————————————————————————————*/
 
 .toolpanel a
 {
@@ -472,11 +509,11 @@ TEXTAREA
 
 #tbpanel
 {
-	background: url(img/bg_top.gif) left top repeat-x;
+	background: #3991c9 url(img/bg_top.png) left top repeat-x;
 }
 #tbstatus
 {
-	background: url(img/bg_btm.gif) left bottom repeat-x;
+	background: #3991c9 url(img/bg_btm.png) left bottom repeat-x;
 }
 #tbstatus #version
 {
@@ -492,7 +529,7 @@ TEXTAREA
 #aboutbox a
 {
 	background-position: left center;
-	background-image: url(img/href.gif);
+	background-image: url(img/href.png);
 	background-repeat: no-repeat;
 	padding: 0 0 0 10px;
 	margin: 0 10px;
@@ -519,15 +556,11 @@ TEXTAREA
 	margin-left: auto;		/*FF*/
 	margin-right: auto;		/*FF*/
 }
-#aview_additional td
-{
-	padding: 4px 8px;
-}
 
 #fixedbar
 {
 	position: fixed;
-	//position: absolute;
+	//position: absolute; z-index: 20;
 	left: 0;
 	top: 0;
 	top: expression(

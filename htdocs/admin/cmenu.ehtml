@@ -1,2 +1,2 @@
-﻿<?eml CMSFront::access(); ?>
-<?eml CMSFront::rpccmenu(); ?>
+﻿<?eml modAdmin::Front::access(); ?>
+<?eml modAdmin::Front::rpccmenu(); ?>

@@ -1,4 +1,4 @@
-﻿<?eml CMSFront::access(); ?><html>
+﻿<?eml modAdmin::Front::access(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css">
 <link href="admin.css" rel="stylesheet" type="text/css">
@@ -10,21 +10,22 @@
 <script language="JavaScript" src="cmenu.js"></script>
 
 <table id="fixedbar"><tr><td class="framehead">
-Элемент: <?eml CMSFront::path_html() ?>
+Элемент: <?eml modAdmin::Front::path_html() ?>
 </td></tr></table>
 
 <div id="right_content">
-	<?eml CMSFront::right() ?>
+	<?eml modAdmin::Front::right() ?>
 </div>
 
 <script language="JavaScript">
-<?eml CMSFront::path_js() ?>
-<?eml CMSFront::jscript(); ?>
+<?eml modAdmin::Front::path_js() ?>
+<?eml modAdmin::Front::jscript(); ?>
 
 try
 {
-	main_form.focus();
-	main_form.elements[0].focus();
+	var mf = document.getElementById("main_form");
+	mf.focus();
+	mf.elements[0].focus();
 }
 catch(T){}
 

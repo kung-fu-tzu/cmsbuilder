@@ -15,21 +15,21 @@
 {
 	background-position: 16px top;
 	padding-left: 16px;
-	background-image: url(img/treebg.gif);
+	background-image: url(img/treebg.png);
 	background-repeat: repeat-y;
 	background-color: #f7f7f7;
 }
 .ctree .line
 {
 	background-position: left top;
-	background-image: url(img/treebgnorm.gif);
+	background-image: url(img/treebgnorm.png);
 	background-repeat: no-repeat;
 	white-space: nowrap;
 }
 .ctree .line_last
 {
 	background-position: left top;
-	background-image: url(img/treebglast.gif);
+	background-image: url(img/treebglast.png);
 	background-repeat: no-repeat;
 	background-color: #f7f7f7;
 	white-space: nowrap;
@@ -37,7 +37,7 @@
 .ctree .line_first
 {
 	background-position: left top;
-	background-image: url(img/treebgfirst.gif);
+	background-image: url(img/treebgfirst.png);
 	background-repeat: no-repeat;
 	background-color: #f7f7f7;
 	white-space: nowrap;
@@ -46,6 +46,6 @@
 {
 	background-position: 16px top;
 	padding-left: 16px;
-	background-image: url(img/treebg.gif);
+	background-image: url(img/treebg.png);
 	background-repeat: repeat-y
 }

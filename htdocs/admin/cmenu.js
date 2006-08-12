@@ -36,7 +36,7 @@ function OnContext(cmenu,e)
 	try
 	{
 		if(!x && !y)
-		x = event.x + body.scrollLeft, y = event.y + body.scrollTop;
+		x = event.clientX + body.scrollLeft, y = event.clientY + body.scrollTop;
 	}
 	catch(Error){}
 	
@@ -443,17 +443,15 @@ function JMIHref_onclick()
 {
 	this.JMenuItem_relese();
 	
-	if(this.target)
-	{
-		this.target.location.href = this.href;
-	}
-	else
-	{
-		if(this.targ) this.targ.location.href = this.href;
-		
-		if(CMS_HaveParent()) parent.admin_right.location.href = this.href;
-		else admin_right.location.href = this.href;
-	}
+	var frame;
+	var fname = this.target || this.targ || "admin_right";
+	
+	if(CMS_HaveParent()) frame = parent.document.getElementById(fname);
+	else frame = document.getElementById(fname);
+	
+	//alert(frame);
+	//frame.document.location.href = this.href;
+	frame.src = this.href;
 }
 
 function JMIHref_onmouseover()
@@ -501,7 +499,6 @@ function JMIConfirmCode(itext,ihref,targ,code)
 	var nobj;
 	nobj = JMIHref(itext,ihref,targ);
 	nobj.href = ihref;
-	nobj.target = targ;
 	nobj.code = code;
 	
 	nobj.onclick		= nobj.JMIConfirmCode_onclick	= JMIConfirmCode_onclick;
@@ -526,7 +523,6 @@ function JMIConfirm(itext,ihref,targ,text)
 	var nobj;
 	nobj = JMIHref(itext,ihref,targ);
 	nobj.href = ihref;
-	nobj.target = targ;
 	nobj.text = text;
 	
 	nobj.onclick		= nobj.JMIConfirm_onclick	= JMIConfirm_onclick;
@@ -537,7 +533,7 @@ function JMIConfirm(itext,ihref,targ,text)
 
 //———————————————— Класс линии-разделителя. Основан на: JBox ———————————————————
 
-function JHR()
+function JMIHR()
 {
 	var nobj;
 	nobj = JBox('DIV');

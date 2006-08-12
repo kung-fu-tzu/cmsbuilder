@@ -4,7 +4,7 @@ use strict qw(subs vars);
 
 BEGIN
 {
-	require '/home/cmsbuilder2/cmsbuilder/Config.pm';
+	require '/home/cmsbuilder3/cmsbuilder/Config.pm';
 }
 
 use CMSBuilder::Starter;

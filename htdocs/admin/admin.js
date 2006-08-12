@@ -12,6 +12,22 @@ var flt_ss;
 var flt_mx;
 var flt_tw;
 
+function catchAttributeToForm(e,frm_id,attr_name,fld_name)
+{
+	e = e || window.event;
+	
+	var frm = document.getElementById(frm_id);
+	var fld = frm.elements[fld_name];
+	
+	var elem = e.srcElement || e.target;
+	elem = elem.parentNode.parentNode;
+	//alert(elem.tagName);
+	
+	fld.value = elem.getAttribute(attr_name);
+	
+	frm.submit();
+}
+
 function CMS_Float_MD(obj)
 {
 	flt_mx = event.x;
@@ -125,7 +141,7 @@ function SetOnChange(obj)
 	alla = obj.all;
 	for(i=0;i<alla.length;i++)
 	{
-		//document.write("<img src=\"img/null.gif\" height=\"1\" width=\"",u*10,"\">[",alla[i].tagName,"]<br>");
+		//document.write("<img src=\"img/null.png\" height=\"1\" width=\"",u*10,"\">[",alla[i].tagName,"]<br>");
 		SetOnChange(alla[i]);
 	}
 }
@@ -138,18 +154,40 @@ function CMS_FMTogleE(){
 		files_list.contentEditable = 'inherit', files_list.className = '';
 }
 
+function CMS_view_ShowHide(obj)
+{
+	var fldl,div;
+	
+	fldl = obj.parentNode;
+	div = fldl.childNodes[1];
+	//alert(fldl.tagName); alert(div.tagName);
+	
+	if(div.style.display == "none")
+	{
+		div.style.display = "block";
+		obj.className = "minus";
+		document.cookie = obj.getAttribute('for') + '=s&1;';
+	}
+	else
+	{
+		div.style.display = "none";
+		obj.className = "plus";
+		document.cookie = obj.getAttribute('for') + '=s&0;';
+	}
+}
+
 function ShowHide(obj,dot)
 {
 	if(obj.style.display == "none")
 	{
 		obj.style.display = "block";
-		dot.src = "img/minus.gif";
+		dot.src = "img/minus.png";
 		document.cookie = obj.id + '=s&1;';
 	}
 	else
 	{
 		obj.style.display = "none";
-		dot.src = "img/plus.gif";
+		dot.src = "img/plus.png";
 		document.cookie = obj.id + '=s&0;';
 	}
 }
@@ -183,9 +221,9 @@ function getCookie(name)
 }
 
 
-function doDel()
+function deleteConfirm(name)
 {
-	return window.confirm('Удалить?');
+	return window.confirm("Удалить" + (name ? ' "' + name + '"' : "") +"?");
 }
 
 var SelectMod_old;
@@ -233,7 +271,7 @@ function CMS_ShowMe(url)
 	
 	if(document.all['treenode_'+url])
 	{
-		document.all['treenode_'+url].src = "img/minus.gif";
+		document.all['treenode_'+url].src = "img/minus.png";
 	}
 }
 
@@ -327,7 +365,7 @@ function CMS_array_can_add(mcn,cn)
 
 function CMS_url2classid(url)
 {
-	var urla = url.replace(/^([A-Za-z\.]+)(\d+)$/,"$1-$2").split(/\-/);
+	var urla = url.replace(/^([\w\.\:]+?)(\d+)$/,"$1-$2").split(/\-/);
 	
 	var res = new Object;
 	res.cn = urla[0];

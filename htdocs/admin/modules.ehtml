@@ -1,4 +1,4 @@
-﻿<?eml CMSFront::access(); ?><html>
+﻿<?eml modAdmin::Front::access(); ?><html>
 <head>
 <link href="cmenu.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" type="text/css" href="admin.css" />
@@ -7,10 +7,10 @@
 <script language="JavaScript" src="admin.js"></script>
 <script language="JavaScript" src="cmenu.js"></script>
 
-<?eml CMSFront::modules(); ?>
+<?eml modAdmin::Front::modules(); ?>
 
 <script language="JavaScript">
-<?eml CMSFront::dnd(); ?>
+<?eml modAdmin::Front::dnd(); ?>
 </script>
 
 </body>

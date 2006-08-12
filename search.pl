@@ -1,4 +1,6 @@
 ﻿use File::Find;
+use Getopt::Std;
+use strict;
 use utf8;
 
 our @exts = qw/cgi pl pm ehtml php tpl htaccess conf js css/;
@@ -7,12 +9,22 @@ our $what;
 
 our
 (
-	$dircnt,$i,$out,$cnt
+	$dircnt,$i,$out,$cnt,$cfunc
 );
 
 $| = 1;
 
 sub cnt { if($_ !~ m/$pat/oi){ return; } $dircnt++; }
+
+sub compare
+{
+	return $_[0] =~ m/$what/
+}
+
+sub comparei
+{
+	return $_[0] =~ m/$what/i
+}
 
 sub p
 {
@@ -27,13 +39,13 @@ sub p
 	my $strnum;
 	my $f = 0;
 	
-	while($str = <$fh>)
+	while(my $str = <$fh>)
 	{
 		$strnum++;
 		
-		if($str =~ m/$what/i)
+		if(&$cfunc($str))
 		{
-			unless($f){ $out .= "\n[$_]\n" }
+			unless($f){ $out .= "\n[${File::Find::dir}/$_]\n" }
 			$f = 1;
 			
 			$cnt++;
@@ -79,18 +91,23 @@ sub pps
 
 sub main
 {
-	$what = $ARGV[0];
+	#print @ARGV,"\n";
+	my $opts = {};
+	getopt('irs', $opts);
+	
+	$cfunc = $opts->{'i'} ? \&comparei : \&compare;
+	#print $opts->{'i'}, $opts->{'i'} ? 'comparei' : 'compare';
 	
 	while(1)
 	{
-		print 'Enter search string: '.$ARGV[0];
+		print 'Enter search string: ';
 		my $str = <STDIN>;
 		chomp($str);
 		
 		if(length($str))
 		{
 			$what = $str;
-			$what =~ s#(\W)#\\$1#g;
+			$what =~ s#(\W)#\\$1#g unless $opts->{'r'};
 		}
 		
 		search();
