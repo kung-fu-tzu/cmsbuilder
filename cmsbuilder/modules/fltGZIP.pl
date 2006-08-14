@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package fltGZIP;
 use strict qw(vars subs);

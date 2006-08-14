@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modTemplates::Dir;
 use strict qw(subs vars);
@@ -12,7 +12,7 @@ sub _add_classes {qw(modTemplates::Template)}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'length' => 25, 'name' => 'Название' },
+	name		=> { type => 'string', length => 25, name => 'Название' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

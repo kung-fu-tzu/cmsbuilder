@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::vtypes::img;
 use strict qw(subs vars);
@@ -8,7 +8,7 @@ our @ISA = 'CMSBuilder::DBI::vtypes::file';
 our $filter = 1;
 our $dont_html_filter = 1;
 
-# 'photo'		=> { 'type' => 'img', 'msize' => 100, 'ext' => [qw/bmp jpg jpeg gif png/], 'name' => 'Картинка' },
+# photo		=> { type => 'img', msize => 100, ext => [qw/bmp jpg jpeg gif png/], name => 'Картинка' },
 
 
 sub filter_load

@@ -1,4 +1,4 @@
-# CMSBuilder © Леонов П. А., 2006
+# CMSBuilder © Леонов П. А., 2005-2006
 
 package modRecycleBin::UserHook;
 use strict qw(subs vars);
@@ -8,7 +8,7 @@ sub _aview {'recyclebin'}
 
 sub _props
 {
-	'recyclebin'		=> { 'type' => 'object', 'class' => 'modRecycleBin::UserBin', 'name' => 'Корзина' },
+	recyclebin		=> { type => 'object', class => 'modRecycleBin::UserBin', name => 'Корзина' },
 }
 
 

@@ -1,19 +1,16 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::vtypes::ClassesList;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = 'CMSBuilder::DBI::VType';
+our @ISA = qw(CMSBuilder::DBI::VType);
 
 #—————————————————————————————————— Список —————————————————————————————————————
 
 use CMSBuilder;
 
-sub table_cre
-{
-	return " VARCHAR(50) ";
-}
+sub table_cre {'VARCHAR(50)'}
 
 sub aview
 {
@@ -26,7 +23,7 @@ sub aview
 	{
 		return
 		'
-		<select disabled>
+		<select disabled="true">
 			<option>'.$val->cname().'</option>
 		</select>
 		';
@@ -34,7 +31,7 @@ sub aview
 	
 	my $ret = '<select name="'.$name.'">';
 	
-	unless($val){ $ret .= '<option value="" selected>'.$p->{$name}{'nulltext'}.'</option>'; }
+	unless($val){ $ret .= '<option value="" selected="true">'.$p->{$name}{'nulltext'}.'</option>'; }
 	elsif($p->{$name}{'isnull'}){ $ret .= '<option value="">'.$p->{$name}{'nulltext'}.'</option>'; }
 	
 	for my $cn (grep {$_->isa($p->{$name}{'class'})} cmsb_classes())

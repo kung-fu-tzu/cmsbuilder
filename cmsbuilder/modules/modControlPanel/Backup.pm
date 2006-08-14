@@ -13,10 +13,10 @@ sub _rpcs {keys %{{_simplem_menu()}}}
 
 sub _simplem_menu
 {
-	'cpanel_backup'				=> { -name => 'Резервная копия', -icon => 'icons/backup.png' },
-		'fileman_view'			=> { -name => 'Список архивов', -icon => 'icons/Dir.png', -papa => 'cpanel_backup' },
-		'cpanel_backup_create'	=> { -name => 'Создать…', -icon => 'icons/backup.png', -papa => 'cpanel_backup' },
-		'cpanel_backup_restore'	=> { -name => 'Восстановить', -icon => 'icons/backup.png', -papa => 'cpanel_backup', -hide => 1},
+	cpanel_backup				=> { -name => 'Резервная копия', -icon => 'icons/backup.png' },
+	fileman_view				=> { -name => 'Список архивов', -icon => 'icons/Dir.png', -papa => 'cpanel_backup' },
+	cpanel_backup_create		=> { -name => 'Создать…', -icon => 'icons/backup.png', -papa => 'cpanel_backup' },
+	cpanel_backup_restore		=> { -name => 'Восстановить', -icon => 'icons/backup.png', -papa => 'cpanel_backup', -hide => 1},
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -113,7 +113,7 @@ our $zitems =
 
 our $zfuncs_cre =
 {
-	'tree' => sub
+	tree => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -123,7 +123,7 @@ our $zfuncs_cre =
 		return 1;
 	},
 	
-	'file' => sub
+	file => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -133,7 +133,7 @@ our $zfuncs_cre =
 		return 1;
 	},
 	
-	'command' => sub
+	command => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -146,7 +146,7 @@ our $zfuncs_cre =
 		return 1;
 	},
 	
-	'base' => sub
+	base => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -162,7 +162,7 @@ our $zfuncs_cre =
 
 our $zfuncs_have =
 {
-	'tree' => sub
+	tree => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -174,7 +174,7 @@ our $zfuncs_have =
 		return (@mbs > 0);
 	},
 	
-	'file' => sub
+	file => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -182,7 +182,7 @@ our $zfuncs_have =
 		return $zip->memberNamed($it->{'-zip'});
 	},
 	
-	'command' => sub
+	command => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -190,7 +190,7 @@ our $zfuncs_have =
 		return $zip->memberNamed($it->{'-zip'});
 	},
 	
-	'base' => sub
+	base => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -201,7 +201,7 @@ our $zfuncs_have =
 
 our $zfuncs_res =
 {
-	'tree' => sub
+	tree => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -211,7 +211,7 @@ our $zfuncs_res =
 		return 1;
 	},
 	
-	'file' => sub
+	file => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -221,7 +221,7 @@ our $zfuncs_res =
 		return 1;
 	},
 	
-	'command' => sub
+	command => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -237,7 +237,7 @@ our $zfuncs_res =
 		return 1;
 	},
 	
-	'base' => sub
+	base => sub
 	{
 		my $zip = shift;
 		my $it = shift;
@@ -322,7 +322,7 @@ sub cpanel_backup_restore
 		}
 		else
 		{
-			print '<tr><td>',$it->{'-text'},':</td><td><input type="checkbox" name="',$it->{'-name'},'" disabled></td></tr>';
+			print '<tr><td>',$it->{'-text'},':</td><td><input type="checkbox" name="',$it->{'-name'},'" disabled="true"></td></tr>';
 		}
 	}
 	

@@ -104,10 +104,7 @@ sub elem
 	
 	my ($to) = $o->get_interval($enum,$enum);
 	
-	unless($to)
-	{
-		print STDERR 'Trying to get not existed element "'.$enum.'", from "'.$o->myurl().'"'."\n";
-	}
+	$^W && warn 'Trying to get not existed element "' . $enum . '", from "' . $o->myurl() . '"'."\n" unless $to;
 	
 	return $to;
 }

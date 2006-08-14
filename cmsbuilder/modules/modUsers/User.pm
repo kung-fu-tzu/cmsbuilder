@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2004-2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modUsers::User;
 use strict qw(subs vars);
@@ -12,8 +12,8 @@ sub _have_icon {1}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'name' => 'Имя' },
-	'email'		=> { 'type' => 'string', 'name' => 'E-Mail' },
+	name		=> { type => 'string', name => 'Имя' },
+	email		=> { type => 'string', name => 'E-Mail' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -40,7 +40,7 @@ sub cre
 	
 	my $o = $c->SUPER::cre(@_);
 	
-	$o->ochown($o, 'r' => 1);
+	$o->ochown($o, r => 1);
 }
 
 

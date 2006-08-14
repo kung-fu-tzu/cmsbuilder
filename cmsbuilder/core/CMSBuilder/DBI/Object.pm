@@ -1,4 +1,4 @@
-﻿# (с) Леонов П.А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::Object;
 use strict qw(subs vars);
@@ -11,7 +11,7 @@ our @ISA =
 	'CMSBuilder::DBI::Object::OBase',
 	
 	'CMSBuilder::DBI::RPC',
-	'CMSBuilder::DBI::EventsInterface',
+	#'CMSBuilder::DBI::EventsInterface',
 
 	'modAdmin::CMSObject',
 );

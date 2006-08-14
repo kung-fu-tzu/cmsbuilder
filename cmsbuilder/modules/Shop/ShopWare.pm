@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modShop::Ware;
 use strict qw(subs vars);
@@ -8,8 +8,8 @@ sub _aview {qw/name price qnt tobasket/}
 
 sub _props
 {
-	'qnt'		=> { 'type' => 'int', 'name' => 'Количество' }, # quantity
-	'tobasket'	=> { 'type' => 'moveToBasket', 'name' => 'В корзину' },
+	qnt		=> { type => 'int', name => 'Количество' }, # quantity
+	tobasket	=> { type => 'moveToBasket', name => 'В корзину' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

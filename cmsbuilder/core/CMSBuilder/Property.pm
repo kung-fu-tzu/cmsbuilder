@@ -1,4 +1,4 @@
-﻿# (с) Леонов П.А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::Property;
 use strict qw(subs vars);

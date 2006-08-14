@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modTemplates::Template;
 use strict qw(subs vars);
@@ -11,8 +11,8 @@ sub _aview {qw(name content)}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'length' => 25, 'name' => 'Название' },
-	'content'	=> { 'type' => 'html', 'height' => '550px', 'full' => 1, 'name' => 'Страница' },
+	name		=> { type => 'string', length => 25, name => 'Название' },
+	content	=> { type => 'html', height => '550px', full => 1, name => 'Страница' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -41,12 +41,12 @@ sub parse
 		last if($i++ > 50);
 	};
 	
-	while($cont =~ s/\${(\S+)\.(\w+)}/$1->template_call($2,$r)/ge)
+	while($cont =~ s/\${(\S+?)\.(\w+)}/$1->template_call($2,$r)/ge)
 	{
 		last if($i++ > 50);
 	};
 	
-	while($cont =~ s/\${(\S+)\-\>(\w+)}/(cmsb_url($1) || die "template_call for undef cmsb_url($1)")->template_call($2,$r)/ge)
+	while($cont =~ s/\${(\S+?)\-\>(\w+)}/(cmsb_url($1) || die "template_call for undef cmsb_url($1)")->template_call($2,$r)/ge)
 	{
 		last if($i++ > 50);
 	}

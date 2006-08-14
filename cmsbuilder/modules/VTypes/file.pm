@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::vtypes::file;
 use strict qw(subs vars);
@@ -10,7 +10,7 @@ our $dont_html_filter = 1;
 # Содержимое файла и так не фильтруется - $val содержит имя файла.
 # А данные читаются из потока.
 
-# 'file'		=> { 'type' => 'file', 'msize' => 100, 'ext' => [qw/zip doc xls txt/], 'name' => 'Картинка' },
+# file		=> { type => 'file', msize => 100, ext => [qw/zip doc xls txt/], name => 'Картинка' },
 
 # Любой файл ######################################################
 

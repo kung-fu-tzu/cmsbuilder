@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modSite::modSite;
 use strict qw(subs vars);
@@ -14,12 +14,12 @@ sub _have_icon {1}
 sub _template_export {qw(mainmenu onmain onpage)}
 sub _props
 {
-	'bigname'		=> { 'type' => 'string', 'name' => 'Название проекта' },
-	'title_index'	=> { 'type' => 'string', 'name' => 'Заголовок на главной' },
-	'title'			=> { 'type' => 'string', 'name' => 'Постоянная часть заголовка' },
-	'email'			=> { 'type' => 'string', 'length' => 50, 'name' => 'E-mail администратора' },
-	'address'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Адрес сайта' },
-	'content'		=> { 'type' => 'miniword', 'name' => 'Текст' },
+	bigname		=> { type => 'string', name => 'Название проекта' },
+	title_index	=> { type => 'string', name => 'Заголовок на главной' },
+	title			=> { type => 'string', name => 'Постоянная часть заголовка' },
+	email			=> { type => 'string', length => 50, name => 'E-mail администратора' },
+	address		=> { type => 'string', length => 50, name => 'Адрес сайта' },
+	content		=> { type => 'miniword', name => 'Текст' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

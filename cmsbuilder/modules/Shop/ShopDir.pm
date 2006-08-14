@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modShop::Dir;
 use strict qw(subs vars);
@@ -8,7 +8,7 @@ sub _aview {qw/asware/}
 
 sub _props
 {
-	'asware'	=> { 'type' => 'bool', 'name' => 'Выводить как товар' }, # quantity
+	asware	=> { type => 'bool', name => 'Выводить как товар' }, # quantity
 }
 
 #———————————————————————————————————————————————————————————————————————————————

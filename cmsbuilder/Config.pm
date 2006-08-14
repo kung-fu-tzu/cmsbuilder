@@ -71,7 +71,7 @@ sub init
 	our $mysql_host					= 'localhost';
 	our $mysql_port					= 3306;
 	our $mysql_data_source			= "DBI:mysql:$mysql_base;host=$mysql_host;port=$mysql_port";
-	our $mysql_dumpcmd				= "/usr/local/bin/mysqldump -u $mysql_user -p$mysql_pas -P $mysql_port -h $mysql_host -Q --add-drop-table $mysql_base";
+	our $mysql_dumpcmd				= "/usr/local/bin/mysqldump -u $mysql_user -p$mysql_pas -P $mysql_port -h $mysql_host -Q --compatible=mysql40 --add-drop-table $mysql_base";
 	our $mysql_importcmd			=     "/usr/local/bin/mysql -u $mysql_user -p$mysql_pas -P $mysql_port $mysql_base";
 	our $mysql_charset				= 'utf8'; # cp1251
 	our $mysql_colcon				= 'utf8_general_ci'; # cp1251_general_ci

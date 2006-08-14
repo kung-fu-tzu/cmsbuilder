@@ -4,17 +4,17 @@ package modNews::News;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('modSite::Object','CMSBuilder::DBI::Object');
+our @ISA = qw(modSite::Object CMSBuilder::DBI::Object);
 
 sub _cname {'Новость'}
-sub _aview {qw/name content ndate/}
+sub _aview {qw(name content ndate)}
 sub _have_icon {1}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'length' => 100, 'name' => 'Заголовок' },
-	'content'	=> { 'type' => 'miniword', 'name' => 'Текст' },
-	'ndate'		=> { 'type' => 'date', 'name' => 'Дата' }
+	name		=> { type => 'string', length => 100, name => 'Заголовок' },
+	content		=> { type => 'miniword', name => 'Текст' },
+	ndate		=> { type => 'date', name => 'Дата' }
 }
 
 #———————————————————————————————————————————————————————————————————————————————

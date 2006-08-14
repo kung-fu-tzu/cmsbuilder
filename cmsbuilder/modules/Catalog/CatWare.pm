@@ -1,17 +1,17 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modCatalog::Ware;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('modCatalog::Member');
+our @ISA = qw(modCatalog::Member);
 
-sub _aview {qw/price/}
+sub _aview {qw(price)}
 sub _have_icon {'icons/CatWare.png'}
 
 sub _props
 {
-	'price'		=> { 'type' => 'int', 'name' => 'Цена' },
+	price		=> { type => 'int', name => 'Цена' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

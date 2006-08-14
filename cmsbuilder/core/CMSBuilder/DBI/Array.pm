@@ -1,4 +1,4 @@
-﻿# (с) Леонов П.А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::Array;
 use strict qw(subs vars);
@@ -14,7 +14,7 @@ our @ISA =
 );
 
 sub _cname {'Массив'}
-sub _props {'onpage' => { 'type' => 'int', 'name' => 'Элементов на странице' }}
+sub _props {onpage => { type => 'int', name => 'Элементов на странице' }}
 
 #———————————————————————————————————————————————————————————————————————————————
 

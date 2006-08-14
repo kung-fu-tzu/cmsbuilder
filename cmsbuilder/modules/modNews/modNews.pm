@@ -15,7 +15,7 @@ sub _template_export {qw(newsline)}
 
 sub _props
 {
-	'name'	=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
+	name		=> { type => 'string', length => 50, name => 'Название' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

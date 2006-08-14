@@ -1,4 +1,4 @@
-﻿# (с) Леонов П. А., 2005-2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder;
 use strict qw(subs vars);
@@ -14,7 +14,7 @@ qw(
 &cmsb_url &cmsb_url2classid &cmsb_classOK &cmsb_class_guess
 &cmsb_regpm &cmsb_modload
 $user $group
-&cmsb_event_reg &cmsb_event_unreg &cmsb_event_ro
+&cmsb_event_call &cmsb_event_reg &cmsb_event_unreg &cmsb_event_ro
 );
 
 use Encode ();
@@ -38,7 +38,7 @@ use CMSBuilder::IO;
 our
 (
 	@modules,@classes,
-	%dbo_cache,%oevents
+	%dbo_cache,%object_events
 );
 
 #——————————————————————————— Экпортируемые функции —————————————————————————————
@@ -87,18 +87,24 @@ sub cmsb_varr($$@)
 
 sub cmsb_event_ro
 {
-	return bless {}, 'CMSBuilder::DBI::EventsInterface';
+	return bless {}, 'CMSBuilder::Object';
 }
 
 sub cmsb_event_reg
 {
 	my $type = shift;
 	my $sub = shift;
-	my $class = shift || 'UNIVERSAL';
+	my $class = shift || 'CMSBuilder::DBI::Object';
 	
-	push @{$oevents{$type}}, {'class' => $class, 'sub' => $sub};
+	die "empty type passed to cmsb_event_reg()" unless $type;
+	die "empty sub passed to cmsb_event_reg()" unless $sub;
 	
-	return $#{$oevents{$type}};
+	die "not subname passed to cmsb_event_reg(): $sub" if !ref($sub) && !$class->can($sub);
+	die "not CODEref passed to cmsb_event_reg(): $sub" if ref($sub) && ref($sub) ne 'CODE';
+	
+	push @{$object_events{$type}}, {class => $class, sub => $sub};
+	
+	return $#{$object_events{$type}};
 }
 
 sub cmsb_event_unreg
@@ -107,11 +113,38 @@ sub cmsb_event_unreg
 	my $sub = shift;
 	my $class = shift || 'CMSBuilder::DBI::Object';
 	
-	my $olen = $#{$oevents{$type}};
+	die "empty type passed to cmsb_event_unreg()" unless $type;
+	die "empty sub passed to cmsb_event_unreg()" unless $sub;
 	
-	@{$oevents{$type}} = grep { $_->{'sub'} ne $sub && $_->{'class'} ne $class } @{$oevents{$type}};
+	die "not subname passed to cmsb_event_unreg(): $sub" if !ref($sub) && !$class->can($sub);
+	die "not CODEref passed to cmsb_event_unreg(): $sub" if ref($sub) && ref($sub) ne 'CODE';
 	
-	return $olen != $#{$oevents{$type}};
+	my $olen = $#{$object_events{$type}};
+	
+	@{$object_events{$type}} = grep { ($_->{'sub'} ne $sub) || ($_->{'class'} ne $class) } @{$object_events{$type}};
+	
+	return $olen != $#{$object_events{$type}};
+}
+
+sub cmsb_event_call
+{
+	my $obj = shift;
+	my $type = shift;
+	die "empty type passed to cmsb_event_call()" unless $type;
+	
+	local $obj->{'__event_call_cancel'} = 0;
+	
+	my(@res,$sb);
+	for my $code (@{$CMSBuilder::oevents{$type}})
+	{
+		next unless $obj->isa($code->{'class'});
+		$sb = $code->{'sub'};
+		push @res, $obj->$sb(@_);
+		last if $obj->{'__event_call_cancel'};
+	}
+	
+	return unless @res;
+	return @res;
 }
 
 sub cmsb_modload
@@ -217,7 +250,7 @@ sub ocache_clear()
 sub load
 {
 	@modules = @classes = ();
-	%oevents = ();
+	%object_events = ();
 	
 	cmsb_regpm('CMSBuilder::DBI'); # обязательно раньше всех
 	
@@ -244,8 +277,8 @@ sub process
 	
 	$r->{'_cmsb'} =
 	{
-		'path' => $ENV{'PATH_INFO'},
-		'redirect_status' => $ENV{'REDIRECT_STATUS'},
+		path => $ENV{'PATH_INFO'},
+		redirect_status => $ENV{'REDIRECT_STATUS'},
 	};
 	
 	# для mod_perl

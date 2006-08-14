@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::vtypes::select;
 use strict qw(subs vars);
@@ -7,7 +7,7 @@ use utf8;
 our @ISA = 'CMSBuilder::DBI::VType';
 # Список ####################################################
 
-# 'prop'	=> { 'type' => 'select', 'variants' => [{'a' => 'Крутой'},{'b' => 'Некрутой'},{'c' => 'Простой'}], 'name' => 'Тип' },
+# prop	=> { type => 'select', variants => [{a => 'Крутой'},{b => 'Некрутой'},{c => 'Простой'}], name => 'Тип' },
 
 sub table_cre
 {
@@ -25,7 +25,7 @@ sub aview
 	
 	my $p = $obj->props();
 	
-	my @vars = map { {'key' => keys %$_, 'val' => values %$_} } @{$p->{$name}->{'variants'}};
+	my @vars = map { {key => keys %$_, val => values %$_} } @{$p->{$name}->{'variants'}};
 	
 	my $ret = '<select name="'.$name.'">';
 	for my $var (@vars)

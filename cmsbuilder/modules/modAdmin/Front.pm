@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modAdmin::Front;
 use strict qw(subs vars);

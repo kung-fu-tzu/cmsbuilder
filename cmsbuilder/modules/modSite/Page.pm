@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modSite::Page;
 use strict qw(subs vars);
@@ -12,9 +12,9 @@ sub _have_icon {1}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-	'content'	=> { 'type' => 'miniword', 'name' => 'Текст' },
-	'submenu'	=> { 'type' => 'select', 'variants' => [{'no'=>'не выводить'},{'before'=>'выводить перед текстом'},{'after'=>'выводить после текста'},{'only'=>'выводить без текста'}], 'name' => 'Вложенные страницы' },
+	name		=> { type => 'string', length => 100, name => 'Название' },
+	content	=> { type => 'miniword', name => 'Текст' },
+	submenu	=> { type => 'select', variants => [{'no'=>'не выводить'},{'before'=>'выводить перед текстом'},{'after'=>'выводить после текста'},{'only'=>'выводить без текста'}], name => 'Вложенные страницы' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

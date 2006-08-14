@@ -1,4 +1,6 @@
-﻿use CMSBuilder::IO;
+﻿# CMSBuilder © Леонов П. А., 2005-2006
+
+use CMSBuilder::IO;
 
 sub dynoprops
 {
@@ -48,7 +50,7 @@ sub props
 	my $p = $o->SUPER::props(@_);
 	
 	my $i;
-	map {$p->{'dynoprop'.++$i} = {'type' => 'string', 'name' => $_} } $o->dynoprops();
+	map {$p->{'dynoprop'.++$i} = {type => 'string', name => $_} } $o->dynoprops();
 	
 	return $p;
 }

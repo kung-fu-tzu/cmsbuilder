@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modRegistration::modRegistration;
 use strict qw(subs vars);
@@ -15,8 +15,8 @@ sub _template_export {qw(userform)}
 
 sub _props
 {
-	'class'	=> { 'type' => 'ClassesList', 'class' => 'modUsers::Member', 'name' => 'Класс пользователей' },
-	'group'	=> { 'type' => 'ObjectsList', 'class' => 'modUsers::Group', 'name' => 'Создавать в группе' },
+	class	=> { type => 'ClassesList', class => 'modUsers::Member', name => 'Класс пользователей' },
+	group	=> { type => 'ObjectsList', class => 'modUsers::Group', name => 'Создавать в группе' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -106,10 +106,10 @@ sub site_content
 		
 		sendmail
 		(
-			'to' => $r->{'email'},
-			'from' => $o->root->{'email'},
-			'subj' => '['.$o->root->{'bigname'}.'] Ключ для смены пароля',
-			'text' => 'Перейдите по ссылке для смены пароля: '.$o->site_abshref().'?act=remind&key='.$key
+			to => $r->{'email'},
+			from => $o->root->{'email'},
+			subj => '['.$o->root->{'bigname'}.'] Ключ для смены пароля',
+			text => 'Перейдите по ссылке для смены пароля: '.$o->site_abshref().'?act=remind&key='.$key
 		);
 		
 		print '<div class="message">Ключ успешно выслан.</div>';
@@ -149,10 +149,10 @@ sub site_content
 			
 			sendmail
 			(
-				'to' => $r->{'email'},
-				'from' => $o->root->{'email'},
-				'subj' => '['.$o->root->{'bigname'}.'] Регистрация',
-				'text' => 'Ваш логин: '.$tu->{'login'}."\n".'Ваш пароль: '.$tu->{'pas'}
+				to => $r->{'email'},
+				from => $o->root->{'email'},
+				subj => '['.$o->root->{'bigname'}.'] Регистрация',
+				text => 'Ваш логин: '.$tu->{'login'}."\n".'Ваш пароль: '.$tu->{'pas'}
 			);
 			
 			print

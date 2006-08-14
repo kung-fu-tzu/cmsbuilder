@@ -1,4 +1,4 @@
-# CMSBuilder © Леонов П. А., 2006
+# CMSBuilder © Леонов П. А., 2005-2006
 
 package modRecycleBin::ObjectHook;
 use strict qw(subs vars);
@@ -10,8 +10,8 @@ use modUsers::API;
 
 sub _rpcs
 {
-	'cms_move_to_recyclebin'		=> {},
-	'cms_restore_from_recyclebin'	=> {},
+	cms_move_to_recyclebin			=> {},
+	cms_restore_from_recyclebin		=> {},
 }
 
 #-------------------------------------------------------------------------------

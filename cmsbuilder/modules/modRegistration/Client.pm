@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modRegistration::Client;
 use strict qw(subs vars);
@@ -24,24 +24,24 @@ sub _sview
 
 sub _props
 {
-	'orders'	=> { 'type' => 'shcut', 'name' => 'Заказы' },
+	orders		=> { type => 'shcut', name => 'Заказы' },
 	
-	'email'		=> { 'type' => 'string', 'name' => 'E-mail' },
-	'email2'	=> { 'type' => 'string', 'name' => 'Дополнительный&nbsp;e-mail' },
+	email		=> { type => 'string', name => 'E-mail' },
+	email2		=> { type => 'string', name => 'Дополнительный&nbsp;e-mail' },
 	
-	'fam'		=> { 'type' => 'string', 'check' => '\S', 'name' => 'Фамилия' },
-	'name'		=> { 'type' => 'string', 'check' => '\S', 'name' => 'Имя' },
-	'second'	=> { 'type' => 'string', 'check' => '\S', 'name' => 'Отчество' },
-	'bdate'		=> { 'type' => 'string', 'check' => '\d\d.\d\d.\d\d\d\d', 'name' => 'Дата&nbsp;рождения' },
-	'sex'		=> { 'type' => 'select', 'variants' => [{'none' => 'не скажу'},{'male' => 'парень'},{'female' => 'девушка'}], 'name' => 'Пол' },
+	fam			=> { type => 'string', check => '\S', name => 'Фамилия' },
+	name		=> { type => 'string', check => '\S', name => 'Имя' },
+	second		=> { type => 'string', check => '\S', name => 'Отчество' },
+	bdate		=> { type => 'string', check => '\d\d.\d\d.\d\d\d\d', name => 'Дата&nbsp;рождения' },
+	sex			=> { type => 'select', variants => [{none => 'не скажу'},{male => 'парень'},{female => 'девушка'}], name => 'Пол' },
 	
-	'country'	=> { 'type' => 'string', 'name' => 'Страна' },
-	'city'		=> { 'type' => 'string', 'name' => 'Город' },
-	'street'	=> { 'type' => 'string', 'name' => 'Улица дом/корпус' },
-	'building'	=> { 'type' => 'string', 'name' => 'Номер&nbsp;дома/Корпус.строение/Квартира' },
-	'zip'		=> { 'type' => 'string', 'name' => 'Почтовый&nbsp;индекс' },
-	'tel'		=> { 'type' => 'string', 'name' => 'Телефон' },
-	'fax'		=> { 'type' => 'string', 'name' => 'Факс' },
+	country		=> { type => 'string', name => 'Страна' },
+	city		=> { type => 'string', name => 'Город' },
+	street		=> { type => 'string', name => 'Улица дом/корпус' },
+	building	=> { type => 'string', name => 'Номер&nbsp;дома/Корпус.строение/Квартира' },
+	zip			=> { type => 'string', name => 'Почтовый&nbsp;индекс' },
+	tel			=> { type => 'string', name => 'Телефон' },
+	fax			=> { type => 'string', name => 'Факс' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

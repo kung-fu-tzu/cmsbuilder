@@ -4,19 +4,19 @@ package fbQuestion;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('modSite::Object','CMSBuilder::DBI::Object');
+our @ISA = qw(modSite::Object CMSBuilder::DBI::Object);
 
 sub _cname {'Вопрос'}
-sub _aview {qw/username email emailme question answer emailed/}
+sub _aview {qw(username email emailme question answer emailed)}
 
 sub _props
 {
-	'username'		=> { 'type' => 'string', 'length' => 20, 'name' => 'Имя пользователя'},
-	'email'			=> { 'type' => 'string', 'length' => 50, 'name' => 'e-mail' },
-	'emailme'		=> { 'type' => 'checkbox', 'name' => 'Сообщить об ответе на e-mail' },
-	'emailed'		=> { 'type' => 'checkbox', 'name' => 'Уведомление отправлено' },
-	'question'		=> { 'type' => 'text', 'name' => 'Ваш вопрос' },
-	'answer'		=> { 'type' => 'text', 'name' => 'Ответ' }
+	username	=> { type => 'string', length => 20, name => 'Имя пользователя'},
+	email		=> { type => 'string', length => 50, name => 'e-mail' },
+	emailme		=> { type => 'checkbox', name => 'Сообщить об ответе на e-mail' },
+	emailed		=> { type => 'checkbox', name => 'Уведомление отправлено' },
+	question	=> { type => 'text', name => 'Ваш вопрос' },
+	answer		=> { type => 'text', name => 'Ответ' }
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -54,10 +54,10 @@ sub admin_edit
 		
 		my $sended = sendmail
 		(
-			'to'	=> $o->{'email'},
-			'from'	=> $o->root->{'email'},
-			'subj'	=> '['.$o->root->{'bigname'}.'] Re: '.$o->papa()->name(),
-			'text'	=> $question."\n\n".$o->{'answer'}."\n\n--\n\nОригинал: ".$o->site_abshref
+			to		=> $o->{'email'},
+			from	=> $o->root->{'email'},
+			subj	=> '['.$o->root->{'bigname'}.'] Re: '.$o->papa()->name(),
+			text	=> $question."\n\n".$o->{'answer'}."\n\n--\n\nОригинал: ".$o->site_abshref
 		);
 		
 		if($sended)

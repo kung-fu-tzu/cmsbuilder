@@ -27,12 +27,12 @@ our %access_types =
 
 our %access_type2bin =
 (
-	'r' => $AC_READ,
-	'w' => $AC_WRITE,
-	'a' => $AC_ADD,
-	'c' => $AC_CHMOD,
-	#'x' => $AC_EXEC,
-	'o' => $AC_CHOWN,
+	r => $AC_READ,
+	w => $AC_WRITE,
+	a => $AC_ADD,
+	c => $AC_CHMOD,
+	#x => $AC_EXEC,
+	o => $AC_CHOWN,
 );
 
 our @ISA = qw(CMSBuilder::Module Exporter);

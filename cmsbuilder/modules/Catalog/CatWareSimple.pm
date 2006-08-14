@@ -1,13 +1,13 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CatWareSimple;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('modCatalog::Ware','CMSBuilder::DBI::Object');
+our @ISA = qw(modCatalog::Ware CMSBuilder::DBI::Object);
 
 sub _cname {'Товар'}
-#sub _aview {qw/name price photo desc/}
+#sub _aview {qw(name price photo desc)}
 
 #———————————————————————————————————————————————————————————————————————————————
 

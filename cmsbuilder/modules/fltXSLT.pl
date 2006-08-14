@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package fltXSLT;
 use strict qw(subs vars);
@@ -38,7 +38,7 @@ sub filt
 	unless(-f $file){ print STDERR "$c: no surch file '$file'"; return; }
 	my $xsl = f2var_utf8($file);
 	
-	my $xslt = XML::XSLT->new($xsl, 'warnings' => 1);
+	my $xslt = XML::XSLT->new($xsl, warnings => 1);
 	$xslt->transform($$str);
 	
 	

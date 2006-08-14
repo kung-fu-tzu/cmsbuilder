@@ -1,4 +1,4 @@
-﻿# (с) Леонов П.А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 # 
 # Модуль управляет буферизацией вывода
@@ -68,9 +68,9 @@ sub errany
 	(
 		$errtpl,
 		{
-			'errnum' => $en,
-			'errtext' => $etext || $errtext{$en} || $errtext{'*'},
-			'aroot' => $CMSBuilder::Config::http_aroot,
+			errnum => $en,
+			errtext => $etext || $errtext{$en} || $errtext{'*'},
+			aroot => $CMSBuilder::Config::http_aroot,
 		}
 	);
 	

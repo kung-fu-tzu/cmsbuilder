@@ -4,17 +4,17 @@ package fbTheme;
 use strict qw(subs vars);
 use utf8;
 
-our @ISA = ('modSite::Object','CMSBuilder::DBI::FilteredArray','CMSBuilder::DBI::Array');
+our @ISA = qw(modSite::Object CMSBuilder::DBI::FilteredArray CMSBuilder::DBI::Array);
 
 sub _cname {'Тема'}
-sub _aview {'name','desc','onpage'}
-sub _add_classes {qw/fbQuestion/}
+sub _aview {qw(name desc onpage)}
+sub _add_classes {qw(fbQuestion)}
 sub _have_icon {1}
 
 sub _props
 {
-	'name'	=> { 'type' => 'string', 'length' => 100, 'name' => 'Название' },
-	'desc'	=> { 'type' => 'miniword', 'name' => 'Описание' }
+	name	=> { type => 'string', length => 100, name => 'Название' },
+	desc	=> { type => 'miniword', name => 'Описание' }
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -58,16 +58,16 @@ sub process_params
 		if($res)
 		{
 			my $href = $o->root->{'address'}.$CMSBuilder::Config::http_aroot;
-			$href =~ s'/+'/'g;
+			$href =~ s:/+:/:g;
 			
 			if($o->papa()->{'emailme'})
 			{
 				sendmail
 				(
-					'to'	=> $o->root->{'email'},
-					'from'	=> $to->{'username'}.' <'.($to->{'email'} || $o->root->{'email'}).'>',
-					'subj'	=> '['.$o->root->{'bigname'}.'] Модуль вопрос-ответ, новая тема:'.$o->name(),
-					'text'	=> $to->{'question'}."\n\n--\n\nОтвет можно написать из админки: ".$href
+					to		=> $o->root->{'email'},
+					from	=> $to->{'username'}.' <'.($to->{'email'} || $o->root->{'email'}).'>',
+					subj	=> '['.$o->root->{'bigname'}.'] Модуль вопрос-ответ, новая тема:'.$o->name(),
+					text	=> $to->{'question'}."\n\n--\n\nОтвет можно написать из админки: ".$href
 				);
 			}
 			

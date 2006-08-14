@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::vtypes::ObjectsList;
 use strict qw(subs vars);
@@ -51,7 +51,7 @@ sub aview
 	{
 		return
 		'
-		<select disabled>
+		<select disabled="true">
 			<option>'.$val->name().'</option>
 		</select>
 		';
@@ -59,12 +59,12 @@ sub aview
 	
 	my $ret = '<select name="'.$name.'">';
 	
-	unless($val){ $ret .= '<option value="" selected>'.$p->{$name}{'nulltext'}.'</option>'; }
+	unless($val){ $ret .= '<option value="" selected="true">'.$p->{$name}{'nulltext'}.'</option>'; }
 	elsif($p->{$name}{'isnull'}){ $ret .= '<option value="">'.$p->{$name}{'nulltext'}.'</option>'; }
 	
 	for my $to ($cn->sel_where(' 1 '))
 	{
-		$ret .= '<option'.($val && $to->id eq $val->id ? ' selected' : '').' value="'.$to->id.'">'.$to->name().'</option>';
+		$ret .= '<option'.($val && $to->id eq $val->id ? ' selected="true"' : '').' value="'.$to->id.'">'.$to->name().'</option>';
 	}
 	
 	$ret .= '</select>';

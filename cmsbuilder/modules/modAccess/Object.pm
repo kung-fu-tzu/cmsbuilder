@@ -11,7 +11,7 @@ use CMSBuilder::DBI;
 use modUsers::API;
 use modAccess::modAccess;
 
-sub _rpcs {qw/access_chmod access_view/}
+sub _rpcs {qw(access_chmod access_view)}
 sub _access_default {~0} # т.е. можно все ( нельзя ничего ;) )
 
 

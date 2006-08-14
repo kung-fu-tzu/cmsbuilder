@@ -119,17 +119,17 @@ sub admin_name_ex_opts
 		-selid => 'id_'.$o->jsid,
 		-props =>
 		{
-			#'cmenu' => $myurl,
-			'myurl' => $myurl,
-			'papa' => $o->papa,
-			'num' => $o->enum,
+			#cmenu => $myurl,
+			myurl => $myurl,
+			papa => $o->papa,
+			num => $o->enum,
 			
-			'cms_ondragover' => 'this.className=\'object_dragover\'',
-			'ondragleave' => 'this.className=\'\'',
-			'ondragstart' => 'return CMS_GlobalDragStart(this)',
-			'ondragover' => 'return CMS_GlobalDragOver(this)',
-			'ondrop' => 'return CMS_GlobalDrop(this)',
-			'oncontextmenu' => 'return OnContext(\''.$o->myurl.'\',event)',
+			cms_ondragover	=> 'this.className=\'object_dragover\'',
+			ondragleave		=> 'this.className=\'\'',
+			ondragstart		=> 'return CMS_GlobalDragStart(this)',
+			ondragover		=> 'return CMS_GlobalDragOver(this)',
+			ondrop			=> 'return CMS_GlobalDrop(this)',
+			oncontextmenu	=> 'return OnContext(\''.$o->myurl.'\',event)',
 		}
 	);
 }

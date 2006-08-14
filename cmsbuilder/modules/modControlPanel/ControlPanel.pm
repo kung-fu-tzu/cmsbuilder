@@ -19,13 +19,13 @@ sub _access_default {$AC_READ}
 
 sub _simplem_menu
 {
-	'cpanel_object_stat'	=> { -name => 'Статистика объектов', -icon => 'icons/install.png' },
-		'cpanel_scanbase'		=> { -name => 'Проверить базу', -icon => 'icons/table.png', -papa => 'cpanel_object_stat' },
-		'cpanel_table_fix'		=> { -name => 'Обновить структуру', -icon => 'icons/table.png', -papa => 'cpanel_object_stat' },
-	'cpanel_modules'		=> { -name => 'Модули', -icon => 'icons/install.png' },
-		'cpanel_install_mods'	=> { -name => 'Поставить модули', -icon => 'icons/install.png', -papa => 'cpanel_modules' },
+	cpanel_object_stat		=> { -name => 'Статистика объектов', -icon => 'icons/install.png' },
+	cpanel_scanbase			=> { -name => 'Проверить базу', -icon => 'icons/table.png', -papa => 'cpanel_object_stat' },
+	cpanel_table_fix		=> { -name => 'Обновить структуру', -icon => 'icons/table.png', -papa => 'cpanel_object_stat' },
+	cpanel_modules			=> { -name => 'Модули', -icon => 'icons/install.png' },
+	cpanel_install_mods		=> { -name => 'Поставить модули', -icon => 'icons/install.png', -papa => 'cpanel_modules' },
 		
-	$CMSBuilder::Config::server_type eq 'cgi-server' ? ('cpanel_stopserver'	=> { -name => 'Остановить сервер', -icon => 'icons/shutdown.png' }):(),
+	$CMSBuilder::Config::server_type eq 'cgi-server' ? (cpanel_stopserver	=> { -name => 'Остановить сервер', -icon => 'icons/shutdown.png' }):(),
 }
 
 #———————————————————————————————————————————————————————————————————————————————
@@ -52,7 +52,7 @@ sub cpanel_stopserver
 	
 	warn "Kiling server, pid: $pid";
 	
-	if(kill('KILL' => $pid)){ print "Сервер успешно остановлен (KILL => $pid)."; }
+	if(kill(KILL => $pid)){ print "Сервер успешно остановлен (KILL => $pid)."; }
 	else{ print "Сервер остановить не удалось ($pid)."; }
 }
 

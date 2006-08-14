@@ -47,7 +47,7 @@ function modForms_lock(fobj)
 	for(var i=0;i<fobj.elements.length;i++)
 	{
 		el = fobj.elements[i];
-		el.disabled = "disabled";
+		el.disabled = "true";
 	}
 }
 

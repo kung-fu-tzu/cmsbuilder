@@ -18,13 +18,13 @@ sub name {$_[0]->_cname}
 
 sub _props
 {
-	'root'		=> { 'type' => 'ObjectsList', 'class' => modAdmin::modAdmin->root_class, 'name' => 'Корень модулей' },
+	root		=> { type => 'ObjectsList', class => modAdmin::modAdmin->root_class, name => 'Корень модулей' },
 }
 
 sub _simplem_menu
 {
-		'cpanel_mod_admin'	=> { -obj => $pkg->new(1), -papa => 'cpanel_modules' },
-		'cpanel_mod_root'	=> { -obj => modAdmin::modAdmin->root, -papa => 'cpanel_modules' },
+		cpanel_mod_admin	=> { -obj => $pkg->new(1), -papa => 'cpanel_modules' },
+		cpanel_mod_root	=> { -obj => modAdmin::modAdmin->root, -papa => 'cpanel_modules' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

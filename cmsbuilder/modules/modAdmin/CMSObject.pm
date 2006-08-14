@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modAdmin::CMSObject;
 use strict qw(subs vars);
@@ -54,7 +54,7 @@ sub cms_chown
 		
 		return $o->err_add('Указанный пользователь не существует.') unless $tu->id;
 		
-		$o->ochown($tu, 'r' => $r->{'recursive'}?1:0);
+		$o->ochown($tu, r => $r->{'recursive'}?1:0);
 		$o->save();
 		$o->reload();
 		
@@ -369,7 +369,7 @@ sub cms_admin_cre
 		
 	}
 	
-	$o->admin_array_selectedpage({'page' => $o->pages()-1});
+	$o->admin_array_selectedpage({page => $o->pages()-1});
 	
 	$sess->{'admin_refresh_left'} = 1;
 }

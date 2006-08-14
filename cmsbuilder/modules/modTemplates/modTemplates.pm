@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modTemplates::modTemplates;
 use strict qw(subs vars);
@@ -14,7 +14,7 @@ sub _aview {qw()}
 
 sub _props
 {
-	'name'			=> { 'type' => 'string', 'length' => 25, 'name' => 'Название' },
+	name			=> { type => 'string', length => 25, name => 'Название' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

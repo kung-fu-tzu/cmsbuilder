@@ -1,4 +1,4 @@
-﻿# (с) Леонов П.А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::Utils;
 use strict qw(subs vars);
@@ -474,7 +474,7 @@ sub path_abs
 
 sub sendmail
 {
-	my %opts = ('ct' => 'text/plain; charset=windows-1251', @_);
+	my %opts = (ct => 'text/plain; charset=windows-1251', @_);
 	
 	my $mess =
 "To: $opts{'to'}

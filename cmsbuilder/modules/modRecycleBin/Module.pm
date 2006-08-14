@@ -1,4 +1,4 @@
-# CMSBuilder © Леонов П. А., 2006
+# CMSBuilder © Леонов П. А., 2005-2006
 
 package modRecycleBin::Module;
 use strict qw(subs vars);
@@ -16,6 +16,12 @@ sub _have_icon {'icons/RecycleBin.png'}
 
 
 #-------------------------------------------------------------------------------
+
+sub jsid
+{
+	my $o = shift;
+	return $user->{'recyclebin'} ? $user->{'recyclebin'}->jsid : $o->SUPER::jsid;
+}
 
 sub admin_name_ex_opts
 {
@@ -81,8 +87,9 @@ sub my_context
 		elem_add(JMIHref("Восстановить","right.ehtml?url='.$o->myurl.'&act=cms_restore_from_recyclebin","admin_temp"));
 		';
 	}
-	elsif(!$o->papaN(0)->isa('modRecycleBin::UserBin'))
+	elsif(!$o->isapapa($user->{'recyclebin'}))
 	{
+		warn $o->papaN(0);
 		$code .=
 		'
 		elem_add(JMIHR());

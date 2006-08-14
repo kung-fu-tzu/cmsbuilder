@@ -8,15 +8,15 @@ our $VERSION = 1.0.0.1;
 
 our @ISA = qw(modSite::Member modAdmin::Tree CMSBuilder::DBI::Array CMSBuilder::Module);
 sub _cname {'Вопрос-ответ'}
-sub _add_classes {qw/!* fbTheme/}
-sub _aview {qw/name onpage emailme/}
+sub _add_classes {qw(!* fbTheme)}
+sub _aview {qw(name onpage emailme)}
 
 sub _have_icon {1}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'length' => 50, 'name' => 'Название' },
-	'emailme'	=> { 'type' => 'checkbox', 'name' => 'Уведомлять о новых вопросах по e-mail' }
+	name		=> { type => 'string', length => 50, name => 'Название' },
+	emailme		=> { type => 'checkbox', name => 'Уведомлять о новых вопросах по e-mail' }
 }
 
 #———————————————————————————————————————————————————————————————————————————————

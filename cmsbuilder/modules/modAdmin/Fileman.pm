@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modAdmin::Fileman;
 use strict qw(subs vars);
@@ -171,11 +171,11 @@ sub fileman_icon
 	
 	our %mime =
 	(
-		'jpg' => 'self',
-		'gif' => 'self',
-		'png' => 'self',
-		'bmp' => 'self',
-		'ico' => 'self'
+		jpg => 'self',
+		gif => 'self',
+		png => 'self',
+		bmp => 'self',
+		ico => 'self'
 	);
 	
 	if(-d $lf){ return $CMSBuilder::Config::http_userdocs.'/icons/directory.png'; }

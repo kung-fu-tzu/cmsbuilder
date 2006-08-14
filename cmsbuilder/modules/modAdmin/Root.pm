@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modAdmin::Root;
 use strict qw(subs vars);
@@ -15,7 +15,7 @@ sub _aview {'name'}
 
 sub _props
 {
-	'name'		=> { 'type' => 'string', 'name' => 'Название' },
+	name		=> { type => 'string', name => 'Название' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————

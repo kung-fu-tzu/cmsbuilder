@@ -1,10 +1,10 @@
-﻿# CMSBuilder © Леонов П. А., 2005
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::DBI::vtypes::sizedimg;
 use strict qw(subs vars);
 use utf8;
 
-# 'smallphoto'	=> { 'type' => 'sizedimg', 'for' => 'photo', 'size' => '*x100', 'quality' => 0-9|10-0, 'format' => 'png'|'jpeg', 'truecolor' => 0|1},
+# smallphoto	=> { type => 'sizedimg', for => 'photo', size => '*x100', quality => 0-9|10-0, format => 'png'|'jpeg', truecolor => 0|1},
 
 our @ISA = 'CMSBuilder::DBI::VType';
 our $filter = 1;

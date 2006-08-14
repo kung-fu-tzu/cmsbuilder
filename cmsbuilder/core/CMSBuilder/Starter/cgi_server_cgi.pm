@@ -1,4 +1,6 @@
-﻿package CMSBuilder::Starter::cgi_server_cgi;
+﻿# CMSBuilder © Леонов П. А., 2005-2006
+
+package CMSBuilder::Starter::cgi_server_cgi;
 use strict qw(subs vars);
 use utf8;
 

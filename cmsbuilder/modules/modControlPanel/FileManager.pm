@@ -13,10 +13,10 @@ use CMSBuilder::Utils;
 
 our %mime =
 (
-	'jpg' => {-icon => 'self'},
-	'gif' => {-icon => 'self'},
-	'png' => {-icon => 'self'},
-	'bmp' => {-icon => 'self'}
+	jpg => {-icon => 'self'},
+	gif => {-icon => 'self'},
+	png => {-icon => 'self'},
+	bmp => {-icon => 'self'}
 );
 
 sub fileman_cmenu
@@ -124,9 +124,9 @@ sub fileman_view
 					-icon => $o->fileman_icon($path.'/'.$file->{'name'}),
 					-props =>
 					{
-						'title' => 'Размер: '.len2size($file->{'size'}),
-						#'cmenu' => $file->{'name'},
-						'oncontextmenu' => 'return OnContext(\''.$file->{'name'}.'\',event)',
+						title => 'Размер: '.len2size($file->{'size'}),
+						#cmenu => $file->{'name'},
+						oncontextmenu => 'return OnContext(\''.$file->{'name'}.'\',event)',
 					},
 				),'</td><td>',toDateTimeStr(epoch2ts($file->{'mtime'})),'</td><td>',len2size($file->{'size'}),'</td></tr>';
 			}
@@ -225,9 +225,9 @@ sub fileman_listdir
 		
 		$it =
 		{
-			'name'	=> $fname,
-			'size'	=> (stat($uldir.$path.'/'.$fname))[7],
-			'mtime'	=> (stat($uldir.$path.'/'.$fname))[9],
+			name	=> $fname,
+			size	=> (stat($uldir.$path.'/'.$fname))[7],
+			mtime	=> (stat($uldir.$path.'/'.$fname))[9],
 		};
 		
 		if(-f $uldir.$path.'/'.$fname){ push @fs, $it; }

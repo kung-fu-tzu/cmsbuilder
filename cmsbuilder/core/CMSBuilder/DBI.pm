@@ -33,7 +33,6 @@ require CMSBuilder::DBI::FilteredArray;
 require CMSBuilder::DBI::Array;
 
 require CMSBuilder::DBI::RPC;
-require CMSBuilder::DBI::EventsInterface;
 
 require CMSBuilder::Utils;
 

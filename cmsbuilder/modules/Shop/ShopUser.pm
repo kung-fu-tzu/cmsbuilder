@@ -1,4 +1,4 @@
-﻿# CMSBuilder © Леонов П. А., 2006
+﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package modShop::User;
 use strict qw(subs vars);
@@ -8,7 +8,7 @@ sub _aview {qw/basket/}
 
 sub _props
 {
-	'basket'	=> { 'type' => 'object', 'class' => 'ShopBasket', 'name' => 'Корзина' },
+	basket	=> { type => 'object', class => 'ShopBasket', name => 'Корзина' },
 }
 
 #———————————————————————————————————————————————————————————————————————————————
