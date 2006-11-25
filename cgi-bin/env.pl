@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use strict qw(subs vars);
+use strict;
 use Config;
 
 print
@@ -9,7 +9,7 @@ Content-type: text/html
 ';
 
 print
-"Perl version: $Config{'version'}<br/>
+"Perl version: $Config{version}<br/>
 OS name: $^O
 ";
 

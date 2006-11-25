@@ -1,0 +1,73 @@
+<config>
+	
+	<path
+		root		= "/Users/petr/svn/cmsbuilder3"
+		cmsbuilder	= "{/config/path/@root}/cmsbuilder"
+		etc			= "{/config/path/@cmsbuilder}/etc"
+		core		= "{/config/path/@cmsbuilder}/core"
+	/>
+	
+	<db
+		table_prefix=""
+	>
+		<connections>
+			<mysql1
+				class="modDBI::MySQL"
+				account=""
+			/>
+			<sdbm1
+				class="modDBI::SDBM"
+				file="sdbm1.db"
+			/>
+			<default
+				class="CMSBuilder::DBDefault"
+			/>
+		</connections>
+		
+		<mysql
+			class="modDBI::MySQL"
+			base="cmsbuilder"
+			user="root"
+			password="pas"
+			host="localhost"
+			port="3306"
+			source="DBI:mysql:cmsbuilder;host={@host};port={@port}"
+			charset="utf8"
+			colcon="utf8_general_ci"
+			inactive_destroy="0"
+		>
+			<account
+				user="root"
+				password="pas"
+			/>
+		</mysql>
+	</db>
+	<etc>
+		<modules
+			load_order="modDBI::MySQL *"
+		/>
+	</etc>
+	
+	<cgi
+		redirect_status="200"
+	/>
+	
+	<!--<server
+		process_classes="modSite::Requester modAdmin::EML"
+	/>-->
+	<daemon
+		class		= "cgi"
+		errorlog	= ""
+        root1		= "{/config/path/@etc}"
+        root		= "."
+		errorlog1	= "{/config/daemon/@root}/error.log"
+		socket		= "local:{/config/daemon/@root}/daemon.socket"
+		pidfile		= "{/config/daemon/@root}/daemon.pid"
+		procname	= "programica"
+	>
+		<cgi
+			a="b"
+		/>
+	</daemon>
+	
+</config>

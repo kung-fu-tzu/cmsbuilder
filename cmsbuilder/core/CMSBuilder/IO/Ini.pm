@@ -1,7 +1,7 @@
 ﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::IO::Ini;
-use strict qw(subs vars);
+use strict;
 use utf8;
 
 use Fcntl ':flock';

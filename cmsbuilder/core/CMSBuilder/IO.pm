@@ -6,10 +6,9 @@
 # 
 
 package CMSBuilder::IO;
-use strict qw(subs vars);
+use strict;
 use utf8;
 
-use Carp;
 use POSIX 'strftime';
 use CGI '-compile';
 
@@ -23,7 +22,7 @@ $sess %headers $system_ini $modules_ini
 
 use CMSBuilder::IO::Session;
 use CMSBuilder::IO::Ini;
-use CMSBuilder::IO::GUI;
+
 
 use CMSBuilder::Utils;
 
@@ -63,7 +62,7 @@ sub errany
 	$en =~ s/\D//g;
 	
 	$errtpl = $errtpl || f2var_utf8($CMSBuilder::Config::path_etc.'/errors.html.tpl');
-	
+
 	my $out = parsetpl
 	(
 		$errtpl,
@@ -79,9 +78,9 @@ sub errany
 	CMSBuilder::IO->send_data_utf8($out);
 }
 
-sub err500{ my $en = $err_catched = 500; errany($en); croak('Error '.$en.': '.join('',@_)); }
-sub err404{ my $en = $err_catched = 404; errany($en); croak('Error '.$en.': '.join('',@_)); }
-sub err403{ my $en = $err_catched = 403; errany($en); croak('Error '.$en.': '.join('',@_)); }
+sub err500{ my $en = $err_catched = 500; errany($en); Carp::croak('Error '.$en.': '.join('',@_)); }
+sub err404{ my $en = $err_catched = 404; errany($en); Carp::croak('Error '.$en.': '.join('',@_)); }
+sub err403{ my $en = $err_catched = 403; errany($en); Carp::croak('Error '.$en.': '.join('',@_)); }
 
 sub init
 {
@@ -92,7 +91,7 @@ sub init
 		'Pragma' => 'no-cache',
 		'Cache-control' => 'max-age=0',
 		'Expires' => '0',
-		'X-Powered-By' => 'Paleo CMS Builder '.$CMSBuilder::version,
+		'X-Powered-By' => 'Paleo CMS Builder ' . $CMSBuilder::version,
 		'Last-Modified' => estrftime('%a, %d %b %Y %T %H:%M:%S GMT',localtime(time()-3600*2)),
 	);
 }

@@ -1,10 +1,11 @@
 #!/usr/bin/perl
-use strict qw(subs vars);
+use strict;
 #use warnings;
 
 BEGIN
 {
-	require '/home/cmsbuilder3/cmsbuilder/Config.pm';
+	$CMSBuilder::Config::path_home = '/home/cmsbuilder3';
+	require $CMSBuilder::Config::path_home . '/cmsbuilder/Config.local.pm';
 }
 
 use CMSBuilder::Starter;

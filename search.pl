@@ -1,4 +1,6 @@
-﻿use File::Find;
+#!/usr/bin/perl -w
+
+use File::Find;
 use Getopt::Std;
 use strict;
 use utf8;
@@ -95,8 +97,8 @@ sub main
 	my $opts = {};
 	getopt('irs', $opts);
 	
-	$cfunc = $opts->{'i'} ? \&comparei : \&compare;
-	#print $opts->{'i'}, $opts->{'i'} ? 'comparei' : 'compare';
+	$cfunc = $opts->{i} ? \&comparei : \&compare;
+	#print $opts->{i}, $opts->{i} ? 'comparei' : 'compare';
 	
 	while(1)
 	{
@@ -107,7 +109,7 @@ sub main
 		if(length($str))
 		{
 			$what = $str;
-			$what =~ s#(\W)#\\$1#g unless $opts->{'r'};
+			$what =~ s#(\W)#\\$1#g unless $opts->{r};
 		}
 		
 		search();

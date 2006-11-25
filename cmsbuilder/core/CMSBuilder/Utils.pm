@@ -1,26 +1,48 @@
 ﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::Utils;
-use strict qw(subs vars);
+use strict;
 use utf8;
 
+use Time::Local;
+use Encode;
+use MIME::Base64 qw(encode_base64 decode_base64);
 use Digest::MD5;
-use POSIX ('strftime');
-import POSIX ('locale_h');
+use POSIX qw(strftime locale_h);
 use locale;
+
 use Exporter;
 our @ISA = 'Exporter';
-our @EXPORT =
-qw/
-&listfiles &listdirs &indexA &NOW &epoch2ts &ts2epoch &toDateTimeStr &toDateStr &toRusDate
-&toEngDate &estrftime &rstrftime &translit &rus_case
-&HTMLfilter &escape &MD5
-&len2size &round2 &var2f &var2f_utf8 &f2var &f2var_utf8 &array2csv &str2csv &path_it &path_abs &parsetpl
-&catch_out &decode_utf8_hashref
-&sendmail
-/;
+
+our @EXPORT = qw
+(
+	&listfiles &listdirs &indexA &integrate_arrays
+	&NOW &epoch2ts &ts2epoch &toDateTimeStr &toDateStr &toRusDate
+	&toEngDate &estrftime &rstrftime &translit &rus_case
+	&HTMLfilter &escape &MD5
+	&len2size &round2 &var2f &var2f_utf8 &f2var &f2var_utf8 &array2csv &str2csv &path_it &path_abs &parsetpl
+	&catch_out &decode_utf8_hashref &decode_utf8_hash &autoflush
+	&sendmail
+);
 
 #———————————————————————————————————————————————————————————————————————————————
+
+
+sub integrate_arrays($$)
+{
+	my @pat = @{shift()};
+	my @arr = @{shift()};
+	my @all = @arr;
+	
+	my @res = map { $_ =~ /^(\d+)$/ ? $all[$1] : $_ } @pat;
+	
+	@arr = grep { indexA(\@res,$_) < 0 } @arr;
+	
+	@res = map { /^(\-)?\.$/ ? ($1 ? reverse @arr : @arr) : $_ } @res;
+	@res = map { /^(\-)?\*$/ ? ($1 ? reverse @all : @all) : $_ } @res;
+	
+	return @res;
+}
 
 sub rus_case # < 1000, rus_case(n,[0 нет яблок, 1 яблоко, 2-3-4 яблока, х0-5-6-7-8-9 яблок])
 {
@@ -47,10 +69,21 @@ sub rus_case # < 1000, rus_case(n,[0 нет яблок, 1 яблоко, 2-3-4 я
 sub decode_utf8_hashref($)
 {
 	my $hr = shift;
+	return unless ref $hr eq 'HASH';
 	
 	map { $hr->{$_} = Encode::decode_utf8($hr->{$_}) unless ref $hr->{$_}; } keys %$hr;
 	
 	return $hr;
+}
+
+sub decode_utf8_hash(@)
+{
+	my $hr = {@_};
+	my $nh;
+	
+	map { $nh->{Encode::decode_utf8 $_} = ref $hr->{$_} ? $hr->{$_} : Encode::decode_utf8 $hr->{$_} } keys %$hr;
+	
+	return $nh;
 }
 
 sub catch_out(&)
@@ -59,16 +92,16 @@ sub catch_out(&)
 	
 	my $fh;
 	my $buff = 'юникод вам';
-	open($fh,'>:utf8',\$buff); #:utf8
+	open $fh, '>:utf8', \$buff; #:utf8
 	#binmode($fh);
 	
-	my $io = select($fh);
+	my $io = select $fh;
 	my @ret = &$code;
-	select($io);
+	select $io;
 	
-	close($fh);
+	close $fh;
 	
-	return wantarray()?($buff,@ret):$buff;
+	return wantarray ? ($buff, @ret) : $buff;
 }
 
 sub parsetpl
@@ -91,23 +124,21 @@ sub listdirs
 	opendir($dh,$dir);
 	while(my $file = readdir($dh))
 	{
-		next if $file eq '.' || $file eq '..';
-		push @res, $file if -d $dir.'/'.$file;
+		next if $file =~ /^\./;
+		push @res, $file if -d $dir . '/' . $file;
 	}
 	closedir($dh);
 	
 	return @res;
 }
 
-# Возвращает массив имен файлов пакетов из указанной
-# директории (без расширения)
+# Возвращает массив имен файлов пакетов из указанной директории
 sub listfiles
 {
 	my $dir = shift;
-	my $ext = shift;
+	my @ext = grep {/^\w+$/} @_;
 	
 	$dir =~ s/\/+$//;
-	$ext =~ s/\W//g;
 	
 	my ($dh,@res);
 	
@@ -115,7 +146,8 @@ sub listfiles
 	while(my $file = readdir($dh))
 	{
 		next unless -f $dir . '/' . $file;
-		next unless $file =~ s/\.$ext$//;
+		next if $file =~ /^\./;
+		next unless grep {$file =~ /\.$_$/} @ext;
 		push @res, $file;
 	}
 	closedir($dh);
@@ -123,13 +155,13 @@ sub listfiles
 	return @res;
 }
 
-# Ищет значение (первый аргумент) в массиве (остальные аргументы)
-# и возвращает индекс первого совпадения
-sub indexA($@)
+# Ищет значение в массиве и возвращает индекс первого совпадения
+sub indexA($$)
 {
+	my $arr = shift;
 	my $val = shift;
 	
-	for(my $i=$[;$i<=$#_;$i++){ if($_[$i] eq "$val"){ return $i; } }
+	for(my $i=$[;$i<=$#$arr;$i++){ if($arr->[$i] eq "$val"){ return $i; } }
 	
 	return $[-1;
 }
@@ -146,12 +178,13 @@ sub ts2epoch($)
 	my $ts = shift;
 	$ts =~ s/\D//g;
 	
-	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)?(\d\d)?(\d\d)?$/;
-	return timelocal($6,$5,$4,$3,$2-1,$1-1900);
+	$ts =~ m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)$/
+		or Carp::carp('wrong timestamp for ts2epoch(): ' . $ts);
+	return timelocal($6,$5,$4,$3,$2-1,$1);
 }
 
 # Преобразует дату в формате MySQL TIMESTAMP в удобочитаемый вид
-# Например, для "20050816174452" вернёт "16 Августа 2005 г., 17:44:52"
+# Например, для "20050816174452" вернёт "16 августа 2005г., 17:44:52"
 sub toDateTimeStr($)
 {
 	my $ts = shift;
@@ -159,10 +192,11 @@ sub toDateTimeStr($)
 	
 	my @mnt = qw/января февраля марта апреля мая июня июля августа сентября октября ноября декабря/;
 	
-	return unless	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)?(\d\d)?(\d\d)?$/;
-							#    YYYY1     MM2   DD3   HH4    MM5    SS6	
+							#    YYYY1     MM2   DD3   HH4   MM5   SS6
+	return unless	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)$/
+		or Carp::carp('wrong timestamp for toDateTimeStr(): ' . $ts);
 	
-	my $date = "$3 ".$mnt[$2-1]." $1г., $4:$5:$6";
+	my $date = "$3 " . $mnt[$2 - 1] . " $1г., $4:$5:$6";
 	$date =~ s/^0+//;
 	
 	return $date;
@@ -175,10 +209,11 @@ sub toDateStr($)
 	
 	my @mnt = qw/января февраля марта апреля мая июня июля августа сентября октября ноября декабря/;
 	
-	return unless	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)?(\d\d)?(\d\d)?$/;
-							#    YYYY1     MM2   DD3   HH4    MM5    SS6	
+							#    YYYY1     MM2   DD3   HH4    MM5    SS6
+	return unless	$ts =~	m/^(\d\d\d\d)(\d\d)(\d\d)(\d\d)?(\d\d)?(\d\d)?$/
+		or Carp::carp('wrong timestamp for toDateStr(): ' . $ts);
 	
-	my $date = "$3 ".$mnt[$2-1]." $1г.";
+	my $date = "$3 " . $mnt[$2 - 1] . " $1г.";
 	$date =~ s/^0+//;
 	
 	return $date;
@@ -214,7 +249,7 @@ sub toRusDate($)
 	$date =~ s/Nov/ноя/i;
 	$date =~ s/Dec/дек/i;
 	
-	$date =~ s/Mon/нн/i;
+	$date =~ s/Mon/пн/i;
 	$date =~ s/Tue/вт/i;
 	$date =~ s/Wed/ср/i;
 	$date =~ s/Thu/чт/i;
@@ -302,11 +337,11 @@ sub HTMLfilter($)
 {
 	my $val = shift;
 	
-	$val =~ s/\'/\&#039;/g;
-	$val =~ s/\"/\&quot;/g;
-	$val =~ s/\&/\&amp;/g;
-	$val =~ s/</\&lt;/g;
-	$val =~ s/>/\&gt;/g;
+	$val =~ s/\&/&amp;/g;
+	$val =~ s/\'/&#039;/g;
+	$val =~ s/\"/&quot;/g;
+	$val =~ s/</&lt;/g;
+	$val =~ s/>/&gt;/g;
 	
 	return $val;
 }
@@ -315,14 +350,9 @@ sub escape
 {
 	my $val = shift;
 	
-	#$val = uri_escape_utf8($val);
-	#$val =~ s/(.)/ord($1).' '/ges;
-	#$val =~ s/([^\w ])/'\\x'.sprintf('%02x',ord($1))/ges;
-	#$val =~ s/([\n\r"'\\])/'\\x'.sprintf('%02x',ord($1))/ges;
 	$val =~ s/([\"\'\\])/\\$1/gs;
-	$val =~ s/\s+/ /gs;
-	#$val =~ s/\n/\\n/gs;
-	#$val =~ s/\r/\\r/gs;
+	$val =~ s/\n/\\n/gs;
+	$val =~ s/\r/\\r/gs;
 	
 	return $val;
 }
@@ -335,7 +365,14 @@ sub MD5($)
 sub translit($)
 {
 	my $val = shift;
-	$val =~ tr/АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзиклмнопрстуфхцчшщьыъэюя/ABVGDEEJZIKLMNOPRSTUFHC4WWQIQEUYabvgdeejziklmnoprstufhc4wwqiqeuy/;
+	
+	#my @pairs =
+	#qw(
+	#	а б в г д е ё ж з и к л м н о п р с т у ф х ц ч ш щ ь
+	#);
+	
+	$val =~ tr/АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя/ABVGDEEJZIIKLMNOPRSTUFHC4WWQIQEUYabvgdeejziiklmnoprstufhc4wwqiqeuy/;
+	
 	return $val;
 }
 
@@ -343,19 +380,28 @@ sub len2size($)
 {
 	my $len = shift;
 	
-	my $kb = 1024;
-	my $mb = $kb*1024;
-	my $gb = $mb*1024;
-	my $tb = $gb*1024;
+    my $max_pow = 8; #т.е. 80
+	my @sn = qw(Кб Мб Гб Тб Пб Эб Зб Йб); #qw(Йб Зб Эб Пб Тб Гб Мб Кб)
 	
-	if($len >= $tb){ return round2($len/$tb).' ТБ'; }
-	if($len >= $gb){ return round2($len/$gb).' ГБ'; }
-	if($len >= $mb){ return round2($len/$mb).' МБ'; }
-	if($len >= $kb){ return round2($len/$kb).' КБ'; }
-	return $len.' байт';
+	my $size;
+	
+	for (reverse 1 .. $max_pow)
+	{
+        my $sz = 2 ** ($_ * 10);
+        
+		if ($len >= $sz)
+        {
+            $size = round2($len / $sz) . ' ' . $sn[$_ - 1];
+            $size =~ s/\./,/;
+            #warn $size;
+            return $size;
+        }
+    }
+	
+	return $len . ' ' . rus_case($len, ['байт', 'байт', 'байта', 'байт']);
 }
 
-sub round2($) { return (int($_[0]*10)/10); }
+sub round2($) { return ( int( $_[0] * 10 ) / 10); }
 
 sub var2f
 {
@@ -407,85 +453,65 @@ sub f2var_utf8
 	return $val;
 }
 
-sub array2csv($$$)
-{
-	my ($arr,$padw,$padh) = @_;
-	my @es = @$arr;
-	
-	my %ps;
-	for my $to (@es)
-	{
-		map {$ps{$_} = $to->props()->{$_}->{'name'};} $to->aview();
-	}
-	
-	my @psa = keys %ps;
-	
-	my $csv = "\n" x $padh;
-	
-	$csv .= ';' x $padw;
-	$csv .= '"Название";';
-	for my $key (@psa)
-	{
-		if($key eq 'name'){ next; }
-		$csv .= '"'.str2csv($ps{$key}).'";';
-	}
-	$csv .= "\n";
-	
-	for my $to (@es)
-	{
-		$csv .= ';' x $padw;
-		$csv .= '"'.str2csv($to->name()).'";';
-		for my $key (@psa)
-		{
-			if($key eq 'name'){ next; }
-			$csv .= '"'.str2csv($to->{$key}).'";';
-		}
-		$csv .= "\n";
-	}
-	
-	return $csv;
-}
-
-sub str2csv($)
-{
-	my $val = shift;
-	$val =~ s/\"/\"\"/g;
-	return $val;
-}
-
 sub path_it
 {
-	$_[0] =~ s#\\#\/#g;
-	$_[0] =~ s#\.\.\/##g;
-	$_[0] =~ s#\.\/##g;
-	$_[0] =~ s#[^\w\_\/\.\- \(\)]##g;
-	$_[0] =~ s#\/+#\/#g;
-}
-
-sub path_abs
-{
-	if($_[0] ne '/')
-	{
-		$_[0] =~ s#^\/##;
-		$_[0] =~ s#\/$##;
-		$_[0] = '/'.$_[0];
-	}
+	my $val = shift;
+	
+	my $last_slash = $val =~ m/[\\\/]$/;
+	
+	my @path = grep { $_ !~ /^[.]{1,2}$/ } split /[\\\/]+/, $val;
+	
+	my $ret = join('/', @path) . ($last_slash ? '/' : '');
+	
+	#warn "[$val -> $ret]";
+	
+	return $ret;
 }
 
 sub sendmail
 {
-	my %opts = (ct => 'text/plain; charset=windows-1251', @_);
+	my $mess = sendmail_make(@_);
+	
+	no warnings 'utf8';
+	my $mail;
+	return open($mail, '|-', '/usr/sbin/sendmail -t') && binmode($mail) && print($mail $mess) && close($mail);
+}
+
+sub sendmail_make
+{
+	my %opts = (ct => 'text/plain', @_);
+	
+	map { $opts{$_} =~ s/([^\x14-\x7F]+)/base64m($1)/ge; } qw(to from subject); #[^a-zA-Z\.\_\-\@ <>]+
 	
 	my $mess =
-"To: $opts{'to'}
-From: $opts{'from'}
-Subject: $opts{'subj'}
-Content-type: $opts{'ct'}
+"To: $opts{to}
+From: $opts{from}
+Subject: $opts{subject}
+Content-type: $opts{ct}; charset=utf-8
 
-$opts{'text'}";
+$opts{'message'}";
+	
+	return $mess;
+}
 
-	my $mail;
-	return open($mail,'|-','/usr/sbin/sendmail -t') && (print $mail $mess) && close($mail);
+sub base64m($)
+{
+	my $str = '=?UTF-8?B?' . encode_base64( encode('UTF-8', $_[0]) ) . '?=';
+	$str =~ s/\s//g;
+	
+	return $str;
+}
+
+sub autoflush($)
+{
+	unless ($_[0])
+	{
+		Carp::carp 'Undefined param for autoflush()';
+		return undef;
+	}
+	my $fh = select $_[0];
+	$| = 1;
+	select $fh;
 }
 
 1;

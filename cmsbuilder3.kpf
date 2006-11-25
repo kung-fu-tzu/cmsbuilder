@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="10F0A805172L5dd8a22f0xdd" name="cmsbuilder3.kpf" kpf_version="3">
+<file url="cmsbuilder/core/CMSBuilder/Config/XML.pm" idref="10F331B433EL446be7670xe0" id="10F331B4EB3L7cc28e810xe0" name="XML.pm">
+</file>
+<file url="cmsbuilder/etc/tmp/sessions/679D7191A8EDAAF44AECC3B19D6623D3.dir" idref="10F0A812558Le353b20xdd" id="10F0A81253CLf55e7300xdd" name="679D7191A8EDAAF44AECC3B19D6623D3.dir">
+</file>
+<file url="cmsbuilder/etc/tmp/sessions/679D7191A8EDAAF44AECC3B19D6623D3.pag" idref="10F0A812558Le353b20xdd" id="10F0A81253CL48be9fe60xdd" name="679D7191A8EDAAF44AECC3B19D6623D3.pag">
+</file>
+<file url="cmsbuilder/etc/tmp/sessions/AE8FEB584F0676CFCB65DCE0CDF5C97C.dir" idref="10F0A812558Le353b20xdd" id="10F0A81253CL50d7f1d0xdd" name="AE8FEB584F0676CFCB65DCE0CDF5C97C.dir">
+</file>
+<file url="cmsbuilder/etc/tmp/sessions/AE8FEB584F0676CFCB65DCE0CDF5C97C.pag" idref="10F0A812558Le353b20xdd" id="10F0A81253CL407250a60xdd" name="AE8FEB584F0676CFCB65DCE0CDF5C97C.pag">
+</file>
+<file url="t/CMSBuilder.t" idref="10F14393D50L76cf4c7e0x164a" id="10F14393D4EL1bd26ded0x164a" name="CMSBuilder.t">
+</file>
+<folder url="t/CMSBuilder" idref="10F14393D50L76cf4c7e0x164a" id="10F14393D52L5cd2362f0x164a" name="CMSBuilder">
+</folder>
+<file url="cmsbuilder/etc/error.log" idref="10F0A812554L3e65c2f90xdd" id="10F0A81253CL16ef88620xdd" name="error.log">
+</file>
+<file url="cmsbuilder/etc/errors.html.tpl" idref="10F0A812554L3e65c2f90xdd" id="10F0A81253CL3ab374b10xdd" name="errors.html.tpl">
+</file>
+<file url="cmsbuilder/etc/first.tpl" idref="10F0A812554L3e65c2f90xdd" id="10F0A81253CLad70cdb0xdd" name="first.tpl">
+</file>
+<file url="cmsbuilder/etc/first_full.tpl" idref="10F0A812554L3e65c2f90xdd" id="10F0A81253CL4496f8130xdd" name="first_full.tpl">
+</file>
+<file url="cmsbuilder/etc/modules.ini" idref="10F0A812554L3e65c2f90xdd" id="10F0A81253CL5a4a51430xdd" name="modules.ini">
+</file>
+<file url="cmsbuilder/etc/system.ini" idref="10F0A812554L3e65c2f90xdd" id="10F0A81253CL36fd35e0xdd" name="system.ini">
+</file>
+<folder url="cmsbuilder/etc/backup" idref="10F0A812554L3e65c2f90xdd" id="10F0A812555L74979f830xdd" name="backup">
+</folder>
+<folder url="cmsbuilder/etc/tmp" idref="10F0A812554L3e65c2f90xdd" id="10F0A812557L21af6e9e0xdd" name="tmp">
+</folder>
+<file url="cmsbuilder/core/CMSBuilder/Config.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253BL10ad1fb70xdd" name="Config.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/DB.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253BL4d2214280xdd" name="DB.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/DBDefault.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253BL281dfa130xdd" name="DBDefault.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/Dynoprops.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253BL3d5233630xdd" name="Dynoprops.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/IO.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253BL6308dbb60xdd" name="IO.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/Module.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253BL91bb1000xdd" name="Module.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/Object.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253CL3a1695a0xdd" name="Object.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/Property.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253CL700aefbf0xdd" name="Property.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/Utils.pm" idref="10F0A81254FL55f01fa40xdd" id="10F0A81253CL5f8ee0730xdd" name="Utils.pm">
+</file>
+<folder url="cmsbuilder/core/CMSBuilder/IO" idref="10F0A81254FL55f01fa40xdd" id="10F0A812551L4fe1c7320xdd" name="IO">
+</folder>
+<file url="cmsbuilder/core/CMSBuilder/SysUtils.pm" idref="10F0A81254FL55f01fa40xdd" id="10F15123B59L6f81c7e0x2169" name="SysUtils.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/VObject.pm" idref="10F0A81254FL55f01fa40xdd" id="10F15123B59L1a4bcf670x2169" name="VObject.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/VTypes.pm" idref="10F0A81254FL55f01fa40xdd" id="10F2859DCA7L110e000b0xf6" name="VTypes.pm">
+</file>
+<folder idref="10F0A81254FL55f01fa40xdd" id="10F331B433EL446be7670xe0" name="Config">
+</folder>
+<file url="cmsbuilder/core/CMSBuilder/Daemon.pm" idref="10F0A81254FL55f01fa40xdd" id="10F4CC78311L4e4afc5e0x13c" name="Daemon.pm">
+</file>
+<folder url="cmsbuilder/core/CMSBuilder/Daemon" idref="10F0A81254FL55f01fa40xdd" id="10F5D46A8CAL27ef64720x2140" name="Daemon">
+</folder>
+<file url="cmsbuilder/etc/tmp/.exists" idref="10F0A812557L21af6e9e0xdd" id="10F0A81253CL5a2152ee0xdd" name=".exists">
+</file>
+<folder url="cmsbuilder/etc/tmp/sessions" idref="10F0A812557L21af6e9e0xdd" id="10F0A812558Le353b20xdd" name="sessions">
+</folder>
+<command parseRegex="" keyboard_shortcut="Meta+F7" idref="fc22b1c3-90a9-1441-914f-7d38424419c5" name="test all" insertOutput="0" id="0dc402a7-7167-4347-86a1-3b0a96eaa72f" runIn="command-output-window" operateOnSelection="0" parseOutput="0" env="" doNotOpenOutputWindow="1" showParsedOutputList="0" cwd="%p" icon="chrome://komodo/content/icons/3d-apply.png">
+perl %p/tests.pl -a</command>
+<command parseRegex="" keyboard_shortcut="Alt+F7" idref="fc22b1c3-90a9-1441-914f-7d38424419c5" name="select" insertOutput="0" id="e1bf6f50-1117-4442-9db9-0fc070724327" runIn="command-output-window" operateOnSelection="0" parseOutput="0" env="" doNotOpenOutputWindow="0" showParsedOutputList="0" cwd="%p" icon="chrome://komodo/content/icons/autotext.png">
+perl select-tests.pl</command>
+<file url="htdocs/wwfiles/.exists" idref="cf65a638-4692-fc4b-b917-11ec8a20d1ff" id="a3fb2a6f-c169-0943-a6d0-186b762ec192" name=".exists">
+</file>
+<file url="htdocs/userdocs/icons/default.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L406d67d40xdd" name="default.png">
+</file>
+<file url="htdocs/userdocs/icons/directory.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L19dc3d390xdd" name="directory.png">
+</file>
+<file url="htdocs/userdocs/icons/doc.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L43aa6bf50xdd" name="doc.png">
+</file>
+<file url="htdocs/userdocs/icons/exe.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L41a358c20xdd" name="exe.png">
+</file>
+<file url="htdocs/userdocs/icons/gz.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L37975a8b0xdd" name="gz.png">
+</file>
+<file url="htdocs/userdocs/icons/html.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L5e34cdfe0xdd" name="html.png">
+</file>
+<file url="htdocs/userdocs/icons/lnk.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L672988f90xdd" name="lnk.png">
+</file>
+<file url="htdocs/userdocs/icons/mp3.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L42f0bab0xdd" name="mp3.png">
+</file>
+<file url="htdocs/userdocs/icons/rar.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L46a19c010xdd" name="rar.png">
+</file>
+<file url="htdocs/userdocs/icons/rtf.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L24f659cb0xdd" name="rtf.png">
+</file>
+<file url="htdocs/userdocs/icons/txt.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L41d783930xdd" name="txt.png">
+</file>
+<file url="htdocs/userdocs/icons/xls.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L2f20daf10xdd" name="xls.png">
+</file>
+<file url="htdocs/userdocs/icons/zip.png" idref="10F0A812594L27425ad50xdd" id="10F0A812543L644c62520xdd" name="zip.png">
+</file>
+<file url="htdocs/.htaccess" idref="10F0A812592L2fb305700xdd" id="10F0A812543L10e13cfe0xdd" name=".htaccess">
+</file>
+<folder url="htdocs/userdocs" idref="10F0A812592L2fb305700xdd" id="10F0A812593L19fd0d200xdd" name="userdocs">
+</folder>
+<folder url="htdocs/wwfiles" idref="10F0A812592L2fb305700xdd" id="10F0A812596L7d0da90a0xdd" name="wwfiles">
+</folder>
+<folder url="htdocs" idref="10F0A812592L2fb305700xdd" id="b5a152e0-53ba-a442-9355-ed71c8015d1f" name="htdocs">
+</folder>
+<file url="cmsbuilder/.htaccess" idref="10F0A812546L1af3beda0xdd" id="10F0A81253BL7568636b0xdd" name=".htaccess">
+</file>
+<file url="cmsbuilder/Config.local.pm" idref="10F0A812546L1af3beda0xdd" id="10F0A81253BL4d90d4710xdd" name="Config.local.pm">
+</file>
+<folder url="cmsbuilder/core" idref="10F0A812546L1af3beda0xdd" id="10F0A812547Lbee3c640xdd" name="core">
+</folder>
+<folder url="cmsbuilder/etc" idref="10F0A812546L1af3beda0xdd" id="10F0A812554L3e65c2f90xdd" name="etc">
+</folder>
+<command parseRegex="" keyboard_shortcut="F7" idref="18febdae-2064-c446-959c-c4ed15d927e1" name="tests" insertOutput="0" id="8ceae232-5b0e-8b42-b80c-2bb227705a73" runIn="command-output-window" operateOnSelection="0" parseOutput="0" env="" doNotOpenOutputWindow="1" showParsedOutputList="0" cwd="%p" icon="chrome://komodo/content/icons/3d-apply.png">
+perl %p/tests.pl</command>
+<command parseRegex="" keyboard_shortcut="" idref="18febdae-2064-c446-959c-c4ed15d927e1" name="update" insertOutput="0" id="0d7cce41-cb9a-b045-b5a4-71d61ed80f16" runIn="command-output-window" operateOnSelection="0" parseOutput="0" env="SVN_EDITOR=cat" doNotOpenOutputWindow="0" showParsedOutputList="0" cwd="%p" icon="chrome://komodo/content/icons/up.png">
+svn up</command>
+<command parseRegex="" keyboard_shortcut="" idref="18febdae-2064-c446-959c-c4ed15d927e1" name="commit" insertOutput="0" id="df21459b-4bf5-7045-8a25-450e1e4f92b7" runIn="command-output-window" operateOnSelection="0" parseOutput="0" env="SVN_EDITOR=cat" doNotOpenOutputWindow="0" showParsedOutputList="0" cwd="%p" icon="chrome://komodo/content/icons/down.png">
+svn ci</command>
+<command parseRegex="" keyboard_shortcut="" idref="18febdae-2064-c446-959c-c4ed15d927e1" name="diff" insertOutput="0" id="0a24e6b8-f3a9-b44b-a90f-94626cd2dd3f" runIn="command-output-window" operateOnSelection="0" parseOutput="0" env="" doNotOpenOutputWindow="0" showParsedOutputList="0" cwd="" icon="chrome://komodo/content/icons/list_enum-restart.png">
+svn diff %F</command>
+<command parseRegex="" keyboard_shortcut="F8" idref="18febdae-2064-c446-959c-c4ed15d927e1" name="killall" insertOutput="0" id="ebb81db9-4e12-064b-9934-c43089c74b86" runIn="no-console" operateOnSelection="0" parseOutput="0" env="" doNotOpenOutputWindow="0" showParsedOutputList="0" cwd="" icon="chrome://komodo/content/icons/calc-cancel.png">
+killall -SIGKILL perl</command>
+<file url="cmsbuilder/core/CMSBuilder/Daemon/cgi.pm" idref="10F5D46A8CAL27ef64720x2140" id="10F5D46A8C0L6264af2d0x2140" name="cgi.pm">
+</file>
+<file url="htdocs/wwfiles/.exists" idref="10F0A812596L7d0da90a0xdd" id="10F0A812543L1f59b7d60xdd" name=".exists">
+</file>
+<file url="t/CMSBuilder/Daemon/cgi.t" idref="10F5D46A8CDL1c15f0a50x2140" id="10F5D46A8C8La746a330x2140" name="cgi.t">
+</file>
+<file url="t/CMSBuilder/DB/MySQL.t" idref="10F285E2AD2L62819c310xf6" id="10F285E2AD0L7cb503bb0xf6" name="MySQL.t">
+</file>
+<file url="cmsbuilder/core/CBM/Access/Object.pm" idref="10F0A812549L5995f2070xdd" id="10F0A81253BL2e9913840xdd" name="Object.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder.pm" idref="10F0A812547Lbee3c640xdd" id="10F0A81253BL306823e20xdd" name="CMSBuilder.pm">
+</file>
+<folder url="cmsbuilder/core/CBM" idref="10F0A812547Lbee3c640xdd" id="10F0A812548L7c44b9980xdd" name="CBM">
+</folder>
+<folder url="cmsbuilder/core/CMSBuilder" idref="10F0A812547Lbee3c640xdd" id="10F0A81254FL55f01fa40xdd" name="CMSBuilder">
+</folder>
+<file url="cmsbuilder/core/config.xml" idref="10F0A812547Lbee3c640xdd" id="10F4C9AB5BCL289dc1480x13c" name="config.xml">
+</file>
+<folder url="htdocs/userdocs/icons" idref="10F0A812593L19fd0d200xdd" id="10F0A812594L27425ad50xdd" name="icons">
+</folder>
+<file url="t/CMSBuilder/Object.t" idref="10F14393D52L5cd2362f0x164a" id="10F14393D4EL74c30ed50x164a" name="Object.t">
+</file>
+<file url="t/CMSBuilder/Utils.t" idref="10F14393D52L5cd2362f0x164a" id="10F14393D4EL1ecbb1950x164a" name="Utils.t">
+</file>
+<folder url="t/CMSBuilder/Utils" idref="10F14393D52L5cd2362f0x164a" id="10F14393D54L74fb5f4f0x164a" name="Utils">
+</folder>
+<file url="t/CMSBuilder/VObject.t" idref="10F14393D52L5cd2362f0x164a" id="10F15123B59L672692c90x2169" name="VObject.t">
+</file>
+<file url="t/CMSBuilder/DB.t" idref="10F14393D52L5cd2362f0x164a" id="10F285E2ACFL68b078730xf6" name="DB.t">
+</file>
+<file url="t/CMSBuilder/SysUtils.t" idref="10F14393D52L5cd2362f0x164a" id="10F285E2AD0L248d3ff50xf6" name="SysUtils.t">
+</file>
+<folder url="t/CMSBuilder/DB" idref="10F14393D52L5cd2362f0x164a" id="10F285E2AD2L62819c310xf6" name="DB">
+</folder>
+<file url="t/CMSBuilder/Config.t" idref="10F14393D52L5cd2362f0x164a" id="10F4C9AB5BCL29180c570x13c" name="Config.t">
+</file>
+<folder url="t/CMSBuilder/Config" idref="10F14393D52L5cd2362f0x164a" id="10F4C9AB5C0L735f4aa60x13c" name="Config">
+</folder>
+<file url="t/CMSBuilder/Daemon.t" idref="10F14393D52L5cd2362f0x164a" id="10F4CC78312L30a91b970x13c" name="Daemon.t">
+</file>
+<folder url="t/CMSBuilder/Daemon" idref="10F14393D52L5cd2362f0x164a" id="10F5D46A8CDL1c15f0a50x2140" name="Daemon">
+</folder>
+<file url="t/CMSBuilder/Daemon-perf.t" idref="10F14393D52L5cd2362f0x164a" id="71ed6e3f-d07d-734a-9a38-b203f1c42e08" name="Daemon-perf.t">
+</file>
+<toolbar priority="100" idref="547f350b-1129-1843-8f87-b1cad0e57236" id="18febdae-2064-c446-959c-c4ed15d927e1" name="my-debug">
+</toolbar>
+<toolbar priority="100" idref="547f350b-1129-1843-8f87-b1cad0e57236" id="fc22b1c3-90a9-1441-914f-7d38424419c5" name="additional">
+</toolbar>
+<file url="replace.pl" idref="10F0A805172L5dd8a22f0xdd" id="10F0A81253AL1e5ada9a0xdd" name="replace.pl">
+</file>
+<file url="search.pl" idref="10F0A805172L5dd8a22f0xdd" id="10F0A81253ALd31bcfa0xdd" name="search.pl">
+</file>
+<folder url="cgi-bin" idref="10F0A805172L5dd8a22f0xdd" id="10F0A812545L5b6cc0a10xdd" name="cgi-bin">
+</folder>
+<folder url="cmsbuilder" idref="10F0A805172L5dd8a22f0xdd" id="10F0A812546L1af3beda0xdd" name="cmsbuilder">
+</folder>
+<folder url="htdocs" idref="10F0A805172L5dd8a22f0xdd" id="10F0A812592L2fb305700xdd" name="htdocs">
+</folder>
+<file url="tests.pl" idref="10F0A805172L5dd8a22f0xdd" id="10F14393D4EL3f67108f0x164a" name="tests.pl">
+</file>
+<folder url="t" idref="10F0A805172L5dd8a22f0xdd" id="10F14393D50L76cf4c7e0x164a" name="t">
+</folder>
+<toolbar priority="100" idref="10F0A805172L5dd8a22f0xdd" id="547f350b-1129-1843-8f87-b1cad0e57236" name="tools">
+</toolbar>
+<file url="cmsbuilder/etc/backup/.exists" idref="10F0A812555L74979f830xdd" id="10F0A81253CL45d208f10xdd" name=".exists">
+</file>
+<folder url="htdocs/userdocs/icons" idref="f5b32266-cc10-e445-84fb-95a3e6264bfb" id="79b6cdea-462c-404c-9638-0382416ebcd6" name="icons">
+</folder>
+<file url="t/CMSBuilder/Utils/.hidden_file" idref="10F14393D54L74fb5f4f0x164a" id="10F14393D4EL3b70ac300x164a" name=".hidden_file">
+</file>
+<file url="t/CMSBuilder/Utils/1.txt" idref="10F14393D54L74fb5f4f0x164a" id="10F14393D4EL3fd2cd980x164a" name="1.txt">
+</file>
+<file url="t/CMSBuilder/Utils/o.pk" idref="10F14393D54L74fb5f4f0x164a" id="10F14393D4FL128e024d0x164a" name="o.pk">
+</file>
+<file url="t/CMSBuilder/Utils/x.pm" idref="10F14393D54L74fb5f4f0x164a" id="10F14393D4FL2cf86cc30x164a" name="x.pm">
+</file>
+<file url="t/CMSBuilder/Utils/y.pm" idref="10F14393D54L74fb5f4f0x164a" id="10F14393D4FL521588170x164a" name="y.pm">
+</file>
+<file url="t/CMSBuilder/Utils/z.pm" idref="10F14393D54L74fb5f4f0x164a" id="10F14393D4FL59f46a980x164a" name="z.pm">
+</file>
+<file url="cmsbuilder/core/CBM/DBI/.cmsb_load_order" idref="10F0A81254BL5b4511fe0xdd" id="10F0A81253BL6b662c00xdd" name=".cmsb_load_order">
+</file>
+<file url="cmsbuilder/core/CBM/DBI/MySQL.pm" idref="10F0A81254BL5b4511fe0xdd" id="10F0A81253BL7b657b900xdd" name="MySQL.pm">
+</file>
+<file url="cmsbuilder/core/CBM/DBI/MySQLspec.pm" idref="10F0A81254BL5b4511fe0xdd" id="10F0A81253BL6aa618800xdd" name="MySQLspec.pm">
+</file>
+<file url="cmsbuilder/core/CBM/DBI/SDBM.pm" idref="10F0A81254BL5b4511fe0xdd" id="10F0A81253BL219d314b0xdd" name="SDBM.pm">
+</file>
+<file url="cgi-bin/cmsb.pl" idref="10F0A812545L5b6cc0a10xdd" id="10F0A81253AL54ff943a0xdd" name="cmsb.pl">
+</file>
+<file url="cgi-bin/env.pl" idref="10F0A812545L5b6cc0a10xdd" id="10F0A81253BL2deaf08a0xdd" name="env.pl">
+</file>
+<file url="cgi-bin/error.log.pl" idref="10F0A812545L5b6cc0a10xdd" id="10F0A81253BL78e061ab0xdd" name="error.log.pl">
+</file>
+<file url="cmsbuilder/core/CBM/Users/Group.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL4ff386da0xdd" name="Group.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users/Module.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL42c655b0xdd" name="Module.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users/Root.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL70da53c90xdd" name="Root.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users/User.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL368b28560xdd" name="User.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users/UserData.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL3d66fa530xdd" name="UserData.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users/UserInterface.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL2315e530xdd" name="UserInterface.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users/UserMember.pm" idref="10F0A81254DL41f11eb10xdd" id="10F0A81253BL8ace25e0xdd" name="UserMember.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Access.pm" idref="10F0A812548L7c44b9980xdd" id="10F0A81253BLe005ecd0xdd" name="Access.pm">
+</file>
+<file url="cmsbuilder/core/CBM/Users.pm" idref="10F0A812548L7c44b9980xdd" id="10F0A81253BL4b59caf10xdd" name="Users.pm">
+</file>
+<folder url="cmsbuilder/core/CBM/Access" idref="10F0A812548L7c44b9980xdd" id="10F0A812549L5995f2070xdd" name="Access">
+</folder>
+<folder url="cmsbuilder/core/CBM/DBI" idref="10F0A812548L7c44b9980xdd" id="10F0A81254BL5b4511fe0xdd" name="DBI">
+</folder>
+<folder url="cmsbuilder/core/CBM/Users" idref="10F0A812548L7c44b9980xdd" id="10F0A81254DL41f11eb10xdd" name="Users">
+</folder>
+<file url="t/CMSBuilder/Config/test1.xml" idref="10F4C9AB5C0L735f4aa60x13c" id="10F4C9AB5BCL249f89e0x13c" name="test1.xml">
+</file>
+<file url="t/CMSBuilder/Config/test2.xml" idref="10F4C9AB5C0L735f4aa60x13c" id="10F4C9AB5BCL53c7e4420x13c" name="test2.xml">
+</file>
+<file url="t/CMSBuilder/Config/XML.t" idref="10F4C9AB5C0L735f4aa60x13c" id="10F4C9AB5BCL56c0fc870x13c" name="XML.t">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/IO/Ini.pm" idref="10F0A812551L4fe1c7320xdd" id="10F0A81253CL520d3c6e0xdd" name="Ini.pm">
+</file>
+<file url="cmsbuilder/core/CMSBuilder/IO/Session.pm" idref="10F0A812551L4fe1c7320xdd" id="10F0A81253CL25fa5bb40xdd" name="Session.pm">
+</file>
+<file url="htdocs/.htaccess" idref="b5a152e0-53ba-a442-9355-ed71c8015d1f" id="67b3f367-09eb-5f40-8e08-2b7bc15523dc" name=".htaccess">
+</file>
+<folder url="htdocs/userdocs" idref="b5a152e0-53ba-a442-9355-ed71c8015d1f" id="f5b32266-cc10-e445-84fb-95a3e6264bfb" name="userdocs">
+</folder>
+<folder url="htdocs/wwfiles" idref="b5a152e0-53ba-a442-9355-ed71c8015d1f" id="cf65a638-4692-fc4b-b917-11ec8a20d1ff" name="wwfiles">
+</folder>
+<file url="htdocs/userdocs/icons/default.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="969e492e-f6f7-d74e-831c-9ca85bcf321d" name="default.png">
+</file>
+<file url="htdocs/userdocs/icons/directory.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="0f5ed23e-4dd5-ff47-926d-6a4c677eb9cf" name="directory.png">
+</file>
+<file url="htdocs/userdocs/icons/doc.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="e8a8e47d-3f20-8d4e-9ba4-5c72c103ce22" name="doc.png">
+</file>
+<file url="htdocs/userdocs/icons/exe.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="2358bc93-8890-304b-87cc-a478d35fa294" name="exe.png">
+</file>
+<file url="htdocs/userdocs/icons/gz.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="288c8515-a4f5-8940-b7ae-1c694a559398" name="gz.png">
+</file>
+<file url="htdocs/userdocs/icons/html.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="8e3ca1dd-eb0a-1c4b-80a8-6d8680519c29" name="html.png">
+</file>
+<file url="htdocs/userdocs/icons/lnk.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="20077a53-cde6-d942-ae39-d280667cd1b7" name="lnk.png">
+</file>
+<file url="htdocs/userdocs/icons/mp3.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="329f51a0-fc05-7045-8629-8a3b1173a6bf" name="mp3.png">
+</file>
+<file url="htdocs/userdocs/icons/rar.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="735ddc92-0060-d040-954f-c26878de5b55" name="rar.png">
+</file>
+<file url="htdocs/userdocs/icons/rtf.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="18a32b9a-9a61-f243-bc95-70a4ebee3fab" name="rtf.png">
+</file>
+<file url="htdocs/userdocs/icons/txt.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="ab8bce1f-1760-7949-835e-d4e28c23037e" name="txt.png">
+</file>
+<file url="htdocs/userdocs/icons/xls.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="9fb145ee-cc64-5c41-a8be-f03b52edf62b" name="xls.png">
+</file>
+<file url="htdocs/userdocs/icons/zip.png" idref="79b6cdea-462c-404c-9638-0382416ebcd6" id="293689a7-8486-d64c-ae24-092f0ede5e12" name="zip.png">
+</file>
+<preference-set idref="10F0A805172L5dd8a22f0xdd">
+  <string id="import_dirname">/Users/petr/svn/cmsbuilder3</string>
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;*%*;.DS_Store;*.kpf</string>
+</preference-set>
+</project>

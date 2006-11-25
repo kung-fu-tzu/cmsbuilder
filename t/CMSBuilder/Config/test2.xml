@@ -1,0 +1,18 @@
+﻿<config>
+	
+	<db
+	table_prefix=""
+	>
+		<mysql
+			base2="{@base}-test2"
+			base2_full="{/config/db/mysql/@base}-test2-full"
+			class="modDBI::MySQL"
+			user="vasia"
+			password="vasia-secret"
+			host="testhost"
+			source="DBI:mysql:cmsbuilder;host={@host};port={/config/db/mysql/@port}"
+		>
+		</mysql>
+	</db>
+	
+</config>

@@ -1,0 +1,56 @@
+﻿<config>
+	
+	<path
+	modules="/////"
+	/>
+	
+	<db
+	table_prefix=""
+	>
+		<connections>
+			<mysql1
+				class="modDBI::MySQL"
+				account="/db/mysql/@account"
+			/>
+			<sdbm1
+				class="modDBI::SDBM"
+				file="sdbm1.db"
+			/>
+			<default
+				class="CMSBuilder::DBDefault"
+			/>
+		</connections>
+		
+		<mysql
+			class="modDBI::MySQL"
+			base="cmsbuilder"
+			user="root"
+			password="pas"
+			host="localhost"
+			port="3306"
+			source="DBI:mysql:cmsbuilder;host={@host};port={@port}"
+			charset="utf8"
+			colcon="utf8_general_ci"
+			inactive_destroy="0"
+		>
+			<account
+				user="root"
+				password="pas"
+			/>
+		</mysql>
+	</db>
+	<etc>
+		<modules
+			load_order="modDBI::MySQL *"
+		/>
+	</etc>
+	
+	<cgi
+		redirect_status="200"
+	/>
+	
+	<server
+		process_classes="modSite::Requester modAdmin::EML"
+	/>
+	
+</config>

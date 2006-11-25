@@ -1,57 +1,112 @@
 #!/usr/bin/perl
-use strict qw(subs vars);
+use strict;
 use File::Find;
+use Getopt::Std;
 
 our @incs;
-BEGIN { @incs = qw(./core ./modules) }
+BEGIN { @incs = qw(./cmsbuilder/core ./cmsbuilder/modules) }
 
 use lib @incs;
 
-our @exts = qw/pl/;
+our @exts = qw/t/;
 our $pat = '(\.'.join('$)|(\.',@exts).'$)';
 
-our($total,$cntok);
+our
+(
+	$total, $cntok, $skiped, $failed, $opts
+);
 
+getopt('a', my $co = {});
+
+sub f2var($);
 
 sub rtest
 {
 	return unless $_ =~ m/$pat/oi;
+	unless (exists $co->{a})
+	{
+		return if $opts->{$_};
+	}
 	
-	print "$_: ";
+	printf '%-60s', "$_: ";
 	
 	my $path = $_;
-	$path =~ s$/$\\$g;
+	$path =~ s$/$\\$g if $^O =~ /mswin/;
 	
 	my $incs = join ' ', map {"-I$_"} @incs;
 	
+	#my $res = system("perl $incs @ARGV \"$path\" 2>&1");
 	my $res = qx(perl $incs @ARGV "$path" 2>&1); #1>nul 2>tests.log
-	my $rt = $? ? "FAILED\n$res\n\n" : 'OK';
+	my $rt;
 	
-	print "		$rt\n";
+	if ($? >> 8 == 254)
+	{
+		$rt = 'SKIPED';
+		$skiped++;
+	}
+	else
+	{
+		if ($?)
+		{
+			$res =~ s/(^|\n+)/$1	/gs;
+			$rt = "FAILED" . ($res && "\n$res");
+			$failed++;
+		}
+		else
+		{
+			$rt = 'OK';
+			$cntok++;
+		}
+	}
 	
-	#map { print eval {&$_();} ? 'OK' : "failed: $@","\n" } map {print $_,': '; $tests->{$_}} keys %$tests;
+	print "$rt\n";
 	
-	$cntok++ unless $?;
 	$total++;
 }
 
 sub main
 {
-	chdir('cmsbuilder');
+	#chdir('cmsbuilder');
+	
+	$opts = eval f2var 'select-tests.cfg';
 	
 	($total,$cntok) = ('000') x 2;
-	
+	#warn $co->{a};
 	find({'wanted' => \&rtest, 'no_chdir' => 1},'./t');
 	
-	print "\n\n";
-	print "Success!\n\n" if $cntok eq $total;
-	print "DONE: $cntok/$total";
+	print "Success!\n" unless $failed;
 	
-	if($cntok eq $total){ sleep(1); }
-	else{ <STDIN>; }
+	print "DONE: $cntok/$total";
+	print " FAILED: $failed" if $failed;
+	print " SKIPED: $skiped" if $skiped;
+	
+	#if($cntok eq $total){ sleep(1); }
+	#else{ <STDIN>; }
+	
+	return $failed;
 }
 
-main();
+exit main();
+
+
+
+#ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+
+
+sub f2var($)
+{
+	my $fname = shift;
+	local $/ = undef;
+	
+	my $fh;
+	open($fh,'<',$fname);
+	binmode($fh);
+	my $val = <$fh>;
+	close($fh);
+	
+	return $val;
+}
 
 
 1;

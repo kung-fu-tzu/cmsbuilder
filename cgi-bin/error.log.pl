@@ -1,10 +1,10 @@
 #!/usr/bin/perl
-use strict qw(subs vars);
+use strict;
 use utf8;
 
 BEGIN
 {
-	require '../cmsbuilder/Config.pm';
+	require '../cmsbuilder/Config.local.pm';
 	print "Content-type: text/html; charset=utf-8\n\n";
 	open(STDERR,'>&',STDOUT);
 }

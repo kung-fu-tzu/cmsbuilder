@@ -1,7 +1,7 @@
 ﻿# CMSBuilder © Леонов П. А., 2005-2006
 
 package CMSBuilder::IO::Session;
-use strict qw(subs vars);
+use strict;
 use utf8;
 
 use Exporter;
@@ -15,7 +15,7 @@ our
 	%sess,$sess,$sessid
 );
 
-our $sess = \%sess;
+$sess = \%sess;
 
 sub start
 {
